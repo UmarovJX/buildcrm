@@ -1,15 +1,15 @@
 <script>
-import { makeProp as p } from "@/util/props";
-import { PROP_TYPE_NUMBER_STRING, PROP_TYPE_STRING } from "@/constants/props";
+import { makeProp as p } from '@/util/props'
+import { PROP_TYPE_NUMBER_STRING, PROP_TYPE_STRING } from '@/constants/props'
 
 export default {
-  name: "CircularBackground",
-  emits: ["click"],
+  name: 'CircularBackground',
+  emits: ['click'],
   props: {
     padding: p(PROP_TYPE_NUMBER_STRING, 0.5),
-    unit: p(PROP_TYPE_STRING, "rem"),
-    bgColor: p(PROP_TYPE_STRING, "var(--violet-100)"),
-    size: p(PROP_TYPE_STRING, ""),
+    unit: p(PROP_TYPE_STRING, 'rem'),
+    bgColor: p(PROP_TYPE_STRING, 'var(--violet-100)'),
+    size: p(PROP_TYPE_STRING, ''),
   },
   computed: {
     circularBgStyle() {
@@ -18,19 +18,19 @@ export default {
         backgroundColor: this.bgColor,
         width: this.size,
         height: this.size,
-      };
+      }
     },
   },
-};
+}
 </script>
 
 <template>
   <div
     class="circular-wrapper"
-    @click="$emit('click', $event)"
     :style="circularBgStyle"
+    @click="$emit('click', $event)"
   >
-    <slot></slot>
+    <slot />
   </div>
 </template>
 

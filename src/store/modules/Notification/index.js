@@ -1,7 +1,7 @@
-import state from "@/store/modules/Notification/state";
-import getters from "@/store/modules/Notification/getters";
-import mutations from "@/store/modules/Notification/mutations";
-import actions from "@/store/modules/Notification/actions";
+import state from '@/store/modules/Notification/state'
+import getters from '@/store/modules/Notification/getters'
+import mutations from '@/store/modules/Notification/mutations'
+import actions from '@/store/modules/Notification/actions'
 
 export default {
   namespaced: true,
@@ -9,4 +9,4 @@ export default {
   getters,
   mutations,
   actions,
-};
+}

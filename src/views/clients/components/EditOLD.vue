@@ -1,20 +1,20 @@
 <script>
-import api from "@/services/api";
+import api from '@/services/api'
 import {
   symbolLatinToCyrillic,
   symbolCyrillicToLatin,
-} from "@/util/language-helper";
+} from '@/util/language-helper'
 
-import { formatDateToYMD } from "@/util/calendar";
+import { formatDateToYMD } from '@/util/calendar'
 
-import { XFormInput } from "@/components/ui-components/form-input";
-import { XFormSelect } from "@/components/ui-components/form-select";
+import { XFormInput } from '@/components/ui-components/form-input'
+import { XFormSelect } from '@/components/ui-components/form-select'
 
-import { XModalCenter } from "@/components/ui-components/modal-center";
-import BaseDatePicker from "@/components/Reusable/BaseDatePicker";
+import { XModalCenter } from '@/components/ui-components/modal-center'
+import BaseDatePicker from '@/components/Reusable/BaseDatePicker'
 
 export default {
-  name: "ClientEdit",
+  name: 'ClientEdit',
   components: {
     BaseDatePicker,
     XFormSelect,
@@ -26,191 +26,185 @@ export default {
     clientOptions: Array,
     countryOptions: Array,
   },
-  emits: ["client-type-created", "close-creating-modal"],
+  emits: ['client-type-created', 'close-creating-modal'],
   data() {
     return {
       applyButtonLoading: false,
-      subject: "",
-      client_type_id: "",
-      language: "",
-      email: "",
-      additional_email: "",
+      subject: '',
+      client_type_id: '',
+      language: '',
+      email: '',
+      additional_email: '',
       phones: [],
       physical_attributes: {
         first_name: {
-          lotin: "",
-          kirill: "",
+          lotin: '',
+          kirill: '',
         },
         last_name: {
-          lotin: "",
-          kirill: "",
+          lotin: '',
+          kirill: '',
         },
         middle_name: {
-          lotin: "",
-          kirill: "",
+          lotin: '',
+          kirill: '',
         },
-        date_of_birth: "",
-        passport_issued_date: "",
-        passport_issued_by: "",
-        passport_series: "",
+        date_of_birth: '',
+        passport_issued_date: '',
+        passport_issued_by: '',
+        passport_series: '',
         country_id: 1,
-        address_line: "",
+        address_line: '',
       },
       legal_attributes: {
-        name: "",
-        payment_number: "",
-        bank_name: "",
-        mfo: "",
-        inn: "",
-        nds: "",
-        legal_address: "",
-        fax: "",
+        name: '',
+        payment_number: '',
+        bank_name: '',
+        mfo: '',
+        inn: '',
+        nds: '',
+        legal_address: '',
+        fax: '',
       },
 
       languageOptions: [
-        { text: "UZ", value: "uz" },
-        { text: "RU", value: "ru" },
+        { text: 'UZ', value: 'uz' },
+        { text: 'RU', value: 'ru' },
       ],
       subjectOptions: [
-        { text: "physical_person", value: 1 },
-        { text: "legal_entity", value: 2 },
+        { text: 'physical_person', value: 1 },
+        { text: 'legal_entity', value: 2 },
       ],
-      datePickerIconFill: "var(--violet-600)",
-    };
+      datePickerIconFill: 'var(--violet-600)',
+    }
   },
 
   created() {
-    this.setEditData();
+    this.setEditData()
   },
 
   methods: {
     setTab(e) {
-      this.currentLang = e;
+      this.currentLang = e
     },
     setEditData() {
-      this.subject = (this.editItem.subject === "legal") + 1;
-      this.client_type_id = this.editItem.client_type.id;
-      this.language = this.editItem.language;
-      this.email = this.editItem.email;
-      this.additional_email = this.editItem.additional_email;
-      this.phones = JSON.parse(JSON.stringify(this.editItem.phones));
-      if (this.editItem.subject === "legal") {
+      this.subject = (this.editItem.subject === 'legal') + 1
+      this.client_type_id = this.editItem.client_type.id
+      this.language = this.editItem.language
+      this.email = this.editItem.email
+      this.additional_email = this.editItem.additional_email
+      this.phones = JSON.parse(JSON.stringify(this.editItem.phones))
+      if (this.editItem.subject === 'legal') {
         this.legal_attributes = JSON.parse(
-          JSON.stringify(this.editItem.attributes)
-        );
+          JSON.stringify(this.editItem.attributes),
+        )
       } else {
-        const d = this.physical_attributes;
-        const s = this.editItem.attributes;
-        d.country_id = s.country.id;
-        d.date_of_birth = formatDateToYMD(s.date_of_birth);
-        d.passport_issued_date = formatDateToYMD(s.passport_issued_date);
-        d.passport_issued_by = s.passport_issued_by;
-        d.passport_series = s.passport_series;
-        d.address_line = s.address_line;
-        d.first_name = JSON.parse(JSON.stringify(s.first_name));
-        d.last_name = JSON.parse(JSON.stringify(s.last_name));
-        d.middle_name = JSON.parse(JSON.stringify(s.middle_name));
+        const d = this.physical_attributes
+        const s = this.editItem.attributes
+        d.country_id = s.country.id
+        d.date_of_birth = formatDateToYMD(s.date_of_birth)
+        d.passport_issued_date = formatDateToYMD(s.passport_issued_date)
+        d.passport_issued_by = s.passport_issued_by
+        d.passport_series = s.passport_series
+        d.address_line = s.address_line
+        d.first_name = JSON.parse(JSON.stringify(s.first_name))
+        d.last_name = JSON.parse(JSON.stringify(s.last_name))
+        d.middle_name = JSON.parse(JSON.stringify(s.middle_name))
       }
     },
     closeCreatingModal() {
-      this.clearForm();
-      this.$emit("close-creating-modal");
+      this.clearForm()
+      this.$emit('close-creating-modal')
     },
     startLoading() {
-      this.applyButtonLoading = true;
+      this.applyButtonLoading = true
     },
     finishLoading() {
-      this.applyButtonLoading = false;
+      this.applyButtonLoading = false
     },
 
     async saveItem() {
-      const isSatisfied = await this.$refs["creating-observer"].validate();
+      const isSatisfied = await this.$refs['creating-observer'].validate()
       if (isSatisfied) {
-        this.startLoading();
+        this.startLoading()
         const d = {
           version: this.item.version,
           latest: this.item.latest,
           fixed: this.item.fixed,
           published: this.item.published,
-        };
+        }
 
         try {
-          let response;
-          if (this.upsertType === "edit") {
-            response = await api.settings.updateVersion(this.editItem.id, d);
+          let response
+          if (this.upsertType === 'edit') {
+            response = await api.settings.updateVersion(this.editItem.id, d)
           } else {
-            response = await api.settings.createVersion(d);
+            response = await api.settings.createVersion(d)
           }
 
-          this.clearForm();
-          this.$emit("client-type-created");
+          this.clearForm()
+          this.$emit('client-type-created')
         } catch (e) {
-          console.log(e.message);
-          this.toastedWithErrorCode(e);
+          console.log(e.message)
+          this.toastedWithErrorCode(e)
         } finally {
-          this.finishLoading();
+          this.finishLoading()
         }
       }
     },
     clearForm() {
-      this.client = { ...this.clientForm };
+      this.client = { ...this.clientForm }
     },
     translateLatin(type, event) {
       if (this.timeoutId !== null) {
-        clearTimeout(this.timeoutId);
+        clearTimeout(this.timeoutId)
       }
       this.timeoutId = setTimeout(() => {
         switch (type) {
-          case "first_name":
+          case 'first_name':
             if (!this.physical_attributes.first_name.lotin) {
-              this.physical_attributes.first_name.lotin =
-                symbolCyrillicToLatin(event);
+              this.physical_attributes.first_name.lotin = symbolCyrillicToLatin(event)
             }
-            break;
-          case "last_name":
+            break
+          case 'last_name':
             if (!this.physical_attributes.last_name.lotin) {
-              this.physical_attributes.last_name.lotin =
-                symbolCyrillicToLatin(event);
+              this.physical_attributes.last_name.lotin = symbolCyrillicToLatin(event)
             }
-            break;
-          case "second_name":
+            break
+          case 'second_name':
             if (!this.physical_attributes.middle_name.lotin) {
-              this.physical_attributes.middle_name.lotin =
-                symbolCyrillicToLatin(event);
+              this.physical_attributes.middle_name.lotin = symbolCyrillicToLatin(event)
             }
-            break;
+            break
         }
-      }, 1000);
+      }, 1000)
     },
     translateCyrillic(type, event) {
       if (this.timeoutId !== null) {
-        clearTimeout(this.timeoutId);
+        clearTimeout(this.timeoutId)
       }
       this.timeoutId = setTimeout(() => {
         switch (type) {
-          case "first_name":
+          case 'first_name':
             if (!this.physical_attributes.first_name.kirill) {
-              this.physical_attributes.first_name.kirill =
-                symbolLatinToCyrillic(event);
+              this.physical_attributes.first_name.kirill = symbolLatinToCyrillic(event)
             }
-            break;
-          case "last_name":
+            break
+          case 'last_name':
             if (!this.physical_attributes.last_name.kirill) {
-              this.physical_attributes.last_name.kirill =
-                symbolLatinToCyrillic(event);
+              this.physical_attributes.last_name.kirill = symbolLatinToCyrillic(event)
             }
-            break;
-          case "second_name":
+            break
+          case 'second_name':
             if (!this.physical_attributes.middle_name.kirill) {
-              this.physical_attributes.middle_name.kirill =
-                symbolLatinToCyrillic(event);
+              this.physical_attributes.middle_name.kirill = symbolLatinToCyrillic(event)
             }
-            break;
+            break
         }
-      }, 1000);
+      }, 1000)
     },
   },
-};
+}
 </script>
 
 <template>
@@ -249,19 +243,22 @@ export default {
           <!-- SUBJECT -->
           <validation-provider
             ref="clientTypeNameVProvider"
+            v-slot="{ errors }"
             name="last-name-uz-provider"
             rules="required"
-            v-slot="{ errors }"
             class="title-uz-provider col-6"
           >
             <x-form-select
+              v-model="subject"
               :bilingual="true"
               :error="!!errors[0]"
               :placeholder="$t('person_type')"
               :options="subjectOptions"
-              v-model="subject"
             />
-            <span class="error__provider" v-if="errors[0]">
+            <span
+              v-if="errors[0]"
+              class="error__provider"
+            >
               {{
                 errors[0].replace("last-name-uz-provider", $t("person_type"))
               }}
@@ -276,11 +273,11 @@ export default {
             class="col-6"
           >
             <x-form-input
+              v-model="physical_attributes.passport_series"
               :label="true"
               class="w-100"
               :error="!!errors[0]"
               :placeholder="`${$t('passport_series_example')}`"
-              v-model="physical_attributes.passport_series"
             />
           </validation-provider>
           <!-- INN -->
@@ -292,12 +289,12 @@ export default {
             class="col-6"
           >
             <x-form-input
+              v-model="legal_attributes.inn"
               :label="true"
               type="text"
               class="w-100"
               :placeholder="`${$t('inn')}`"
               :error="!!errors[0]"
-              v-model="legal_attributes.inn"
             />
           </validation-provider>
         </div>
@@ -312,11 +309,11 @@ export default {
             class="col-6"
           >
             <x-form-select
+              v-model="physical_attributes.country_id"
               :bilingual="true"
               :error="!!errors[0]"
               :options="countryOptions"
               :placeholder="$t('nation')"
-              v-model="physical_attributes.country_id"
             />
           </validation-provider>
           <!-- PASSPORT ISSUE PLACE -->
@@ -327,11 +324,11 @@ export default {
             class="col-6"
           >
             <x-form-input
+              v-model="physical_attributes.passport_issued_by"
               :label="true"
               type="text"
               class="w-100"
               :error="!!errors[0]"
-              v-model="physical_attributes.passport_issued_by"
               :placeholder="`${$t('place_of_issue__of_passport_id')}`"
             />
           </validation-provider>
@@ -340,9 +337,9 @@ export default {
         <div class="row">
           <!--? CLIENT_ISSUE_DATE  -->
           <validation-provider
+            v-slot="{ errors }"
             :name="`${$t('passport_issue_date')}`"
             rules="required"
-            v-slot="{ errors }"
             class="col-6"
           >
             <base-date-picker
@@ -358,9 +355,9 @@ export default {
 
           <!--? CLIENT_BIRTHDAY  -->
           <validation-provider
+            v-slot="{ errors }"
             :name="`${$t('birth_day')}`"
             rules="required"
-            v-slot="{ errors }"
             class="col-6"
           >
             <base-date-picker
@@ -374,138 +371,141 @@ export default {
             />
           </validation-provider>
         </div>
-        <div class=""></div>
+        <div class="" />
         <template v-if="subject === 1">
           <div class="row">
             <!--? CLIENT_LAST_NAME_CYRILLIC  -->
             <validation-provider
+              v-slot="{ errors }"
               :name="`${$t('last_name')} (${$t('cyrillic_shortcut')}.)`"
               rules="required|min:1"
-              v-slot="{ errors }"
               class="col-6"
             >
               <x-form-input
+                v-model="physical_attributes.last_name.kirill"
                 :label="true"
                 class="w-100"
                 :error="!!errors[0]"
-                v-model="physical_attributes.last_name.kirill"
-                @input="translateLatin('last_name', $event)"
                 :placeholder="`${$t('last_name')} (${$t(
                   'cyrillic_shortcut'
                 )}.)`"
+                @input="translateLatin('last_name', $event)"
               />
             </validation-provider>
 
             <!--? CLIENT_LAST_NAME_LATIN  -->
             <validation-provider
+              v-slot="{ errors }"
               :name="`${$t('last_name')} (${$t('latin_shortcut')}.)`"
               rules="required|min:1"
-              v-slot="{ errors }"
               class="col-6"
             >
               <x-form-input
+                v-model="physical_attributes.last_name.lotin"
                 class="w-100"
                 :label="true"
                 :error="!!errors[0]"
-                v-model="physical_attributes.last_name.lotin"
-                @input="translateCyrillic('last_name', $event)"
                 :placeholder="`${$t('last_name')} (${$t('latin_shortcut')}.)`"
+                @input="translateCyrillic('last_name', $event)"
               />
             </validation-provider>
           </div>
           <div class="row">
             <!--? CLIENT_FIRST_NAME_CYRILLIC  -->
             <validation-provider
+              v-slot="{ errors }"
               :name="`${$t('name')} (${$t('cyrillic_shortcut')}.)`"
               rules="required|min:1"
-              v-slot="{ errors }"
               class="col-6"
             >
               <x-form-input
+                v-model="physical_attributes.first_name.kirill"
                 class="w-100"
                 :label="true"
                 :error="!!errors[0]"
-                v-model="physical_attributes.first_name.kirill"
-                @input="translateLatin('first_name', $event)"
                 :placeholder="`${$t('name')} (${$t('cyrillic_shortcut')}.)`"
+                @input="translateLatin('first_name', $event)"
               />
             </validation-provider>
 
             <!--? CLIENT_FIRST_NAME_CYRILLIC  -->
             <validation-provider
+              v-slot="{ errors }"
               :name="`${$t('name')} (${$t('latin_shortcut')}.)`"
               rules="required|min:1"
-              v-slot="{ errors }"
               class="col-6"
             >
               <x-form-input
+                v-model="physical_attributes.first_name.lotin"
                 class="w-100"
                 :label="true"
                 :error="!!errors[0]"
-                v-model="physical_attributes.first_name.lotin"
-                @input="translateCyrillic('first_name', $event)"
                 :placeholder="`${$t('name')} (${$t('latin_shortcut')}.)`"
+                @input="translateCyrillic('first_name', $event)"
               />
             </validation-provider>
           </div>
           <div class="row">
             <!--? CLIENT_SECOND_NAME_LATIN -->
             <validation-provider
+              v-slot="{ errors }"
               :name="`${$t('second_name')} (${$t('cyrillic_shortcut')}.)`"
               rules="required|min:1"
-              v-slot="{ errors }"
               class="col-6"
             >
               <x-form-input
+                v-model="physical_attributes.middle_name.kirill"
                 class="w-100"
                 :label="true"
                 :error="!!errors[0]"
-                v-model="physical_attributes.middle_name.kirill"
-                @input="translateLatin('second_name', $event)"
                 :placeholder="`${$t('second_name')} (${$t(
                   'cyrillic_shortcut'
                 )}.)`"
+                @input="translateLatin('second_name', $event)"
               />
             </validation-provider>
 
             <!--? CLIENT_SECOND_NAME_LATIN  -->
             <validation-provider
+              v-slot="{ errors }"
               :name="`${$t('second_name')} (${$t('latin_shortcut')}.)`"
               rules="required|min:1"
-              v-slot="{ errors }"
               class="col-6"
             >
               <x-form-input
+                v-model="physical_attributes.middle_name.lotin"
                 class="w-100"
                 :label="true"
                 :error="!!errors[0]"
-                v-model="physical_attributes.middle_name.lotin"
-                @input="translateCyrillic('second_name', $event)"
                 :placeholder="`${$t('second_name')} (${$t('latin_shortcut')}.)`"
+                @input="translateCyrillic('second_name', $event)"
               />
             </validation-provider>
           </div>
         </template>
-        <div></div>
+        <div />
         <!-- ROW -->
         <div class="row">
           <!-- CLIENT TYPE -->
           <validation-provider
             ref="clientTypeNameVProvider"
+            v-slot="{ errors }"
             name="last-name-uz-provider"
             rules="required"
-            v-slot="{ errors }"
             class="title-uz-provider col-6"
           >
             <x-form-select
+              v-model="client_type_id"
               :bilingual="true"
               :error="!!errors[0]"
               :placeholder="$t('client_type')"
               :options="clientOptions"
-              v-model="client_type_id"
             />
 
-            <span class="error__provider" v-if="errors[0]">
+            <span
+              v-if="errors[0]"
+              class="error__provider"
+            >
               {{
                 errors[0].replace("last-name-uz-provider", $t("client_type"))
               }}
@@ -514,20 +514,23 @@ export default {
           <!-- LANGUAGE -->
           <validation-provider
             ref="clientTypeNameVProvider"
+            v-slot="{ errors }"
             name="last-name-uz-provider"
             rules="required"
-            v-slot="{ errors }"
             class="title-uz-provider col-6"
           >
             <x-form-select
+              v-model="language"
               :bilingual="true"
               :error="!!errors[0]"
               :placeholder="$t('language')"
               :options="languageOptions"
-              v-model="language"
             />
 
-            <span class="error__provider" v-if="errors[0]">
+            <span
+              v-if="errors[0]"
+              class="error__provider"
+            >
               {{ errors[0].replace("last-name-uz-provider", $t("language")) }}
             </span>
           </validation-provider>
@@ -537,10 +540,10 @@ export default {
           <!-- EMAIL -->
           <div class="col-6">
             <x-form-input
+              v-model="email"
               class="w-100 ch-client-email"
               :label="true"
               type="email"
-              v-model="email"
               :placeholder="`${$t('email')}`"
             />
           </div>
@@ -553,34 +556,34 @@ export default {
             class="col-6"
           >
             <x-form-input
+              v-model="legal_attributes.legal_address"
               :label="true"
               type="text"
               class="w-100"
               :error="!!errors[0]"
-              v-model="legal_attributes.legal_address"
               :placeholder="`${$t('legal_address')}`"
             />
           </validation-provider>
           <!--? CLIENT_ADDRESS_LINE  -->
           <validation-provider
             v-else
+            v-slot="{ errors }"
             :name="`${$t('checkout.address_line')}`"
             rules="required"
-            v-slot="{ errors }"
             class="col-6"
           >
             <x-form-input
+              v-model="physical_attributes.address_line"
               class="w-100"
               :label="true"
               :error="!!errors[0]"
-              v-model="physical_attributes.address_line"
               :placeholder="`${$t('checkout.address_line')}`"
             />
           </validation-provider>
         </div>
-        <div class="mt-4"></div>
+        <div class="mt-4" />
         <template v-if="subject === 2">
-          <div class="row"></div>
+          <div class="row" />
         </template>
         <!-- PERSON NAME -->
       </validation-observer>

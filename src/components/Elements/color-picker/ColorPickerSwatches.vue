@@ -1,92 +1,92 @@
 <script>
-import { isNUNEZ } from "@/util/inspect";
-import material from "@/util/material-colors";
-import colorMixin from "@/mixins/colorPickerSwatchesMixin";
+import { isNUNEZ } from '@/util/inspect'
+import material from '@/util/material-colors'
+import colorMixin from '@/mixins/colorPickerSwatchesMixin'
 
-let colorMap = [
-  "red",
-  "pink",
-  "purple",
-  "deepPurple",
-  "indigo",
-  "blue",
-  "lightBlue",
-  "cyan",
-  "teal",
-  "green",
-  "lightGreen",
-  "lime",
-  "yellow",
-  "amber",
-  "orange",
-  "deepOrange",
-  "brown",
-  "blueGrey",
-  "black",
-];
-let colorLevel = [
-  "a100",
-  "a200",
-  "a400",
-  "a700",
-  "900",
-  "800",
-  "700",
-  "600",
-  "500",
-  "400",
-  "300",
-  "200",
-  "100",
-  "50",
-];
-let defaultColors = (() => {
-  let colors = [];
-  colorMap.forEach((type) => {
-    let typeColor = [];
-    if (type.toLowerCase() === "black" || type.toLowerCase() === "white") {
-      typeColor = typeColor.concat(["#000000", "#FFFFFF"]);
+const colorMap = [
+  'red',
+  'pink',
+  'purple',
+  'deepPurple',
+  'indigo',
+  'blue',
+  'lightBlue',
+  'cyan',
+  'teal',
+  'green',
+  'lightGreen',
+  'lime',
+  'yellow',
+  'amber',
+  'orange',
+  'deepOrange',
+  'brown',
+  'blueGrey',
+  'black',
+]
+const colorLevel = [
+  'a100',
+  'a200',
+  'a400',
+  'a700',
+  '900',
+  '800',
+  '700',
+  '600',
+  '500',
+  '400',
+  '300',
+  '200',
+  '100',
+  '50',
+]
+const defaultColors = (() => {
+  const colors = []
+  colorMap.forEach(type => {
+    let typeColor = []
+    if (type.toLowerCase() === 'black' || type.toLowerCase() === 'white') {
+      typeColor = typeColor.concat(['#000000', '#FFFFFF'])
     } else {
-      colorLevel.forEach((level) => {
-        const color = material[type][level];
+      colorLevel.forEach(level => {
+        const color = material[type][level]
         if (isNUNEZ(color)) {
-          typeColor.push(color.toUpperCase());
+          typeColor.push(color.toUpperCase())
         }
-      });
+      })
     }
-    colors.push(typeColor);
-  });
-  return colors;
-})();
+    colors.push(typeColor)
+  })
+  return colors
+})()
 
 export default {
-  name: "Swatches",
+  name: 'Swatches',
   mixins: [colorMixin],
   props: {
     palette: {
       type: Array,
       default() {
-        return defaultColors;
+        return defaultColors
       },
     },
   },
   computed: {
     pick() {
-      return this.colors.hex;
+      return this.colors.hex
     },
   },
   methods: {
     equal(color) {
-      return color.toLowerCase() === this.colors.hex.toLowerCase();
+      return color.toLowerCase() === this.colors.hex.toLowerCase()
     },
     handlerClick(c) {
       this.colorChange({
         hex: c,
-        source: "hex",
-      });
+        source: 'hex',
+      })
     },
   },
-};
+}
 </script>
 
 <template>
@@ -96,13 +96,18 @@ export default {
     class="vc-swatches"
     :data-pick="pick"
   >
-    <div class="vc-swatches-box" role="listbox">
+    <div
+      class="vc-swatches-box"
+      role="listbox"
+    >
       <div
-        class="vc-swatches-color-group"
         v-for="(group, $idx) in palette"
         :key="$idx"
+        class="vc-swatches-color-group"
       >
         <div
+          v-for="c in group"
+          :key="c"
           :class="[
             'vc-swatches-color-it',
             { 'vc-swatches-color--white': c === '#FFFFFF' },
@@ -110,14 +115,18 @@ export default {
           role="option"
           :aria-label="'Color:' + c"
           :aria-selected="equal(c)"
-          v-for="c in group"
-          :key="c"
           :data-color="c"
           :style="{ background: c }"
           @click="handlerClick(c)"
         >
-          <div class="vc-swatches-pick" v-show="equal(c)">
-            <svg style="width: 24px; height: 24px" viewBox="0 0 24 24">
+          <div
+            v-show="equal(c)"
+            class="vc-swatches-pick"
+          >
+            <svg
+              style="width: 24px; height: 24px"
+              viewBox="0 0 24 24"
+            >
               <path
                 d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"
               />

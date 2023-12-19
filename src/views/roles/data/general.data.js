@@ -7,83 +7,83 @@ const values = {
   password_settings: false,
   view_statistics: false,
   view_manager_statistics: false,
-};
+}
 
 function pms(name, uuid) {
   return {
     id: uuid,
-    title: "general",
+    title: 'general',
     active: true,
-    parent: "form",
+    parent: 'form',
     rows: [
       {
-        label: "roles_permission.activate_all",
-        refer: "all",
-        parent: "general",
+        label: 'roles_permission.activate_all',
+        refer: 'all',
+        parent: 'general',
       },
       {
-        label: "roles_permission.general.role_name_ru",
-        refer: "ru",
+        label: 'roles_permission.general.role_name_ru',
+        refer: 'ru',
         parent: name,
         inputActive: true,
-        inputPlaceholder: "roles_permission.placeholder_ru",
+        inputPlaceholder: 'roles_permission.placeholder_ru',
         checkboxActive: false,
       },
       {
-        label: "roles_permission.general.role_name_uz",
-        refer: "uz",
+        label: 'roles_permission.general.role_name_uz',
+        refer: 'uz',
         parent: name,
         inputActive: true,
-        inputPlaceholder: "roles_permission.placeholder_uz",
+        inputPlaceholder: 'roles_permission.placeholder_uz',
         checkboxActive: false,
       },
       {
-        label: "roles_permission.general.exchange_rates",
-        refer: "currency",
-        parent: "general",
+        label: 'roles_permission.general.exchange_rates',
+        refer: 'currency',
+        parent: 'general',
       },
       {
-        label: "roles_permission.general.theme",
-        refer: "theme",
-        parent: "general",
+        label: 'roles_permission.general.theme',
+        refer: 'theme',
+        parent: 'general',
       },
       {
-        label: "roles_permission.general.language",
-        refer: "language",
-        parent: "general",
+        label: 'roles_permission.general.language',
+        refer: 'language',
+        parent: 'general',
       },
       {
-        label: "roles_permission.general.user_data",
-        refer: "settings",
-        parent: "general",
+        label: 'roles_permission.general.user_data',
+        refer: 'settings',
+        parent: 'general',
       },
       {
-        label: "roles_permission.general.profile_settings",
-        refer: "profile_settings",
-        parent: "general",
+        label: 'roles_permission.general.profile_settings',
+        refer: 'profile_settings',
+        parent: 'general',
       },
       {
-        label: "roles_permission.general.user_password",
-        refer: "password_settings",
-        parent: "general",
+        label: 'roles_permission.general.user_password',
+        refer: 'password_settings',
+        parent: 'general',
       },
       {
-        label: "roles_permission.general.view_statistics",
-        refer: "view_statistics",
-        parent: "general",
+        label: 'roles_permission.general.view_statistics',
+        refer: 'view_statistics',
+        parent: 'general',
       },
       {
-        label: "roles_permission.general.view_manager_statistics",
-        refer: "view_manager_statistics",
-        parent: "general",
+        label: 'roles_permission.general.view_manager_statistics',
+        refer: 'view_manager_statistics',
+        parent: 'general',
       },
     ],
-  };
+  }
 }
 
 export default function (name, uuid) {
   return {
     values,
     permission: pms(name, uuid),
-  };
+  }
 }

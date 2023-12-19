@@ -1,28 +1,28 @@
 <script>
-import Create from "./Modal/Create";
-import Edit from "./Modal/Edit";
-import api from "@/services/api";
-import { phonePrettier, sortObjectValues } from "@/util/reusable";
-import BaseSearchInput from "@/components/Reusable/BaseSearchInput";
-import BaseButton from "@/components/Reusable/BaseButton";
-import BaseLoading from "@/components/Reusable/BaseLoading";
-import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
-import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
-import BaseDownIcon from "@/components/icons/BaseArrowDownIcon";
-import { mapGetters } from "vuex";
-import UsersPermission from "@/permission/users";
-import AppHeader from "@/components/Header/AppHeader";
-import BasePlusIcon from "@/components/icons/BasePlusIcon";
-import BaseFilterTabsContent from "@/components/Reusable/BaseFilterTabsContent";
-import { XFormSelect } from "@/components/ui-components/form-select";
-import { XFormSelectOption } from "@/components/ui-components/form-select";
-import { XCircularBackground } from "@/components/ui-components/circular-background";
-import { XIcon } from "@/components/ui-components/material-icons";
+import api from '@/services/api'
+import { phonePrettier, sortObjectValues } from '@/util/reusable'
+import BaseSearchInput from '@/components/Reusable/BaseSearchInput'
+import BaseButton from '@/components/Reusable/BaseButton'
+import BaseLoading from '@/components/Reusable/BaseLoading'
+import BaseArrowLeftIcon from '@/components/icons/BaseArrowLeftIcon'
+import BaseArrowRightIcon from '@/components/icons/BaseArrowRightIcon'
+import BaseDownIcon from '@/components/icons/BaseArrowDownIcon'
+import { mapGetters } from 'vuex'
+import UsersPermission from '@/permission/users'
+import AppHeader from '@/components/Header/AppHeader'
+import BasePlusIcon from '@/components/icons/BasePlusIcon'
+import BaseFilterTabsContent from '@/components/Reusable/BaseFilterTabsContent'
+import { XFormSelect, XFormSelectOption } from '@/components/ui-components/form-select'
+import { XCircularBackground } from '@/components/ui-components/circular-background'
+import { XIcon } from '@/components/ui-components/material-icons'
 
-import { hasOwnProperty } from "@/util/object";
-import { isNull } from "@/util/inspect";
+import { hasOwnProperty } from '@/util/object'
+import { isNull } from '@/util/inspect'
+import Edit from './Modal/Edit'
+import Create from './Modal/Create'
+
 export default {
-  name: "UsersPage",
+  name: 'UsersPage',
   components: {
     XFormSelectOption,
     XIcon,
@@ -37,37 +37,37 @@ export default {
     BaseArrowRightIcon,
     BaseDownIcon,
     BaseFilterTabsContent,
-    "create-modal": Create,
-    "edit-modal": Edit,
+    'create-modal': Create,
+    'edit-modal': Edit,
   },
   data() {
-    const showByOptions = [];
+    const showByOptions = []
 
     for (let number = 10; number <= 50; number += 10) {
       showByOptions.push({
         value: number,
         text: number,
-      });
+      })
     }
 
-    let { search: searchValue, limit: showByValue } = this.$route.query;
+    let { search: searchValue, limit: showByValue } = this.$route.query
 
     if (!showByValue) {
-      showByValue = 20;
+      showByValue = 20
     }
 
     const filterTabList = [
       {
-        name: "tab_status.active",
-        status: "",
+        name: 'tab_status.active',
+        status: '',
         counts: 0,
       },
       {
-        name: "tab_status.de_active",
-        status: "deactivated",
+        name: 'tab_status.de_active',
+        status: 'deactivated',
         counts: 0,
       },
-    ];
+    ]
 
     return {
       createPermission: UsersPermission.getUsersCreatePermission(),
@@ -85,48 +85,48 @@ export default {
       editHistoryContext: {
         id: 0,
       },
-      sortBy: "",
+      sortBy: '',
       sortDesc: false,
       fields: [
         {
-          key: "id",
-          label: "id",
+          key: 'id',
+          label: 'id',
         },
         {
-          key: "blocked_at",
-          label: "",
+          key: 'blocked_at',
+          label: '',
         },
         {
-          key: "first_name",
-          label: "users.name",
+          key: 'first_name',
+          label: 'users.name',
           sortable: true,
         },
         {
-          key: "branch",
-          label: "users.branch",
+          key: 'branch',
+          label: 'users.branch',
         },
         {
-          key: "objects",
-          label: "users.object",
+          key: 'objects',
+          label: 'users.object',
         },
         {
-          key: "phone",
-          label: "users.phone",
+          key: 'phone',
+          label: 'users.phone',
           sortable: true,
           // formatter: (phone) => phonePrettier(phone)
         },
         {
-          key: "role",
-          label: "users.roles",
+          key: 'role',
+          label: 'users.roles',
         },
         {
-          key: "email",
-          label: "users.login",
+          key: 'email',
+          label: 'users.login',
           sortable: true,
         },
         {
-          key: "actions",
-          label: "",
+          key: 'actions',
+          label: '',
         },
       ],
       tableItems: [],
@@ -136,247 +136,245 @@ export default {
 
       rolesList: [],
       selectRole: null,
-    };
+    }
   },
   watch: {
-    "$route.query": {
-      handler: function () {
-        this.fetchUsers();
+    '$route.query': {
+      handler() {
+        this.fetchUsers()
       },
       deep: true,
     },
     searchValue() {
-      this.getUsersListBySearch();
+      this.getUsersListBySearch()
     },
     selectRole(srValue) {
       this.$router.push({
         query: {
           role_id: isNull(srValue) ? undefined : srValue,
         },
-      });
+      })
     },
   },
   computed: {
-    ...mapGetters(["getPermission"]),
+    ...mapGetters(['getPermission']),
     countOfItems() {
-      return this.tableItems.length;
+      return this.tableItems.length
     },
     query() {
-      return Object.assign({}, this.$route.query);
+      return { ...this.$route.query }
     },
     rolesFilterOption() {
-      const { locale } = this.$i18n;
-      return this.rolesList.map((roleItem) => {
-        return {
-          value: roleItem.id,
-          text: roleItem.name[locale],
-          count: roleItem["users_count"],
-        };
-      });
+      const { locale } = this.$i18n
+      return this.rolesList.map(roleItem => ({
+        value: roleItem.id,
+        text: roleItem.name[locale],
+        count: roleItem.users_count,
+      }))
     },
   },
   async created() {
     this.filter = {
       ...this.$route.query,
-    };
-    this.currentPage = Number(this.filter.page);
+    }
+    this.currentPage = Number(this.filter.page)
 
     try {
-      this.loading = true;
-      await Promise.allSettled([this.fetchUsers(), this.fetchRoles()]);
+      this.loading = true
+      await Promise.allSettled([this.fetchUsers(), this.fetchRoles()])
     } finally {
-      this.loading = false;
+      this.loading = false
     }
   },
   methods: {
     async fetchRoles() {
-      const rolesRsp = await api.roles.fetchRoles();
-      this.rolesList = rolesRsp.data;
-      this.setFilterRole();
+      const rolesRsp = await api.roles.fetchRoles()
+      this.rolesList = rolesRsp.data
+      this.setFilterRole()
     },
     setFilterRole() {
-      const hasQueryOfRole = hasOwnProperty(this.$route.query, "role_id");
+      const hasQueryOfRole = hasOwnProperty(this.$route.query, 'role_id')
       if (hasQueryOfRole) {
         this.selectRole = this.rolesFilterOption.find(
-          (opt) => opt.value === parseInt(this.$route.query.role_id)
-        ).value;
+          opt => opt.value === parseInt(this.$route.query.role_id),
+        ).value
       }
     },
     fetchContentByStatus(status) {
-      const query = Object.assign({}, this.query);
-      if (query.hasOwnProperty("page")) {
-        delete query.page;
+      const query = { ...this.query }
+      if (query.hasOwnProperty('page')) {
+        delete query.page
       }
 
-      this.replaceRouter({ ...query, status });
+      this.replaceRouter({ ...query, status })
     },
     phoneFormat(value) {
-      return phonePrettier(value);
+      return phonePrettier(value)
     },
     showByCollapse(item) {
       if (item.toggleCollapse) {
-        return item.objects;
+        return item.objects
       }
-      return item.objects.slice(0, 3);
+      return item.objects.slice(0, 3)
     },
     setSearchValue(search) {
-      const hasSearchQuery = this.query.hasOwnProperty("search");
+      const hasSearchQuery = this.query.hasOwnProperty('search')
       if (search?.length < 3 && hasSearchQuery) {
-        this.replaceRouter({});
+        this.replaceRouter({})
       }
 
-      if (this.searchValue === search || search.length < 3) return;
-      this.searchValue = search;
+      if (this.searchValue === search || search.length < 3) return
+      this.searchValue = search
     },
 
     limitChanged() {
-      this.changeFetchLimit();
+      this.changeFetchLimit()
     },
     changeCurrentPage(page) {
-      const currentPage = this.query.page;
-      if (page === currentPage) return;
-      this.replaceRouter({ ...this.query, page });
+      const currentPage = this.query.page
+      if (page === currentPage) return
+      this.replaceRouter({ ...this.query, page })
     },
     changeFetchLimit() {
       const query = {
         ...this.query,
         page: 1,
-      };
-      const limit = this.showByValue;
-      this.replaceRouter({ ...query, limit });
+      }
+      const limit = this.showByValue
+      this.replaceRouter({ ...query, limit })
     },
 
     getUsersListBySearch() {
-      const { query, searchValue } = this;
-      const hasSearchQuery = query.hasOwnProperty("search");
+      const { query, searchValue } = this
+      const hasSearchQuery = query.hasOwnProperty('search')
       if (!hasSearchQuery) {
         this.pushRouter({
           search: searchValue,
-        });
-        return;
+        })
+        return
       }
-      query.search = searchValue;
-      this.pushRouter(query);
+      query.search = searchValue
+      this.pushRouter(query)
     },
 
     pushRouter(query) {
-      const sortQuery = sortObjectValues(query);
-      this.$router.push({ query: sortQuery });
+      const sortQuery = sortObjectValues(query)
+      this.$router.push({ query: sortQuery })
     },
 
     async fetchUsers() {
-      const query = sortObjectValues(this.query);
-      await api.userV2.getUsersList(query).then((response) => {
-        this.tableItems = response.data.items.map((item) => ({
+      const query = sortObjectValues(this.query)
+      await api.userV2.getUsersList(query).then(response => {
+        this.tableItems = response.data.items.map(item => ({
           ...item,
           toggleCollapse: false,
-        }));
-        this.pagination = response.data.pagination;
-        this.showByValue = response.data.pagination.perPage;
-      });
+        }))
+        this.pagination = response.data.pagination
+        this.showByValue = response.data.pagination.perPage
+      })
     },
 
     replaceRouter(query) {
-      const sortQuery = sortObjectValues(query);
-      this.$router.replace({ query: sortQuery });
+      const sortQuery = sortObjectValues(query)
+      this.$router.replace({ query: sortQuery })
     },
 
     CreateManager() {
-      this.fetchUsers();
+      this.fetchUsers()
     },
 
     EditManager() {
-      this.fetchUsers();
+      this.fetchUsers()
     },
 
     clickManager(data) {
-      this.manager_id = data.item.uuid;
-      this.editHistoryContext = data.item;
+      this.manager_id = data.item.uuid
+      this.editHistoryContext = data.item
     },
 
     getName(name) {
-      let locale = localStorage.locale;
-      let value = "";
+      const { locale } = localStorage
+      let value = ''
 
       if (locale) {
         switch (locale) {
-          case "ru":
-            value = name.ru;
-            break;
-          case "uz":
-            value = name.uz;
-            break;
+          case 'ru':
+            value = name.ru
+            break
+          case 'uz':
+            value = name.uz
+            break
         }
       } else {
-        value = name.ru;
+        value = name.ru
       }
 
-      return value;
+      return value
     },
     unblockUser(user) {
-      this.loading = true;
+      this.loading = true
       api.userV2
         .removeUserBlock(user.uuid)
-        .then((res) => {
-          this.toasted(res.data.message, "success");
-          this.fetchUsers();
-          this.loading = false;
+        .then(res => {
+          this.toasted(res.data.message, 'success')
+          this.fetchUsers()
+          this.loading = false
         })
-        .catch((error) => {
-          this.loading = false;
+        .catch(error => {
+          this.loading = false
           if (!error.response) {
-            this.toasted("Error: Network Error", "error");
+            this.toasted('Error: Network Error', 'error')
           } else {
-            this.toasted(error.response.data.error, "error");
+            this.toasted(error.response.data.error, 'error')
           }
-          this.loading = false;
-        });
+          this.loading = false
+        })
     },
 
     deleteUser(user) {
       this.$swal({
-        title: this.$t("sweetAlert.title"),
-        icon: "warning",
+        title: this.$t('sweetAlert.title'),
+        icon: 'warning',
         showCancelButton: true,
-        cancelButtonText: this.$t("cancel"),
-        confirmButtonText: this.$t("sweetAlert.yesPure"),
-      }).then((result) => {
+        cancelButtonText: this.$t('cancel'),
+        confirmButtonText: this.$t('sweetAlert.yesPure'),
+      }).then(result => {
         if (result.value) {
-          this.loading = true;
+          this.loading = true
           api.userV2
             .deleteUserFromDB(user)
-            .then((response) => {
-              this.loading = false;
-              this.toasted(response.data.message, "success");
-              this.fetchUsers();
-              this.loading = false;
-              this.$swal(this.$t("sweetAlert.success"), "", "success");
+            .then(response => {
+              this.loading = false
+              this.toasted(response.data.message, 'success')
+              this.fetchUsers()
+              this.loading = false
+              this.$swal(this.$t('sweetAlert.success'), '', 'success')
             })
-            .catch((error) => {
-              this.loading = false;
+            .catch(error => {
+              this.loading = false
               if (!error.response) {
-                this.toasted("Error: Network Error", "error");
+                this.toasted('Error: Network Error', 'error')
               } else {
-                this.toasted(error.response.data.error, "error");
+                this.toasted(error.response.data.error, 'error')
               }
-            });
+            })
         }
-      });
+      })
     },
 
     sortingChanged(val) {
-      this.filter.sort_by = val.sortBy;
-      this.filter.order_by = val.sortDesc ? "desc" : "asc";
-      this.filter.page = 1;
-      this.currentPage = this.filter.page;
+      this.filter.sort_by = val.sortBy
+      this.filter.order_by = val.sortDesc ? 'desc' : 'asc'
+      this.filter.page = 1
+      this.currentPage = this.filter.page
 
       this.$router.push({
-        name: "users",
+        name: 'users',
         query: this.filter,
-      });
+      })
     },
   },
-};
+}
 </script>
 <template>
   <div>
@@ -388,19 +386,19 @@ export default {
       <template #header-actions>
         <div class="content__form__select">
           <x-form-select
-            style="min-width: 250px"
             v-if="rolesFilterOption.length"
-            class="w-100"
             id="selectType"
             v-model="selectRole"
+            style="min-width: 250px"
+            class="w-100"
             value-field="value"
             text-field="text"
             :placeholder="`${$t('filter.by_role')}`"
           >
             <x-form-select-option
               v-for="roleOption in rolesFilterOption"
-              :key="roleOption.value"
               :id="roleOption.value"
+              :key="roleOption.value"
               :option="roleOption"
             >
               <span class="d-flex">
@@ -439,9 +437,9 @@ export default {
       />
       <base-button
         v-if="createPermission"
+        v-b-modal.modal-create
         design="violet-gradient"
         :text="$t('add')"
-        v-b-modal.modal-create
         class="ml-4"
       >
         <template #left-icon>
@@ -452,32 +450,37 @@ export default {
 
     <div class="pt-2">
       <b-table
+        id="users-table"
+        ref="contracts-table"
+        v-model:sort-by="sortBy"
+        v-model:sort-desc="sortDesc"
         thead-tr-class="row__head__bottom-border"
         tbody-tr-class="row__body__bottom-border"
         class="table__list"
-        ref="contracts-table"
-        id="users-table"
         borderless
         responsive
         show-empty
         sort-icon-left
         :busy="loading"
-        @sort-changed="sortingChanged"
         :items="tableItems"
         :fields="fields"
-        v-model:sort-by="sortBy"
-        v-model:sort-desc="sortDesc"
         :empty-text="$t('no_data')"
+        @sort-changed="sortingChanged"
       >
         <template #table-busy>
           <base-loading />
         </template>
 
-        <template #empty="scope" class="text-center">
+        <template
+          #empty="scope"
+          class="text-center"
+        >
           <div
             class="d-flex justify-content-center align-items-center flex-column not__found"
           >
-            <p class="head">{{ scope.emptyText }}</p>
+            <p class="head">
+              {{ scope.emptyText }}
+            </p>
             <p>Попробуйте ввести другие данные для поиска</p>
           </div>
         </template>
@@ -493,19 +496,26 @@ export default {
           </span>
         </template>
         <template #cell(blocked_at)="data">
-          <div class="d-flex" v-if="data.item.blocked_at">
+          <div
+            v-if="data.item.blocked_at"
+            class="d-flex"
+          >
             <x-circular-background
-              class="bg-red-500 p-1"
               :id="'blocked_' + data.item.id"
+              class="bg-red-500 p-1"
             >
-              <x-icon name="lock" class="color-white" size="18" />
+              <x-icon
+                name="lock"
+                class="color-white"
+                size="18"
+              />
             </x-circular-background>
             <b-tooltip
               :target="'blocked_' + data.item.id"
               triggers="hover"
               variant="secondary"
             >
-              Заблокирован <br />{{ data.item.blocked_at }}
+              Заблокирован <br>{{ data.item.blocked_at }}
             </b-tooltip>
           </div>
         </template>
@@ -558,26 +568,26 @@ export default {
                 class="dropdown-toggle"
                 data-toggle="dropdown"
               >
-                <i class="far fa-ellipsis-h"></i>
+                <i class="far fa-ellipsis-h" />
               </button>
 
               <div class="dropdown-menu">
                 <b-button
                   v-if="editPermission"
-                  @click="clickManager(data)"
-                  class="dropdown-item dropdown-item--inside"
                   v-b-modal.modal-edit
+                  class="dropdown-item dropdown-item--inside"
+                  @click="clickManager(data)"
                 >
-                  <i class="far fa-pen"></i>
+                  <i class="far fa-pen" />
                   {{ $t("edit") }}
                 </b-button>
                 <b-button
                   v-if="unblockPermission && data.item.blocked_at"
-                  @click="unblockUser(data.item)"
-                  class="dropdown-item dropdown-item--inside"
                   v-b-modal.modal-edit
+                  class="dropdown-item dropdown-item--inside"
+                  @click="unblockUser(data.item)"
                 >
-                  <i class="far fa-unlock"></i>
+                  <i class="far fa-unlock" />
                   Разблокировать
                 </b-button>
 
@@ -587,10 +597,13 @@ export default {
                   @click="deleteUser(data.item.uuid)"
                 >
                   <i
-                    class="far fa-trash-undo"
                     v-if="query.status === 'deactivated'"
-                  ></i>
-                  <i class="far fa-trash" v-else></i>
+                    class="far fa-trash-undo"
+                  />
+                  <i
+                    v-else
+                    class="far fa-trash"
+                  />
                   {{
                     query.status === "deactivated"
                       ? $t("undelete")
@@ -607,15 +620,18 @@ export default {
     <create-modal
       v-if="createPermission"
       @CreateManager="CreateManager"
-    ></create-modal>
+    />
     <edit-modal
       v-if="manager_id && editPermission"
       :manager-id="manager_id"
       :edit-history-context="editHistoryContext"
       @EditManager="EditManager"
-    ></edit-modal>
+    />
 
-    <div v-if="!loading && countOfItems" class="pagination__vue">
+    <div
+      v-if="!loading && countOfItems"
+      class="pagination__vue"
+    >
       <!--   Pagination   -->
       <vue-paginate
         :page-count="pagination.total"
@@ -647,10 +663,10 @@ export default {
         <span class="show__by__content">
           <span class="description">{{ $t("contracts.show_by") }}:</span>
           <b-form-select
-            @input="limitChanged"
             v-model="showByValue"
             :options="showByOptions"
-          ></b-form-select>
+            @input="limitChanged"
+          />
           <span class="arrow__down">
             <base-down-icon />
           </span>

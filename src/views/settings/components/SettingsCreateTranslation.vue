@@ -1,43 +1,41 @@
 <script>
-import { makeProp } from "@/util/props";
-import { isEmptyObject } from "@/util/inspect";
-import { PROP_TYPE_STRING } from "@/constants/props";
-import { XFormInput } from "@/components/ui-components/form-input";
-import { XModalCenter } from "@/components/ui-components/modal-center";
-import api from "@/services/api";
-import BaseFormTagInput from "@/components/Reusable/BaseFormTagInput";
+import { makeProp } from '@/util/props'
+import { isEmptyObject } from '@/util/inspect'
+import { PROP_TYPE_STRING } from '@/constants/props'
+import { XFormInput } from '@/components/ui-components/form-input'
+import { XModalCenter } from '@/components/ui-components/modal-center'
+import api from '@/services/api'
+import BaseFormTagInput from '@/components/Reusable/BaseFormTagInput'
 
 export default {
-  name: "SettingsCreateLanguage",
+  name: 'SettingsCreateLanguage',
   components: {
     BaseFormTagInput,
     XFormInput,
     XModalCenter,
   },
   props: {
-    upsertType: makeProp(PROP_TYPE_STRING, "create", (type) => {
-      return ["create", "edit"].includes(type);
-    }),
+    upsertType: makeProp(PROP_TYPE_STRING, 'create', type => ['create', 'edit'].includes(type)),
     allLanguages: {
       type: Array,
       required: true,
     },
     editItem: { type: Object, required: true },
   },
-  emits: ["client-type-created", "close-creating-modal"],
+  emits: ['client-type-created', 'close-creating-modal'],
   data() {
     const form = {
-      key: "",
+      key: '',
       tags: [],
       value: {},
-    };
+    }
     return {
       applyButtonLoading: false,
       form,
       item: {
         ...form,
       },
-    };
+    }
   },
   // watch: {
   //   "status.title.uz": debounce(function (nameInUz) {
@@ -48,69 +46,69 @@ export default {
   //   }, 500),
   // },
   created() {
-    if (this.upsertType === "edit") {
-      this.setEditData();
+    if (this.upsertType === 'edit') {
+      this.setEditData()
     }
   },
   methods: {
     setTags(ts) {
-      this.item.tags = ts;
+      this.item.tags = ts
     },
     setEditData() {
       if (isEmptyObject(this.editItem)) {
-        return;
+        return
       }
 
-      this.item.key = this.editItem.key;
-      this.item.tags = [...this.editItem.tags];
-      this.item.value = { ...this.editItem.value };
+      this.item.key = this.editItem.key
+      this.item.tags = [...this.editItem.tags]
+      this.item.value = { ...this.editItem.value }
     },
     closeCreatingModal() {
-      this.clearForm();
-      this.$emit("close-creating-modal");
+      this.clearForm()
+      this.$emit('close-creating-modal')
     },
     startLoading() {
-      this.applyButtonLoading = true;
+      this.applyButtonLoading = true
     },
     finishLoading() {
-      this.applyButtonLoading = false;
+      this.applyButtonLoading = false
     },
 
     async saveItem() {
-      const isSatisfied = await this.$refs["creating-observer"].validate();
+      const isSatisfied = await this.$refs['creating-observer'].validate()
       if (isSatisfied) {
-        this.startLoading();
+        this.startLoading()
         const d = {
           key: this.item.key,
           value: this.item.value,
           tags: this.item.tags,
-        };
-        if (this.upsertType === "edit") {
-          d.id = this.editItem.id;
+        }
+        if (this.upsertType === 'edit') {
+          d.id = this.editItem.id
         }
         try {
           await api.translationsV3[
-            this.upsertType === "edit"
-              ? "updateTranslation"
-              : "createTranslation"
-          ](d);
+            this.upsertType === 'edit'
+              ? 'updateTranslation'
+              : 'createTranslation'
+          ](d)
 
-          this.clearForm();
-          this.$emit("client-type-created");
+          this.clearForm()
+          this.$emit('client-type-created')
         } catch (e) {
-          this.toastedWithErrorCode(e);
+          this.toastedWithErrorCode(e)
         } finally {
-          this.finishLoading();
+          this.finishLoading()
         }
       }
     },
     clearForm() {
-      this.item.key = "";
-      this.item.value = {};
-      this.item.tags = [];
+      this.item.key = ''
+      this.item.value = {}
+      this.item.tags = []
     },
   },
-};
+}
 </script>
 
 <template>
@@ -151,18 +149,21 @@ export default {
         <!--  ? STATUS TITLE UZ     -->
         <validation-provider
           ref="clientTypeNameVProvider"
+          v-slot="{ errors }"
           name="last-name-uz-provider"
           rules="required"
-          v-slot="{ errors }"
           class="title-uz-provider"
         >
           <x-form-input
+            v-model="item.key"
             type="text"
             :placeholder="$t('key')"
             class="w-100"
-            v-model="item.key"
           />
-          <span class="error__provider" v-if="errors[0]">
+          <span
+            v-if="errors[0]"
+            class="error__provider"
+          >
             {{ errors[0].replace("last-name-uz-provider", $t("title")) }}
           </span>
         </validation-provider>
@@ -172,10 +173,10 @@ export default {
           class="filter__inputs-input"
         >
           <base-form-tag-input
-            @set-tags="setTags"
-            :default-tags="item.tags"
             ref="base-form-tag-input"
+            :default-tags="item.tags"
             :placeholder="`${$t('tags')}`"
+            @set-tags="setTags"
           >
             <template #delete-content>
               <svg
@@ -185,7 +186,12 @@ export default {
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >
-                <circle cx="10" cy="10" r="10" fill="#9CA3AF" />
+                <circle
+                  cx="10"
+                  cy="10"
+                  r="10"
+                  fill="#9CA3AF"
+                />
                 <path
                   d="M13.125 6.875L6.875 13.125"
                   stroke="white"
@@ -212,10 +218,10 @@ export default {
           class="title-uz-provider"
         >
           <x-form-input
+            v-model="item.value[lang]"
             type="text"
             :placeholder="lang"
             class="w-100"
-            v-model="item.value[lang]"
           />
         </validation-provider>
       </validation-observer>

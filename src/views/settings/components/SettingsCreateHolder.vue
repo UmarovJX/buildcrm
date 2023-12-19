@@ -1,59 +1,57 @@
 <script>
-import { makeProp } from "@/util/props";
-import { isEmptyObject } from "@/util/inspect";
-import { v3ServiceApi } from "@/services/v3/v3.service";
-import { PROP_TYPE_OBJECT, PROP_TYPE_STRING } from "@/constants/props";
-import { XFormInput } from "@/components/ui-components/form-input";
-import { XModalCenter } from "@/components/ui-components/modal-center";
+import { makeProp } from '@/util/props'
+import { isEmptyObject } from '@/util/inspect'
+import { v3ServiceApi } from '@/services/v3/v3.service'
+import { PROP_TYPE_OBJECT, PROP_TYPE_STRING } from '@/constants/props'
+import { XFormInput } from '@/components/ui-components/form-input'
+import { XModalCenter } from '@/components/ui-components/modal-center'
 
 export default {
-  name: "SettingsCreateClient",
+  name: 'SettingsCreateClient',
   components: {
     XFormInput,
     XModalCenter,
   },
   props: {
-    upsertType: makeProp(PROP_TYPE_STRING, "create", (type) => {
-      return ["create", "edit"].includes(type);
-    }),
+    upsertType: makeProp(PROP_TYPE_STRING, 'create', type => ['create', 'edit'].includes(type)),
     editItem: makeProp(PROP_TYPE_OBJECT, {
       id: undefined,
       icon: undefined,
       name: {
-        uz: "",
-        ru: "",
+        uz: '',
+        ru: '',
       },
-      comment: "",
+      comment: '',
       is_vip: false,
     }),
   },
-  emits: ["client-type-created", "close-creating-modal"],
+  emits: ['client-type-created', 'close-creating-modal'],
   data() {
     const clientForm = {
       name: {
-        uz: "",
-        ru: "",
+        uz: '',
+        ru: '',
       },
       middleName: {
-        uz: "",
-        ru: "",
+        uz: '',
+        ru: '',
       },
       lastName: {
-        uz: "",
-        ru: "",
+        uz: '',
+        ru: '',
       },
       error: {
         active: false,
         message: undefined,
       },
-    };
+    }
     return {
       applyButtonLoading: false,
       clientForm,
       client: {
         ...clientForm,
       },
-    };
+    }
   },
   // watch: {
   // "client.name.uz": debounce(function (nameInUz) {
@@ -76,83 +74,83 @@ export default {
   // }, 500),
   // },
   created() {
-    if (this.upsertType === "edit") {
-      this.setEditData();
+    if (this.upsertType === 'edit') {
+      this.setEditData()
     } else {
-      this.activateIcon();
+      this.activateIcon()
     }
   },
   methods: {
     setEditData() {
       if (isEmptyObject(this.editItem)) {
-        return;
+        return
       }
 
-      this.client.name.uz = this.editItem.first_name;
-      this.client.lastName.uz = this.editItem.last_name;
-      this.client.middleName.uz = this.editItem.middle_name;
+      this.client.name.uz = this.editItem.first_name
+      this.client.lastName.uz = this.editItem.last_name
+      this.client.middleName.uz = this.editItem.middle_name
     },
     closeCreatingModal() {
-      this.clearForm();
-      this.$emit("close-creating-modal");
+      this.clearForm()
+      this.$emit('close-creating-modal')
     },
     startLoading() {
-      this.applyButtonLoading = true;
+      this.applyButtonLoading = true
     },
     finishLoading() {
-      this.applyButtonLoading = false;
+      this.applyButtonLoading = false
     },
     submitClientType() {
-      if (this.upsertType === "edit") {
-        this.editClientType();
+      if (this.upsertType === 'edit') {
+        this.editClientType()
       } else {
-        this.applyNewClientType();
+        this.applyNewClientType()
       }
     },
     async applyNewClientType() {
-      const isSatisfied = await this.$refs["creating-type-observer"].validate();
+      const isSatisfied = await this.$refs['creating-type-observer'].validate()
       if (isSatisfied) {
-        this.startLoading();
+        this.startLoading()
         try {
           await v3ServiceApi.holders().create({
             first_name: this.client.name.uz,
             last_name: this.client.lastName.uz,
             middle_name: this.client.middleName.uz,
-          });
-          this.clearForm();
-          await this.$emit("client-type-created");
+          })
+          this.clearForm()
+          await this.$emit('client-type-created')
         } catch (e) {
-          this.toastedWithErrorCode(e);
+          this.toastedWithErrorCode(e)
         } finally {
-          this.finishLoading();
+          this.finishLoading()
         }
       }
     },
     async editClientType() {
-      const isSatisfied = await this.$refs["creating-type-observer"].validate();
+      const isSatisfied = await this.$refs['creating-type-observer'].validate()
       if (isSatisfied) {
-        this.startLoading();
+        this.startLoading()
         try {
           const response = await v3ServiceApi.holders().update({
             id: this.editItem.id,
             first_name: this.client.name.uz,
             last_name: this.client.lastName.uz,
             middle_name: this.client.middleName.uz,
-          });
-          this.clearForm();
-          response && this.$emit("client-type-created");
+          })
+          this.clearForm()
+          response && this.$emit('client-type-created')
         } catch (e) {
-          this.toastedWithErrorCode(e);
+          this.toastedWithErrorCode(e)
         } finally {
-          this.finishLoading();
+          this.finishLoading()
         }
       }
     },
     clearForm() {
-      this.client = { ...this.clientForm };
+      this.client = { ...this.clientForm }
     },
   },
-};
+}
 </script>
 
 <template>
@@ -188,18 +186,21 @@ export default {
         <!--   ? HOLDER'S NAME UZ     -->
         <validation-provider
           ref="clientTypeNameVProvider"
+          v-slot="{ errors }"
           name="name-uz-provider"
           rules="required|min:3"
-          v-slot="{ errors }"
           class="name-provider"
         >
           <x-form-input
+            v-model="client.name.uz"
             type="text"
             :placeholder="`${$t('name')} (${$t('placeholder_uz')})`"
             class="w-100"
-            v-model="client.name.uz"
           />
-          <span class="error__provider" v-if="errors[0]">
+          <span
+            v-if="errors[0]"
+            class="error__provider"
+          >
             {{ errors[0].replace("name-uz-provider", $t("name")) }}
           </span>
         </validation-provider>
@@ -224,18 +225,21 @@ export default {
         <!--   ? HOLDER'S LAST NAME UZ     -->
         <validation-provider
           ref="clientTypeNameVProvider"
+          v-slot="{ errors }"
           name="last-name-uz-provider"
           rules=""
-          v-slot="{ errors }"
           class="last-name-provider"
         >
           <x-form-input
+            v-model="client.lastName.uz"
             type="text"
             :placeholder="`${$t('last_name')} (${$t('placeholder_uz')})`"
             class="w-100"
-            v-model="client.lastName.uz"
           />
-          <span class="error__provider" v-if="errors[0]">
+          <span
+            v-if="errors[0]"
+            class="error__provider"
+          >
             {{ errors[0].replace("last-name-uz-provider", $t("last_name")) }}
           </span>
         </validation-provider>
@@ -261,18 +265,21 @@ export default {
         <!--   ? HOLDER'S MIDDLE NAME UZ     -->
         <validation-provider
           ref="clientTypeNameVProvider"
+          v-slot="{ errors }"
           name="middle-name-uz-provider"
           rules=""
-          v-slot="{ errors }"
           class="middle-name-provider"
         >
           <x-form-input
+            v-model="client.middleName.uz"
             type="text"
             :placeholder="`${$t('second_name')} (${$t('placeholder_uz')})`"
             class="w-100"
-            v-model="client.middleName.uz"
           />
-          <span class="error__provider" v-if="errors[0]">
+          <span
+            v-if="errors[0]"
+            class="error__provider"
+          >
             {{
               errors[0].replace("middle-name-uz-provider", $t("second_name"))
             }}

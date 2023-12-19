@@ -1,11 +1,11 @@
 <script>
 // import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
 // import BaseTimesIcon from "@/components/icons/BaseTimesIcon";
-import { formatToPrice } from "@/util/reusable";
-import { formatDateToYMD } from "@/util/calendar";
+import { formatToPrice } from '@/util/reusable'
+import { formatDateToYMD } from '@/util/calendar'
 
 export default {
-  name: "weekly-debts-ui",
+  name: 'WeeklyDebtsUi',
   components: {
     // BaseTimesIcon,
     // BaseArrowRightIcon
@@ -20,37 +20,40 @@ export default {
       required: true,
     },
   },
-  emits: ["show-debtor-view-modal"],
+  emits: ['show-debtor-view-modal'],
   methods: {
     showDebtInformationModal(item) {
-      this.$emit("show-debtor-view-modal", item);
+      this.$emit('show-debtor-view-modal', item)
     },
     debtAmount(debt) {
       return (
-        formatToPrice(debt.amount - debt.amount_paid) + " " + this.$t("ye")
-      );
+        `${formatToPrice(debt.amount - debt.amount_paid)} ${this.$t('ye')}`
+      )
     },
     equalToTodayDate(ymd) {
-      return ymd === formatDateToYMD(new Date());
+      return ymd === formatDateToYMD(new Date())
     },
   },
-};
+}
 </script>
 
 <template>
   <div>
     <div class="week-content">
       <span
-        class="week-content-column"
         v-for="(item, index) in items"
         :key="item.ymd + index"
+        class="week-content-column"
       >
         <span
           class="cell-top-content content-days-of-week"
           :class="{ 'today-cell': equalToTodayDate(item.ymd) }"
         >
           <span class="day-of-month">{{ item.dayOfMonth }}</span>
-          <span v-if="index < 7" class="day-of-week">{{
+          <span
+            v-if="index < 7"
+            class="day-of-week"
+          >{{
             $t(`weekDayAbbreviation.${item.dayOfWeek}`)
           }}</span>
         </span>

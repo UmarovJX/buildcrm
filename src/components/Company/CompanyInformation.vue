@@ -1,10 +1,10 @@
 <script>
-import api from "@/services/api";
-import { phonePrettier } from "@/util/reusable";
+import api from '@/services/api'
+import { phonePrettier } from '@/util/reusable'
 
 export default {
-  name: "CompanyInformation",
-  emits: ["trigger-input", "search-by-filter", "replace-router"],
+  name: 'CompanyInformation',
+  emits: ['trigger-input', 'search-by-filter', 'replace-router'],
   props: {
     companyId: {
       type: [Number, String],
@@ -15,57 +15,63 @@ export default {
     return {
       company: {},
       labels: {
-        type: "companies.type",
-        inn: "companies.inn",
-        director: "companies.director",
-        address: "companies.address",
-        phone: "companies.phone",
-        oked: "companies.oked",
-        code: "companies.code",
-        extra_phone: "companies.other_phone",
-        name: "companies.name",
+        type: 'companies.type',
+        inn: 'companies.inn',
+        director: 'companies.director',
+        address: 'companies.address',
+        phone: 'companies.phone',
+        oked: 'companies.oked',
+        code: 'companies.code',
+        extra_phone: 'companies.other_phone',
+        name: 'companies.name',
       },
-    };
+    }
   },
   created() {
     api.companies
       .getCompany(this.companyId)
-      .then((response) => {
-        this.company = response.data;
-        this.company.phone = phonePrettier(this.company.phone);
+      .then(response => {
+        this.company = response.data
+        this.company.phone = phonePrettier(this.company.phone)
         this.company.director = this.getDirector(
           this.company.first_name,
-          this.company.second_name
-        );
+          this.company.second_name,
+        )
       })
-      .catch((error) => {
-        this.toastedWithErrorCode(error);
+      .catch(error => {
+        this.toastedWithErrorCode(error)
       })
       .finally(() => {
-        this.loading = false;
-      });
+        this.loading = false
+      })
   },
   methods: {
     checkLocales(name) {
-      if (localStorage.locale) return name[localStorage.locale];
-      else return name["ru"];
+      if (localStorage.locale) return name[localStorage.locale]
+      return name.ru
     },
     getDirector(firstName, secondName) {
-      return `${firstName} ${secondName}`;
+      return `${firstName} ${secondName}`
     },
   },
-};
+}
 </script>
 
 <template>
   <div>
-    <div v-if="company && Object.keys(company)" class="info-container">
+    <div
+      v-if="company && Object.keys(company)"
+      class="info-container"
+    >
       <span
         v-for="([key, value], index) in Object.entries(company)"
-        :class="labels[key] ? 'item-block' : 'item-block display-none'"
         :key="index"
+        :class="labels[key] ? 'item-block' : 'item-block display-none'"
       >
-        <span class="item" v-if="labels[key]">
+        <span
+          v-if="labels[key]"
+          class="item"
+        >
           <span class="title">
             {{ $t(labels[key]) }}
           </span>
@@ -78,7 +84,10 @@ export default {
             </span>
           </span>
         </span>
-        <span v-else class="display-none"></span>
+        <span
+          v-else
+          class="display-none"
+        />
       </span>
     </div>
   </div>

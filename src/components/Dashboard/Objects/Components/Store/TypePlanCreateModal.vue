@@ -1,5 +1,5 @@
 <script>
-import api from "@/services/api";
+import api from '@/services/api'
 
 export default {
   props: {
@@ -19,16 +19,16 @@ export default {
 
     header: {
       headers: {
-        Authorization: "Bearer " + localStorage.token,
+        Authorization: `Bearer ${localStorage.token}`,
       },
     },
   }),
 
   methods: {
     resetModal() {
-      this.$bvModal.hide("modal-create-type-plan");
-      this.$emit("RemovePlan");
-      this.clearDiscount();
+      this.$bvModal.hide('modal-create-type-plan')
+      this.$emit('RemovePlan')
+      this.clearDiscount()
     },
 
     clearDiscount() {
@@ -38,104 +38,122 @@ export default {
         balcony: false,
         balcony_area: null,
         deleted: false,
-      };
+      }
     },
 
     async SaveDiscount() {
       try {
         const { data, status } = await api.objects.createObjectPlan(
           this.object.id,
-          this.plan
-        );
+          this.plan,
+        )
         if (status === 201) {
-          this.$emit("savePlan", data);
-          this.$bvModal.hide("modal-create-type-plan");
-          this.clearDiscount();
+          this.$emit('savePlan', data)
+          this.$bvModal.hide('modal-create-type-plan')
+          this.clearDiscount()
         }
       } catch (error) {
-        this.toastedWithErrorCode(error);
+        this.toastedWithErrorCode(error)
 
         if (error.response.status === 422) {
-          this.error = true;
-          this.errors = error.response.data;
+          this.error = true
+          this.errors = error.response.data
         }
       }
     },
   },
-};
+}
 </script>
 
 <template>
   <div>
     <b-modal
       id="modal-create-type-plan"
-      class="py-4"
       ref="modal"
+      class="py-4"
       :title="$t('objects.create.new_type_plan')"
       hide-footer
       no-close-on-backdrop
     >
-      <form class="my-form" @submit.prevent="SaveDiscount">
+      <form
+        class="my-form"
+        @submit.prevent="SaveDiscount"
+      >
         <div class="col-12">
           <div class="mb-3">
-            <label class="d-block" for="name">{{
+            <label
+              class="d-block"
+              for="name"
+            >{{
               $t("objects.create.plan.name")
             }}</label>
             <div class="flex-grow-1">
               <input
                 id="name"
+                v-model="plan.name"
                 class="my-form__input"
                 type="text"
                 required
-                v-model="plan.name"
-              />
+              >
             </div>
           </div>
 
           <div class="mb-3">
-            <label class="d-block" for="area">{{
+            <label
+              class="d-block"
+              for="area"
+            >{{
               $t("objects.create.plan.area")
             }}</label>
             <div class="flex-grow-1">
               <input
                 id="area"
+                v-model="plan.area"
                 class="my-form__input"
                 type="number"
                 min="1"
                 step="0.1"
                 required
-                v-model="plan.area"
-              />
+              >
             </div>
           </div>
 
           <div class="mb-3">
-            <label class="d-block" for="area">{{
+            <label
+              class="d-block"
+              for="area"
+            >{{
               $t("objects.create.plan.balcony")
             }}</label>
             <div class="flex-grow-1">
               <b-form-checkbox
-                switch
                 v-model="plan.balcony"
+                switch
                 size="lg"
-              ></b-form-checkbox>
+              />
             </div>
           </div>
 
-          <div class="mb-3" v-if="plan.balcony">
-            <label class="d-block" for="balcony_area">{{
+          <div
+            v-if="plan.balcony"
+            class="mb-3"
+          >
+            <label
+              class="d-block"
+              for="balcony_area"
+            >{{
               $t("objects.create.plan.balcony_area")
             }}</label>
             <div class="flex-grow-1">
               <input
                 id="balcony_area"
+                v-model="plan.balcony_area"
                 class="my-form__input"
                 step="0.1"
                 type="number"
                 min="1"
                 required
-                v-model="plan.balcony_area"
-              />
+              >
             </div>
           </div>
         </div>
@@ -151,7 +169,10 @@ export default {
             {{ $t("cancel") }}
           </button>
 
-          <button type="submit" class="btn btn-primary">
+          <button
+            type="submit"
+            class="btn btn-primary"
+          >
             {{ $t("save") }}
           </button>
         </div>

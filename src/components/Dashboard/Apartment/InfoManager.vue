@@ -1,32 +1,32 @@
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters } from 'vuex'
 
 export default {
   props: {
     ManagerData: {},
   },
 
-  data: function () {
+  data() {
     return {
       header: {
         headers: {
-          Authorization: "Bearer " + localStorage.token,
+          Authorization: `Bearer ${localStorage.token}`,
         },
       },
-    };
+    }
   },
 
   mounted() {},
 
-  computed: mapGetters(["getReserveClient"]),
+  computed: mapGetters(['getReserveClient']),
 
   methods: {
     resetModal() {
-      this.$bvModal.hide("modal-view-info-manager");
-      //this.$emit('CloseReserveInfo');
+      this.$bvModal.hide('modal-view-info-manager')
+      // this.$emit('CloseReserveInfo');
     },
   },
-};
+}
 </script>
 
 <template>
@@ -38,7 +38,10 @@ export default {
       hide-footer
       @show="resetModal"
     >
-      <form ref="form" @submit.stop.prevent="handleSubmit">
+      <form
+        ref="form"
+        @submit.stop.prevent="handleSubmit"
+      >
         <b-form-group
           label-cols="4"
           label-cols-lg="2"
@@ -47,9 +50,9 @@ export default {
         >
           <b-form-input
             id="first_name"
-            disabled
             v-model="ManagerData.first_name"
-          ></b-form-input>
+            disabled
+          />
         </b-form-group>
 
         <b-form-group
@@ -60,9 +63,9 @@ export default {
         >
           <b-form-input
             id="last_name"
-            disabled
             v-model="ManagerData.last_name"
-          ></b-form-input>
+            disabled
+          />
         </b-form-group>
 
         <b-form-group
@@ -73,13 +76,16 @@ export default {
         >
           <b-form-input
             id="phone"
-            disabled
             v-model="ManagerData.phone"
-          ></b-form-input>
+            disabled
+          />
         </b-form-group>
 
         <div class="float-right">
-          <b-button variant="light" @click="resetModal">
+          <b-button
+            variant="light"
+            @click="resetModal"
+          >
             {{ $t("close") }}
           </b-button>
         </div>

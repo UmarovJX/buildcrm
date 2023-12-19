@@ -1,12 +1,13 @@
 <script>
-import { makeProp } from "@/util/props";
-import { isEmptyObject } from "@/util/inspect";
-import { v3ServiceApi } from "@/services/v3/v3.service";
-import { PROP_TYPE_OBJECT } from "@/constants/props";
-import { XModalCenter } from "@/components/ui-components/modal-center";
-import { XFormSelect } from "@/components/ui-components/form-select";
+import { makeProp } from '@/util/props'
+import { isEmptyObject } from '@/util/inspect'
+import { v3ServiceApi } from '@/services/v3/v3.service'
+import { PROP_TYPE_OBJECT } from '@/constants/props'
+import { XModalCenter } from '@/components/ui-components/modal-center'
+import { XFormSelect } from '@/components/ui-components/form-select'
+
 export default {
-  name: "StatusUpsert",
+  name: 'StatusUpsert',
   components: {
     XModalCenter,
     XFormSelect,
@@ -17,7 +18,7 @@ export default {
       options: [],
     }),
   },
-  emits: ["finished", "close-creating-modal"],
+  emits: ['finished', 'close-creating-modal'],
   data() {
     const clientForm = {
       status_id: null,
@@ -25,76 +26,74 @@ export default {
         active: false,
         message: undefined,
       },
-    };
+    }
     return {
       applyButtonLoading: false,
       clientForm,
       client: {
         ...clientForm,
       },
-    };
+    }
   },
   computed: {
     optionList() {
-      const l = this.editItem.options.map((h) => {
-        return {
-          value: h.id,
-          text: h.title[this.$i18n.locale],
-        };
-      });
+      const l = this.editItem.options.map(h => ({
+        value: h.id,
+        text: h.title[this.$i18n.locale],
+      }))
 
       l.unshift({
-        text: this.$t("deselect"),
+        text: this.$t('deselect'),
         value: null,
-      });
+      })
 
-      return l;
+      return l
     },
   },
   created() {
-    this.setEditData();
+    this.setEditData()
   },
   methods: {
     setEditData() {
       if (isEmptyObject(this.editItem)) {
-        return;
+        return
       }
 
-      this.clientForm.status_id = this.editItem.status?.id ?? null;
+      this.clientForm.status_id = this.editItem.status?.id ?? null
     },
     closeCreatingModal() {
-      this.clearForm();
-      this.$emit("close-creating-modal");
+      this.clearForm()
+      this.$emit('close-creating-modal')
     },
     startLoading() {
-      this.applyButtonLoading = true;
+      this.applyButtonLoading = true
     },
     finishLoading() {
-      this.applyButtonLoading = false;
+      this.applyButtonLoading = false
     },
     async submitClientType() {
-      const isSatisfied = await this.$refs["creating-type-observer"].validate();
+      const isSatisfied = await this.$refs['creating-type-observer'].validate()
       if (isSatisfied) {
-        this.startLoading();
+        this.startLoading()
         try {
           await v3ServiceApi.apartments().setStatus({
             apartment_id: this.editItem.id,
             status_id: this.clientForm.status_id,
-          });
-          this.clearForm();
-          await this.$emit("finished");
+          })
+          this.clearForm()
+          await this.$emit('finished')
         } catch (e) {
-          this.toastedWithErrorCode(e);
+          this.toastedWithErrorCode(e)
         } finally {
-          this.finishLoading();
+          this.finishLoading()
         }
       }
     },
     clearForm() {
-      this.client = { ...this.clientForm };
+      this.client = { ...this.clientForm }
     },
   },
-};
+}
 </script>
 
 <template>
@@ -132,22 +131,28 @@ export default {
 
         <validation-provider
           ref="vProvider01"
+          v-slot="{ errors }"
           name="vProvider01"
           rules=""
-          v-slot="{ errors }"
           class="name-provider"
         >
-          <label class="holder-label mb-4" for="select-managers">
+          <label
+            class="holder-label mb-4"
+            for="select-managers"
+          >
             {{ $t("statuses.singular") }}
           </label>
 
           <x-form-select
             id="select-managers"
+            v-model="clientForm.status_id"
             :label="false"
             :options="optionList"
-            v-model="clientForm.status_id"
           />
-          <span class="error__provider" v-if="errors[0]">
+          <span
+            v-if="errors[0]"
+            class="error__provider"
+          >
             {{ errors[0].replace("vProvider01", $t("statuses.singular")) }}
           </span>
         </validation-provider>

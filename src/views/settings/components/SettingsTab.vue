@@ -1,6 +1,6 @@
 <script>
 export default {
-  name: "SettingsTab",
+  name: 'SettingsTab',
   props: {
     tabs: {
       type: Array,
@@ -11,13 +11,13 @@ export default {
       required: true,
     },
   },
-  emits: ["change"],
+  emits: ['change'],
   methods: {
     changeTab(v) {
-      this.$emit("change", v);
+      this.$emit('change', v)
     },
   },
-};
+}
 </script>
 
 <template>
@@ -27,8 +27,8 @@ export default {
         v-for="{ name, value, counts } in tabs"
         :key="name"
         class="filter__content-item"
-        @click="changeTab(value)"
         :class="[value === currentTab ? 'filter__content-item-active' : '']"
+        @click="changeTab(value)"
       >
         <div class="filter__content-item-inline">
           <span>{{ $t(`${name}`) }}</span>
@@ -42,7 +42,7 @@ export default {
         </div>
       </div>
     </div>
-    <div class="bottom__line"></div>
+    <div class="bottom__line" />
   </div>
 </template>
 

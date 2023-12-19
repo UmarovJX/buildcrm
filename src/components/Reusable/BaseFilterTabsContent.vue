@@ -1,47 +1,47 @@
 <script>
 export default {
-  name: "BaseFilterTabsContent",
-  emits: ["get-new-content"],
+  name: 'BaseFilterTabsContent',
+  emits: ['get-new-content'],
   props: {
     filterTabList: {
       type: Array,
       required: true,
     },
   },
-  mounted() {
-    this.setCurrentStatus();
-  },
   data() {
     return {
-      currentStatus: "",
-    };
+      currentStatus: '',
+    }
   },
   watch: {
-    "$route.query": {
-      handler: function () {
-        this.setCurrentStatus();
+    '$route.query': {
+      handler() {
+        this.setCurrentStatus()
       },
       deep: true,
     },
   },
+  mounted() {
+    this.setCurrentStatus()
+  },
   methods: {
     getFilteredContent(status) {
-      this.currentStatus = status;
-      this.$emit("get-new-content", status);
+      this.currentStatus = status
+      this.$emit('get-new-content', status)
     },
     setCurrentStatus() {
-      const { query } = this.$route;
-      const hasQueryAndStatus = Object.keys(query).length > 0 && query.status;
+      const { query } = this.$route
+      const hasQueryAndStatus = Object.keys(query).length > 0 && query.status
       if (hasQueryAndStatus) {
-        this.currentStatus = query.status;
+        this.currentStatus = query.status
       } else if (this.filterTabList && this.filterTabList[0]) {
-        this.currentStatus = this.filterTabList[0].status;
+        this.currentStatus = this.filterTabList[0].status
       } else {
-        this.currentStatus = "";
+        this.currentStatus = ''
       }
     },
   },
-};
+}
 </script>
 
 <template>
@@ -51,11 +51,11 @@ export default {
         <div
           v-for="(fTab, index) in filterTabList"
           :key="'status_' + index"
-          @click="getFilteredContent(fTab.status)"
           class="filter__content-item"
           :class="{
             'filter__content-item-active': fTab.status === currentStatus,
           }"
+          @click="getFilteredContent(fTab.status)"
         >
           <div class="filter__content-item-inline">
             <span style="white-space: nowrap">{{ $t(`${fTab.name}`) }}</span>
@@ -67,7 +67,7 @@ export default {
               {{ fTab.counts }}
             </span>
           </div>
-          <div class="bottom__line"></div>
+          <div class="bottom__line" />
         </div>
       </div>
     </div>

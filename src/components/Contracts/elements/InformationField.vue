@@ -1,16 +1,16 @@
 <script>
 export default {
-  name: "InformationField",
+  name: 'InformationField',
   props: {
     label: {
       type: String,
-      required: true
+      required: true,
     },
     value: {
       type: String,
-      required: true
-    }
-  }
+      required: true,
+    },
+  },
 }
 </script>
 

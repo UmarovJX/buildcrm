@@ -1,14 +1,25 @@
 <script>
-import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
-import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
-import { formatToPrice } from "@/util/reusable";
-import { directive } from "vue-awesome-swiper";
-import "swiper/css/swiper.css";
-import { Fancybox } from "@fancyapps/ui";
-import { mapGetters } from "vuex";
+import BaseArrowLeftIcon from '@/components/icons/BaseArrowLeftIcon'
+import BaseArrowRightIcon from '@/components/icons/BaseArrowRightIcon'
+import { formatToPrice } from '@/util/reusable'
+import { directive } from 'vue-awesome-swiper'
+import 'swiper/css/swiper.css'
+import { Fancybox } from '@fancyapps/ui'
+import { mapGetters } from 'vuex'
 
 export default {
-  name: "PrimaryInformation",
+  name: 'PrimaryInformation',
+
+  /* COMPONENTS */
+  components: {
+    BaseArrowLeftIcon,
+    BaseArrowRightIcon,
+  },
+
+  /* DIRECTIVES */
+  directives: {
+    swiper: directive,
+  },
 
   props: {
     visible: {
@@ -25,17 +36,6 @@ export default {
     },
   },
 
-  /* COMPONENTS */
-  components: {
-    BaseArrowLeftIcon,
-    BaseArrowRightIcon,
-  },
-
-  /* DIRECTIVES */
-  directives: {
-    swiper: directive,
-  },
-
   /* DATA */
   data() {
     return {
@@ -43,29 +43,29 @@ export default {
       swiperOption: {
         slidesPerView: 1,
         spaceBetween: 0,
-        direction: "horizontal",
+        direction: 'horizontal',
         pagination: {
-          el: ".swiper-pagination",
-          type: "bullets",
+          el: '.swiper-pagination',
+          type: 'bullets',
           clickable: true,
         },
         paginationClickable: true,
         draggable: true,
         loop: false,
         navigation: {
-          nextEl: ".swiper-button-next",
-          prevEl: ".swiper-button-prev",
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev',
         },
       },
-    };
+    }
   },
 
   mounted() {
-    Fancybox.bind("[data-fancybox]");
+    Fancybox.bind('[data-fancybox]')
   },
 
   computed: {
-    ...mapGetters(["getPermission"]),
+    ...mapGetters(['getPermission']),
     // price() {
     //   return formatToPrice(this.plan.price) + ' ' + this.$t('ye')
     // },
@@ -78,21 +78,24 @@ export default {
   methods: {
     openModal(item) {
       // if (this.getPermission.apartments && this.getPermission.apartments.show) {
-      this.$emit("open-express", item);
+      this.$emit('open-express', item)
       // }
     },
     price(value) {
-      return formatToPrice(value);
+      return formatToPrice(value)
     },
   },
-};
+}
 </script>
 
 <template>
   <div class="main__content">
     <!--   IMAGE SLIDER     -->
     <div class="slider-content">
-      <div class="swiper" v-swiper="swiperOption">
+      <div
+        v-swiper="swiperOption"
+        class="swiper"
+      >
         <!--     MAIN CONTENT OF SLIDE       -->
         <div class="swiper-wrapper">
           <div
@@ -107,18 +110,18 @@ export default {
                 class="swiper-image"
                 :src="image"
                 alt="img"
-              />
+              >
               <img
                 v-else
                 class="swiper-image"
                 :src="require('@/assets/img/no-image.jpg')"
                 alt="img"
-              />
+              >
             </div>
           </div>
         </div>
         <!--     DOTS PAGINATION       -->
-        <div class="swiper-pagination"></div>
+        <div class="swiper-pagination" />
 
         <!--     BUTTON PREVIOUS       -->
         <div
@@ -166,7 +169,7 @@ export default {
             v-if="item.is_promo"
             src="../../../../assets/icons/bonuses.svg"
             alt=""
-          />
+          >
         </div>
       </div>
     </div>
@@ -229,7 +232,6 @@ export default {
             &-active
                 background-color: var(--violet-400)
 
-
 .apartment-promo-icon
     display: flex
     //height: auto
@@ -238,7 +240,6 @@ export default {
 
     img
         width: 100%
-
 
 .plan-text
     display: flex
@@ -293,7 +294,6 @@ export default {
 
             sup
                 color: var(--gray-600)
-
 
         p
             font-weight: 600

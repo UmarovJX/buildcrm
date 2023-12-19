@@ -4,16 +4,16 @@ import {
   isSatisfyInput,
   formatByConfiguration,
   removeExcessDotAndComma,
-} from "@/util/base-input";
-import { isPrimitiveValue } from "@/util/reusable";
-import BaseTimesCircleIcon from "@/components/icons/BaseTimesCircleIcon";
+} from '@/util/base-input'
+import { isPrimitiveValue } from '@/util/reusable'
+import BaseTimesCircleIcon from '@/components/icons/BaseTimesCircleIcon'
 
 export default {
-  name: "BasePriceInput",
-  inheritAttrs: false,
+  name: 'BasePriceInput',
   components: {
     BaseTimesCircleIcon,
   },
+  inheritAttrs: false,
   props: {
     value: {
       type: [Number, String],
@@ -31,16 +31,16 @@ export default {
     },
     decimalSeparator: {
       type: String,
-      default: ",",
+      default: ',',
     },
     thousandSeparator: {
       type: String,
-      default: " ",
+      default: ' ',
     },
     outputType: {
       required: false,
       type: String,
-      default: "Number",
+      default: 'Number',
     },
     readOnly: {
       type: Boolean,
@@ -49,7 +49,7 @@ export default {
     },
     currencyFare: {
       type: String,
-      default: "uz",
+      default: 'uz',
       required: false,
     },
     max: {
@@ -72,150 +72,149 @@ export default {
     },
     inputClass: {
       type: String,
-      default: "",
+      default: '',
     },
     inputStyle: {
       type: [String, Object],
-      default: "",
+      default: '',
     },
   },
-  emits: ["input", "focus-on"],
+  emits: ['input', 'focus-on'],
   data() {
     return {
       priceAmount: null,
       sideEffect: true,
-    };
+    }
   },
   computed: {
     placeholderFormat() {
-      const { placeholder } = this;
+      const { placeholder } = this
       if (placeholder) {
-        const type = typeof placeholder;
+        const type = typeof placeholder
         if (isPrimitiveValue(type)) {
-          return placeholder;
-        } else {
-          return this.$t(placeholder.lang);
+          return placeholder
         }
+        return this.$t(placeholder.lang)
       }
-      return "";
+      return ''
     },
   },
   watch: {
     priceAmount(lastAmount) {
-      this.formatPriceAmount(lastAmount);
+      this.formatPriceAmount(lastAmount)
     },
     value: {
       handler(last) {
         if (this.permissionChange) {
-          this.formatPriceAmount(last);
+          this.formatPriceAmount(last)
         }
       },
       immediate: true,
     },
   },
   created() {
-    this.initComponent();
+    this.initComponent()
   },
   methods: {
     clearPriceAmountValue() {
-      this.priceAmount = null;
-      this.$emit("input", null);
+      this.priceAmount = null
+      this.$emit('input', null)
     },
     formatNumber(primitiveValue) {
-      if (!primitiveValue) return;
-      const valueToString = primitiveValue.toString().split("");
-      primitiveValue = removeExcessDotAndComma(valueToString);
-      return primitiveValue;
+      if (!primitiveValue) return
+      const valueToString = primitiveValue.toString().split('')
+      primitiveValue = removeExcessDotAndComma(valueToString)
+      return primitiveValue
     },
     initComponent() {
-      this.setInitialAmountValue();
+      this.setInitialAmountValue()
     },
     setInitialAmountValue() {
       if (this.value && this.permissionChange) {
-        this.sideEffect = false;
-        const { formatVersion } = this.formatAmount(this.value);
-        this.priceAmount = formatVersion;
+        this.sideEffect = false
+        const { formatVersion } = this.formatAmount(this.value)
+        this.priceAmount = formatVersion
       }
     },
     formatPriceAmount(value) {
-      const { max } = this;
-      const { formatVersion, baseVersion } = this.formatAmount(value);
-      const stringBaseVersion = baseVersion.toString();
-      const length = stringBaseVersion.length;
+      const { max } = this
+      const { formatVersion, baseVersion } = this.formatAmount(value)
+      const stringBaseVersion = baseVersion.toString()
+      const { length } = stringBaseVersion
       if (length > max) {
-        let setter = undefined;
-        const findDotPosition = stringBaseVersion.split("").indexOf(".");
+        let setter
+        const findDotPosition = stringBaseVersion.split('').indexOf('.')
         if (findDotPosition) {
-          setter = stringBaseVersion.slice(0, -2);
+          setter = stringBaseVersion.slice(0, -2)
         } else {
-          setter = stringBaseVersion.slice(0, -1);
+          setter = stringBaseVersion.slice(0, -1)
         }
         const { formatVersion: lastFormatValue } = this.formatAmount(
-          parseFloat(setter)
-        );
-        this.priceAmount = lastFormatValue;
-        return;
+          parseFloat(setter),
+        )
+        this.priceAmount = lastFormatValue
+        return
       }
 
       if (formatVersion) {
-        this.priceAmount = formatVersion;
+        this.priceAmount = formatVersion
       } else {
-        this.priceAmount = null;
+        this.priceAmount = null
       }
     },
     formatAmount(amount) {
       if (amount) {
-        const { decimalSeparator, thousandSeparator } = this;
-        const splitAmount = splitString(amount);
+        const { decimalSeparator, thousandSeparator } = this
+        const splitAmount = splitString(amount)
         const getAllowSymbols = splitAmount.filter(
-          (peace) => !!isSatisfyInput(peace)
-        );
+          peace => !!isSatisfyInput(peace),
+        )
         if (getAllowSymbols.length) {
           const removeExcessSymbol = removeExcessDotAndComma(
             getAllowSymbols,
-            "array"
-          );
+            'array',
+          )
           const { formatVersion, baseVersion } = formatByConfiguration(
             removeExcessSymbol,
             {
               decimalSeparator,
               thousandSeparator,
-            }
-          );
+            },
+          )
           return {
             formatVersion,
             baseVersion,
-          };
+          }
         }
       }
 
       return {
-        formatVersion: "",
-        baseVersion: "",
-      };
+        formatVersion: '',
+        baseVersion: '',
+      }
     },
     extendEvent(eventName, eventObject) {
-      const { baseVersion } = this.formatAmount(this.priceAmount);
-      let amount = baseVersion;
+      const { baseVersion } = this.formatAmount(this.priceAmount)
+      let amount = baseVersion
       if (amount) {
-        amount = parseFloat(baseVersion);
+        amount = parseFloat(baseVersion)
       }
-      this.$emit(eventName, amount, eventObject);
+      this.$emit(eventName, amount, eventObject)
     },
     onBlurHandler(event) {
-      this.extendEvent("blur", event);
+      this.extendEvent('blur', event)
     },
     onInputHandler(event) {
       if (this.sideEffect) {
-        this.extendEvent("input", event);
+        this.extendEvent('input', event)
       }
     },
     onFocusHandler(event) {
-      this.sideEffect = true;
-      this.extendEvent("focus", event);
+      this.sideEffect = true
+      this.extendEvent('focus', event)
     },
   },
-};
+}
 </script>
 
 <template>
@@ -231,22 +230,22 @@ export default {
       {{ placeholderFormat }}
     </span>
     <input
+      ref="price-input"
+      v-model="priceAmount"
       v-bind="$attrs"
       type="text"
-      ref="price-input"
       class="price-input"
       :class="inputClass"
       :style="inputStyle"
       :placeholder="placeholderFormat"
-      v-model="priceAmount"
       @blur="onBlurHandler"
       @input="onInputHandler"
       @focus="onFocusHandler"
-    />
+    >
     <span
       v-if="priceAmount"
-      @click="clearPriceAmountValue"
       class="delete-button"
+      @click="clearPriceAmountValue"
     >
       <base-times-circle-icon />
     </span>

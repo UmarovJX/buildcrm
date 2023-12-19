@@ -1,43 +1,43 @@
 <script>
 // import {mapActions, mapMutations, mapGetters} from "vuex";
-import api from "@/services/api";
-import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
-import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
-import { isPrimitiveValue, sortObjectValues } from "@/util/reusable";
-import BaseLoading from "@/components/Reusable/BaseLoading";
-import { mapGetters } from "vuex";
+import api from '@/services/api'
+import BaseArrowLeftIcon from '@/components/icons/BaseArrowLeftIcon'
+import BaseArrowRightIcon from '@/components/icons/BaseArrowRightIcon'
+import { isPrimitiveValue, sortObjectValues } from '@/util/reusable'
+import BaseLoading from '@/components/Reusable/BaseLoading'
+import { mapGetters } from 'vuex'
 // import Filter from "@/components/Dashboard/Apartment/Components/ApartmentsFilter";
-import ReserveAdd from "@/components/Dashboard/Apartment/Components/Reserve";
+import ReserveAdd from '@/components/Dashboard/Apartment/Components/Reserve'
 // import ViewClient from "@/components/Dashboard/Apartment/ViewClient";
-import EditApartment from "@/components/Dashboard/Apartment/Components/Edit";
-import ApartmentsPermission from "@/permission/apartments";
-import BaseCheckbox from "@/components/Reusable/BaseCheckbox";
-import BaseCheckboxModal from "@/components/Reusable/BaseCheckboxModal";
+import EditApartment from '@/components/Dashboard/Apartment/Components/Edit'
+import ApartmentsPermission from '@/permission/apartments'
+import BaseCheckbox from '@/components/Reusable/BaseCheckbox'
+import BaseCheckboxModal from '@/components/Reusable/BaseCheckboxModal'
 // import InfoManager from "@/components/Dashboard/Apartment/InfoManager";
 // import AgreeMultiple from "@/components/Dashboard/Apartment/Components/AgreeMultiple";
 // import SuccessAgree from "@/components/Dashboard/Apartment/Components/SuccessAgree";
-import { orderApartment } from "@/util/apartment";
-import { v3ServiceApi } from "@/services/v3/v3.service";
-import BaseModal from "@/components/Reusable/BaseModal";
-import BaseInput from "@/components/Reusable/BaseInput";
-import BaseButton from "@/components/Reusable/BaseButton";
-import BaseCloseIcon from "@/components/icons/BaseCloseIcon";
-import { XFormSelect } from "@/components/ui-components/form-select";
-import { XIcon } from "@/components/ui-components/material-icons";
-import StatusUpsert from "@/components/Objects/elements/StatusUpsert.vue";
-import HolderUpsert from "@/components/Objects/elements/HolderUpsert.vue";
-import SettingsPermission from "@/permission/settings.permission";
-import { isNull, isNUNEZ } from "@/util/inspect";
-import { keys } from "@/util/object";
+import { orderApartment } from '@/util/apartment'
+import { v3ServiceApi } from '@/services/v3/v3.service'
+import BaseModal from '@/components/Reusable/BaseModal'
+import BaseInput from '@/components/Reusable/BaseInput'
+import BaseButton from '@/components/Reusable/BaseButton'
+import BaseCloseIcon from '@/components/icons/BaseCloseIcon'
+import { XFormSelect } from '@/components/ui-components/form-select'
+import { XIcon } from '@/components/ui-components/material-icons'
+import StatusUpsert from '@/components/Objects/elements/StatusUpsert.vue'
+import HolderUpsert from '@/components/Objects/elements/HolderUpsert.vue'
+import SettingsPermission from '@/permission/settings.permission'
+import { isNull, isNUNEZ } from '@/util/inspect'
+import { keys } from '@/util/object'
 
 export default {
-  name: "ObjectTable",
+  name: 'ObjectTable',
   components: {
     BaseCheckboxModal,
     BaseCheckbox,
     BaseArrowRightIcon,
     BaseArrowLeftIcon,
-    XFormSelect: XFormSelect,
+    XFormSelect,
     BaseLoading,
     BaseModal,
     BaseInput,
@@ -46,21 +46,21 @@ export default {
     XIcon,
     HolderUpsert,
     StatusUpsert,
-    "reserve-add": ReserveAdd,
-    "edit-modal": EditApartment,
+    'reserve-add': ReserveAdd,
+    'edit-modal': EditApartment,
   },
 
   data() {
-    const showByOptions = [];
+    const showByOptions = []
 
     const fields = [
       {
-        key: "check",
+        key: 'check',
         // item: BaseCheckbox,
       },
       {
-        key: "number",
-        label: this.$t("object.sort.number_flat"),
+        key: 'number',
+        label: this.$t('object.sort.number_flat'),
         sortable: true,
       },
       // {
@@ -78,28 +78,28 @@ export default {
       //   sortable: true,
       // },
       {
-        key: "floor",
-        label: this.$t("apartments.list.floor"),
+        key: 'floor',
+        label: this.$t('apartments.list.floor'),
         sortable: true,
       },
       {
-        key: "entrance",
-        label: this.$t("apartments.list.entrance"),
+        key: 'entrance',
+        label: this.$t('apartments.list.entrance'),
         sortable: true,
       },
       {
-        key: "rooms",
-        label: "Комнатность",
+        key: 'rooms',
+        label: 'Комнатность',
         sortable: true,
       },
       {
-        key: "area",
-        label: this.$t("apartments.list.area"),
+        key: 'area',
+        label: this.$t('apartments.list.area'),
         sortable: true,
       },
       {
-        key: "balcony",
-        label: this.$t("objects.create.plan.balcony_area"),
+        key: 'balcony',
+        label: this.$t('objects.create.plan.balcony_area'),
         sortable: true,
       },
       // {
@@ -108,8 +108,8 @@ export default {
       //   sortable: true,
       // },
       {
-        key: "price",
-        label: this.$t("apartments.list.price"),
+        key: 'price',
+        label: this.$t('apartments.list.price'),
         sortable: true,
       },
       // {
@@ -118,32 +118,32 @@ export default {
       //   sortable: true,
       // },
       {
-        key: "status",
-        label: this.$t("apartments.list.status"),
+        key: 'status',
+        label: this.$t('apartments.list.status'),
       },
       {
-        key: "actions",
-        label: "",
+        key: 'actions',
+        label: '',
       },
-    ];
+    ]
     const holderEditPms = SettingsPermission.getPermission(
-      "apartments.holder.edit"
-    );
+      'apartments.holder.edit',
+    )
     const holderViewPms = SettingsPermission.getPermission(
-      "apartments.holder.view"
-    );
+      'apartments.holder.view',
+    )
     const statusEditPms = SettingsPermission.getPermission(
-      "apartments.status.edit"
-    );
+      'apartments.status.edit',
+    )
     const statusViewPms = SettingsPermission.getPermission(
-      "apartments.status.view"
-    );
+      'apartments.status.view',
+    )
 
     if (holderViewPms) {
       fields.splice(1, 0, {
-        label: "",
-        key: "holder",
-      });
+        label: '',
+        key: 'holder',
+      })
     }
 
     // if (statusViewPms) {
@@ -157,13 +157,13 @@ export default {
       showByOptions.push({
         value: number,
         text: number,
-      });
+      })
     }
 
-    let { limit: showByValue } = this.$route.query;
+    let { limit: showByValue } = this.$route.query
 
     if (!showByValue) {
-      showByValue = 20;
+      showByValue = 20
     }
 
     return {
@@ -190,11 +190,11 @@ export default {
       check_all: false,
       chosen: 0,
       fields,
-      sortBy: "",
+      sortBy: '',
       sortDesc: false,
       currentPage: 1,
       showLoading: true,
-      selectMode: "single",
+      selectMode: 'single',
       unfinishedContracts: [],
       contract: {},
       selectable: true,
@@ -214,39 +214,39 @@ export default {
       holderViewPms,
       statusEditPms,
       statusViewPms,
-    };
+    }
   },
 
   async created() {
-    this.filter = this.query;
-    this.currentPage = Number(this.filter.page);
+    this.filter = this.query
+    this.currentPage = Number(this.filter.page)
   },
   computed: {
-    ...mapGetters(["getPermission", "getMe"]),
+    ...mapGetters(['getPermission', 'getMe']),
     // ...mapActions([ "fetchReserveClient"]),
     hasPermission() {
       return (
         this.editPermission || this.isSoldPermission || this.viewPermission
-      );
+      )
     },
 
     checkedApartments() {
-      return this.checkoutList.filter((ch) => ch.checked);
+      return this.checkoutList.filter(ch => ch.checked)
     },
 
     query() {
-      return Object.assign({}, this.$route.query);
+      return { ...this.$route.query }
     },
     countOfItems() {
-      return this.apartments.length;
+      return this.apartments.length
     },
   },
 
   watch: {
-    "$route.query": {
+    '$route.query': {
       handler(value) {
         if (value) {
-          this.fetchContractList();
+          this.fetchContractList()
         }
       },
       deep: true,
@@ -259,443 +259,435 @@ export default {
     isNull,
     orderApartment,
     async makeContract() {
-      const ids = this.checkoutList.map((ch) => ch.id);
-      this.startLoading();
-      await this.orderApartment(ids, "apartment");
-      await this.finishLoading();
+      const ids = this.checkoutList.map(ch => ch.id)
+      this.startLoading()
+      await this.orderApartment(ids, 'apartment')
+      await this.finishLoading()
     },
     openSetHolderModal() {
-      this.holder.show = true;
+      this.holder.show = true
     },
     closeSetHolderModal() {
-      this.holder.show = false;
+      this.holder.show = false
     },
     openSetStatusModal() {
-      this.status.show = true;
+      this.status.show = true
     },
     closeSetStatusModal() {
-      this.status.show = false;
+      this.status.show = false
     },
     async setHolder(item) {
       try {
-        this.startLoading();
+        this.startLoading()
 
         const {
           data: { result },
         } = await v3ServiceApi.holders().findAll({
           page: 1,
           limit: 100,
-        });
+        })
 
         this.holder.editStorage = {
           ...item,
           options: result,
-        };
+        }
 
-        this.openSetHolderModal();
+        this.openSetHolderModal()
       } catch (e) {
-        this.toastedWithErrorCode(e);
+        this.toastedWithErrorCode(e)
       } finally {
-        this.finishLoading();
+        this.finishLoading()
       }
     },
     updatedHolder() {
-      this.closeSetHolderModal();
-      this.fetchContractList();
+      this.closeSetHolderModal()
+      this.fetchContractList()
     },
     async setStatus(item) {
       try {
-        this.startLoading();
+        this.startLoading()
 
         const {
           data: { result },
         } = await v3ServiceApi.statuses().findAll({
           page: 1,
           limit: 100,
-        });
+        })
 
         this.status.editStorage = {
           ...item,
           options: result,
-        };
+        }
 
-        this.openSetStatusModal();
+        this.openSetStatusModal()
       } catch (e) {
-        this.toastedWithErrorCode(e);
+        this.toastedWithErrorCode(e)
       } finally {
-        this.finishLoading();
+        this.finishLoading()
       }
     },
     updatedStatus() {
-      this.closeSetStatusModal();
-      this.fetchContractList();
+      this.closeSetStatusModal()
+      this.fetchContractList()
     },
     startLoading() {
-      this.showLoading = true;
+      this.showLoading = true
     },
     finishLoading() {
-      this.showLoading = false;
+      this.showLoading = false
     },
     closeSoldModal() {
-      this.$refs["is-sold"].closeModal();
-      this.soldComment = null;
+      this.$refs['is-sold'].closeModal()
+      this.soldComment = null
     },
     openSoldModal(data) {
-      this.reSoldItem = data;
-      this.$refs["is-sold"].openModal();
+      this.reSoldItem = data
+      this.$refs['is-sold'].openModal()
     },
     activateApartment({ index, item }, event) {
-      const { current } = this.pagination;
-      const { checked } = event.target;
-      this.apartments[index].checked = checked;
+      const { current } = this.pagination
+      const { checked } = event.target
+      this.apartments[index].checked = checked
       if (checked) {
-        this.checkoutList.push({ checked, id: item.id, page: current });
-        const allActive = this.apartments.every((a) => a.checked === true);
+        this.checkoutList.push({ checked, id: item.id, page: current })
+        const allActive = this.apartments.every(a => a.checked === true)
         if (allActive) {
-          this.checkAll = true;
+          this.checkAll = true
         }
       } else {
-        this.checkoutList = this.checkoutList.filter((ch) => ch.id !== item.id);
+        this.checkoutList = this.checkoutList.filter(ch => ch.id !== item.id)
         if (this.checkAll) {
-          this.checkAll = false;
+          this.checkAll = false
         }
       }
     },
     chooseAllApartment(event) {
-      const { current } = this.pagination;
-      const { checked } = event.target;
-      this.checkAll = checked;
-      this.apartments = this.apartments.map((a) => ({ ...a, checked }));
-      this.apartments.forEach((a) => {
-        const index = this.checkoutList.findIndex((ch) => ch.id === a.id);
+      const { current } = this.pagination
+      const { checked } = event.target
+      this.checkAll = checked
+      this.apartments = this.apartments.map(a => ({ ...a, checked }))
+      this.apartments.forEach(a => {
+        const index = this.checkoutList.findIndex(ch => ch.id === a.id)
         if (a.checked) {
-          if (index === -1 && a.is_sold && a.order.status === "available") {
-            this.checkoutList.push({ checked, id: a.id, page: current });
+          if (index === -1 && a.is_sold && a.order.status === 'available') {
+            this.checkoutList.push({ checked, id: a.id, page: current })
           }
-        } else {
-          if (index !== -1) {
-            this.checkoutList.splice(index, 1);
-          }
+        } else if (index !== -1) {
+          this.checkoutList.splice(index, 1)
         }
-      });
+      })
     },
     limitChanged() {
-      this.changeFetchLimit();
+      this.changeFetchLimit()
     },
     async fetchContractList() {
-      this.showLoading = true;
-      let query = sortObjectValues(this.query);
+      this.showLoading = true
+      const query = sortObjectValues(this.query)
       const queryArrayFareList = [
-        "status",
-        "area",
-        "rooms",
-        "floors",
-        "number",
-        "object",
-        "blocks",
-      ];
+        'status',
+        'area',
+        'rooms',
+        'floors',
+        'number',
+        'object',
+        'blocks',
+      ]
 
-      const queryPair = Object.entries(query);
+      const queryPair = Object.entries(query)
       queryPair.forEach(([key, value]) => {
-        const isNotPrimitive = queryArrayFareList.includes(key);
-        const valueFare = isPrimitiveValue(value);
+        const isNotPrimitive = queryArrayFareList.includes(key)
+        const valueFare = isPrimitiveValue(value)
         if (isNotPrimitive && valueFare) {
-          query[key] = [value];
+          query[key] = [value]
         }
-      });
+      })
 
-      const { object } = this.$route.params;
-      this.checkAll = false;
+      const { object } = this.$route.params
+      this.checkAll = false
 
       await api.objectsV2
         .fetchObjectApartments(object, query)
-        .then((response) => {
+        .then(response => {
           if (!this.timeout) {
-            this.pagination = response.data.pagination;
-            this.showByValue = response.data.pagination.perPage;
-            this.apartments = response.data.items.map((item) => {
+            this.pagination = response.data.pagination
+            this.showByValue = response.data.pagination.perPage
+            this.apartments = response.data.items.map(item => {
               const isChecked = this.checkoutList.find(
-                (ch) => ch.id === item.id
-              );
+                ch => ch.id === item.id,
+              )
               if (isChecked) {
                 return {
                   ...item,
                   checked: true,
-                };
-              } else {
-                return {
-                  ...item,
-                  checked: false,
-                };
+                }
               }
-            });
-            this.checkAll = this.apartments.every((apm) => apm.checked);
+              return {
+                ...item,
+                checked: false,
+              }
+            })
+            this.checkAll = this.apartments.every(apm => apm.checked)
           }
         })
-        .catch((err) => {
-          this.toastedWithErrorCode(err);
+        .catch(err => {
+          this.toastedWithErrorCode(err)
         })
         .finally(() => {
-          this.showLoading = false;
-        });
+          this.showLoading = false
+        })
     },
     changeFetchLimit() {
       const query = {
         ...this.query,
         page: this.query.page || 1,
-      };
-      const limit = this.showByValue;
-      this.pushRouter({ ...query, limit });
+      }
+      const limit = this.showByValue
+      this.pushRouter({ ...query, limit })
     },
     replaceRouter(query) {
-      const sortQuery = sortObjectValues(query);
-      this.$router.replace({ query: sortQuery });
+      const sortQuery = sortObjectValues(query)
+      this.$router.replace({ query: sortQuery })
     },
     pushRouter(query) {
-      const sortQuery = sortObjectValues(query);
-      this.$router.push({ query: sortQuery });
+      const sortQuery = sortObjectValues(query)
+      this.$router.push({ query: sortQuery })
     },
     changeCurrentPage(page) {
-      const currentPage = this.query.page;
-      if (page === currentPage) return;
-      this.replaceRouter({ ...this.query, page });
+      const currentPage = this.query.page
+      if (page === currentPage) return
+      this.replaceRouter({ ...this.query, page })
     },
     onRowSelected(items) {
       // this.$router.push({
       //   name: "apartment-view",
       //   params: {object: this.$route.params.object, id: items[0].id},
       // });
-      this.$emit("show-express-sidebar", items[0]);
+      this.$emit('show-express-sidebar', items[0])
     },
     sortingChanged(val) {
-      this.showLoading = true;
-      this.filter.filtered = true;
-      this.filter.sort_by = val.sortBy;
-      this.filter.order_by = val.sortDesc ? "desc" : "asc";
+      this.showLoading = true
+      this.filter.filtered = true
+      this.filter.sort_by = val.sortBy
+      this.filter.order_by = val.sortDesc ? 'desc' : 'asc'
 
       this.$router
         .push({
-          name: "apartments",
+          name: 'apartments',
           params: this.$route.params.object,
           query: this.filter,
         })
         .then(() => {
-          const element = document.getElementById("my-table");
-          element.scrollIntoView();
-        });
+          const element = document.getElementById('my-table')
+          element.scrollIntoView()
+        })
     },
-    moment: function () {
-      return this.$moment();
+    moment() {
+      return this.$moment()
     },
     getStatus(value) {
       switch (value) {
-        case "available": {
+        case 'available': {
           return {
-            statusText: this.$t("object.status.available"),
-            class: "teal",
-          };
+            statusText: this.$t('object.status.available'),
+            class: 'teal',
+          }
         }
-        case "waiting":
-        case "sold": {
-          return { statusText: this.$t("object.status.sold"), class: "gray" };
+        case 'waiting':
+        case 'sold': {
+          return { statusText: this.$t('object.status.sold'), class: 'gray' }
         }
-        case "closed": {
-          return { statusText: this.$t("object.status.sold"), class: "gray" };
+        case 'closed': {
+          return { statusText: this.$t('object.status.sold'), class: 'gray' }
         }
-        case "booked": {
+        case 'booked': {
           return {
-            statusText: this.$t("object.status.booked"),
-            class: "yellow",
-          };
+            statusText: this.$t('object.status.booked'),
+            class: 'yellow',
+          }
         }
-        case "contract": {
+        case 'contract': {
           return {
-            statusText: this.$t("object.status.contract"),
-            class: "blue",
-          };
+            statusText: this.$t('object.status.contract'),
+            class: 'blue',
+          }
         }
-        case "hold": {
-          return { statusText: this.$t("object.status.hold"), class: "yellow" };
+        case 'hold': {
+          return { statusText: this.$t('object.status.hold'), class: 'yellow' }
         }
         default:
           return {
-            statusText: this.$t("object.status.available"),
-            class: "teal",
-          };
+            statusText: this.$t('object.status.available'),
+            class: 'teal',
+          }
       }
     },
     async EditApartment() {
-      this.apartment_id = 0;
-      this.edit = false;
+      this.apartment_id = 0
+      this.edit = false
 
       await this.$router.push({
-        name: "apartments",
+        name: 'apartments',
         query: this.filter,
-      });
+      })
 
       // if (this.filter.filtered) await this.fetchApartments(this);
       // else await this.fetchApartments(this);
     },
     CreateReserve(id) {
-      this.reserve = true;
-      this.apartment_id = id;
+      this.reserve = true
+      this.apartment_id = id
     },
     CreateReserveSuccess() {
       this.fetchApartments(this).then(() => {
-        location.reload();
-      });
+        location.reload()
+      })
     },
     CloseReserveInfo() {
-      this.info_reserve = false;
-      this.apartment_preview = {};
+      this.info_reserve = false
+      this.apartment_preview = {}
       // this.fetchApartments(this).then(() => {
       //     location.reload();
       // });
     },
     ReserveInfo(apartment) {
-      this.info_reserve = true;
-      this.apartment_preview = apartment;
-      this.order_id = apartment.order.id;
+      this.info_reserve = true
+      this.apartment_preview = apartment
+      this.order_id = apartment.order.id
       // this.fetchReserveClient(this).then(() => {
       //     this.$root.$emit("bv::show::modal", "modal-view-reserved-status");
       // });
     },
     getInfoReserve(apartment) {
-      this.info_manager = true;
-      this.manager_apartment = apartment.order.user;
+      this.info_manager = true
+      this.manager_apartment = apartment.order.user
     },
     async orderHold(arr) {
-      this.loading = true;
-      await api.orders.holdOrder(arr).then((res) => {
-        this.loading = false;
+      this.loading = true
+      await api.orders.holdOrder(arr).then(res => {
+        this.loading = false
         if (res) {
           // localStorage.setItem("order", JSON.stringify(res.data));
           this.$router.push({
-            name: "confirm-apartment",
+            name: 'confirm-apartment',
             params: { id: res.data.uuid },
-          });
-          this.selected.view = false;
-          this.selected.values = [];
-          this.selectable = true;
+          })
+          this.selected.view = false
+          this.selected.values = []
+          this.selectable = true
         }
-      });
+      })
     },
     goOrderHold(order_id) {
-      this.selected.view = false;
-      this.selected.values = [];
-      this.selectable = true;
+      this.selected.view = false
+      this.selected.values = []
+      this.selectable = true
       this.$router.push({
-        name: "confirm-apartment",
+        name: 'confirm-apartment',
         params: { id: order_id[0] },
-      });
+      })
     },
     async toggleApartmentToSale() {
       if (this.soldComment) {
         const body = {
           comment: this.soldComment,
-        };
-        const id = this.$route.params.object;
-        const apartmentUID = this.reSoldItem.id;
+        }
+        const id = this.$route.params.object
+        const apartmentUID = this.reSoldItem.id
         await api.apartmentsV2
           .isAvailableToSold(id, apartmentUID, body)
-          .then((response) => {
+          .then(response => {
             const updatingIndex = this.apartments.findIndex(
-              (apartment) => apartment.id === response.data.id
-            );
+              apartment => apartment.id === response.data.id,
+            )
             if (updatingIndex !== -1) {
-              this.apartments.splice(updatingIndex, 1, response.data);
+              this.apartments.splice(updatingIndex, 1, response.data)
             }
           })
           .finally(() => {
-            this.closeSoldModal();
-          });
+            this.closeSoldModal()
+          })
       }
     },
     statusHold(data) {
-      return data.item.order.status === "hold";
+      return data.item.order.status === 'hold'
     },
     allowViewWhenProcessing(data) {
-      const status = data.item.order.status;
-      const userId = data.item.order["user_id"];
+      const { status } = data.item.order
+      const userId = data.item.order.user_id
 
-      const permissionApartment = this.getPermission.apartments;
-      const sameUserId = userId === this.getMe.user.id;
+      const permissionApartment = this.getPermission.apartments
+      const sameUserId = userId === this.getMe.user.id
 
-      const unnecessaryStatus = ["sold", "contract"];
-      const notSolidOrContract = !unnecessaryStatus.includes(status);
+      const unnecessaryStatus = ['sold', 'contract']
+      const notSolidOrContract = !unnecessaryStatus.includes(status)
 
-      const firstOption =
-        notSolidOrContract &&
-        status === "booked" &&
-        sameUserId &&
-        permissionApartment.contract;
-      const secondOption =
-        !notSolidOrContract &&
-        permissionApartment &&
-        permissionApartment.root_contract;
-      const thirdOption =
-        notSolidOrContract &&
-        status === "available" &&
-        permissionApartment.contract;
+      const firstOption = notSolidOrContract
+        && status === 'booked'
+        && sameUserId
+        && permissionApartment.contract
+      const secondOption = !notSolidOrContract
+        && permissionApartment
+        && permissionApartment.root_contract
+      const thirdOption = notSolidOrContract
+        && status === 'available'
+        && permissionApartment.contract
 
-      return (firstOption || secondOption || thirdOption) && status === "hold";
+      return (firstOption || secondOption || thirdOption) && status === 'hold'
     },
     clientsView(data) {
-      const firstOption =
-        data.item.order.status === "booked" &&
-        data.item.order.user.id === this.getMe.user.id;
-      const secondOption =
-        this.getPermission.apartments &&
-        this.getPermission.apartments.root_contract &&
-        data.item.order.status === "booked";
-      return firstOption || secondOption;
+      const firstOption = data.item.order.status === 'booked'
+        && data.item.order.user.id === this.getMe.user.id
+      const secondOption = this.getPermission.apartments
+        && this.getPermission.apartments.root_contract
+        && data.item.order.status === 'booked'
+      return firstOption || secondOption
     },
     async filteredForm(event) {
-      this.filter = event;
-      this.selected.view = false;
-      this.selected.values = [];
-      this.selectable = true;
-      this.scrollActive = true;
-      this.page = 1;
-      this.filter.page = 1;
-      this.currentPage = this.filter.page;
+      this.filter = event
+      this.selected.view = false
+      this.selected.values = []
+      this.selectable = true
+      this.scrollActive = true
+      this.page = 1
+      this.filter.page = 1
+      this.currentPage = this.filter.page
 
       await this.$router.push({
-        name: "apartments",
+        name: 'apartments',
         query: this.filter,
-      });
+      })
 
       // const vm = this;
       // await this.fetchApartments(vm)
     },
     holderTooltipTitle(holder) {
-      let title = "";
-      if (holder?.last_name && holder.last_name.trim() !== "") {
-        title += holder.last_name;
+      let title = ''
+      if (holder?.last_name && holder.last_name.trim() !== '') {
+        title += holder.last_name
       }
 
-      if (holder?.first_name && holder.first_name.trim() !== "") {
-        title += " " + holder.first_name;
+      if (holder?.first_name && holder.first_name.trim() !== '') {
+        title += ` ${holder.first_name}`
       }
 
-      if (holder?.middle_name && holder.middle_name.trim() !== "") {
-        title += " " + holder.middle_name;
+      if (holder?.middle_name && holder.middle_name.trim() !== '') {
+        title += ` ${holder.middle_name}`
       }
 
-      return title.trim();
+      return title.trim()
     },
   },
-};
+}
 </script>
 
 <template>
   <div class="apartment-list-filter">
     <div>
       <b-table
+        id="my-table"
+        ref="apartment-list-table"
         thead-tr-class="row__head__bottom-border"
         tbody-tr-class="row__body__bottom-border"
-        ref="apartment-list-table"
-        id="my-table"
         class="table__list"
         sticky-header
         borderless
@@ -708,9 +700,9 @@ export default {
         :sort-by="sortBy"
         :sort-desc="sortDesc"
         :empty-text="$t('no_data')"
-        @sort-changed="sortingChanged"
         :selectable="selectable"
         select-mode="single"
+        @sort-changed="sortingChanged"
         @row-selected="onRowSelected"
       >
         <template #table-busy>
@@ -723,11 +715,17 @@ export default {
         </template>
         <template #head(check)="{}">
           <span>
-            <base-checkbox :checked="checkAll" @input="chooseAllApartment" />
+            <base-checkbox
+              :checked="checkAll"
+              @input="chooseAllApartment"
+            />
           </span>
         </template>
         <template #cell(holder)="{ item }">
-          <span class="mr-2" v-show="isNUNEZ(item.holder)">
+          <span
+            v-show="isNUNEZ(item.holder)"
+            class="mr-2"
+          >
             <x-icon
               v-b-tooltip.hover
               size="24"
@@ -749,7 +747,10 @@ export default {
         </template>
         <template #cell(number)="data">
           <div class="d-flex justify-content-start position-relative">
-            <div v-if="!data.item.is_sold" class="">
+            <div
+              v-if="!data.item.is_sold"
+              class=""
+            >
               <svg
                 width="16"
                 height="16"
@@ -783,8 +784,8 @@ export default {
           <span
             v-if="
               data.item.order.status !== 'sold' &&
-              data.item.order.status !== 'closed' &&
-              data.item.is_sold
+                data.item.order.status !== 'closed' &&
+                data.item.is_sold
             "
           >
             {{
@@ -798,7 +799,10 @@ export default {
           </span>
         </template>
         <template #cell(status)="{ item }">
-          <div class="d-flex" style="font-size: 12px">
+          <div
+            class="d-flex"
+            style="font-size: 12px"
+          >
             <span
               v-if="statusViewPms && isNUNEZ(item.status)"
               style="
@@ -859,7 +863,7 @@ export default {
                 class="dropdown-toggle"
                 data-toggle="dropdown"
               >
-                <i class="far fa-ellipsis-h"></i>
+                <i class="far fa-ellipsis-h" />
               </button>
 
               <div class="dropdown-menu">
@@ -867,36 +871,36 @@ export default {
                   <!-- Редактировать -->
                   <b-link
                     v-if="editPermission"
+                    v-b-modal.modal-edit
                     class="dropdown-item dropdown-item--inside"
                     @click="[(edit = true), (apartment_id = data.item.id)]"
-                    v-b-modal.modal-edit
                   >
-                    <i class="far fa-pencil"></i> {{ $t("edit") }}
+                    <i class="far fa-pencil" /> {{ $t("edit") }}
                   </b-link>
 
                   <!--        Вернуть к продаже          -->
                   <b-link
                     v-if="
                       isSoldPermission &&
-                      data.item.is_sold &&
-                      data.item.order.status === 'available'
+                        data.item.is_sold &&
+                        data.item.order.status === 'available'
                     "
-                    @click="openSoldModal(data.item)"
                     class="dropdown-item dropdown-item--inside"
+                    @click="openSoldModal(data.item)"
                   >
-                    <i class="far fa-unlock"></i> {{ $t("remove_from_sale") }}
+                    <i class="far fa-unlock" /> {{ $t("remove_from_sale") }}
                   </b-link>
 
                   <b-link
                     v-if="
                       isSoldPermission &&
-                      !data.item.is_sold &&
-                      data.item.order.status === 'available'
+                        !data.item.is_sold &&
+                        data.item.order.status === 'available'
                     "
-                    @click="openSoldModal(data.item)"
                     class="dropdown-item dropdown-item--inside"
+                    @click="openSoldModal(data.item)"
                   >
-                    <i class="far fa-lock"></i> {{ $t("return_to_sale") }}
+                    <i class="far fa-lock" /> {{ $t("return_to_sale") }}
                   </b-link>
                 </template>
                 <router-link
@@ -909,23 +913,27 @@ export default {
                   }"
                   :class="'dropdown-item dropdown-item--inside'"
                 >
-                  <i class="far fa-eye"></i>
+                  <i class="far fa-eye" />
                   {{ $t("apartments.list.more") }}
                 </router-link>
 
                 <b-link
                   v-if="holderEditPms"
-                  @click="setHolder(data.item)"
                   class="dropdown-item dropdown-item--inside"
+                  @click="setHolder(data.item)"
                 >
-                  <x-icon name="person" size="24" class="dropdown-icon-color" />
+                  <x-icon
+                    name="person"
+                    size="24"
+                    class="dropdown-icon-color"
+                  />
                   <span class="ml-2"> {{ $t("holders.change") }} </span>
                 </b-link>
 
                 <b-link
                   v-if="statusEditPms"
-                  @click="setStatus(data.item)"
                   class="dropdown-item dropdown-item--inside"
+                  @click="setStatus(data.item)"
                 >
                   <x-icon
                     name="pending_actions"
@@ -940,7 +948,10 @@ export default {
         </template>
       </b-table>
 
-      <div v-if="!showLoading && pagination.total" class="pagination__vue">
+      <div
+        v-if="!showLoading && pagination.total"
+        class="pagination__vue"
+      >
         <!--   Pagination   -->
         <vue-paginate
           :page-count="pagination.total"
@@ -970,9 +981,9 @@ export default {
         <!--  Show By Select    -->
         <div class="show__by">
           <x-form-select
+            v-model="showByValue"
             :label="false"
             :options="showByOptions"
-            v-model="showByValue"
             @change="limitChanged"
           >
             <template #output-prefix>
@@ -988,19 +999,22 @@ export default {
       <reserve-add
         v-if="
           reserve ||
-          (getPermission.apartments && getPermission.apartments.reserve)
+            (getPermission.apartments && getPermission.apartments.reserve)
         "
         :apartment="apartment_id"
         @CreateReserve="CreateReserveSuccess"
-      ></reserve-add>
+      />
 
       <edit-modal
         v-if="editPermission"
         :apartment="apartment_id"
         @EditApartment="EditApartment"
-      ></edit-modal>
+      />
 
-      <base-modal ref="is-sold" design="auto-height">
+      <base-modal
+        ref="is-sold"
+        design="auto-height"
+      >
         <template #header>
           <div class="d-flex align-items-center justify-content-between">
             <!--    TITLE      -->
@@ -1008,19 +1022,29 @@ export default {
               <template v-if="reSoldItem && !reSoldItem.is_sold">
                 Вернуть к продаже
               </template>
-              <template v-else> Снять с продажи </template>
+              <template v-else>
+                Снять с продажи
+              </template>
               <!--              {{ $t('apartments.agree.number')  }}-->
             </div>
             <!--   CLOSE    -->
-            <div class="go__back" @click="closeSoldModal">
-              <BaseCloseIcon :width="56" :height="56" />
+            <div
+              class="go__back"
+              @click="closeSoldModal"
+            >
+              <BaseCloseIcon
+                :width="56"
+                :height="56"
+              />
             </div>
           </div>
         </template>
 
         <template #main>
           <div>
-            <p class="label">Для завершение действии необходим комментарий</p>
+            <p class="label">
+              Для завершение действии необходим комментарий
+            </p>
             <base-input
               v-model="soldComment"
               :label="true"
@@ -1030,18 +1054,21 @@ export default {
           </div>
         </template>
         <template #footer>
-          <div class="d-flex justify-content-between" style="gap: 2rem">
+          <div
+            class="d-flex justify-content-between"
+            style="gap: 2rem"
+          >
             <base-button
-              @click="closeSoldModal"
               :fixed="true"
               :text="$t('cancel')"
+              @click="closeSoldModal"
             />
             <base-button
-              @click="toggleApartmentToSale"
               :disabled="!soldComment"
               :fixed="true"
               design="violet-gradient"
               :text="$t('apply')"
+              @click="toggleApartmentToSale"
             />
           </div>
         </template>

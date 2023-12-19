@@ -1,26 +1,26 @@
 <script>
-import { mapGetters } from "vuex";
-import api from "@/services/api";
-import { formatToPrice, getDateProperty } from "@/util/reusable";
-import { isNUNEZ, isUndefinedOrNullOrEmpty } from "@/util/inspect";
+import { mapGetters } from 'vuex'
+import api from '@/services/api'
+import { formatToPrice, getDateProperty } from '@/util/reusable'
+import { isNUNEZ, isUndefinedOrNullOrEmpty } from '@/util/inspect'
 
-import AppHeader from "@/components/Header/AppHeader";
-import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
-import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
-import BaseButton from "@/components/Reusable/BaseButton";
-import BaseSelect from "@/components/Reusable/BaseSelect";
-import BaseFilterTabsContent from "@/components/Reusable/BaseFilterTabsContent";
+import AppHeader from '@/components/Header/AppHeader'
+import BaseArrowLeftIcon from '@/components/icons/BaseArrowLeftIcon'
+import BaseArrowRightIcon from '@/components/icons/BaseArrowRightIcon'
+import BaseButton from '@/components/Reusable/BaseButton'
+import BaseSelect from '@/components/Reusable/BaseSelect'
+import BaseFilterTabsContent from '@/components/Reusable/BaseFilterTabsContent'
 
 import {
   hasInPaymentTypes,
   paymentTypes,
   paymentMethods,
   hasInPaymentMethods,
-} from "@/util/debtors/importPayments.util";
-import { getKeyByValue, hasOwnProperty } from "@/util/object";
+} from '@/util/debtors/importPayments.util'
+import { getKeyByValue, hasOwnProperty } from '@/util/object'
 
 export default {
-  name: "ImportPayments",
+  name: 'ImportPayments',
   components: {
     BaseFilterTabsContent,
     BaseArrowLeftIcon,
@@ -52,119 +52,119 @@ export default {
       position: 0,
       availableToUpload: [],
       maxPortionLimit: 1000,
-    };
+    }
   },
   computed: {
     ...mapGetters({
-      excelSheets: "getExcelSheets",
+      excelSheets: 'getExcelSheets',
     }),
     tabCurrentStatus() {
-      return this.$route.query.status || "success";
+      return this.$route.query.status || 'success'
     },
     filterTabList() {
       return [
         {
-          name: "Успешные",
-          status: "success",
+          name: 'Успешные',
+          status: 'success',
           counts: this.successItems.length,
         },
         {
-          name: "Ошибка загрузки",
-          status: "failed",
+          name: 'Ошибка загрузки',
+          status: 'failed',
           counts: this.failedItems.length,
         },
-      ];
+      ]
     },
     failedFields() {
       return [
         {
-          key: "index",
-          label: "Строка в файле",
+          key: 'index',
+          label: 'Строка в файле',
         },
         {
-          key: "error",
-          label: "Тип ошибки",
+          key: 'error',
+          label: 'Тип ошибки',
         },
-      ];
+      ]
     },
     successFields() {
       return [
         {
-          key: "date",
-          label: "Дата",
-          formatter: (date) => {
-            const { year, month, day } = getDateProperty(date);
-            const lastYear = year.toString().slice(-2);
-            return `${day}.${month}.${lastYear}`;
+          key: 'date',
+          label: 'Дата',
+          formatter: date => {
+            const { year, month, day } = getDateProperty(date)
+            const lastYear = year.toString().slice(-2)
+            return `${day}.${month}.${lastYear}`
           },
         },
         {
-          key: "amount",
-          label: "Сумма",
-          formatter: (amount) => formatToPrice(amount) + " " + this.$t("ye"),
+          key: 'amount',
+          label: 'Сумма',
+          formatter: amount => `${formatToPrice(amount)} ${this.$t('ye')}`,
         },
         {
-          key: "type",
-          label: "Тип",
-          formatter: (type) => this.$t(type),
+          key: 'type',
+          label: 'Тип',
+          formatter: type => this.$t(type),
         },
         {
-          key: "payment_type",
-          label: "Способ",
-          formatter: (paymentType) => {
-            if (paymentType === "cash") return this.$t("cash");
-            if (!paymentType) return "-";
-            return paymentType;
+          key: 'payment_type',
+          label: 'Способ',
+          formatter: paymentType => {
+            if (paymentType === 'cash') return this.$t('cash')
+            if (!paymentType) return '-'
+            return paymentType
           },
         },
         {
-          key: "comment",
-          label: "Комментарий",
+          key: 'comment',
+          label: 'Комментарий',
         },
-      ];
+      ]
     },
     haveConstructorOrder() {
-      return Object.keys(this.excelSheets.contract).length > 0;
+      return Object.keys(this.excelSheets.contract).length > 0
     },
     contract() {
-      if (this.haveConstructorOrder) return this.excelSheets.contract;
-      return {};
+      if (this.haveConstructorOrder) return this.excelSheets.contract
+      return {}
     },
     file() {
-      return this.excelSheets.file;
+      return this.excelSheets.file
     },
     positionOnUpload() {
-      return !this.position;
+      return !this.position
     },
   },
   mounted() {
-    this.setupOptions();
+    this.setupOptions()
   },
   methods: {
     setupOptions() {
-      const { rows } = this.excelSheets;
-      this.options = rows[0].map((item) => {
-        return { value: item };
-      });
-      this.trackOptions = rows[0];
+      const { rows } = this.excelSheets
+      this.options = rows[0].map(item => ({ value: item }))
+      this.trackOptions = rows[0]
     },
     backNavigation() {
-      this.$router.go(-1);
+      this.$router.go(-1)
     },
     setFormProperty(property, value) {
-      this.form[property] = value;
-      this.errors[property] = false;
+      this.form[property] = value
+      this.errors[property] = false
     },
-    getPaymentTemplate(arrCell, { date, type, amount, payment_type, comment }) {
+    getPaymentTemplate(arrCell, {
+      date, type, amount, payment_type, comment,
+    }) {
       const _type = getKeyByValue(
         paymentTypes,
-        arrCell[type] ? arrCell[type].toLowerCase() : null
-      );
+        arrCell[type] ? arrCell[type].toLowerCase() : null,
+      )
 
       const pMethod = getKeyByValue(
         paymentMethods,
-        arrCell[payment_type].toLowerCase()
-      );
+        arrCell[payment_type].toLowerCase(),
+      )
 
       const ctx = {
         date: arrCell[date],
@@ -172,39 +172,41 @@ export default {
         amount: parseInt(arrCell[amount]),
         payment_type: pMethod,
         comment: arrCell[comment],
-      };
-
-      if (parseInt(amount)) {
-        ctx.amount = Math.ceil(parseInt(amount) * 100);
       }
 
-      return ctx;
+      if (parseInt(amount)) {
+        ctx.amount = Math.ceil(parseInt(amount) * 100)
+      }
+
+      return ctx
     },
     checkTemplateValidation({ type, payment_type }) {
-      return hasInPaymentTypes(type) && hasInPaymentMethods(payment_type);
+      return hasInPaymentTypes(type) && hasInPaymentMethods(payment_type)
     },
     async importExcelSheet() {
-      const validation = this.formValidation();
+      const validation = this.formValidation()
       if (validation) {
-        this.buttonLoading = true;
-        const { id } = this.$route.params;
-        const { rows } = this.excelSheets;
-        const arrayOfCells = rows.slice(1);
-        const bStore = [[]];
-        const { date, type, amount, payment_type, comment } = this.form;
+        this.buttonLoading = true
+        const { id } = this.$route.params
+        const { rows } = this.excelSheets
+        const arrayOfCells = rows.slice(1)
+        const bStore = [[]]
+        const {
+          date, type, amount, payment_type, comment,
+        } = this.form
 
         for (let i = 0; i < arrayOfCells.length; i++) {
           if (
-            isUndefinedOrNullOrEmpty(arrayOfCells[i][amount]) ||
-            !(
-              parseInt(arrayOfCells[i][amount]) ||
-              this.checkTemplateValidation({
+            isUndefinedOrNullOrEmpty(arrayOfCells[i][amount])
+            || !(
+              parseInt(arrayOfCells[i][amount])
+              || this.checkTemplateValidation({
                 type: arrayOfCells[i][type],
                 payment_type: arrayOfCells[i][payment_type],
               })
             )
           ) {
-            continue;
+            continue
           }
 
           const itemCell = this.getPaymentTemplate(arrayOfCells[i], {
@@ -213,85 +215,87 @@ export default {
             amount,
             payment_type,
             comment,
-          });
+          })
 
           if (
             !(
-              hasOwnProperty(itemCell, "type") &&
-              isNUNEZ(itemCell.type) &&
-              hasOwnProperty(itemCell, "payment_type") &&
-              isNUNEZ(itemCell.payment_type)
+              hasOwnProperty(itemCell, 'type')
+              && isNUNEZ(itemCell.type)
+              && hasOwnProperty(itemCell, 'payment_type')
+              && isNUNEZ(itemCell.payment_type)
             )
           ) {
-            continue;
+            continue
           }
 
           if (bStore[bStore.length - 1].length <= i % this.maxPortionLimit) {
-            bStore[bStore.length - 1].push(itemCell);
+            bStore[bStore.length - 1].push(itemCell)
           } else {
-            bStore.push([itemCell]);
+            bStore.push([itemCell])
           }
         }
 
-        const pSet = [];
+        const pSet = []
 
-        bStore.forEach((bs) => {
+        bStore.forEach(bs => {
           if (bs.length) {
-            pSet.push(this.saveToDatabase(id, bs));
+            pSet.push(this.saveToDatabase(id, bs))
           }
-        });
+        })
 
         try {
           await Promise.all(pSet).then(() => {
             this.$router.push({
-              name: "contracts-view",
-            });
+              name: 'contracts-view',
+            })
             this.$swal({
-              title: this.$t("successfully"),
-              text: this.$t("sweetAlert.payment_list_add"),
-              icon: "success",
-            });
-          });
+              title: this.$t('successfully'),
+              text: this.$t('sweetAlert.payment_list_add'),
+              icon: 'success',
+            })
+          })
         } catch (e) {
-          const { data } = e.response;
-          const primaryKey = Object.keys(data)[0];
+          const { data } = e.response
+          const primaryKey = Object.keys(data)[0]
           this.$bvToast.toast(data[primaryKey], {
-            title: `${this.$t("error")}`,
-            variant: "danger",
+            title: `${this.$t('error')}`,
+            variant: 'danger',
             solid: true,
-          });
+          })
         } finally {
-          this.buttonLoading = false;
+          this.buttonLoading = false
         }
       } else {
-        const { errors } = this.$refs["form-validation"];
-        for (let [key] of Object.entries(this.errors)) {
+        const { errors } = this.$refs['form-validation']
+        for (const [key] of Object.entries(this.errors)) {
           if (!this.form[key]) {
-            this.errors[key] = hasOwnProperty(errors, key);
+            this.errors[key] = hasOwnProperty(errors, key)
           }
         }
       }
     },
     formValidation() {
-      const keys = Object.keys(this.form);
-      return keys.every((key) => this.form[key] !== null);
+      const keys = Object.keys(this.form)
+      return keys.every(key => this.form[key] !== null)
     },
     async saveToDatabase(id, payments) {
-      return await api.contractV2.importPaymentTransaction(id, payments);
+      return await api.contractV2.importPaymentTransaction(id, payments)
     },
     showUploadPayments(payments) {
-      this.availableToUpload = this.getValidPayments(payments);
-      this.navigateThroughTab(1);
+      this.availableToUpload = this.getValidPayments(payments)
+      this.navigateThroughTab(1)
     },
     getValidPayments(payments) {
-      this.successItems = [];
-      this.failedItems = [];
+      this.successItems = []
+      this.failedItems = []
       return payments.filter(
-        ({ date, type, amount, payment_type, comment }, index) => {
+        ({
+          date, type, amount, payment_type, comment,
+        }, index) => {
           const isDateValid = () => {
-            const parseDate = Date.parse(date);
-            return !isNaN(parseDate);
-          };
+            const parseDate = Date.parse(date)
+            return !isNaN(parseDate)
+          }
 
           /*
           Дата
@@ -302,67 +306,68 @@ export default {
         */
           const errors = {
             date: "'Неверные данные в поле “Дата”",
-            type: "Неверные данные в поле “TYPE”",
-            amount: "Неверные данные в поле “Сумма”",
-            payment_type: "Неверные данные в поле “Способ”",
-          };
+            type: 'Неверные данные в поле “TYPE”',
+            amount: 'Неверные данные в поле “Сумма”',
+            payment_type: 'Неверные данные в поле “Способ”',
+          }
 
-          const isValidType = type && typeof type === "string";
-          const isValidAmount = amount && typeof amount === "number";
-          const isValidPaymentType =
-            payment_type && typeof payment_type === "string";
+          const isValidType = type && typeof type === 'string'
+          const isValidAmount = amount && typeof amount === 'number'
+          const isValidPaymentType = payment_type && typeof payment_type === 'string'
 
           if (!isDateValid()) {
-            this.passToFailedItems(index + 1, errors.date);
-            return false;
+            this.passToFailedItems(index + 1, errors.date)
+            return false
           }
 
           if (!isValidType) {
-            this.passToFailedItems(index + 1, errors.type);
-            return false;
+            this.passToFailedItems(index + 1, errors.type)
+            return false
           }
 
           if (!isValidAmount) {
-            this.passToFailedItems(index + 1, errors.amount);
-            return false;
+            this.passToFailedItems(index + 1, errors.amount)
+            return false
           }
 
           if (!isValidPaymentType) {
-            this.passToFailedItems(index + 1, errors.payment_type);
-            return false;
+            this.passToFailedItems(index + 1, errors.payment_type)
+            return false
           }
 
-          this.successItems.push({ date, type, amount, payment_type, comment });
-          return true;
-        }
-      );
+          this.successItems.push({
+            date, type, amount, payment_type, comment,
+          })
+          return true
+        },
+      )
     },
     passToFailedItems(index, error) {
       this.failedItems.push({
         error,
         index,
-      });
+      })
     },
     changeTabOfUploadList(status) {
-      const { status: queryStatus } = this.$route.query;
+      const { status: queryStatus } = this.$route.query
       if (queryStatus !== status) {
         this.$router.replace({
           query: {
             ...this.$route.query,
             status,
           },
-        });
+        })
       }
     },
     navigateThroughTab(index) {
       if (index) {
-        const validation = this.formValidation();
-        if (!validation) return;
+        const validation = this.formValidation()
+        if (!validation) return
       }
-      this.position = index;
+      this.position = index
     },
   },
-};
+}
 </script>
 
 <template>
@@ -371,19 +376,31 @@ export default {
 
     <app-header>
       <template #header-breadcrumb>
-        <div v-if="haveConstructorOrder" class="navigation__content">
-          <div class="go__back" @click="backNavigation">
+        <div
+          v-if="haveConstructorOrder"
+          class="navigation__content"
+        >
+          <div
+            class="go__back"
+            @click="backNavigation"
+          >
             <base-arrow-left-icon
               :width="32"
               :height="32"
-            ></base-arrow-left-icon>
+            />
           </div>
           <div class="breadcrumb__content">
             <div>
               Список договоров
-              <base-arrow-right-icon :width="18" :height="18" />
+              <base-arrow-right-icon
+                :width="18"
+                :height="18"
+              />
               <span>{{ contract.contract }}</span>
-              <base-arrow-right-icon :width="18" :height="18" />
+              <base-arrow-right-icon
+                :width="18"
+                :height="18"
+              />
               <span>Импорт оплат</span>
             </div>
             <div class="head">
@@ -398,24 +415,30 @@ export default {
 
     <div class="navigation__links">
       <div class="links">
-        <span class="link" @click="navigateThroughTab(0)">
-          <span :class="[position === 0 ? 'violet__design' : 'gray__design']"
-            >1</span
-          >
-          <span :class="[position === 0 ? 'color-violet-600' : 'gray__400']"
-            >Поля файла</span
-          >
+        <span
+          class="link"
+          @click="navigateThroughTab(0)"
+        >
+          <span
+            :class="[position === 0 ? 'violet__design' : 'gray__design']"
+          >1</span>
+          <span
+            :class="[position === 0 ? 'color-violet-600' : 'gray__400']"
+          >Поля файла</span>
         </span>
         <span class="icon mr-2 ml-2">
           <base-arrow-right-icon fill="#9CA3AF" />
         </span>
-        <span class="link" @click="navigateThroughTab(1)">
-          <span :class="[position === 1 ? 'violet__design' : 'gray__design']"
-            >2</span
-          >
-          <span :class="[position === 1 ? 'color-violet-600' : 'gray__400']"
-            >Список загрузки</span
-          >
+        <span
+          class="link"
+          @click="navigateThroughTab(1)"
+        >
+          <span
+            :class="[position === 1 ? 'violet__design' : 'gray__design']"
+          >2</span>
+          <span
+            :class="[position === 1 ? 'color-violet-600' : 'gray__400']"
+          >Список загрузки</span>
         </span>
       </div>
       <div class="buttons">
@@ -429,16 +452,23 @@ export default {
           class="d-inline-block"
         >
           <base-button
-            @click="importExcelSheet"
             class="next__button"
             text="Продолжить"
+            @click="importExcelSheet"
           >
             <template #right-icon>
-              <base-arrow-right-icon :width="24" :height="24" fill="#ffffff" />
+              <base-arrow-right-icon
+                :width="24"
+                :height="24"
+                fill="#ffffff"
+              />
             </template>
           </base-button>
         </b-overlay>
-        <div v-else class="d-flex align-items-center justify-content-center">
+        <div
+          v-else
+          class="d-flex align-items-center justify-content-center"
+        >
           <b-overlay
             rounded
             opacity="0.6"
@@ -447,9 +477,9 @@ export default {
             class="d-inline-block"
           >
             <base-button
-              @click="importExcelSheet"
               class="reload__button mr-3"
               text="Перезагрузить файл"
+              @click="importExcelSheet"
             />
           </b-overlay>
           <b-overlay
@@ -460,9 +490,9 @@ export default {
             class="d-inline-block"
           >
             <base-button
-              @click="importExcelSheet"
               class="next__button"
               text="Добавить оплаты"
+              @click="importExcelSheet"
             >
               <template #right-icon>
                 <base-arrow-right-icon
@@ -478,74 +508,100 @@ export default {
     </div>
 
     <!--  MAIN NAVIGATION  -->
-    <div v-show="positionOnUpload" class="main__content">
+    <div
+      v-show="positionOnUpload"
+      class="main__content"
+    >
       <div class="header">
         <span class="row">Свойство</span>
         <span class="row">Поле в файле</span>
       </div>
       <div class="main__section">
-        <ValidationObserver ref="form-validation" class="main__row">
-          <ValidationProvider rules="required" name="date" class="cell">
+        <ValidationObserver
+          ref="form-validation"
+          class="main__row"
+        >
+          <ValidationProvider
+            rules="required"
+            name="date"
+            class="cell"
+          >
             <span class="cell__item">Дата</span>
             <span class="cell__item">
               <base-select
                 :class="{ warning__border: errors.date }"
-                @change="setFormProperty('date', $event)"
                 placeholder="Выберите поле"
-                textField="value"
+                text-field="value"
                 :options="options"
+                @change="setFormProperty('date', $event)"
               />
             </span>
           </ValidationProvider>
 
-          <ValidationProvider rules="required" name="type" class="cell">
+          <ValidationProvider
+            rules="required"
+            name="type"
+            class="cell"
+          >
             <span class="cell__item">Тип</span>
             <span class="cell__item">
               <base-select
                 :class="{ warning__border: errors.type }"
-                @change="setFormProperty('type', $event)"
                 placeholder="Выберите поле"
-                textField="value"
+                text-field="value"
                 :options="options"
+                @change="setFormProperty('type', $event)"
               />
             </span>
           </ValidationProvider>
 
-          <ValidationProvider rules="required" name="amount" class="cell">
+          <ValidationProvider
+            rules="required"
+            name="amount"
+            class="cell"
+          >
             <span class="cell__item">Сумма</span>
             <span class="cell__item">
               <base-select
                 :class="{ warning__border: errors.amount }"
-                @change="setFormProperty('amount', $event)"
                 placeholder="Выберите поле"
-                textField="value"
+                text-field="value"
                 :options="options"
+                @change="setFormProperty('amount', $event)"
               />
             </span>
           </ValidationProvider>
 
-          <ValidationProvider rules="required" name="payment_type" class="cell">
+          <ValidationProvider
+            rules="required"
+            name="payment_type"
+            class="cell"
+          >
             <span class="cell__item">Способ</span>
             <span class="cell__item">
               <base-select
                 :class="{ warning__border: errors.payment_type }"
-                @change="setFormProperty('payment_type', $event)"
                 placeholder="Выберите поле"
-                textField="value"
+                text-field="value"
                 :options="options"
+                @change="setFormProperty('payment_type', $event)"
               />
             </span>
           </ValidationProvider>
 
-          <ValidationProvider rules="required" name="comment" class="cell">
+          <ValidationProvider
+            rules="required"
+            name="comment"
+            class="cell"
+          >
             <span class="cell__item">Комментарий</span>
             <span class="cell__item">
               <base-select
                 :class="{ warning__border: errors.comment }"
-                @change="setFormProperty('comment', $event)"
                 placeholder="Выберите поле"
-                textField="value"
+                text-field="value"
                 :options="options"
+                @change="setFormProperty('comment', $event)"
               />
             </span>
           </ValidationProvider>
@@ -553,7 +609,10 @@ export default {
       </div>
     </div>
 
-    <div v-show="position" class="upload__list">
+    <div
+      v-show="position"
+      class="upload__list"
+    >
       <base-filter-tabs-content
         :filter-tab-list="filterTabList"
         @get-new-content="changeTabOfUploadList"
@@ -573,7 +632,10 @@ export default {
         responsive
       >
         <!--   CONTENT WHEN EMPTY SCOPE       -->
-        <template #empty="scope" class="text-center">
+        <template
+          #empty="scope"
+          class="text-center"
+        >
           <div
             class="d-flex justify-content-center align-items-center empty__scope"
           >
@@ -596,7 +658,10 @@ export default {
         responsive
       >
         <!--   CONTENT WHEN EMPTY SCOPE       -->
-        <template #empty="scope" class="text-center">
+        <template
+          #empty="scope"
+          class="text-center"
+        >
           <div
             class="d-flex justify-content-center align-items-center empty__scope"
           >
@@ -651,7 +716,6 @@ export default {
     align-items: center
     cursor: pointer
 
-
   .breadcrumb__content
     display: inline-flex
     flex-direction: column
@@ -659,7 +723,6 @@ export default {
     font-weight: 600
     font-size: 14px
     color: #9CA3AF
-
 
   .head
     font-size: 24px

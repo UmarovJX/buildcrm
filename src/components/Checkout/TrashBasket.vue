@@ -1,8 +1,8 @@
 <script>
-import BaseButton from "@/components/Reusable/BaseButton";
+import BaseButton from '@/components/Reusable/BaseButton'
 
 export default {
-  name: "TrashBasket",
+  name: 'TrashBasket',
   components: {
     BaseButton,
   },
@@ -14,23 +14,26 @@ export default {
     },
   },
 
-  emits: ["return-apartment"],
+  emits: ['return-apartment'],
 
   methods: {
     returnApartment() {
-      this.$emit("return-apartment");
+      this.$emit('return-apartment')
     },
   },
-};
+}
 </script>
 
 <template>
-  <div class="basket" :class="{ 'd-none': !apartmentCount }">
+  <div
+    class="basket"
+    :class="{ 'd-none': !apartmentCount }"
+  >
     <p>Убранные квартиры: {{ apartmentCount }}</p>
     <base-button
-      @click="returnApartment"
       design="violet500"
       text="Вернуть все квартиры"
+      @click="returnApartment"
     />
   </div>
 </template>

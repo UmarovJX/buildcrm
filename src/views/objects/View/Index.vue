@@ -1,28 +1,29 @@
 <script>
-import api from "@/services/api";
-import ObjectSort from "@/components/Objects/ObjectSort";
-import ObjectBlock from "@/components/Objects/view/Tabs/ObjectBlock";
-import ApartmentExpressView from "@/components/Objects/view/elements/ApartmentExpressView";
-import ParkingExpressView from "@/components/Objects/view/elements/ParkingExpressView";
-import PlanExpressView from "@/components/Objects/view/elements/PlanExpressView";
-import ChessSquareCard from "@/components/Objects/view/Tabs/ChessSquareCard";
-import ObjectTable from "@/components/Objects/ObjectTable";
-import ParkingTable from "@/components/Objects/ParkingTable";
-import ObjectPlan from "@/components/Objects/view/Tabs/ObjectPlan";
-import BaseArrowRight from "@/components/icons/BaseArrowRightIcon";
-import BaseArrowLeft from "@/components/icons/BaseArrowLeftIcon";
-import BaseButton from "@/components/Reusable/BaseButton";
-import BaseModal from "@/components/Reusable/BaseModal";
-import BaseCloseIcon from "@/components/icons/BaseCloseIcon";
-import ApartmentsPermission from "@/permission/apartments";
-import { mapGetters } from "vuex";
-import { isPrimitiveValue } from "@/util/reusable";
-import { sessionStorageGetItem, sessionStorageSetItem } from "@/util/storage";
-import AppHeader from "@/components/Header/AppHeader";
-import { XIcon } from "@/components/ui-components/material-icons";
-import { XCircularBackground } from "@/components/ui-components/circular-background";
+import api from '@/services/api'
+import ObjectSort from '@/components/Objects/ObjectSort'
+import ObjectBlock from '@/components/Objects/view/Tabs/ObjectBlock'
+import ApartmentExpressView from '@/components/Objects/view/elements/ApartmentExpressView'
+import ParkingExpressView from '@/components/Objects/view/elements/ParkingExpressView'
+import PlanExpressView from '@/components/Objects/view/elements/PlanExpressView'
+import ChessSquareCard from '@/components/Objects/view/Tabs/ChessSquareCard'
+import ObjectTable from '@/components/Objects/ObjectTable'
+import ParkingTable from '@/components/Objects/ParkingTable'
+import ObjectPlan from '@/components/Objects/view/Tabs/ObjectPlan'
+import BaseArrowRight from '@/components/icons/BaseArrowRightIcon'
+import BaseArrowLeft from '@/components/icons/BaseArrowLeftIcon'
+import BaseButton from '@/components/Reusable/BaseButton'
+import BaseModal from '@/components/Reusable/BaseModal'
+import BaseCloseIcon from '@/components/icons/BaseCloseIcon'
+import ApartmentsPermission from '@/permission/apartments'
+import { mapGetters } from 'vuex'
+import { isPrimitiveValue } from '@/util/reusable'
+import { sessionStorageGetItem, sessionStorageSetItem } from '@/util/storage'
+import AppHeader from '@/components/Header/AppHeader'
+import { XIcon } from '@/components/ui-components/material-icons'
+import { XCircularBackground } from '@/components/ui-components/circular-background'
+
 export default {
-  name: "Objects",
+  name: 'Objects',
   components: {
     XIcon,
     XCircularBackground,
@@ -43,9 +44,9 @@ export default {
     BaseModal,
   },
   beforeRouteLeave(to, from, next) {
-    const id = from.params.object;
-    sessionStorageSetItem(`object_history_of_tab_${id}`, this.currentTab);
-    next();
+    const id = from.params.object
+    sessionStorageSetItem(`object_history_of_tab_${id}`, this.currentTab)
+    next()
   },
   data() {
     return {
@@ -197,124 +198,124 @@ export default {
       planLoading: false,
       apartments: [],
       plans: [],
-      currentTab: this.$route.query.currentTab || "ObjectTable",
+      currentTab: this.$route.query.currentTab || 'ObjectTable',
       priceList: [],
       priceFields: [
         {
-          key: "level",
-          label: "Дата",
+          key: 'level',
+          label: 'Дата',
         },
         {
-          key: "price_m2",
-          label: "price_m2",
+          key: 'price_m2',
+          label: 'price_m2',
         },
       ],
       statusList: [
         {
-          label: this.$t("object.status.available"),
-          class: "teal",
-          value: "available",
+          label: this.$t('object.status.available'),
+          class: 'teal',
+          value: 'available',
         },
         {
-          label: this.$t("object.status.booked"),
-          class: "yellow",
-          value: "booked",
+          label: this.$t('object.status.booked'),
+          class: 'yellow',
+          value: 'booked',
         },
         {
-          label: this.$t("object.status.contract"),
-          class: "blue",
-          value: "contract",
+          label: this.$t('object.status.contract'),
+          class: 'blue',
+          value: 'contract',
         },
         {
-          label: this.$t("object.status.sold"),
-          class: "gray",
-          value: "sold",
+          label: this.$t('object.status.sold'),
+          class: 'gray',
+          value: 'sold',
         },
         {
-          label: this.$t("object.status.disable"),
-          class: "disabled",
-          value: "unavailable",
+          label: this.$t('object.status.disable'),
+          class: 'disabled',
+          value: 'unavailable',
         },
       ],
       apartmentStatusList: [
         {
-          label: this.$t("object.status.available"),
-          class: "teal",
-          value: "available",
+          label: this.$t('object.status.available'),
+          class: 'teal',
+          value: 'available',
         },
         {
-          label: this.$t("object.status.booked"),
-          class: "yellow",
-          value: "booked",
+          label: this.$t('object.status.booked'),
+          class: 'yellow',
+          value: 'booked',
         },
         {
-          label: this.$t("object.status.contract"),
-          class: "blue",
-          value: "contract",
+          label: this.$t('object.status.contract'),
+          class: 'blue',
+          value: 'contract',
         },
         {
-          label: this.$t("object.status.sold"),
-          class: "gray",
-          value: "sold",
+          label: this.$t('object.status.sold'),
+          class: 'gray',
+          value: 'sold',
         },
         {
-          label: this.$t("object.status.disable"),
-          class: "disabled",
-          value: "unavailable",
+          label: this.$t('object.status.disable'),
+          class: 'disabled',
+          value: 'unavailable',
         },
       ],
       parkingStatusList: [],
       statusFilter: [],
       filter: [],
       filterFields: {},
-      objectName: "",
+      objectName: '',
       is_parking: false,
       isHidePrice: false,
       is_map: false,
       componentTabs: [
         {
           id: 4,
-          param: "chess",
-          name: "ObjectTable",
-          buttonIcon: "BaseChessList",
-          title: this.$t("object.list"),
-          view: "list",
+          param: 'chess',
+          name: 'ObjectTable',
+          buttonIcon: 'BaseChessList',
+          title: this.$t('object.list'),
+          view: 'list',
           show: true,
         },
         {
           id: 2,
-          param: "chess",
-          name: "ObjectBlock",
-          buttonIcon: "BaseChessOne",
-          title: this.$t("object.chess") + " 1.0",
-          view: "architecture",
+          param: 'chess',
+          name: 'ObjectBlock',
+          buttonIcon: 'BaseChessOne',
+          title: `${this.$t('object.chess')} 1.0`,
+          view: 'architecture',
           show: true,
         },
         {
           id: 3,
-          param: "chess",
-          name: "ChessSquareCard",
-          buttonIcon: "BaseChessTwo",
-          title: this.$t("object.chess") + " 2.0",
-          view: "chess",
+          param: 'chess',
+          name: 'ChessSquareCard',
+          buttonIcon: 'BaseChessTwo',
+          title: `${this.$t('object.chess')} 2.0`,
+          view: 'chess',
           show: true,
         },
         {
           id: 5,
-          param: "chess",
-          name: "ObjectPlan",
-          buttonIcon: "BaseChessPlan",
-          title: this.$t("object.plan"),
-          view: "plan",
+          param: 'chess',
+          name: 'ObjectPlan',
+          buttonIcon: 'BaseChessPlan',
+          title: this.$t('object.plan'),
+          view: 'plan',
           show: true,
         },
         {
           id: 6,
-          param: "chess",
-          name: "ParkingTable",
-          buttonIcon: "local_parking",
-          title: this.$t("object.parking"),
-          view: "list",
+          param: 'chess',
+          name: 'ParkingTable',
+          buttonIcon: 'local_parking',
+          title: this.$t('object.parking'),
+          view: 'list',
           show: true,
         },
       ],
@@ -331,7 +332,7 @@ export default {
         none: 0,
         closed: 0,
       },
-      counts:{
+      counts: {
         unavailable: 0,
         available: 0,
         contract: 0,
@@ -344,59 +345,59 @@ export default {
       filtered: false,
       gridApartments: [],
       chessApartments: [],
-    };
+    }
   },
   computed: {
-    ...mapGetters(["getPermission"]),
+    ...mapGetters(['getPermission']),
     apartmentsByTabs() {
-      const gridList = ["ObjectBlock", "ChessSquareCard"];
+      const gridList = ['ObjectBlock', 'ChessSquareCard']
       if (gridList.includes(this.currentTab)) {
-        return this.chessApartments;
+        return this.chessApartments
       }
-      return this.apartments;
+      return this.apartments
     },
     breadCrumbs() {
       return [
         {
-          routeName: "contracts",
-          textContent: this.$t("contracts.title"),
+          routeName: 'contracts',
+          textContent: this.$t('contracts.title'),
         },
-      ];
+      ]
     },
     checkedPermissionTab() {
-      let result = this.componentTabs;
+      let result = this.componentTabs
       if (!ApartmentsPermission.getApartmentListPermission()) {
-        result = result.filter((item) => item.view !== "list");
+        result = result.filter(item => item.view !== 'list')
       }
       if (!ApartmentsPermission.getApartmentGridPermission()) {
-        result = result.filter((item) => item.view !== "architecture");
+        result = result.filter(item => item.view !== 'architecture')
       }
       if (!ApartmentsPermission.getApartmentChessPermission()) {
-        result = result.filter((item) => item.view !== "chess");
+        result = result.filter(item => item.view !== 'chess')
       }
       if (!ApartmentsPermission.getApartmentPlanPermission()) {
-        result = result.filter((item) => item.view !== "plan");
+        result = result.filter(item => item.view !== 'plan')
       }
       if (!this.is_parking) {
-        result = result.filter((item) => item.name !== "ParkingTable");
+        result = result.filter(item => item.name !== 'ParkingTable')
       }
-      return result;
+      return result
     },
     activeContent() {
-      return this.$t("view");
+      return this.$t('view')
     },
     query() {
-      return Object.assign({}, this.$route.query);
+      return { ...this.$route.query }
     },
     hasQuery() {
-      return Object.keys(this.$route.query).length > 0;
+      return Object.keys(this.$route.query).length > 0
     },
     accessToFilter() {
-      const tabsActiveToFilter = ["ObjectBlock", "ChessSquareCard"];
-      return tabsActiveToFilter.includes(this.currentTab);
+      const tabsActiveToFilter = ['ObjectBlock', 'ChessSquareCard']
+      return tabsActiveToFilter.includes(this.currentTab)
     },
     apartmentsFilterPermission() {
-      return ApartmentsPermission.getApartmentsPermission("filter");
+      return ApartmentsPermission.getApartmentsPermission('filter')
     },
 
     // apartmentsViewPermission() {
@@ -424,611 +425,598 @@ export default {
       if (status.length) {
         const isNotEqual = !this.compareArray(
           this.query.status,
-          this.statusFilter
-        );
+          this.statusFilter,
+        )
         if (isNotEqual) {
-          const arraySatisfaction = Array.isArray(status) && status.length > 0;
+          const arraySatisfaction = Array.isArray(status) && status.length > 0
           if (arraySatisfaction) {
             this.$router.push({
               query: {
                 ...this.query,
                 page: 1,
-                status: status,
+                status,
               },
-            });
+            })
           }
         }
       } else {
-        const routeQuery = this.query;
-        delete routeQuery.status;
+        const routeQuery = this.query
+        delete routeQuery.status
         this.$router.push({
           query: routeQuery,
-        });
+        })
       }
     },
-    "$route.query": {
+    '$route.query': {
       async handler(query, oq) {
-        this.compareStatus(query);
+        this.compareStatus(query)
         if (this.accessToFilter) {
-          this.chessApartments = this.filterItems(query, this.chessApartments);
-          this.filtered = true;
+          this.chessApartments = this.filterItems(query, this.chessApartments)
+          this.filtered = true
         }
-        if (this.currentTab !== "ParkingTable") {
-          this.chessApartments = this.filterItems(query, this.chessApartments);
+        if (this.currentTab !== 'ParkingTable') {
+          this.chessApartments = this.filterItems(query, this.chessApartments)
 
-          this.getApartmentCounts();
+          this.getApartmentCounts()
         }
       },
       immediate: true,
     },
     currentTab: {
       handler(value) {
-        this.initRelatedToComponent();
-        this.fetchFilterFields();
+        this.initRelatedToComponent()
+        this.fetchFilterFields()
         this.$router.push({
           query: {
             ...this.$route.query,
             page: 1,
             currentTab: value,
           },
-        });
+        })
 
-        if (this.currentTab === "ParkingTable") {
-          this.fetchParkingStatusList();
+        if (this.currentTab === 'ParkingTable') {
+          this.fetchParkingStatusList()
         } else {
-          this.statusList = this.apartmentStatusList;
+          this.statusList = this.apartmentStatusList
         }
 
-        if (this.currentTab === "ObjectTable") {
-          this.fetchNecessary();
+        if (this.currentTab === 'ObjectTable') {
+          this.fetchNecessary()
         }
       },
       immediate: false,
     },
   },
   mounted() {
-    this.getPriceList();
+    this.getPriceList()
   },
   created() {
-    this.fetchNecessary();
+    this.fetchNecessary()
 
     const historyTab = sessionStorageGetItem(
-      "object_history_of_tab_" + this.$route.params.object
-    );
+      `object_history_of_tab_${this.$route.params.object}`,
+    )
 
     if (
-      historyTab &&
-      this.checkedPermissionTab.filter((item) => item.name === historyTab)
+      historyTab
+      && this.checkedPermissionTab.filter(item => item.name === historyTab)
         .length !== 0
     ) {
-      this.currentTab = historyTab;
+      this.currentTab = historyTab
     } else {
-      this.changeTab(this.checkedPermissionTab[0]);
+      this.changeTab(this.checkedPermissionTab[0])
     }
 
-    if (this.currentTab === "ParkingTable") {
-      this.fetchParkingStatusList();
+    if (this.currentTab === 'ParkingTable') {
+      this.fetchParkingStatusList()
     } else {
-      this.statusList = this.apartmentStatusList;
+      this.statusList = this.apartmentStatusList
     }
 
-    this.getBlockName();
+    this.getBlockName()
   },
   methods: {
     showFacilities() {
       this.$router.push({
-        name: "facilities-show",
+        name: 'facilities-show',
         params: { object: this.$route.params.object },
-      });
+      })
     },
     getApartmentCounts() {
-      this.statusCounter = {};
+      this.statusCounter = {}
       api.objectsV2
         .fetchObjectApartmentsCounts(this.$route.params.object, this.query)
-        .then(({ data }) => (this.statusCounter = data.result));
+        .then(({ data }) => (this.statusCounter = data.result))
     },
     async fetchParkingStatusList() {
-      const { object } = this.$route.params;
-      this.statusCounter = {};
+      const { object } = this.$route.params
+      this.statusCounter = {}
 
-      const res = await api.objectsV2.fetchObjectParkingsStatusList(object);
-      const response = res.data;
-      this.statusList = response.map((el) => ({
+      const res = await api.objectsV2.fetchObjectParkingsStatusList(object)
+      const response = res.data
+      this.statusList = response.map(el => ({
         label: el.name[this.$i18n.locale],
         class: el.color,
         value: el.status,
-      }));
-      const statusCounterNew = {};
-      response.forEach((el) => {
-        statusCounterNew[el.status] = el.count;
-      });
-      this.statusCounter = statusCounterNew;
+      }))
+      const statusCounterNew = {}
+      response.forEach(el => {
+        statusCounterNew[el.status] = el.count
+      })
+      this.statusCounter = statusCounterNew
     },
     async fetchNecessary() {
-      if (ApartmentsPermission.getApartmentsPermission("filter")) {
-        await this.fetchFilterFields();
-        await this.getGridOptimizationItems();
+      if (ApartmentsPermission.getApartmentsPermission('filter')) {
+        await this.fetchFilterFields()
+        await this.getGridOptimizationItems()
       }
 
-      if (this.currentTab === "ObjectTable") {
-        await this.$refs["object-child"].fetchContractList();
+      if (this.currentTab === 'ObjectTable') {
+        await this.$refs['object-child'].fetchContractList()
       }
     },
     async getBlockItems(blocks) {
-      const { object } = this.$route.params;
-      const setObjectMap = (_b) => {
+      const { object } = this.$route.params
+      const setObjectMap = _b => {
         if (this.gridApartments.length) {
           const idx = this.gridApartments.findIndex(
-            (_obj) => _obj.id === _b.building.id
-          );
+            _obj => _obj.id === _b.building.id,
+          )
           if (idx !== -1) {
             const blockIdx = this.gridApartments[idx].blocks.findIndex(
-              (block) => {
-                return block.id === _b.block.id;
-              }
-            );
+              block => block.id === _b.block.id,
+            )
 
             if (blockIdx === -1) {
-              this.gridApartments[idx].blocks.push(_b.block);
+              this.gridApartments[idx].blocks.push(_b.block)
             }
           } else {
             this.gridApartments.push({
               id: _b.building.id,
               name: _b.building.name,
               blocks: [_b.block],
-            });
+            })
           }
         } else {
           this.gridApartments.push({
             id: _b.building.id,
             name: _b.building.name,
             blocks: [_b.block],
-          });
+          })
         }
 
         if (this.hasQuery) {
-          this.compareStatus(this.query);
+          this.compareStatus(this.query)
           this.chessApartments = this.filterItems(
             this.query,
-            this.gridApartments
-          );
+            this.gridApartments,
+          )
         } else {
-          this.chessApartments = this.gridApartments;
+          this.chessApartments = this.gridApartments
         }
-      };
-      const that = this;
-      const tmp = this;
-      async function fetchGrid() {
-        tmp.getLoading = true;
-        const calls = [...blocks.keys()].map((i) =>
-          api.objectsV2.getOptimizeApartments(object, blocks[i])
-        );
-        await Promise.all(calls).then((responses) => {
-          console.log(responses.map((e) => e.data));
-          console.log(that.gridApartments);
-          responses.forEach(({ data }) => setObjectMap(data));
-        });
-        tmp.getLoading = false;
       }
-      if (["ChessSquareCard", "ObjectBlock"].includes(this.currentTab))
-        fetchGrid();
+      const that = this
+      const tmp = this
+      async function fetchGrid() {
+        tmp.getLoading = true
+        const calls = [...blocks.keys()].map(i => api.objectsV2.getOptimizeApartments(object, blocks[i]))
+        await Promise.all(calls).then(responses => {
+          console.log(responses.map(e => e.data))
+          console.log(that.gridApartments)
+          responses.forEach(({ data }) => setObjectMap(data))
+        })
+        tmp.getLoading = false
+      }
+      if (['ChessSquareCard', 'ObjectBlock'].includes(this.currentTab)) fetchGrid()
     },
     async getGridOptimizationItems() {
-      const _bs = this.filterFields.blocks.map((b) => b.id);
-      await this.getBlockItems(_bs);
+      const _bs = this.filterFields.blocks.map(b => b.id)
+      await this.getBlockItems(_bs)
     },
 
     cellAttributes(slot) {
-      return ["#cell(" + slot.id + ')="data"'];
+      return [`#cell(${slot.id})="data"`]
     },
     closeMapModal() {
-      this.$refs["price-table"].closeModal();
+      this.$refs['price-table'].closeModal()
     },
     getPriceList() {
-      const { object } = this.$route.params;
-      api.objectsV2.fetchObjectPrice(object).then((response) => {
-        this.priceList = response.data;
-        response.data.map((item) => {
+      const { object } = this.$route.params
+      api.objectsV2.fetchObjectPrice(object).then(response => {
+        this.priceList = response.data
+        response.data.map(item => {
           this.priceFields = [
             ...this.priceFields,
             {
               key: `${item.id}`,
               label: item.id,
             },
-          ];
-        });
-      });
+          ]
+        })
+      })
     },
     openPriceList() {
-      this.$refs["price-table"].openModal();
+      this.$refs['price-table'].openModal()
     },
     async initRelatedToComponent() {
-      if (this.currentTab === "ObjectPlan" && !this.plans.length) {
-        await this.getObjectPlans();
-        return;
+      if (this.currentTab === 'ObjectPlan' && !this.plans.length) {
+        await this.getObjectPlans()
+        return
       }
 
-      const graphComponentList = ["ObjectBlock", "ChessSquareCard"];
-      const isGraphComponent = graphComponentList.includes(this.currentTab);
+      const graphComponentList = ['ObjectBlock', 'ChessSquareCard']
+      const isGraphComponent = graphComponentList.includes(this.currentTab)
       if (isGraphComponent && !this.chessApartments.length) {
-        await this.fetchNecessary();
+        await this.fetchNecessary()
       } else if (this.hasQuery) {
-        this.compareStatus(this.query);
+        this.compareStatus(this.query)
         this.chessApartments = this.filterItems(
           this.query,
-          this.gridApartments
-        );
+          this.gridApartments,
+        )
       }
     },
     async fetchFilterFields() {
-      //if (this.filterFields.length) return;
+      // if (this.filterFields.length) return;
 
-      const { object } = this.$route.params;
-      if (this.currentTab !== "ParkingTable") {
+      const { object } = this.$route.params
+      if (this.currentTab !== 'ParkingTable') {
         await api.objectsV2
           .fetchObjectFields(object)
-          .then((response) => {
-            this.filterFields = response.data;
+          .then(response => {
+            this.filterFields = response.data
           })
-          .catch((err) => {
-            this.toastedWithErrorCode(err);
+          .catch(err => {
+            this.toastedWithErrorCode(err)
           })
           .finally(() => {
-            this.finishLoading = true;
-          });
+            this.finishLoading = true
+          })
       } else {
         await api.objectsV2
           .fetchParkingFilterFields(object)
-          .then((response) => {
-            this.filterFields = response.data;
+          .then(response => {
+            this.filterFields = response.data
           })
-          .catch((err) => {
-            this.toastedWithErrorCode(err);
+          .catch(err => {
+            this.toastedWithErrorCode(err)
           })
           .finally(() => {
-            this.finishLoading = true;
-          });
+            this.finishLoading = true
+          })
       }
     },
     changeTab({ name }) {
-      this.currentTab = name;
-      const { object } = this.$route.params;
+      this.currentTab = name
+      const { object } = this.$route.params
       this.$router.replace({
         query: {
           currentTab: this.currentTab,
           page: 1,
           limit: this.query.limit,
         },
-      });
-      sessionStorageSetItem(`object_history_of_tab_${object}`, this.currentTab);
+      })
+      sessionStorageSetItem(`object_history_of_tab_${object}`, this.currentTab)
     },
     clearStatus() {
-      this.statusFilter = [];
+      this.statusFilter = []
     },
     compareArray(arrayOne, arrayTwo) {
       if (Array.isArray(arrayOne) && Array.isArray(arrayTwo)) {
-        const arr1 = [...arrayOne].sort();
-        const arr2 = [...arrayTwo].sort();
-        const equalLength = arr1.length === arr2.length;
+        const arr1 = [...arrayOne].sort()
+        const arr2 = [...arrayTwo].sort()
+        const equalLength = arr1.length === arr2.length
         const isEqualByValue = arr1.every(
-          (value, index) => value === arr2[index]
-        );
-        return equalLength && isEqualByValue;
+          (value, index) => value === arr2[index],
+        )
+        return equalLength && isEqualByValue
       }
-      return false;
+      return false
     },
     compareStatus(routeQuery) {
-      let isNotEqual = false;
+      let isNotEqual = false
       if (Object.keys(routeQuery).length) {
         if (routeQuery.status) {
-          isNotEqual = !this.compareArray(routeQuery.status, this.statusFilter);
+          isNotEqual = !this.compareArray(routeQuery.status, this.statusFilter)
         }
       }
 
       if (isNotEqual) {
-        const isPrimitive = isPrimitiveValue(routeQuery.status);
+        const isPrimitive = isPrimitiveValue(routeQuery.status)
         if (isPrimitive) {
-          this.statusFilter = [routeQuery.status];
+          this.statusFilter = [routeQuery.status]
         } else {
-          this.statusFilter = routeQuery.status;
+          this.statusFilter = routeQuery.status
         }
       }
 
       if (routeQuery.status === undefined) {
-        this.statusFilter = [];
+        this.statusFilter = []
       }
     },
     filterItems(filter, apartments = []) {
-      let localApartments = [];
+      let localApartments = []
 
       if (apartments.length) {
-        localApartments = apartments;
+        localApartments = apartments
       } else {
-        localApartments = this.apartments;
+        localApartments = this.apartments
       }
 
-      return localApartments.map((mainConstructor) => {
-        let filterBlocks;
+      return localApartments.map(mainConstructor => {
+        let filterBlocks
         const hasBlocks = Object.prototype.hasOwnProperty.call(
           filter,
-          "blocks"
-        );
+          'blocks',
+        )
         if (hasBlocks) {
-          filterBlocks = mainConstructor.blocks.map((block) => {
-            if (typeof filter.blocks === "string") {
-              filter.blocks = [filter.blocks];
+          filterBlocks = mainConstructor.blocks.map(block => {
+            if (typeof filter.blocks === 'string') {
+              filter.blocks = [filter.blocks]
             }
 
             const isActiveBlock = filter.blocks
-              .map((blockId) => {
-                if (typeof blockId === "string") {
-                  return parseInt(blockId);
+              .map(blockId => {
+                if (typeof blockId === 'string') {
+                  return parseInt(blockId)
                 }
-                return blockId;
+                return blockId
               })
-              .includes(block.id);
+              .includes(block.id)
 
             if (isActiveBlock) {
               return {
                 ...block,
                 blockActive: true,
-              };
+              }
             }
 
             return {
               ...block,
               blockActive: false,
-            };
-          });
+            }
+          })
         } else {
-          filterBlocks = mainConstructor.blocks.map((block) => {
-            return {
-              ...block,
-              blockActive: true,
-            };
-          });
+          filterBlocks = mainConstructor.blocks.map(block => ({
+            ...block,
+            blockActive: true,
+          }))
         }
 
-        filterBlocks = filterBlocks.map((filterBlock) => {
-          let filterFloors = filterBlock.floors;
+        filterBlocks = filterBlocks.map(filterBlock => {
+          let filterFloors = filterBlock.floors
           const hasFloorsQuery = Object.prototype.hasOwnProperty.call(
             filter,
-            "floors"
-          );
+            'floors',
+          )
           if (hasFloorsQuery) {
-            if (typeof filter.floors === "string") {
-              filter.floors = [filter.floors];
+            if (typeof filter.floors === 'string') {
+              filter.floors = [filter.floors]
             }
 
-            filterFloors = filterFloors.map((floor) => {
+            filterFloors = filterFloors.map(floor => {
               const isActiveFloor = filter.floors
-                .map((floor) => {
-                  if (typeof floor === "string") {
-                    return parseInt(floor);
+                .map(floor => {
+                  if (typeof floor === 'string') {
+                    return parseInt(floor)
                   }
-                  return floor;
+                  return floor
                 })
-                .includes(floor.name);
+                .includes(floor.name)
 
               if (isActiveFloor) {
                 return {
                   ...floor,
                   floorActive: true,
-                };
+                }
               }
 
               return {
                 ...floor,
                 floorActive: false,
-              };
-            });
+              }
+            })
           } else {
-            filterFloors = filterFloors.map((floor) => {
-              return {
-                ...floor,
-                floorActive: true,
-              };
-            });
+            filterFloors = filterFloors.map(floor => ({
+              ...floor,
+              floorActive: true,
+            }))
           }
 
-          const notRelatedToApartment =
-            Object.keys(filter).length === 2 && hasFloorsQuery && hasBlocks;
+          const notRelatedToApartment = Object.keys(filter).length === 2 && hasFloorsQuery && hasBlocks
           if (!notRelatedToApartment) {
-            filterFloors = filterFloors.map((filterFloor) => {
-              let floorApartments = filterFloor.apartments;
-              floorApartments = floorApartments.map((floorApartment) => {
-                let apartment = floorApartment;
-                const { price_m2, number, price, plan, rooms, order, is_sold } =
-                  apartment;
-                const filterResult = [];
-                const filterQueryLength = Object.keys(filter).length > 0;
+            filterFloors = filterFloors.map(filterFloor => {
+              let floorApartments = filterFloor.apartments
+              floorApartments = floorApartments.map(floorApartment => {
+                const apartment = floorApartment
+                const {
+                  price_m2, number, price, plan, rooms, order, is_sold,
+                } = apartment
+                const filterResult = []
+                const filterQueryLength = Object.keys(filter).length > 0
                 if (filterQueryLength) {
                   for (let [key, value] of Object.entries(filter)) {
-                    const arrayFareList = ["area", "rooms", "number"];
-                    const isThereFareList = arrayFareList.includes(key);
+                    const arrayFareList = ['area', 'rooms', 'number']
+                    const isThereFareList = arrayFareList.includes(key)
                     if (isThereFareList && isPrimitiveValue(value)) {
-                      value = [value];
+                      value = [value]
                     }
 
-                    if (key === "price_m2") {
-                      const isSatisfy = value === price_m2;
-                      filterResult.push(isSatisfy);
-                      continue;
+                    if (key === 'price_m2') {
+                      const isSatisfy = value === price_m2
+                      filterResult.push(isSatisfy)
+                      continue
                     }
 
-                    if (key === "price_from") {
-                      const isSatisfy = value <= price;
-                      filterResult.push(isSatisfy);
-                      continue;
+                    if (key === 'price_from') {
+                      const isSatisfy = value <= price
+                      filterResult.push(isSatisfy)
+                      continue
                     }
 
-                    if (key === "price_to") {
-                      const isSatisfy = value >= price;
-                      filterResult.push(isSatisfy);
-                      continue;
+                    if (key === 'price_to') {
+                      const isSatisfy = value >= price
+                      filterResult.push(isSatisfy)
+                      continue
                     }
 
-                    if (key === "area_from") {
-                      const isSatisfy = value <= plan.area;
-                      filterResult.push(isSatisfy);
-                      continue;
+                    if (key === 'area_from') {
+                      const isSatisfy = value <= plan.area
+                      filterResult.push(isSatisfy)
+                      continue
                     }
 
-                    if (key === "area_to") {
-                      const isSatisfy = value >= plan.area;
-                      filterResult.push(isSatisfy);
-                      continue;
+                    if (key === 'area_to') {
+                      const isSatisfy = value >= plan.area
+                      filterResult.push(isSatisfy)
+                      continue
                     }
 
-                    if (key === "area") {
-                      const isSatisfy = value.includes(plan.area);
-                      filterResult.push(isSatisfy);
-                      continue;
+                    if (key === 'area') {
+                      const isSatisfy = value.includes(plan.area)
+                      filterResult.push(isSatisfy)
+                      continue
                     }
 
-                    if (key === "rooms") {
+                    if (key === 'rooms') {
                       const isSatisfy = value
-                        .map((vs) => {
-                          if (typeof vs === "string") {
-                            return parseInt(vs);
+                        .map(vs => {
+                          if (typeof vs === 'string') {
+                            return parseInt(vs)
                           }
-                          return vs;
+                          return vs
                         })
-                        .includes(rooms);
-                      filterResult.push(isSatisfy);
-                      continue;
+                        .includes(rooms)
+                      filterResult.push(isSatisfy)
+                      continue
                     }
 
-                    if (key === "status") {
-                      const isUnavailable = value.includes("unavailable");
+                    if (key === 'status') {
+                      const isUnavailable = value.includes('unavailable')
                       if (isUnavailable) {
                         if (!is_sold) {
-                          filterResult.push(true);
-                          continue;
+                          filterResult.push(true)
+                          continue
                         }
                       }
 
                       if (is_sold) {
-                        const isStatusPrimitive = isPrimitiveValue(value);
-                        let values = value;
+                        const isStatusPrimitive = isPrimitiveValue(value)
+                        let values = value
 
                         if (isStatusPrimitive) {
-                          values = [value];
+                          values = [value]
                         }
 
-                        const isSatisfy = values.includes(order.status);
-                        filterResult.push(isSatisfy);
+                        const isSatisfy = values.includes(order.status)
+                        filterResult.push(isSatisfy)
                       } else {
-                        filterResult.push(false);
+                        filterResult.push(false)
                       }
-                      continue;
+                      continue
                     }
 
-                    if (key === "number") {
-                      const isSatisfy = value.includes(number);
-                      filterResult.push(isSatisfy);
+                    if (key === 'number') {
+                      const isSatisfy = value.includes(number)
+                      filterResult.push(isSatisfy)
                     }
                   }
 
-                  let satisfyFilter = true;
+                  let satisfyFilter = true
 
                   if (filterResult.length) {
                     satisfyFilter = filterResult.reduce(
-                      (prev, next) => prev && next
-                    );
+                      (prev, next) => prev && next,
+                    )
                   }
 
                   if (satisfyFilter) {
                     return {
                       ...apartment,
                       apartmentActive: true,
-                    };
-                  } else {
-                    return {
-                      ...apartment,
-                      apartmentActive: false,
-                    };
+                    }
                   }
-                } else {
                   return {
                     ...apartment,
-                    apartmentActive: true,
-                  };
+                    apartmentActive: false,
+                  }
                 }
-              });
+                return {
+                  ...apartment,
+                  apartmentActive: true,
+                }
+              })
 
               return {
                 name: filterFloor.name,
                 apartments: floorApartments,
                 floorActive: filterFloor.floorActive,
-              };
-            });
+              }
+            })
           }
 
-          const { id, name, blockActive } = filterBlock;
+          const { id, name, blockActive } = filterBlock
           return {
             id,
             name,
             blockActive,
             floors: filterFloors,
-          };
-        });
+          }
+        })
 
         return {
           ...mainConstructor,
           blocks: filterBlocks,
-        };
-      });
+        }
+      })
     },
     async getBlockName() {
-      const id = this.$route.params.object;
+      const id = this.$route.params.object
       await api.objectsV2
         .getObjectName(id)
-        .then((res) => {
-          this.objectName = res.data.name;
-          this.is_parking = res.data.is_parking;
-          this.isHidePrice = res.data.is_hide_m2_price;
-          this.is_map = res.data.is_map;
+        .then(res => {
+          this.objectName = res.data.name
+          this.is_parking = res.data.is_parking
+          this.isHidePrice = res.data.is_hide_m2_price
+          this.is_map = res.data.is_map
         })
-        .catch((err) => {
-          return err;
-        });
+        .catch(err => err)
     },
     async getApartments() {
-      const id = this.$route.params.object;
-      this.getLoading = true;
+      const id = this.$route.params.object
+      this.getLoading = true
       await api.objectsV2
         .getApartments(id)
-        .then(async (res) => {
-          this.saveToLocalStorage(res.data);
+        .then(async res => {
+          this.saveToLocalStorage(res.data)
           if (this.hasQuery) {
-            this.compareStatus(this.query);
-            this.filterItems(this.query, res.data.data);
+            this.compareStatus(this.query)
+            this.filterItems(this.query, res.data.data)
           } else {
-            this.apartments = res.data.data;
+            this.apartments = res.data.data
           }
         })
-        .catch((err) => {
-          this.toastedWithErrorCode(err);
+        .catch(err => {
+          this.toastedWithErrorCode(err)
         })
         .finally(() => {
-          this.getLoading = false;
-        });
+          this.getLoading = false
+        })
     },
     saveToLocalStorage(data) {
-      const expiryDate = new Date().getTime() + 20 * 60 * 1000;
+      const expiryDate = new Date().getTime() + 20 * 60 * 1000
       localStorage.setItem(
-        "apartments_expiry_date",
-        JSON.stringify(expiryDate)
-      );
-      localStorage.setItem("object_apartment_list", JSON.stringify(data.data));
+        'apartments_expiry_date',
+        JSON.stringify(expiryDate),
+      )
+      localStorage.setItem('object_apartment_list', JSON.stringify(data.data))
       localStorage.setItem(
-        "object_information",
+        'object_information',
         JSON.stringify({
           name: data.object,
           id: data.id,
-        })
-      );
+        }),
+      )
     },
     async getApartmentsFromLocaleMachine() {
       // if (!this.apartments.length) {
@@ -1054,68 +1042,80 @@ export default {
       //         }
       //     }
 
-      await this.getApartments();
+      await this.getApartments()
     },
     async getObjectPlans() {
-      this.planLoading = true;
-      const id = this.$route.params.object;
+      this.planLoading = true
+      const id = this.$route.params.object
       await api.objectsV2
         .getObjectPlans(id)
-        .then((response) => {
-          this.plans = response.data;
+        .then(response => {
+          this.plans = response.data
         })
-        .catch((err) => {
-          this.toastedWithErrorCode(err);
+        .catch(err => {
+          this.toastedWithErrorCode(err)
         })
         .finally(() => {
-          this.planLoading = false;
-        });
+          this.planLoading = false
+        })
     },
     apartmentExpressReview(item) {
       if (item) {
-        this.expressView.item = item;
-        this.expressView.toggle = true;
+        this.expressView.item = item
+        this.expressView.toggle = true
       }
     },
     planExpressReview(item) {
       if (item) {
-        this.planView.item = item;
-        this.planView.toggle = true;
+        this.planView.item = item
+        this.planView.toggle = true
       }
     },
     parkingExpressReview(item) {
       if (item) {
-        this.parkingView.item = item;
-        this.parkingView.toggle = true;
+        this.parkingView.item = item
+        this.parkingView.toggle = true
       }
     },
 
     hideApartmentSidebarView() {
-      this.expressView.toggle = false;
+      this.expressView.toggle = false
     },
     hideParkingSidebarView() {
-      this.parkingView.toggle = false;
+      this.parkingView.toggle = false
     },
     hidePlanSidebarView() {
-      this.planView.toggle = false;
+      this.planView.toggle = false
     },
   },
-};
+}
 </script>
 
 <template>
   <div>
     <app-header>
       <template #header-breadcrumb>
-        <div v-if="finishLoading && objectName" class="navigation__content">
+        <div
+          v-if="finishLoading && objectName"
+          class="navigation__content"
+        >
           <div class="d-flex align-items-center">
-            <router-link class="go__back" :to="{ name: 'objects' }">
-              <base-arrow-left :width="32" :height="32"></base-arrow-left>
+            <router-link
+              class="go__back"
+              :to="{ name: 'objects' }"
+            >
+              <base-arrow-left
+                :width="32"
+                :height="32"
+              />
             </router-link>
             <div class="breadcrumb__content">
               <div class="d-flex align-items-center">
                 <span class="mr-2">{{ $t("objects.title") }}</span>
-                <base-arrow-right :width="16" :height="16" />
+                <base-arrow-right
+                  :width="16"
+                  :height="16"
+                />
                 <span class="ml-2">{{ objectName }}</span>
               </div>
               <div class="head">
@@ -1129,12 +1129,15 @@ export default {
       <template #header-actions>
         <div v-if="is_map">
           <base-button
-            @click="showFacilities"
             text="Map"
             design="violet-gradient"
+            @click="showFacilities"
           >
             <template #left-icon>
-              <i class="fas fa-map-marker-alt" style="font-size: 20px"></i>
+              <i
+                class="fas fa-map-marker-alt"
+                style="font-size: 20px"
+              />
             </template>
           </base-button>
         </div>
@@ -1177,13 +1180,13 @@ export default {
     />
 
     <div
-      class="status-row"
       v-if="apartmentsFilterPermission && currentTab !== 'ObjectPlan'"
+      class="status-row"
     >
       <b-form-checkbox-group
         id="checkbox-sort"
-        class="status-sort"
         v-model="statusFilter"
+        class="status-sort"
         name="sort"
       >
         <b-form-checkbox
@@ -1207,8 +1210,14 @@ export default {
           <!--    TITLE      -->
           <span class="title">{{ $t("objects.create.prices") }}</span>
           <!--          CLOSE-->
-          <span class="go__back" @click="closeMapModal">
-            <BaseCloseIcon :width="40" :height="40" />
+          <span
+            class="go__back"
+            @click="closeMapModal"
+          >
+            <BaseCloseIcon
+              :width="40"
+              :height="40"
+            />
           </span>
         </span>
       </template>
@@ -1232,19 +1241,27 @@ export default {
             <span>{{ data.item.amount }}</span>
           </template>
 
-          <template v-for="price of priceList" #cell()="data">
-            <slot :name="price.id" v-bind="data">{{ data.item.prices }}</slot>
+          <template
+            v-for="price of priceList"
+            #cell()="data"
+          >
+            <slot
+              :name="price.id"
+              v-bind="data"
+            >
+              {{ data.item.prices }}
+            </slot>
           </template>
         </b-table>
       </template>
     </base-modal>
 
     <component
+      :is="currentTab"
       ref="object-child"
       :loading="getLoading"
       :plans="plans"
       :plan-load="planLoading"
-      :is="currentTab"
       :apartments="apartmentsByTabs"
       :is-hide-price="isHidePrice"
       @show-express-sidebar="apartmentExpressReview"
@@ -1256,7 +1273,7 @@ export default {
     <apartment-express-view
       :visible="expressView.toggle"
       :apartment="expressView.item"
-      :apartmentUuid="expressView.item.uuid"
+      :apartment-uuid="expressView.item.uuid"
       @update-content="fetchNecessary"
       @hide-apartment-sidebar-view="hideApartmentSidebarView"
     />
@@ -1266,7 +1283,7 @@ export default {
       :visible="parkingView.toggle"
       :object-name="objectName"
       :apartment="parkingView.item"
-      :apartmentUuid="parkingView.item.id"
+      :apartment-uuid="parkingView.item.id"
       @hide-parking-details="hideParkingSidebarView"
     />
 

@@ -1,30 +1,20 @@
 <script>
-import PrimaryTabItem from "@/components/Objects/view/elements/PrimaryTabItem";
-import Calculator from "@/components/Objects/view/elements/Calculator";
-import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
-import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
-import { formatToPrice } from "@/util/reusable";
-import { directive } from "vue-awesome-swiper";
-import "swiper/css/swiper.css";
-import PromoSection from "@/components/Objects/view/elements/PromoSection";
-import { Fancybox } from "@fancyapps/ui";
-import "@fancyapps/ui/dist/fancybox.css";
-import { useShowPrice } from "@/composables/useShowPrice";
+import PrimaryTabItem from '@/components/Objects/view/elements/PrimaryTabItem'
+import Calculator from '@/components/Objects/view/elements/Calculator'
+import BaseArrowLeftIcon from '@/components/icons/BaseArrowLeftIcon'
+import BaseArrowRightIcon from '@/components/icons/BaseArrowRightIcon'
+import { formatToPrice } from '@/util/reusable'
+import { directive } from 'vue-awesome-swiper'
+import 'swiper/css/swiper.css'
+import PromoSection from '@/components/Objects/view/elements/PromoSection'
+import { Fancybox } from '@fancyapps/ui'
+import '@fancyapps/ui/dist/fancybox.css'
+import { useShowPrice } from '@/composables/useShowPrice'
 
 export default {
-  name: "PrimaryInformation",
+  name: 'PrimaryInformation',
   setup() {
-    return useShowPrice();
-  },
-  props: {
-    visible: {
-      type: Boolean,
-      default: true,
-    },
-    apartment: {
-      type: Object,
-      required: true,
-    },
+    return useShowPrice()
   },
 
   components: {
@@ -38,6 +28,16 @@ export default {
   directives: {
     swiper: directive,
   },
+  props: {
+    visible: {
+      type: Boolean,
+      default: true,
+    },
+    apartment: {
+      type: Object,
+      required: true,
+    },
+  },
 
   data() {
     return {
@@ -45,74 +45,77 @@ export default {
       swiperOption: {
         slidesPerView: 1,
         spaceBetween: 0,
-        direction: "horizontal",
+        direction: 'horizontal',
         pagination: {
-          el: ".swiper-pagination",
-          type: "bullets",
+          el: '.swiper-pagination',
+          type: 'bullets',
           clickable: true,
         },
         paginationClickable: true,
         draggable: true,
         loop: false,
         navigation: {
-          nextEl: ".swiper-button-next",
-          prevEl: ".swiper-button-prev",
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev',
         },
       },
-    };
-  },
-  mounted() {
-    Fancybox.bind("[data-fancybox]");
+    }
   },
   computed: {
     price() {
       return (
-        formatToPrice(this.apartment.prices.price, 2) + " " + this.$t("ye")
-      );
+        `${formatToPrice(this.apartment.prices.price, 2)} ${this.$t('ye')}`
+      )
     },
 
     squareMetrePrice() {
       return (
-        formatToPrice(this.apartment.prices.price_m2, 2) + " " + this.$t("ye")
-      );
+        `${formatToPrice(this.apartment.prices.price_m2, 2)} ${this.$t('ye')}`
+      )
     },
 
     statusSold() {
-      return this.apartment.order.status === "sold";
+      return this.apartment.order.status === 'sold'
     },
+  },
+  mounted() {
+    Fancybox.bind('[data-fancybox]')
   },
 
   methods: {
     forPrint(value) {
-      this.$emit("for-print", value);
+      this.$emit('for-print', value)
     },
     buildingDate(time) {
-      const date = new Date(time);
-      const year = date.getFullYear();
-      let month = date.getMonth();
+      const date = new Date(time)
+      const year = date.getFullYear()
+      let month = date.getMonth()
       if (month < 3) {
-        month = "1";
+        month = '1'
       } else if (month >= 3 && month < 6) {
-        month = "2";
+        month = '2'
       } else if (month >= 6 && month < 9) {
-        month = "3";
+        month = '3'
       } else {
-        month = "4";
+        month = '4'
       }
 
-      return ` ${month} - ${this.$t("quarter")} ${year} ${this.$t(
-        "of_the_year"
-      )}`;
+      return ` ${month} - ${this.$t('quarter')} ${year} ${this.$t(
+        'of_the_year',
+      )}`
     },
   },
-};
+}
 </script>
 
 <template>
   <div class="main__content">
     <!--   IMAGE SLIDER     -->
     <div class="slider-content">
-      <div class="swiper" v-swiper="swiperOption">
+      <div
+        v-swiper="swiperOption"
+        class="swiper"
+      >
         <!--     MAIN CONTENT OF SLIDE       -->
         <div class="swiper-wrapper">
           <div
@@ -127,19 +130,19 @@ export default {
                 class="swiper-image"
                 :src="image"
                 alt="img-plan"
-              />
+              >
               <img
                 v-else
                 class="swiper-image"
                 :src="require('@/assets/img/no-image.jpg')"
                 alt="img-no"
-              />
+              >
             </div>
           </div>
         </div>
 
         <!--     DOTS PAGINATION       -->
-        <div class="swiper-pagination"></div>
+        <div class="swiper-pagination" />
 
         <!--     BUTTON PREVIOUS       -->
         <div
@@ -159,11 +162,17 @@ export default {
       </div>
     </div>
 
-    <b-tabs card class="calculator-tab">
+    <b-tabs
+      card
+      class="calculator-tab"
+    >
       <template #tabs-start>
         <div class="bottom__line" />
       </template>
-      <b-tab :title="$t('details')" active>
+      <b-tab
+        :title="$t('details')"
+        active
+      >
         <!--   PRICE CONTENT     -->
         <div
           v-if="!statusSold"
@@ -198,7 +207,10 @@ export default {
           <span class="price__section-amount">{{ price }}</span>
         </div>
 
-        <Calculator @for-print="forPrint" :apartment="apartment" />
+        <Calculator
+          :apartment="apartment"
+          @for-print="forPrint"
+        />
 
         <PromoSection :promo="apartment.promo" />
         <!--        &lt;!&ndash;   PROMO SECTION &ndash;&gt;-->
@@ -314,7 +326,6 @@ export default {
             &-active
                 background-color: var(--violet-400)
 
-
 ::v-deep .calculator-tab
 
     .bottom__line
@@ -341,7 +352,6 @@ export default {
 
     .card-header-tabs
         margin: 0
-
 
     .nav-tabs
         display: flex
@@ -376,7 +386,6 @@ export default {
                     background-color: var(--violet-600)
                     z-index: 5
 
-
 .price__section
     font-family: CraftworkSans, serif
     font-size: 1.5rem
@@ -394,7 +403,6 @@ export default {
         font-size: 18px
         line-height: 22px
 
-
 .button__view
     display: inline-block
     padding: 1rem 1.5rem
@@ -402,14 +410,12 @@ export default {
     border-radius: 2rem
     font-family: Inter, sans-serif
 
-
 .particular__qualities
     font-family: Inter, sans-serif
     margin-bottom: 2.5rem
 
     .title
         font-size: 1.25rem
-
 
     &-content
         display: flex

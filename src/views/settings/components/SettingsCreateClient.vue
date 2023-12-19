@@ -1,17 +1,17 @@
 <script>
-import api from "@/services/api";
-import { XModalCenter } from "@/components/ui-components/modal-center";
-import { XSquareBackground } from "@/components/ui-components/square-background";
-import { XIcon } from "@/components/ui-components/material-icons";
-import { XFormInput } from "@/components/ui-components/form-input";
-import { PROP_TYPE_OBJECT, PROP_TYPE_STRING } from "@/constants/props";
-import { symbolLatinToCyrillic } from "@/util/language-helper";
-import { debounce } from "@/util/reusable";
-import { makeProp } from "@/util/props";
-import { isEmptyObject } from "@/util/inspect";
+import api from '@/services/api'
+import { XModalCenter } from '@/components/ui-components/modal-center'
+import { XSquareBackground } from '@/components/ui-components/square-background'
+import { XIcon } from '@/components/ui-components/material-icons'
+import { XFormInput } from '@/components/ui-components/form-input'
+import { PROP_TYPE_OBJECT, PROP_TYPE_STRING } from '@/constants/props'
+import { symbolLatinToCyrillic } from '@/util/language-helper'
+import { debounce } from '@/util/reusable'
+import { makeProp } from '@/util/props'
+import { isEmptyObject } from '@/util/inspect'
 
 export default {
-  name: "SettingsCreateClient",
+  name: 'SettingsCreateClient',
   components: {
     XModalCenter,
     XSquareBackground,
@@ -19,35 +19,33 @@ export default {
     XFormInput,
   },
   props: {
-    upsertType: makeProp(PROP_TYPE_STRING, "create", (type) => {
-      return ["create", "edit"].includes(type);
-    }),
+    upsertType: makeProp(PROP_TYPE_STRING, 'create', type => ['create', 'edit'].includes(type)),
     editItem: makeProp(PROP_TYPE_OBJECT, {
       id: undefined,
       icon: undefined,
       name: {
-        uz: "",
-        ru: "",
+        uz: '',
+        ru: '',
       },
-      comment: "",
+      comment: '',
       is_vip: false,
     }),
   },
-  emits: ["client-type-created", "close-creating-modal"],
+  emits: ['client-type-created', 'close-creating-modal'],
   data() {
     const clientForm = {
       icon: undefined,
       is_vip: false,
       name: {
-        uz: "",
-        ru: "",
+        uz: '',
+        ru: '',
       },
-      comment: "",
+      comment: '',
       error: {
         active: false,
         message: undefined,
       },
-    };
+    }
     return {
       applyButtonLoading: false,
       clientForm,
@@ -55,26 +53,26 @@ export default {
         ...clientForm,
       },
       iconsCollection: [
-        { name: "person", active: false },
-        { name: "supervisor_account", active: false },
-        { name: "engineering", active: false },
-        { name: "star", active: false },
-        { name: "verified", active: false },
-        { name: "bookmark", active: false },
-        { name: "sentiment_satisfied", active: false },
-        { name: "rocket_launch", active: false },
-        { name: "lightbulb", active: false },
-        { name: "paid", active: false },
-        { name: "accessible", active: false },
-        { name: "blind", active: false },
+        { name: 'person', active: false },
+        { name: 'supervisor_account', active: false },
+        { name: 'engineering', active: false },
+        { name: 'star', active: false },
+        { name: 'verified', active: false },
+        { name: 'bookmark', active: false },
+        { name: 'sentiment_satisfied', active: false },
+        { name: 'rocket_launch', active: false },
+        { name: 'lightbulb', active: false },
+        { name: 'paid', active: false },
+        { name: 'accessible', active: false },
+        { name: 'blind', active: false },
       ],
-    };
+    }
   },
   watch: {
-    "client.name.uz": debounce(function (nameInUz) {
-      const nameInCyrillic = symbolLatinToCyrillic(nameInUz);
+    'client.name.uz': debounce(function (nameInUz) {
+      const nameInCyrillic = symbolLatinToCyrillic(nameInUz)
       if (this.client.name.ru !== nameInCyrillic) {
-        this.client.name.ru = nameInCyrillic;
+        this.client.name.ru = nameInCyrillic
       }
     }, 500),
 
@@ -86,82 +84,82 @@ export default {
     // }, 500),
   },
   created() {
-    if (this.upsertType === "edit") {
-      this.fulfillIcon();
+    if (this.upsertType === 'edit') {
+      this.fulfillIcon()
     } else {
-      this.activateIcon();
+      this.activateIcon()
     }
   },
   methods: {
     fulfillIcon() {
       if (isEmptyObject(this.editItem)) {
-        return;
+        return
       }
-      this.client = { ...this.client, ...this.editItem };
-      const idx = this.findIconIdx(this.editItem.icon);
+      this.client = { ...this.client, ...this.editItem }
+      const idx = this.findIconIdx(this.editItem.icon)
       if (this.editItem.icon && idx !== -1) {
-        this.iconsCollection[idx].active = true;
+        this.iconsCollection[idx].active = true
       } else {
-        this.deactivateAllIcons();
-        this.iconsCollection[0].active = true;
+        this.deactivateAllIcons()
+        this.iconsCollection[0].active = true
       }
     },
     activateIcon(position = 0) {
-      this.iconsCollection[position].active = true;
-      this.client.icon = this.iconsCollection[position].name;
+      this.iconsCollection[position].active = true
+      this.client.icon = this.iconsCollection[position].name
     },
     deactivateAllIcons() {
-      this.iconsCollection.forEach((icon) => (icon.active = false));
+      this.iconsCollection.forEach(icon => (icon.active = false))
     },
     closeCreatingModal() {
-      this.clearForm();
-      this.$emit("close-creating-modal");
+      this.clearForm()
+      this.$emit('close-creating-modal')
     },
-    findIconIdx(iconCh, matchBy = "name") {
-      return this.iconsCollection.findIndex((icon) => icon[matchBy] === iconCh);
+    findIconIdx(iconCh, matchBy = 'name') {
+      return this.iconsCollection.findIndex(icon => icon[matchBy] === iconCh)
     },
     changeIconType(name) {
-      const idx = this.iconsCollection.findIndex((icon) => icon.name === name);
+      const idx = this.iconsCollection.findIndex(icon => icon.name === name)
       if (idx !== -1) {
-        this.deactivateAllIcons();
-        this.activateIcon(idx);
+        this.deactivateAllIcons()
+        this.activateIcon(idx)
       }
     },
     startLoading() {
-      this.applyButtonLoading = true;
+      this.applyButtonLoading = true
     },
     finishLoading() {
-      this.applyButtonLoading = false;
+      this.applyButtonLoading = false
     },
     submitClientType() {
-      if (this.upsertType === "edit") {
-        this.editClientType();
+      if (this.upsertType === 'edit') {
+        this.editClientType()
       } else {
-        this.applyNewClientType();
+        this.applyNewClientType()
       }
     },
     async applyNewClientType() {
-      this.startLoading();
-      const isSatisfied = await this.$refs["creating-type-observer"].validate();
+      this.startLoading()
+      const isSatisfied = await this.$refs['creating-type-observer'].validate()
       if (isSatisfied) {
         try {
           await api.settingsV2.createClientType({
             name: this.client.name,
             is_vip: this.client.is_vip,
             icon: this.client.icon,
-          });
-          this.clearForm();
-          await this.$emit("client-type-created");
+          })
+          this.clearForm()
+          await this.$emit('client-type-created')
         } catch (e) {
-          this.toastedWithErrorCode(e);
+          this.toastedWithErrorCode(e)
         } finally {
-          this.finishLoading();
+          this.finishLoading()
         }
       }
     },
     async editClientType() {
-      this.startLoading();
-      const isSatisfied = await this.$refs["creating-type-observer"].validate();
+      this.startLoading()
+      const isSatisfied = await this.$refs['creating-type-observer'].validate()
       if (isSatisfied) {
         try {
           const response = await api.settingsV2.updateClientType(
@@ -170,22 +168,22 @@ export default {
               name: this.client.name,
               is_vip: this.client.is_vip,
               icon: this.client.icon,
-            }
-          );
-          this.clearForm();
-          response && this.$emit("client-type-created");
+            },
+          )
+          this.clearForm()
+          response && this.$emit('client-type-created')
         } catch (e) {
-          this.toastedWithErrorCode(e);
+          this.toastedWithErrorCode(e)
         } finally {
-          this.finishLoading();
+          this.finishLoading()
         }
       }
     },
     clearForm() {
-      this.client = { ...this.clientForm };
+      this.client = { ...this.clientForm }
     },
   },
-};
+}
 </script>
 
 <template>
@@ -230,54 +228,60 @@ export default {
 
         <validation-provider
           ref="clientTypeNameVProvider"
+          v-slot="{ errors }"
           name="client-type-name-uz-provider"
           rules="required|min:3"
-          v-slot="{ errors }"
         >
           <x-form-input
+            v-model="client.name.uz"
             type="text"
             :placeholder="`${$t('title')} (${$t('placeholder_uz')})`"
             class="w-100"
-            v-model="client.name.uz"
           />
-          <span class="error__provider" v-if="errors[0]">
+          <span
+            v-if="errors[0]"
+            class="error__provider"
+          >
             {{ errors[0].replace("status-type-name-uz-provider", $t("title")) }}
           </span>
         </validation-provider>
 
         <validation-provider
           ref="clientTypeNameVProvider"
+          v-slot="{ errors }"
           name="client-type-name-ru-provider"
           rules="required|min:3"
-          v-slot="{ errors }"
         >
           <x-form-input
+            v-model="client.name.ru"
             type="text"
             :placeholder="`${$t('title')} (${$t('placeholder_ru')})`"
             class="w-100"
-            v-model="client.name.ru"
           />
-          <span class="error__provider" v-if="errors[0]">
+          <span
+            v-if="errors[0]"
+            class="error__provider"
+          >
             {{ errors[0].replace("status-type-name-ru-provider", $t("title")) }}
           </span>
         </validation-provider>
 
         <b-form-checkbox
-          size="lg"
           id="checkbox-1"
+          v-model="client.is_vip"
+          size="lg"
           name="vip-checkbox"
           :checked="true"
           :unchecked-value="false"
-          v-model="client.is_vip"
         >
           {{ $t("has_the_powers_of_vip") }}
         </b-form-checkbox>
 
         <x-form-input
+          v-model="client.comment"
           type="text"
           :placeholder="`${$t('comment')}`"
           class="w-100 mt-2"
-          v-model="client.comment"
         />
       </validation-observer>
     </template>

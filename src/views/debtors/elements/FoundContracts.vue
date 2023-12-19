@@ -1,7 +1,8 @@
 <script>
-import BasePagination from "@/components/Reusable/Navigation/BasePagination.vue";
+import BasePagination from '@/components/Reusable/Navigation/BasePagination.vue'
+
 export default {
-  name: "FoundContracts",
+  name: 'FoundContracts',
   components: {
     BasePagination,
   },
@@ -15,27 +16,27 @@ export default {
     return {
       foundFields: [
         {
-          key: "key",
-          label: "debtors.contract_system",
-          thClass: "theadKey",
-          tdClass: "tbodyKey",
+          key: 'key',
+          label: 'debtors.contract_system',
+          thClass: 'theadKey',
+          tdClass: 'tbodyKey',
         },
         {
-          key: "value",
-          label: "debtors.alias_system",
-          thClass: "theadValue",
-          tdClass: "tbodyValue",
+          key: 'value',
+          label: 'debtors.alias_system',
+          thClass: 'theadValue',
+          tdClass: 'tbodyValue',
         },
       ],
       pagination: {
         current: 1,
         perPage: 10,
       },
-    };
+    }
   },
   computed: {
     tableDetails() {
-      const { current, perPage } = this.pagination;
+      const { current, perPage } = this.pagination
 
       if (this.items.length) {
         return {
@@ -43,7 +44,7 @@ export default {
           current,
           count: Math.ceil(this.items.length / perPage),
           items: this.items.slice((current - 1) * perPage, current * perPage),
-        };
+        }
       }
 
       return {
@@ -51,19 +52,19 @@ export default {
         current: 0,
         count: 0,
         items: [],
-      };
+      }
     },
   },
   methods: {
     paginateFoundItems(page) {
-      this.pagination.current = page;
+      this.pagination.current = page
     },
     changePerPage(perPage) {
-      this.pagination.current = 1;
-      this.pagination.perPage = perPage;
+      this.pagination.current = 1
+      this.pagination.perPage = perPage
     },
   },
-};
+}
 </script>
 
 <template>

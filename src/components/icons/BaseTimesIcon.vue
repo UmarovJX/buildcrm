@@ -1,6 +1,6 @@
 <script>
 export default {
-  name: "BaseTimesIcon",
+  name: 'BaseTimesIcon',
   props: {
     length: {
       type: Number,
@@ -8,10 +8,10 @@ export default {
     },
     fill: {
       type: String,
-      default: "#9CA3AF",
+      default: '#9CA3AF',
     },
   },
-};
+}
 </script>
 
 <template>

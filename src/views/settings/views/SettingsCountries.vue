@@ -1,14 +1,14 @@
 <script>
-import { XButton } from "@/components/ui-components/button";
-import { XIcon } from "@/components/ui-components/material-icons";
-import { XCircularBackground } from "@/components/ui-components/circular-background";
-import SettingsCreateCountry from "@/views/settings/components/SettingsCreateCountry.vue";
-import BaseLoading from "@/components/Reusable/BaseLoading.vue";
-import api from "@/services/api";
-import SettingsPermission from "@/permission/settings.permission";
+import { XButton } from '@/components/ui-components/button'
+import { XIcon } from '@/components/ui-components/material-icons'
+import { XCircularBackground } from '@/components/ui-components/circular-background'
+import SettingsCreateCountry from '@/views/settings/components/SettingsCreateCountry.vue'
+import BaseLoading from '@/components/Reusable/BaseLoading.vue'
+import api from '@/services/api'
+import SettingsPermission from '@/permission/settings.permission'
 
 export default {
-  name: "SettingsCountries",
+  name: 'SettingsCountries',
   components: {
     XButton,
     XIcon,
@@ -18,7 +18,7 @@ export default {
   },
   data() {
     return {
-      engagementType: "create",
+      engagementType: 'create',
       showCreateCountryModal: false,
       editStorage: {},
       countries: {
@@ -26,99 +26,99 @@ export default {
         busy: false,
       },
       permission: {
-        view: SettingsPermission.getPermission("client_countries.view"),
-        create: SettingsPermission.getPermission("client_countries.create"),
-        edit: SettingsPermission.getPermission("client_countries.edit"),
-        delete: SettingsPermission.getPermission("client_countries.delete"),
+        view: SettingsPermission.getPermission('client_countries.view'),
+        create: SettingsPermission.getPermission('client_countries.create'),
+        edit: SettingsPermission.getPermission('client_countries.edit'),
+        delete: SettingsPermission.getPermission('client_countries.delete'),
       },
-    };
+    }
   },
   computed: {
     countryFields() {
       return [
         {
-          key: "name",
-          label: this.$t("country"),
-          formatter: (name) => name[this.$i18n.locale],
+          key: 'name',
+          label: this.$t('country'),
+          formatter: name => name[this.$i18n.locale],
         },
         {
-          key: "code",
-          label: this.$t("country_code"),
+          key: 'code',
+          label: this.$t('country_code'),
         },
         {
-          key: "actions",
-          label: this.$t("actions"),
-          class: "float-right",
+          key: 'actions',
+          label: this.$t('actions'),
+          class: 'float-right',
         },
-      ];
+      ]
     },
   },
   created() {
-    this.getCountries();
+    this.getCountries()
   },
   methods: {
     setEngagementType(eType) {
-      if (["create", "edit"].includes(eType)) {
-        this.engagementType = eType;
+      if (['create', 'edit'].includes(eType)) {
+        this.engagementType = eType
       }
     },
     editCountries(item) {
-      this.setEngagementType("edit");
-      this.editStorage = item;
-      this.openCreatingModal();
+      this.setEngagementType('edit')
+      this.editStorage = item
+      this.openCreatingModal()
     },
     async deleteCountries(ctyId) {
       this.$swal({
-        title: this.$t("sweetAlert.title"),
-        text: this.$t("sweetAlert.text"),
-        icon: "warning",
+        title: this.$t('sweetAlert.title'),
+        text: this.$t('sweetAlert.text'),
+        icon: 'warning',
         showCancelButton: true,
-        cancelButtonText: this.$t("cancel"),
-        confirmButtonText: this.$t("sweetAlert.yes"),
-      }).then(async (result) => {
+        cancelButtonText: this.$t('cancel'),
+        confirmButtonText: this.$t('sweetAlert.yes'),
+      }).then(async result => {
         if (result.value) {
           try {
-            this.startAppLoading();
-            await api.settingsV2.removeCountryFromDb(ctyId);
-            await this.getCountries();
+            this.startAppLoading()
+            await api.settingsV2.removeCountryFromDb(ctyId)
+            await this.getCountries()
           } catch (e) {
-            this.toastedWithErrorCode();
+            this.toastedWithErrorCode()
           } finally {
-            this.finishAppLoading();
+            this.finishAppLoading()
           }
         }
-      });
+      })
     },
     startAppLoading() {
-      this.countries.busy = true;
+      this.countries.busy = true
     },
     finishAppLoading() {
-      this.countries.busy = false;
+      this.countries.busy = false
     },
     async getCountries() {
       try {
-        this.startAppLoading();
-        const { data } = await api.settingsV2.fetchCountries();
-        this.countries.items = data;
+        this.startAppLoading()
+        const { data } = await api.settingsV2.fetchCountries()
+        this.countries.items = data
       } catch (e) {
-        this.toastedWithErrorCode(e);
+        this.toastedWithErrorCode(e)
       } finally {
-        this.finishAppLoading();
+        this.finishAppLoading()
       }
     },
     openCreatingModal() {
-      this.showCreateCountryModal = true;
+      this.showCreateCountryModal = true
     },
     closeCreatingModal() {
-      this.showCreateCountryModal = false;
+      this.showCreateCountryModal = false
     },
     newCountryCreated() {
-      this.setEngagementType("create");
-      this.closeCreatingModal();
-      this.getCountries();
+      this.setEngagementType('create')
+      this.closeCreatingModal()
+      this.getCountries()
     },
   },
-};
+}
 </script>
 
 <template>
@@ -136,7 +136,10 @@ export default {
         @click="openCreatingModal"
       >
         <template #left-icon>
-          <x-icon name="add" class="violet-600" />
+          <x-icon
+            name="add"
+            class="violet-600"
+          />
         </template>
       </x-button>
     </div>
@@ -171,18 +174,24 @@ export default {
         <div class="float-right d-flex x-gap-1 cursor-pointer">
           <x-circular-background
             v-if="permission.edit"
-            @click="editCountries(item)"
             class="bg-violet-600"
+            @click="editCountries(item)"
           >
-            <x-icon name="edit" class="color-white" />
+            <x-icon
+              name="edit"
+              class="color-white"
+            />
           </x-circular-background>
 
           <x-circular-background
             v-if="permission.delete"
-            @click="deleteCountries(item.id)"
             class="bg-red-600"
+            @click="deleteCountries(item.id)"
           >
-            <x-icon name="delete" class="color-white" />
+            <x-icon
+              name="delete"
+              class="color-white"
+            />
           </x-circular-background>
         </div>
       </template>

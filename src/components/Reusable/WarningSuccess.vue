@@ -1,9 +1,9 @@
 <script>
-import BaseButton from "@/components/Reusable/BaseButton";
-import BaseModal from "@/components/Reusable/BaseModal";
+import BaseButton from '@/components/Reusable/BaseButton'
+import BaseModal from '@/components/Reusable/BaseModal'
 
 export default {
-  name: "WarningSuccess",
+  name: 'WarningSuccess',
   components: {
     BaseModal,
     BaseButton,
@@ -16,34 +16,47 @@ export default {
   },
   methods: {
     openModal() {
-      this.$refs["base-modal"].openModal();
+      this.$refs['base-modal'].openModal()
     },
     closeModal() {
-      this.$refs["base-modal"].closeModal();
+      this.$refs['base-modal'].closeModal()
     },
   },
-};
+}
 </script>
 
 <template>
-  <base-modal ref="base-modal" class="wcModal">
+  <base-modal
+    ref="base-modal"
+    class="wcModal"
+  >
     <template #header>
       <div class="wcModal-header">
         <img
           v-if="status === 'success'"
           src="../../assets/icons/icon-tick-circle.svg"
           alt=""
-        />
-        <img v-else src="../../assets/icons/icon-warning-circle.svg" alt="" />
+        >
+        <img
+          v-else
+          src="../../assets/icons/icon-warning-circle.svg"
+          alt=""
+        >
       </div>
-      <span></span>
+      <span />
     </template>
     <template #main>
-      <div class="wcModal-main" v-if="status === 'success'">
+      <div
+        v-if="status === 'success'"
+        class="wcModal-main"
+      >
         <h5>Сделано!</h5>
         <p>Великолепный текст про то,что ты действительно все сделал!</p>
       </div>
-      <div class="wcModal-main" v-else>
+      <div
+        v-else
+        class="wcModal-main"
+      >
         <h5>Ошибка!</h5>
         <p>Великолепный текст про то,что ты действительно ошибся!</p>
       </div>
@@ -60,7 +73,11 @@ export default {
             />
           </b-col>
           <b-col cols="6">
-            <base-button design="violet" text="OK" @click="closeModal" />
+            <base-button
+              design="violet"
+              text="OK"
+              @click="closeModal"
+            />
           </b-col>
         </b-row>
       </div>

@@ -1,16 +1,16 @@
 <script>
-import api from "@/services/api";
+import api from '@/services/api'
 // import BranchesBreadCrumbs from "@/components/branches/BranchesBreadCrumbs";
-import BranchesPermission from "@/permission/branches";
-import { mapGetters } from "vuex";
-import TemplatesPermission from "@/permission/templates";
-import AppHeader from "@/components/Header/AppHeader";
-import BaseButton from "@/components/Reusable/BaseButton";
-import BasePlusIcon from "@/components/icons/BasePlusIcon";
-import BaseTabPicker from "@/components/Reusable/BaseTabPicker";
+import BranchesPermission from '@/permission/branches'
+import { mapGetters } from 'vuex'
+import TemplatesPermission from '@/permission/templates'
+import AppHeader from '@/components/Header/AppHeader'
+import BaseButton from '@/components/Reusable/BaseButton'
+import BasePlusIcon from '@/components/icons/BasePlusIcon'
+import BaseTabPicker from '@/components/Reusable/BaseTabPicker'
 
 export default {
-  name: "BranchesPage",
+  name: 'BranchesPage',
   components: {
     BaseTabPicker,
     AppHeader,
@@ -20,120 +20,120 @@ export default {
   },
   data() {
     return {
-      tabOptions: ["active", "deleted"],
-      currentTab: "active",
+      tabOptions: ['active', 'deleted'],
+      currentTab: 'active',
       createPermission: BranchesPermission.getBranchesCreatePermission(),
       editPermission: BranchesPermission.getBranchesEditPermission(),
       deletePermission: BranchesPermission.getBranchesDeletePermission(),
       viewTemplatesPermission: TemplatesPermission.getTemplatesViewPermission(),
       loading: false,
-      sortBy: "id",
+      sortBy: 'id',
       sortDesc: false,
       fields: [
         {
-          key: "id",
-          label: "#",
+          key: 'id',
+          label: '#',
         },
         {
-          key: "name",
-          label: this.$t("roles.name"),
+          key: 'name',
+          label: this.$t('roles.name'),
         },
         {
-          key: "address",
-          label: this.$t("address"),
+          key: 'address',
+          label: this.$t('address'),
         },
         {
-          key: "manager",
-          label: this.$t("roles.manager"),
+          key: 'manager',
+          label: this.$t('roles.manager'),
         },
         {
-          key: "phone",
-          label: this.$t("clients.phone"),
+          key: 'phone',
+          label: this.$t('clients.phone'),
         },
         {
-          key: "users_count",
-          label: this.$t("roles.users"),
+          key: 'users_count',
+          label: this.$t('roles.users'),
         },
         {
-          key: "actions",
-          label: "",
+          key: 'actions',
+          label: '',
         },
       ],
       branches: [],
-    };
+    }
   },
 
   computed: {
     ...mapGetters({
-      permission: "getPermission",
+      permission: 'getPermission',
     }),
-  },
-
-  async created() {
-    await this.getBranchesList();
   },
   watch: {
     currentTab() {
-      this.getBranchesList();
+      this.getBranchesList()
     },
+  },
+
+  async created() {
+    await this.getBranchesList()
   },
   methods: {
     changeTab(e) {
-      this.currentTab = e;
+      this.currentTab = e
     },
     createBranch() {
-      this.$router.push({ name: "create-branch" });
+      this.$router.push({ name: 'create-branch' })
     },
     async getBranchesList() {
-      this.loading = true;
+      this.loading = true
       await api.branches[
-        this.currentTab === "active"
-          ? "getBranchesList"
-          : "getDeletedBranchesList"
+        this.currentTab === 'active'
+          ? 'getBranchesList'
+          : 'getDeletedBranchesList'
       ]()
-        .then((response) => {
-          this.branches = response.data;
+        .then(response => {
+          this.branches = response.data
         })
-        .catch((error) => {
-          this.toastedWithErrorCode(error);
+        .catch(error => {
+          this.toastedWithErrorCode(error)
         })
         .finally(() => {
-          this.loading = false;
-        });
+          this.loading = false
+        })
     },
     deleteBranch(id) {
       this.$swal({
-        title: this.$t("sweetAlert.title"),
+        title: this.$t('sweetAlert.title'),
         text: this.$t(
-          this.currentTab === "active"
-            ? "sweetAlert.want_delete"
-            : "sweetAlert.want_undelete"
+          this.currentTab === 'active'
+            ? 'sweetAlert.want_delete'
+            : 'sweetAlert.want_undelete',
         ),
-        icon: "warning",
+        icon: 'warning',
         showCancelButton: true,
-        cancelButtonText: this.$t("cancel"),
-        confirmButtonText: this.$t("sweetAlert.yesPure"),
-      }).then((result) => {
+        cancelButtonText: this.$t('cancel'),
+        confirmButtonText: this.$t('sweetAlert.yesPure'),
+      }).then(result => {
         if (result.value) {
-          this.loading = true;
+          this.loading = true
           api.branches
             .deleteBranch(id)
             .then(() => {
-              this.getBranchesList();
+              this.getBranchesList()
             })
-            .catch((error) => {
-              this.toastedWithErrorCode(error);
-              this.loading = false;
-            });
+            .catch(error => {
+              this.toastedWithErrorCode(error)
+              this.loading = false
+            })
         }
-      });
+      })
     },
     getFullName(item) {
-      const { last_name, first_name } = item.manager;
-      return last_name + " " + first_name;
+      const { last_name, first_name } = item.manager
+      return `${last_name} ${first_name}`
     },
   },
-};
+}
 </script>
 
 <template>
@@ -150,7 +150,7 @@ export default {
           @click="createBranch"
         >
           <template #left-icon>
-            <BasePlusIcon fill="var(--white)"></BasePlusIcon>
+            <BasePlusIcon fill="var(--white)" />
           </template>
         </base-button>
       </template>
@@ -159,27 +159,30 @@ export default {
     <base-tab-picker
       :options="tabOptions"
       :current="currentTab"
-      noAll
+      no-all
       @tab-selected="changeTab"
-    ></base-tab-picker>
+    />
     <div>
       <!--            <branches-bread-crumbs/>-->
 
       <div class="pt-2">
         <b-table
+          v-model:sort-by="sortBy"
+          v-model:sort-desc="sortDesc"
           sticky-header
           borderless
           responsive
           :items="branches"
           :fields="fields"
           show-empty
-          v-model:sort-by="sortBy"
-          v-model:sort-desc="sortDesc"
           sort-icon-left
           class="custom-table"
           :empty-text="$t('no_data')"
         >
-          <template #empty="scope" class="text-center">
+          <template
+            #empty="scope"
+            class="text-center"
+          >
             <div class="d-flex justify-content-center align-items-center">
               {{ scope.emptyText }}
             </div>
@@ -188,10 +191,10 @@ export default {
           <template #table-busy>
             <div class="d-flex justify-content-center w-100">
               <div class="lds-ellipsis">
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
+                <div />
+                <div />
+                <div />
+                <div />
               </div>
             </div>
           </template>
@@ -225,7 +228,7 @@ export default {
                   class="dropdown-toggle"
                   data-toggle="dropdown"
                 >
-                  <i class="far fa-ellipsis-h"></i>
+                  <i class="far fa-ellipsis-h" />
                 </button>
 
                 <div class="dropdown-menu">
@@ -237,7 +240,7 @@ export default {
                     }"
                     :class="'dropdown-item dropdown-item--inside'"
                   >
-                    <i class="fas fa-pen"></i>
+                    <i class="fas fa-pen" />
                     {{ $t("edit") }}
                   </router-link>
 
@@ -249,7 +252,7 @@ export default {
                     }"
                     :class="'dropdown-item dropdown-item--inside'"
                   >
-                    <i class="far fa-file-alt"></i>
+                    <i class="far fa-file-alt" />
                     {{ $t("objects.deal_template.name") }}
                   </router-link>
 
@@ -259,12 +262,18 @@ export default {
                     @click="deleteBranch(data.item.id)"
                   >
                     <span>
-                      <i class="far fa-trash"></i>
+                      <i class="far fa-trash" />
                     </span>
-                    <span class="ml-2" v-if="currentTab === 'active'">
+                    <span
+                      v-if="currentTab === 'active'"
+                      class="ml-2"
+                    >
                       {{ $t("delete") }}
                     </span>
-                    <span class="ml-2" v-else>
+                    <span
+                      v-else
+                      class="ml-2"
+                    >
                       {{ $t("undelete") }}
                     </span>
                   </button>
@@ -276,14 +285,19 @@ export default {
       </div>
     </div>
 
-    <b-overlay :show="loading" no-wrap opacity="0.5" style="z-index: 2222">
+    <b-overlay
+      :show="loading"
+      no-wrap
+      opacity="0.5"
+      style="z-index: 2222"
+    >
       <template #overlay>
         <div class="d-flex justify-content-center w-100">
           <div class="lds-ellipsis">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
+            <div />
+            <div />
+            <div />
+            <div />
           </div>
         </div>
       </template>

@@ -1,10 +1,11 @@
-export default class image extends require("./graphic") {
+export default class image extends require('./graphic') {
   getImage() {
-    var blip = this.wXml.$1("blip"),
-      rid = blip.attr("r:embed");
-    return this.wDoc.getRel(rid);
+    const blip = this.wXml.$1('blip')
+    const rid = blip.attr('r:embed')
+    return this.wDoc.getRel(rid)
   }
+
   static get type() {
-    return "image";
+    return 'image'
   }
 }

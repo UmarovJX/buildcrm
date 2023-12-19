@@ -1,14 +1,14 @@
-import { ref } from "vue";
+import { ref } from 'vue'
 
 export function useLoading() {
-  const loading = ref(false);
+  const loading = ref(false)
 
   function start() {
-    loading.value = true;
+    loading.value = true
   }
 
   function finish() {
-    loading.value = false;
+    loading.value = false
   }
 
   return {
@@ -18,5 +18,5 @@ export function useLoading() {
     isFetching: loading,
     startFetching: start,
     finishFetching: finish,
-  };
+  }
 }

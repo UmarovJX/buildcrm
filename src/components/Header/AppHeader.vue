@@ -2,11 +2,11 @@
 // import BaseCircleWrapper from "@/components/Reusable/BaseCircleWrapper";
 // import BaseQuestionsIcon from "@/components/icons/BaseQuestionsIcon";
 // import BaseNotificationsIcon from "@/components/icons/BaseNotificationsIcon";
-import BaseAvatar from "@/components/Reusable/BaseAvatar";
-import { mapGetters } from "vuex";
+import BaseAvatar from '@/components/Reusable/BaseAvatar'
+import { mapGetters } from 'vuex'
 
 export default {
-  name: "AppHeader",
+  name: 'AppHeader',
   components: {
     BaseAvatar,
     // BaseCircleWrapper,
@@ -14,68 +14,66 @@ export default {
     // BaseNotificationsIcon
   },
   data() {
-    return {};
+    return {}
   },
   computed: {
     ...mapGetters({
-      pms: "getPermission",
-      me: "getMe",
+      pms: 'getPermission',
+      me: 'getMe',
     }),
     userCollapse() {
       // eslint-disable-next-line no-prototype-builtins
-      return this.$slots.hasOwnProperty("header-actions");
+      return this.$slots.hasOwnProperty('header-actions')
     },
     getFullName() {
       if (this.me?.user) {
-        const { firstName, lastName } = this.me.user;
-        if (firstName !== "" && lastName !== "") {
-          return firstName + " " + lastName;
+        const { firstName, lastName } = this.me.user
+        if (firstName !== '' && lastName !== '') {
+          return `${firstName} ${lastName}`
         }
       }
-      return "";
+      return ''
     },
     getNameSnippet() {
       if (this.me?.user) {
-        const { firstName, lastName } = this.me.user;
-        if (firstName !== "" && lastName !== "") {
-          return firstName[0] + lastName[0];
+        const { firstName, lastName } = this.me.user
+        if (firstName !== '' && lastName !== '') {
+          return firstName[0] + lastName[0]
         }
       }
-      return "";
+      return ''
     },
     getUserAvatarUrl() {
       if (this.me?.user?.avatar) {
-        return this.me.user.avatar;
+        return this.me.user.avatar
       }
-      return "";
+      return ''
     },
     getRole() {
       if (this.me?.role?.name) {
-        if (localStorage.locale)
-          return this.me?.role?.name[localStorage.locale];
-        else return this.me?.role?.name["ru"];
-      } else {
-        return "no-role";
+        if (localStorage.locale) return this.me?.role?.name[localStorage.locale]
+        return this.me?.role?.name.ru
       }
+      return 'no-role'
     },
   },
-};
+}
 </script>
 
 <template>
   <header class="app-header">
     <div class="header-left">
       <!--  TODO:SLOT HEADER_BREADCRUMB     -->
-      <slot name="header-breadcrumb"></slot>
+      <slot name="header-breadcrumb" />
       <h3 class="app-header-title">
         <!--  TODO:SLOT HEADER_TITLE      -->
-        <slot name="header-title"></slot>
+        <slot name="header-title" />
       </h3>
-      <slot name="header-status"></slot>
+      <slot name="header-status" />
     </div>
     <div class="header-right">
       <!--  TODO:SLOT HEADER_ACTIONS      -->
-      <slot name="header-actions"></slot>
+      <slot name="header-actions" />
 
       <BaseAvatar
         :class="{ collapsed: userCollapse }"

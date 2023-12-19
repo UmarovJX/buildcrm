@@ -1,6 +1,6 @@
-import { dateProperties } from "@/util/calendar";
+import { dateProperties } from '@/util/calendar'
 
-const { ymd, nextMonthYmd } = dateProperties("", "string");
+const { ymd, nextMonthYmd } = dateProperties('', 'string')
 export default {
   apartments: [],
   discount: {
@@ -36,7 +36,7 @@ export default {
    *   edited: Boolean
    * }
    * */
-  comment: "",
+  comment: '',
   credit_months: [],
   initial_payments: [],
   edit: {
@@ -47,4 +47,4 @@ export default {
     monthly: false,
   },
   trashStorage: [],
-};
+}

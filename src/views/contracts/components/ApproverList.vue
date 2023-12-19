@@ -1,26 +1,30 @@
 <script>
-import { XIcon } from "@/components/ui-components/material-icons";
-import { XCircularBackground } from "@/components/ui-components/circular-background";
+import { XIcon } from '@/components/ui-components/material-icons'
+import { XCircularBackground } from '@/components/ui-components/circular-background'
 
 export default {
-  name: "ApproverList",
+  name: 'ApproverList',
+
+  components: {
+    XCircularBackground,
+    XIcon,
+  },
   props: {
     approvers: {
       type: Array,
       required: true,
     },
   },
-
-  components: {
-    XCircularBackground,
-    XIcon,
-  },
-};
+}
 </script>
 
 <template>
   <div class="approver_list ml-1">
-    <div class="list_item" v-for="appr in approvers" :key="appr.id">
+    <div
+      v-for="appr in approvers"
+      :key="appr.id"
+      class="list_item"
+    >
       <x-circular-background
         :class="appr.type === 'approved' ? 'bg-green' : 'bg-red-500'"
       >

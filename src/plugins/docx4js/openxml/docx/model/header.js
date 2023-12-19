@@ -1,9 +1,10 @@
-export default class header extends require("../model") {
+export default class header extends require('../model') {
   constructor(wXml, wDoc, mParent, location) {
-    super(...arguments);
-    this.location = location;
+    super(...arguments)
+    this.location = location
   }
+
   static get type() {
-    return "header";
+    return 'header'
   }
 }

@@ -1,28 +1,28 @@
 <script>
-import BaseFilterIcon from "@/components/icons/BaseFilterIcon";
+import BaseFilterIcon from '@/components/icons/BaseFilterIcon'
 
 export default {
-  name: "FilterButton",
+  name: 'FilterButton',
   components: {
     BaseFilterIcon,
   },
   props: {
     iconFill: {
       type: String,
-      default: "#7C3AED",
+      default: '#7C3AED',
     },
     buttonText: {
       type: String,
-      default: "contracts.filter",
+      default: 'contracts.filter',
     },
   },
-  emits: ["click"],
+  emits: ['click'],
   methods: {
     showFilterInterface() {
-      this.$emit("click");
+      this.$emit('click')
     },
   },
-};
+}
 </script>
 
 <template>

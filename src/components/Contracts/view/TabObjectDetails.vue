@@ -1,9 +1,9 @@
 <script>
-import api from "@/services/api";
-import { XIcon } from "@/components/ui-components/material-icons";
+import api from '@/services/api'
+import { XIcon } from '@/components/ui-components/material-icons'
 
 export default {
-  name: "TabObjectDetails",
+  name: 'TabObjectDetails',
   components: {
     XIcon,
   },
@@ -13,140 +13,147 @@ export default {
       required: true,
     },
   },
-  emits: ["start-loading", "finish-loading"],
+  emits: ['start-loading', 'finish-loading'],
   data() {
     return {
       apartment: [],
       parking: [],
-    };
+    }
   },
   computed: {
     coordinates() {
-      const { latitude, longitude } = this.order.object.location;
-      return [latitude, longitude];
+      const { latitude, longitude } = this.order.object.location
+      return [latitude, longitude]
     },
     isParkingType() {
-      return this.order.type === "parking";
+      return this.order.type === 'parking'
     },
   },
   mounted() {
-    this.fetchObjectDetails();
+    this.fetchObjectDetails()
   },
   methods: {
     toApartmentDetails() {
       this.$router.push({
-        name: "apartment-view",
+        name: 'apartment-view',
         params: {
           object: this.apartment[0].object.id,
           id: this.apartment[0].id,
         },
-      });
+      })
     },
     haveApartment(item) {
-      return Object.keys(item).length;
+      return Object.keys(item).length
     },
     havePlan(item) {
-      return this.haveApartment && item.apartment?.plan;
+      return this.haveApartment && item.apartment?.plan
     },
     imageUrl(item) {
       if (this.isParkingType) {
-        return item.upload_id?.path;
+        return item.upload_id?.path
       }
 
       // console.log(item, 'item');
-      const { apartment } = item;
+      const { apartment } = item
       // console.log(apartment, 'apartment');
       if (!(this.havePlan && apartment.plan)) {
-        return "";
+        return ''
       }
 
-      return apartment.plan?.image;
+      return apartment.plan?.image
     },
-    datePrettier: (rawDate) => {
-      const date = new Date(rawDate);
-      const year = date.getFullYear();
-      const baseMonth = date.getMonth() + 1;
-      const month = baseMonth < 10 ? `0${baseMonth}` : baseMonth;
-      return `${month}/${year}`;
+    datePrettier: rawDate => {
+      const date = new Date(rawDate)
+      const year = date.getFullYear()
+      const baseMonth = date.getMonth() + 1
+      const month = baseMonth < 10 ? `0${baseMonth}` : baseMonth
+      return `${month}/${year}`
     },
     buildingDate(time) {
-      const date = new Date(time);
-      const year = date.getFullYear();
-      let month = date.getMonth();
+      const date = new Date(time)
+      const year = date.getFullYear()
+      let month = date.getMonth()
       if (month < 3) {
-        month = "1";
+        month = '1'
       } else if (month >= 3 && month < 6) {
-        month = "2";
+        month = '2'
       } else if (month >= 6 && month < 9) {
-        month = "3";
+        month = '3'
       } else {
-        month = "4";
+        month = '4'
       }
-      return ` ${month} - ${this.$t("quarter")} ${year} ${this.$t(
-        "of_the_year"
-      )}`;
+      return ` ${month} - ${this.$t('quarter')} ${year} ${this.$t(
+        'of_the_year',
+      )}`
     },
     async fetchObjectDetails() {
-      this.startLoading();
-      const { id } = this.$route.params;
-      let typeString;
+      this.startLoading()
+      const { id } = this.$route.params
+      let typeString
       switch (this.order.type) {
-        case "apartment":
-          typeString = "apartments";
-          break;
-        case "parking":
-          typeString = "parking-spaces";
-          break;
+        case 'apartment':
+          typeString = 'apartments'
+          break
+        case 'parking':
+          typeString = 'parking-spaces'
+          break
         default:
-          typeString = "apartments";
+          typeString = 'apartments'
       }
       await api.contractV2
         .getContractObjectDetails(id, typeString)
-        .then((response) => {
+        .then(response => {
           if (this.isParkingType) {
-            this.parking = response.data;
+            this.parking = response.data
           } else {
-            this.apartment = response.data;
+            this.apartment = response.data
           }
-          console.log(this.apartment);
+          console.log(this.apartment)
         })
-        .catch((error) => {
-          this.toastedWithErrorCode(error);
+        .catch(error => {
+          this.toastedWithErrorCode(error)
         })
         .finally(() => {
-          this.finishLoading();
-        });
+          this.finishLoading()
+        })
     },
     startLoading() {
-      this.$emit("start-loading");
+      this.$emit('start-loading')
     },
     finishLoading() {
-      this.$emit("finish-loading");
+      this.$emit('finish-loading')
     },
   },
-};
+}
 </script>
 
 <template>
   <div class="custom__container">
     <template v-if="isParkingType">
-      <div v-for="item in parking" :key="item.id" class="row">
+      <div
+        v-for="item in parking"
+        :key="item.id"
+        class="row"
+      >
         <div class="object__details_layout col-5">
           <div class="object__details_layout_img">
             <img
               v-if="imageUrl(item)"
               :src="imageUrl(item)"
               alt="parking image"
-            />
+            >
             <img
               v-else
               :src="require('@/assets/img/no-image.jpg')"
               alt="parking image"
-            />
+            >
           </div>
         </div>
 
-        <div class="object__details_info col-6" v-if="haveApartment(item)">
+        <div
+          v-if="haveApartment(item)"
+          class="object__details_info col-6"
+        >
           <div class="breadcrumb__head">
             <span class="name">
               {{ item.building.name }}
@@ -164,7 +171,12 @@ export default {
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                 >
-                  <rect width="24" height="24" rx="12" fill="#EDE9FE" />
+                  <rect
+                    width="24"
+                    height="24"
+                    rx="12"
+                    fill="#EDE9FE"
+                  />
                   <path
                     d="M10.3345 17.123V15.334C10.3345 14.8806 10.7031 14.5123 11.1597 14.5095H12.8363C13.295 14.5095 13.6668 14.8786 13.6668 15.334V17.1178C13.6668 17.511 13.9863 17.8305 14.3824 17.8334H15.5262C16.0604 17.8348 16.5733 17.625 16.9515 17.2505C17.3297 16.8759 17.5423 16.3674 17.5423 15.837V10.7552C17.5423 10.3267 17.351 9.92033 17.02 9.64546L13.1341 6.56007C12.4548 6.0204 11.4846 6.03784 10.8255 6.60156L7.02307 9.64546C6.67642 9.91223 6.46922 10.3198 6.45898 10.7552V15.8318C6.45898 16.9372 7.36162 17.8334 8.47509 17.8334H9.59282C9.7835 17.8348 9.96685 17.7605 10.1022 17.6272C10.2375 17.4938 10.3136 17.3123 10.3136 17.123H10.3345Z"
                     fill="#7C3AED"
@@ -186,7 +198,12 @@ export default {
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                 >
-                  <rect width="24" height="24" rx="12" fill="#EDE9FE" />
+                  <rect
+                    width="24"
+                    height="24"
+                    rx="12"
+                    fill="#EDE9FE"
+                  />
                   <path
                     d="M10.3345 17.123V15.334C10.3345 14.8806 10.7031 14.5123 11.1597 14.5095H12.8363C13.295 14.5095 13.6668 14.8786 13.6668 15.334V17.1178C13.6668 17.511 13.9863 17.8305 14.3824 17.8334H15.5262C16.0604 17.8348 16.5733 17.625 16.9515 17.2505C17.3297 16.8759 17.5423 16.3674 17.5423 15.837V10.7552C17.5423 10.3267 17.351 9.92033 17.02 9.64546L13.1341 6.56007C12.4548 6.0204 11.4846 6.03784 10.8255 6.60156L7.02307 9.64546C6.67642 9.91223 6.46922 10.3198 6.45898 10.7552V15.8318C6.45898 16.9372 7.36162 17.8334 8.47509 17.8334H9.59282C9.7835 17.8348 9.96685 17.7605 10.1022 17.6272C10.2375 17.4938 10.3136 17.3123 10.3136 17.123H10.3345Z"
                     fill="#7C3AED"
@@ -204,19 +221,23 @@ export default {
     </template>
 
     <template v-else>
-      <div v-for="item in apartment" :key="item.id" class="row">
+      <div
+        v-for="item in apartment"
+        :key="item.id"
+        class="row"
+      >
         <div class="object__details_layout col-5">
           <div class="object__details_layout_img">
             <img
               v-if="imageUrl(item)"
               :src="imageUrl(item)"
               alt="apartment image"
-            />
+            >
             <img
               v-else
               :src="require('@/assets/img/no-image.jpg')"
               alt="apartment image"
-            />
+            >
           </div>
           <button
             class="d-flex align-items-center justify-content-center"
@@ -233,7 +254,10 @@ export default {
           </button>
         </div>
 
-        <div class="object__details_info col-6" v-if="haveApartment(item)">
+        <div
+          v-if="haveApartment(item)"
+          class="object__details_info col-6"
+        >
           <div class="breadcrumb__head">
             <span class="name">
               {{ item.building.name }}
@@ -255,7 +279,12 @@ export default {
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                 >
-                  <rect width="24" height="24" rx="12" fill="#EDE9FE" />
+                  <rect
+                    width="24"
+                    height="24"
+                    rx="12"
+                    fill="#EDE9FE"
+                  />
                   <path
                     d="M10.3345 17.123V15.334C10.3345 14.8806 10.7031 14.5123 11.1597 14.5095H12.8363C13.295 14.5095 13.6668 14.8786 13.6668 15.334V17.1178C13.6668 17.511 13.9863 17.8305 14.3824 17.8334H15.5262C16.0604 17.8348 16.5733 17.625 16.9515 17.2505C17.3297 16.8759 17.5423 16.3674 17.5423 15.837V10.7552C17.5423 10.3267 17.351 9.92033 17.02 9.64546L13.1341 6.56007C12.4548 6.0204 11.4846 6.03784 10.8255 6.60156L7.02307 9.64546C6.67642 9.91223 6.46922 10.3198 6.45898 10.7552V15.8318C6.45898 16.9372 7.36162 17.8334 8.47509 17.8334H9.59282C9.7835 17.8348 9.96685 17.7605 10.1022 17.6272C10.2375 17.4938 10.3136 17.3123 10.3136 17.123H10.3345Z"
                     fill="#7C3AED"
@@ -277,7 +306,12 @@ export default {
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                 >
-                  <rect width="24" height="24" rx="12" fill="#EDE9FE" />
+                  <rect
+                    width="24"
+                    height="24"
+                    rx="12"
+                    fill="#EDE9FE"
+                  />
                   <path
                     d="M10.3345 17.123V15.334C10.3345 14.8806 10.7031 14.5123 11.1597 14.5095H12.8363C13.295 14.5095 13.6668 14.8786 13.6668 15.334V17.1178C13.6668 17.511 13.9863 17.8305 14.3824 17.8334H15.5262C16.0604 17.8348 16.5733 17.625 16.9515 17.2505C17.3297 16.8759 17.5423 16.3674 17.5423 15.837V10.7552C17.5423 10.3267 17.351 9.92033 17.02 9.64546L13.1341 6.56007C12.4548 6.0204 11.4846 6.03784 10.8255 6.60156L7.02307 9.64546C6.67642 9.91223 6.46922 10.3198 6.45898 10.7552V15.8318C6.45898 16.9372 7.36162 17.8334 8.47509 17.8334H9.59282C9.7835 17.8348 9.96685 17.7605 10.1022 17.6272C10.2375 17.4938 10.3136 17.3123 10.3136 17.123H10.3345Z"
                     fill="#7C3AED"
@@ -299,7 +333,12 @@ export default {
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                 >
-                  <rect width="24" height="24" rx="12" fill="#EDE9FE" />
+                  <rect
+                    width="24"
+                    height="24"
+                    rx="12"
+                    fill="#EDE9FE"
+                  />
                   <path
                     d="M10.3345 17.123V15.334C10.3345 14.8806 10.7031 14.5123 11.1597 14.5095H12.8363C13.295 14.5095 13.6668 14.8786 13.6668 15.334V17.1178C13.6668 17.511 13.9863 17.8305 14.3824 17.8334H15.5262C16.0604 17.8348 16.5733 17.625 16.9515 17.2505C17.3297 16.8759 17.5423 16.3674 17.5423 15.837V10.7552C17.5423 10.3267 17.351 9.92033 17.02 9.64546L13.1341 6.56007C12.4548 6.0204 11.4846 6.03784 10.8255 6.60156L7.02307 9.64546C6.67642 9.91223 6.46922 10.3198 6.45898 10.7552V15.8318C6.45898 16.9372 7.36162 17.8334 8.47509 17.8334H9.59282C9.7835 17.8348 9.96685 17.7605 10.1022 17.6272C10.2375 17.4938 10.3136 17.3123 10.3136 17.123H10.3345Z"
                     fill="#7C3AED"
@@ -321,7 +360,12 @@ export default {
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                 >
-                  <rect width="24" height="24" rx="12" fill="#EDE9FE" />
+                  <rect
+                    width="24"
+                    height="24"
+                    rx="12"
+                    fill="#EDE9FE"
+                  />
                   <path
                     d="M10.3345 17.123V15.334C10.3345 14.8806 10.7031 14.5123 11.1597 14.5095H12.8363C13.295 14.5095 13.6668 14.8786 13.6668 15.334V17.1178C13.6668 17.511 13.9863 17.8305 14.3824 17.8334H15.5262C16.0604 17.8348 16.5733 17.625 16.9515 17.2505C17.3297 16.8759 17.5423 16.3674 17.5423 15.837V10.7552C17.5423 10.3267 17.351 9.92033 17.02 9.64546L13.1341 6.56007C12.4548 6.0204 11.4846 6.03784 10.8255 6.60156L7.02307 9.64546C6.67642 9.91223 6.46922 10.3198 6.45898 10.7552V15.8318C6.45898 16.9372 7.36162 17.8334 8.47509 17.8334H9.59282C9.7835 17.8348 9.96685 17.7605 10.1022 17.6272C10.2375 17.4938 10.3136 17.3123 10.3136 17.123H10.3345Z"
                     fill="#7C3AED"
@@ -343,7 +387,12 @@ export default {
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                 >
-                  <rect width="24" height="24" rx="12" fill="#EDE9FE" />
+                  <rect
+                    width="24"
+                    height="24"
+                    rx="12"
+                    fill="#EDE9FE"
+                  />
                   <path
                     d="M10.3345 17.123V15.334C10.3345 14.8806 10.7031 14.5123 11.1597 14.5095H12.8363C13.295 14.5095 13.6668 14.8786 13.6668 15.334V17.1178C13.6668 17.511 13.9863 17.8305 14.3824 17.8334H15.5262C16.0604 17.8348 16.5733 17.625 16.9515 17.2505C17.3297 16.8759 17.5423 16.3674 17.5423 15.837V10.7552C17.5423 10.3267 17.351 9.92033 17.02 9.64546L13.1341 6.56007C12.4548 6.0204 11.4846 6.03784 10.8255 6.60156L7.02307 9.64546C6.67642 9.91223 6.46922 10.3198 6.45898 10.7552V15.8318C6.45898 16.9372 7.36162 17.8334 8.47509 17.8334H9.59282C9.7835 17.8348 9.96685 17.7605 10.1022 17.6272C10.2375 17.4938 10.3136 17.3123 10.3136 17.123H10.3345Z"
                     fill="#7C3AED"
@@ -367,7 +416,12 @@ export default {
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                 >
-                  <rect width="24" height="24" rx="12" fill="#EDE9FE" />
+                  <rect
+                    width="24"
+                    height="24"
+                    rx="12"
+                    fill="#EDE9FE"
+                  />
                   <path
                     d="M10.3345 17.123V15.334C10.3345 14.8806 10.7031 14.5123 11.1597 14.5095H12.8363C13.295 14.5095 13.6668 14.8786 13.6668 15.334V17.1178C13.6668 17.511 13.9863 17.8305 14.3824 17.8334H15.5262C16.0604 17.8348 16.5733 17.625 16.9515 17.2505C17.3297 16.8759 17.5423 16.3674 17.5423 15.837V10.7552C17.5423 10.3267 17.351 9.92033 17.02 9.64546L13.1341 6.56007C12.4548 6.0204 11.4846 6.03784 10.8255 6.60156L7.02307 9.64546C6.67642 9.91223 6.46922 10.3198 6.45898 10.7552V15.8318C6.45898 16.9372 7.36162 17.8334 8.47509 17.8334H9.59282C9.7835 17.8348 9.96685 17.7605 10.1022 17.6272C10.2375 17.4938 10.3136 17.3123 10.3136 17.123H10.3345Z"
                     fill="#7C3AED"
@@ -391,7 +445,12 @@ export default {
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                 >
-                  <rect width="24" height="24" rx="12" fill="#EDE9FE" />
+                  <rect
+                    width="24"
+                    height="24"
+                    rx="12"
+                    fill="#EDE9FE"
+                  />
                   <path
                     d="M10.3345 17.123V15.334C10.3345 14.8806 10.7031 14.5123 11.1597 14.5095H12.8363C13.295 14.5095 13.6668 14.8786 13.6668 15.334V17.1178C13.6668 17.511 13.9863 17.8305 14.3824 17.8334H15.5262C16.0604 17.8348 16.5733 17.625 16.9515 17.2505C17.3297 16.8759 17.5423 16.3674 17.5423 15.837V10.7552C17.5423 10.3267 17.351 9.92033 17.02 9.64546L13.1341 6.56007C12.4548 6.0204 11.4846 6.03784 10.8255 6.60156L7.02307 9.64546C6.67642 9.91223 6.46922 10.3198 6.45898 10.7552V15.8318C6.45898 16.9372 7.36162 17.8334 8.47509 17.8334H9.59282C9.7835 17.8348 9.96685 17.7605 10.1022 17.6272C10.2375 17.4938 10.3136 17.3123 10.3136 17.123H10.3345Z"
                     fill="#7C3AED"
@@ -401,14 +460,16 @@ export default {
               <div class="object__details_info_card_text">
                 <span>{{ $t("object.area") }}</span>
                 <span class="d-flex">
-                  <span v-if="havePlan(item)" class="mr-2 font-normal">
+                  <span
+                    v-if="havePlan(item)"
+                    class="mr-2 font-normal"
+                  >
                     {{
                       parseFloat(item.apartment.plan.area).toLocaleString(
                         "en-GB",
                         { minimumFractionDigits: 2, maximumFractionDigits: 2 }
                       )
-                    }}</span
-                  >
+                    }}</span>
                   <span class="lowercase">м2</span>
                 </span>
               </div>
@@ -423,7 +484,12 @@ export default {
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                 >
-                  <rect width="24" height="24" rx="12" fill="#EDE9FE" />
+                  <rect
+                    width="24"
+                    height="24"
+                    rx="12"
+                    fill="#EDE9FE"
+                  />
                   <path
                     d="M10.3345 17.123V15.334C10.3345 14.8806 10.7031 14.5123 11.1597 14.5095H12.8363C13.295 14.5095 13.6668 14.8786 13.6668 15.334V17.1178C13.6668 17.511 13.9863 17.8305 14.3824 17.8334H15.5262C16.0604 17.8348 16.5733 17.625 16.9515 17.2505C17.3297 16.8759 17.5423 16.3674 17.5423 15.837V10.7552C17.5423 10.3267 17.351 9.92033 17.02 9.64546L13.1341 6.56007C12.4548 6.0204 11.4846 6.03784 10.8255 6.60156L7.02307 9.64546C6.67642 9.91223 6.46922 10.3198 6.45898 10.7552V15.8318C6.45898 16.9372 7.36162 17.8334 8.47509 17.8334H9.59282C9.7835 17.8348 9.96685 17.7605 10.1022 17.6272C10.2375 17.4938 10.3136 17.3123 10.3136 17.123H10.3345Z"
                     fill="#7C3AED"
@@ -461,7 +527,12 @@ export default {
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                 >
-                  <rect width="24" height="24" rx="12" fill="#EDE9FE" />
+                  <rect
+                    width="24"
+                    height="24"
+                    rx="12"
+                    fill="#EDE9FE"
+                  />
                   <path
                     d="M10.3345 17.123V15.334C10.3345 14.8806 10.7031 14.5123 11.1597 14.5095H12.8363C13.295 14.5095 13.6668 14.8786 13.6668 15.334V17.1178C13.6668 17.511 13.9863 17.8305 14.3824 17.8334H15.5262C16.0604 17.8348 16.5733 17.625 16.9515 17.2505C17.3297 16.8759 17.5423 16.3674 17.5423 15.837V10.7552C17.5423 10.3267 17.351 9.92033 17.02 9.64546L13.1341 6.56007C12.4548 6.0204 11.4846 6.03784 10.8255 6.60156L7.02307 9.64546C6.67642 9.91223 6.46922 10.3198 6.45898 10.7552V15.8318C6.45898 16.9372 7.36162 17.8334 8.47509 17.8334H9.59282C9.7835 17.8348 9.96685 17.7605 10.1022 17.6272C10.2375 17.4938 10.3136 17.3123 10.3136 17.123H10.3345Z"
                     fill="#7C3AED"

@@ -1,12 +1,12 @@
 <script>
-import BaseEditIcon from "@/components/icons/BaseEditIcon";
+import BaseEditIcon from '@/components/icons/BaseEditIcon'
 
 export default {
-  name: "ObjectCard.vue",
+  name: 'ObjectCardVue',
   components: {
     BaseEditIcon,
   },
-};
+}
 </script>
 
 <template>
@@ -15,8 +15,12 @@ export default {
       <div class="card-body">
         <div class="card-top">
           <div class="card-top__content">
-            <h5 class="card-title">Pandora</h5>
-            <div class="card-button">Объект сдан</div>
+            <h5 class="card-title">
+              Pandora
+            </h5>
+            <div class="card-button">
+              Объект сдан
+            </div>
             <div class="card-subtitle">
               Юнусобод тумани, мавзе 4, Ахмад Дониш Кучаси, 61 А уй
             </div>
@@ -27,17 +31,28 @@ export default {
         </div>
         <div class="card-content">
           <div class="card-block">
-            <p class="card-block__title">80 квартиры</p>
-            <p class="card-block__subtitle price">от 330,000,000 сум</p>
+            <p class="card-block__title">
+              80 квартиры
+            </p>
+            <p class="card-block__subtitle price">
+              от 330,000,000 сум
+            </p>
           </div>
           <div class="card-block">
-            <p class="card-block__title">16 этажей</p>
-            <p class="card-block__subtitle">от 3,500,000 сум/м2</p>
+            <p class="card-block__title">
+              16 этажей
+            </p>
+            <p class="card-block__subtitle">
+              от 3,500,000 сум/м2
+            </p>
           </div>
         </div>
       </div>
       <div class="card-img">
-        <img src="../../assets/img/xonsaroy.jpg" alt="" />
+        <img
+          src="../../assets/img/xonsaroy.jpg"
+          alt=""
+        >
       </div>
     </div>
   </div>

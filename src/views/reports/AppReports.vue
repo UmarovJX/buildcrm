@@ -1,15 +1,15 @@
 <script>
-import BaseModal from "@/components/Reusable/BaseModal.vue";
-import BaseButton from "@/components/Reusable/BaseButton.vue";
-import { XFormSelect } from "@/components/ui-components/form-select";
-import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon.vue";
-import BaseLoading from "@/components/Reusable/BaseLoading.vue";
-import BaseArrowDownIcon from "@/components/icons/BaseArrowDownIcon.vue";
-import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon.vue";
-import { XIcon } from "@/components/ui-components/material-icons";
-import { XCircularBackground } from "@/components/ui-components/circular-background";
-import AppHeader from "@/components/Header/AppHeader.vue";
-import { useReport } from "@/composables/useReport";
+import BaseModal from '@/components/Reusable/BaseModal.vue'
+import BaseButton from '@/components/Reusable/BaseButton.vue'
+import { XFormSelect } from '@/components/ui-components/form-select'
+import BaseArrowLeftIcon from '@/components/icons/BaseArrowLeftIcon.vue'
+import BaseLoading from '@/components/Reusable/BaseLoading.vue'
+import BaseArrowDownIcon from '@/components/icons/BaseArrowDownIcon.vue'
+import BaseArrowRightIcon from '@/components/icons/BaseArrowRightIcon.vue'
+import { XIcon } from '@/components/ui-components/material-icons'
+import { XCircularBackground } from '@/components/ui-components/circular-background'
+import AppHeader from '@/components/Header/AppHeader.vue'
+import { useReport } from '@/composables/useReport'
 
 export default {
   components: {
@@ -25,31 +25,33 @@ export default {
     XCircularBackground,
   },
   setup() {
-    return useReport({ immediate: true });
+    return useReport({ immediate: true })
   },
-};
+}
 </script>
 
 <template>
   <div>
     <app-header>
-      <template #header-title> {{ $t("report.list") }} </template>
+      <template #header-title>
+        {{ $t("report.list") }}
+      </template>
 
       <template #header-actions>
         <div class="content__form__select">
           <x-form-select
-            class="w-100"
             id="selectType"
             v-model="filterBy"
+            class="w-100"
             :options="typeOptions"
             :placeholder="`${$t('report.filter_by')}`"
           />
         </div>
 
         <base-button
-          @click="openModal"
           v-if="hasViewPermission"
           :text="`${$t('download_report')}`"
+          @click="openModal"
         >
           <template #left-icon>
             <x-icon
@@ -88,7 +90,10 @@ export default {
       </template>
 
       <template #cell(status)="{ item }">
-        <span class="current__status text-capitalize" :class="item.status">
+        <span
+          class="current__status text-capitalize"
+          :class="item.status"
+        >
           {{ $t(`report.statuses.${item.status}`) }}
         </span>
       </template>
@@ -104,7 +109,7 @@ export default {
             v-if="data.item.id === loadingFileId"
             variant="light"
             small
-          ></b-spinner>
+          />
 
           <base-arrow-down-icon
             v-else
@@ -118,16 +123,16 @@ export default {
         <b-spinner
           v-if="
             ['created', 'processing'].includes(data.item.status) ||
-            data.item.id === retryingFileId
+              data.item.id === retryingFileId
           "
           :variant="
             data.item.id === retryingFileId
               ? 'danger'
               : data.item.status === 'processing'
-              ? 'warning'
-              : 'primary'
+                ? 'warning'
+                : 'primary'
           "
-        ></b-spinner>
+        />
 
         <x-circular-background
           v-else-if="['cancelled', 'failed'].includes(data.item.status)"
@@ -135,7 +140,11 @@ export default {
           size="2rem"
           @click="retryToDownloadFile(data.item)"
         >
-          <x-icon name="refresh" color="var(--white)" class="red-600" />
+          <x-icon
+            name="refresh"
+            color="var(--white)"
+            class="red-600"
+          />
         </x-circular-background>
       </template>
 
@@ -148,13 +157,18 @@ export default {
         <div
           class="d-flex justify-content-center align-items-center flex-column not__found"
         >
-          <p class="head">{{ $t("reports.not_found") }}</p>
+          <p class="head">
+            {{ $t("reports.not_found") }}
+          </p>
           <p>{{ $t("contracts_not_found.description") }}</p>
         </div>
       </template>
     </b-table>
 
-    <div v-if="!isFetching && showPaginationComp" class="pagination__vue">
+    <div
+      v-if="!isFetching && showPaginationComp"
+      class="pagination__vue"
+    >
       <!--   Pagination   -->
       <vue-paginate
         :page-count="pagination.totalPage"
@@ -184,9 +198,9 @@ export default {
       <!--  Show By Select    -->
       <div class="show__by">
         <x-form-select
+          v-model="pagination.perPage"
           :label="false"
           :options="showByOptions"
-          v-model="pagination.perPage"
         >
           <template #output-prefix>
             <span class="show-by-description">
@@ -198,18 +212,21 @@ export default {
     </div>
 
     <base-modal
-      design="payment-modal"
       ref="downloadModalRef"
+      design="payment-modal"
       wrapper-style="width:30rem"
     >
       <template #header>
         <!--   GO BACK     -->
         <span class="d-flex align-items-center">
-          <span class="go__back" @click="closeModal">
+          <span
+            class="go__back"
+            @click="closeModal"
+          >
             <base-arrow-left-icon
               :width="32"
               :height="32"
-            ></base-arrow-left-icon>
+            />
           </span>
           <!--    TITLE      -->
           <span class="title ml-3">{{ $t("download_report") }}</span>
@@ -217,25 +234,31 @@ export default {
       </template>
 
       <template #main>
-        <ValidationObserver ref="vObserverRef" style="overflow-y: auto">
+        <ValidationObserver
+          ref="vObserverRef"
+          style="overflow-y: auto"
+        >
           <div class="payment-addition-fields">
             <ValidationProvider
+              v-slot="{ errors }"
               :name="`${$t('report.select_report_type')}`"
               rules="required"
-              v-slot="{ errors }"
               tag="div"
             >
-              <label for="selectType" class="gray-600">
+              <label
+                for="selectType"
+                class="gray-600"
+              >
                 {{ $t("report.select_report_type") }}:
               </label>
 
               <div class="content__form__select">
                 <x-form-select
-                  class="w-100"
                   id="selectType"
+                  v-model="reportForm.type"
+                  class="w-100"
                   value-field="value"
                   text-field="text"
-                  v-model="reportForm.type"
                   :options="typeOptions"
                   :placeholder="`${$t('select_type')}`"
                 />
@@ -244,13 +267,16 @@ export default {
             </ValidationProvider>
 
             <ValidationProvider
-              :name="`${$t('from_the_date_of')}`"
-              rules="required"
               id="selectFromDate"
               v-slot="{ errors }"
+              :name="`${$t('from_the_date_of')}`"
+              rules="required"
               tag="div"
             >
-              <label for="selectFromDate" class="gray-600 mt-4">
+              <label
+                for="selectFromDate"
+                class="gray-600 mt-4"
+              >
                 {{ $t("from_the_date_of") }}:
               </label>
 
@@ -259,23 +285,30 @@ export default {
                   v-model="reportForm.dateFrom"
                   type="date"
                   class="w-100"
-                />
+                >
               </div>
               <span class="error__provider">{{ errors[0] }}</span>
             </ValidationProvider>
 
             <ValidationProvider
+              id="selectToDate"
+              v-slot="{ errors }"
               :name="`${$t('to_the_date_of')}`"
               tag="div"
               rules="required"
-              id="selectToDate"
-              v-slot="{ errors }"
             >
-              <label for="selectToDate" class="gray-600 mt-4 d-block">
+              <label
+                for="selectToDate"
+                class="gray-600 mt-4 d-block"
+              >
                 {{ $t("to_the_date_of") }}:
               </label>
               <div class="content__form__select">
-                <input v-model="reportForm.dateTo" type="date" class="w-100" />
+                <input
+                  v-model="reportForm.dateTo"
+                  type="date"
+                  class="w-100"
+                >
               </div>
               <span class="error__provider">{{ errors[0] }}</span>
             </ValidationProvider>

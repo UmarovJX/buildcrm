@@ -1,5 +1,5 @@
-import "./tool";
-import JSZip from "jszip";
+import './tool'
+import JSZip from 'jszip'
 
 /**
  *  document parser
@@ -10,20 +10,21 @@ import JSZip from "jszip";
  */
 export default class Document {
   constructor(parts, raw, props) {
-    this.parts = parts;
-    this.raw = raw;
-    this.props = props;
+    this.parts = parts
+    this.raw = raw
+    this.props = props
   }
+
   getPart(name) {
-    return this.parts[name];
+    return this.parts[name]
   }
+
   getImagePart(name) {
-    var part = this.parts[name];
-    var crc32 = part._data.crc32;
-    var buffer =
-      part[JSZip.support.nodebuffer ? "asNodeBuffer" : "asArrayBuffer"]();
-    buffer.crc32 = part._data.crc32 = crc32;
-    return buffer;
+    const part = this.parts[name]
+    const { crc32 } = part._data
+    const buffer = part[JSZip.support.nodebuffer ? 'asNodeBuffer' : 'asArrayBuffer']()
+    buffer.crc32 = part._data.crc32 = crc32
+    return buffer
   }
 
   /**
@@ -41,17 +42,17 @@ export default class Document {
    */
   factory(wordXml, docParser, parentParser) {
     if (!this._factory) {
-      let a = new this.constructor.Factory();
+      const a = new this.constructor.Factory()
       this._factory = function () {
-        return a.create(...arguments);
-      };
+        return a.create(...arguments)
+      }
     }
-    return this._factory(...arguments);
+    return this._factory(...arguments)
   }
 
   static clone(doc) {
-    let { parts, raw, props } = doc;
-    return new Document(parts, raw, props);
+    const { parts, raw, props } = doc
+    return new Document(parts, raw, props)
   }
   /**
 	 *  a helper to load document file
@@ -61,52 +62,52 @@ export default class Document {
 	 */
 
   static load(inputFile) {
-    var DocumentSelf = this;
+    const DocumentSelf = this
     return new Promise((resolve, reject) => {
       function parse(data, props = {}) {
-        var raw = new JSZip(data),
-          parts = {};
-        raw.filter(function (path, file) {
-          parts[path] = file;
-        });
-        resolve(new DocumentSelf(parts, raw, props));
+        const raw = new JSZip(data)
+        const parts = {}
+        raw.filter((path, file) => {
+          parts[path] = file
+        })
+        resolve(new DocumentSelf(parts, raw, props))
       }
 
       if ($.isNode) {
-        //node
-        if (typeof inputFile == "string") {
-          //file name
-          require("fs").readFile(inputFile, function (error, data) {
-            if (error) reject(error);
+        // node
+        if (typeof inputFile === 'string') {
+          // file name
+          require('fs').readFile(inputFile, (error, data) => {
+            if (error) reject(error)
             else if (data) {
               parse(data, {
                 name: inputFile
                   .split(/[\/\\]/)
                   .pop()
-                  .replace(/\.docx$/i, ""),
-              });
+                  .replace(/\.docx$/i, ''),
+              })
             }
-          });
+          })
         } else {
-          parse(inputFile);
+          parse(inputFile)
         }
       } else {
-        //browser
+        // browser
         if (inputFile instanceof Blob) {
-          var reader = new FileReader();
+          const reader = new FileReader()
           reader.onload = function (e) {
             parse(e.target.result, {
-              name: inputFile.name.replace(/\.docx$/i, ""),
+              name: inputFile.name.replace(/\.docx$/i, ''),
               lastModified: inputFile.lastModified,
               size: inputFile.size,
-            });
-          };
-          reader.readAsArrayBuffer(inputFile);
+            })
+          }
+          reader.readAsArrayBuffer(inputFile)
         } else {
-          parse(inputFile);
+          parse(inputFile)
         }
       }
-    });
+    })
   }
 
   static Factory = class {

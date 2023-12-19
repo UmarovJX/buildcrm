@@ -1,5 +1,5 @@
-export default class richtext extends require("../control") {
+export default class richtext extends require('../control') {
   static get type() {
-    return "control.richtext";
+    return 'control.richtext'
   }
 }

@@ -1,28 +1,28 @@
 <script>
-import { mapActions, mapMutations, mapGetters } from "vuex";
-import { BAlert, BButton } from "bootstrap-vue";
-import ViewClient from "./ViewClient";
-import InfoManager from "./InfoManager";
-import ReserveAdd from "./Components/Reserve";
-import EditApartment from "./Components/Edit";
-import Filter from "./Components/ApartmentsFilter";
-import SuccessAgree from "./Components/SuccessAgree";
-import AgreeMultiple from "./Components/AgreeMultiple";
-import ApartmentsBookingModal from "@/components/Dashboard/Apartment/Components/ApartmentsBookingModal";
-import BaseFilterTabsContent from "@/components/Reusable/BaseFilterTabsContent";
-import BaseBreadCrumb from "@/components/BaseBreadCrumb";
-import api from "@/services/api";
+import { mapActions, mapMutations, mapGetters } from 'vuex'
+import { BAlert, BButton } from 'bootstrap-vue'
+import ApartmentsBookingModal from '@/components/Dashboard/Apartment/Components/ApartmentsBookingModal'
+import BaseFilterTabsContent from '@/components/Reusable/BaseFilterTabsContent'
+import BaseBreadCrumb from '@/components/BaseBreadCrumb'
+import api from '@/services/api'
+import ViewClient from './ViewClient'
+import InfoManager from './InfoManager'
+import ReserveAdd from './Components/Reserve'
+import EditApartment from './Components/Edit'
+import Filter from './Components/ApartmentsFilter'
+import SuccessAgree from './Components/SuccessAgree'
+import AgreeMultiple from './Components/AgreeMultiple'
 
 export default {
-  name: "ApartmentList",
+  name: 'ApartmentList',
   components: {
-    "filter-form": Filter,
-    "reserve-add": ReserveAdd,
-    "view-client": ViewClient,
-    "edit-modal": EditApartment,
-    "info-manager-modal": InfoManager,
-    "agree-modal": AgreeMultiple,
-    "success-agree": SuccessAgree,
+    'filter-form': Filter,
+    'reserve-add': ReserveAdd,
+    'view-client': ViewClient,
+    'edit-modal': EditApartment,
+    'info-manager-modal': InfoManager,
+    'agree-modal': AgreeMultiple,
+    'success-agree': SuccessAgree,
     ApartmentsBookingModal,
     BaseFilterTabsContent,
     BaseBreadCrumb,
@@ -32,7 +32,7 @@ export default {
 
   data() {
     return {
-      selectMode: "single",
+      selectMode: 'single',
       unsfinishedContracts: [],
       selectable: true,
       selected: {
@@ -57,8 +57,8 @@ export default {
 
       fields: [
         {
-          key: "number",
-          label: this.$t("apartments.list.number"),
+          key: 'number',
+          label: this.$t('apartments.list.number'),
           sortable: true,
         },
         // {
@@ -76,64 +76,64 @@ export default {
         //   sortable: true,
         // },
         {
-          key: "rooms",
-          label: this.$t("apartments.list.rooms"),
+          key: 'rooms',
+          label: this.$t('apartments.list.rooms'),
           sortable: true,
         },
         {
-          key: "floor",
-          label: this.$t("apartments.list.floor"),
+          key: 'floor',
+          label: this.$t('apartments.list.floor'),
           sortable: true,
         },
         {
-          key: "entrance",
-          label: this.$t("apartments.list.entrance"),
+          key: 'entrance',
+          label: this.$t('apartments.list.entrance'),
           sortable: true,
         },
         {
-          key: "area",
-          label: this.$t("apartments.list.area"),
+          key: 'area',
+          label: this.$t('apartments.list.area'),
           sortable: true,
         },
         {
-          key: "balcony",
-          label: this.$t("apartments.list.balcony"),
+          key: 'balcony',
+          label: this.$t('apartments.list.balcony'),
           sortable: true,
         },
         {
-          key: "price",
-          label: this.$t("apartments.list.price"),
+          key: 'price',
+          label: this.$t('apartments.list.price'),
           sortable: true,
         },
         {
-          key: "status",
-          label: this.$t("apartments.list.status"),
+          key: 'status',
+          label: this.$t('apartments.list.status'),
         },
         {
-          key: "actions",
-          label: "",
+          key: 'actions',
+          label: '',
         },
       ],
       filter: {
         status: null,
       },
-      sortBy: "",
+      sortBy: '',
       sortDesc: false,
       currentPage: 1,
       scrollActive: true,
       header: {
         headers: {
-          Authorization: "Bearer " + localStorage.token,
+          Authorization: `Bearer ${localStorage.token}`,
         },
       },
       loading: true,
-    };
+    }
   },
 
   created() {
     this.filter = {
       ...this.$route.query,
-    };
+    }
 
     // const id = this.$route.params.object
     // api.apartments.getApartmentsList(id)
@@ -141,187 +141,180 @@ export default {
     //       this.items = response.data.items
     //       this.pagination = response.data.pagination
     //     })
-    this.currentPage = Number(this.filter.page);
-    this.loading = this.getLoading;
+    this.currentPage = Number(this.filter.page)
+    this.loading = this.getLoading
 
     // this.fetchApartments(this)
-    this.getUnfinishedOrders();
+    this.getUnfinishedOrders()
   },
 
   computed: {
-    ...mapGetters(["getApartments", "getPermission", "getMe", "getLoading"]),
+    ...mapGetters(['getApartments', 'getPermission', 'getMe', 'getLoading']),
     bookingPermission() {
       return (
-        this.selected.view &&
-        this.selected.values.length > 1 &&
-        this.getPermission.apartments &&
-        this.getPermission.apartments.contract
-      );
+        this.selected.view
+        && this.selected.values.length > 1
+        && this.getPermission.apartments
+        && this.getPermission.apartments.contract
+      )
     },
     hasPermission() {
       return (
         this.getPermission.apartments && this.getPermission.apartments.edit
-      );
+      )
     },
     showApartmentsContract() {
-      const { getPermission } = this;
-      const firstOption =
-        getPermission.apartments && getPermission.apartments.contract;
-      const secondOption =
-        getPermission.apartments && getPermission.apartments.root_contract;
-      return firstOption || secondOption;
+      const { getPermission } = this
+      const firstOption = getPermission.apartments && getPermission.apartments.contract
+      const secondOption = getPermission.apartments && getPermission.apartments.root_contract
+      return firstOption || secondOption
     },
     getPagination() {
       if (this.getApartments.pagination.total) {
-        return this.getApartments.pagination.total;
+        return this.getApartments.pagination.total
       }
-      return 1;
+      return 1
     },
     items() {
-      return this.getApartments.items;
+      return this.getApartments.items
     },
     filterTabList() {
       return [
         {
-          name: this.$t("apartments.tab_names.all"),
-          status: "all",
+          name: this.$t('apartments.tab_names.all'),
+          status: 'all',
         },
         {
-          name: this.$t("apartments.tab_names.available"),
-          status: "available",
+          name: this.$t('apartments.tab_names.available'),
+          status: 'available',
         },
         {
-          name: this.$t("apartments.tab_names.booked"),
-          status: "booked",
+          name: this.$t('apartments.tab_names.booked'),
+          status: 'booked',
         },
         {
-          name: this.$t("apartments.tab_names.promo"),
-          status: "promo",
+          name: this.$t('apartments.tab_names.promo'),
+          status: 'promo',
         },
         {
-          name: this.$t("apartments.tab_names.sold"),
-          status: "sold",
+          name: this.$t('apartments.tab_names.sold'),
+          status: 'sold',
         },
         {
-          name: this.$t("apartments.tab_names.unavailable"),
-          status: "unavailable",
+          name: this.$t('apartments.tab_names.unavailable'),
+          status: 'unavailable',
         },
-      ];
+      ]
     },
     objectName() {
       if (this.items.length) {
-        return this.items[0].object.name;
+        return this.items[0].object.name
       }
 
-      return "";
+      return ''
     },
     breadCrumbs() {
       return [
         {
-          routeName: "objects",
-          textContent: this.$t("objects.title"),
+          routeName: 'objects',
+          textContent: this.$t('objects.title'),
         },
         {
-          routeName: "apartments",
+          routeName: 'apartments',
           textContent: this.objectName,
           params: {
             object: this.$route.params.object,
           },
         },
-      ];
+      ]
     },
     activeContent() {
-      return this.$t("objects.apartments");
+      return this.$t('objects.apartments')
     },
   },
 
   watch: {
     getLoading(val) {
-      this.loading = val;
+      this.loading = val
     },
   },
 
   methods: {
-    ...mapActions(["fetchReserveClient"]),
-    ...mapMutations(["updateSpecificApartment"]),
+    ...mapActions(['fetchReserveClient']),
+    ...mapMutations(['updateSpecificApartment']),
     bookSelectedApartments(status) {
-      const { values: apartments } = this.selected;
-      const form = Object.assign({}, { ...client, apartments });
-      delete form.apartment_id;
-      this.loading = true;
+      const { values: apartments } = this.selected
+      const form = { ...client, apartments }
+      delete form.apartment_id
+      this.loading = true
       api.apartments
         .bookingApartments(form)
-        .then(async (response) => {
-          const { contract_path } = response.data;
-          await this.showSuccessResponse();
-          await this.updateContent();
-          await this.multiSelectOff();
-          await this.downloadContract(contract_path);
+        .then(async response => {
+          const { contract_path } = response.data
+          await this.showSuccessResponse()
+          await this.updateContent()
+          await this.multiSelectOff()
+          await this.downloadContract(contract_path)
         })
-        .catch((error) => {
-          this.toastedWithErrorCode(error);
+        .catch(error => {
+          this.toastedWithErrorCode(error)
         })
         .finally(() => {
-          this.loading = false;
-        });
+          this.loading = false
+        })
     },
     downloadContract(url) {
-      const a = document.createElement("a");
-      a.href = url;
-      a.click();
-      document.body.removeChild(a);
+      const a = document.createElement('a')
+      a.href = url
+      a.click()
+      document.body.removeChild(a)
     },
     showSuccessResponse() {
       this.$swal({
-        title: this.$t("booked"),
-        text: "",
-        icon: "success",
+        title: this.$t('booked'),
+        text: '',
+        icon: 'success',
         showCancelButton: false,
-        confirmButtonText: this.$t("next"),
-      });
+        confirmButtonText: this.$t('next'),
+      })
     },
     updateContent() {
       // this.fetchApartments(this)
-      this.getUnfinishedOrders();
+      this.getUnfinishedOrders()
     },
     statusHold(data) {
-      return data.item.order.status === "hold";
+      return data.item.order.status === 'hold'
     },
     allowViewWhenProcessing(data) {
-      const status = data.item.order.status;
-      const userId = data.item.order?.user_id;
+      const { status } = data.item.order
+      const userId = data.item.order?.user_id
 
-      const permissionApartment = this.getPermission.apartments;
-      const sameUserId = userId === this.getMe.user.id;
+      const permissionApartment = this.getPermission.apartments
+      const sameUserId = userId === this.getMe.user.id
 
-      const unnecessaryStatus = ["sold", "contract"];
-      const notSolidOrContract = !unnecessaryStatus.includes(status);
+      const unnecessaryStatus = ['sold', 'contract']
+      const notSolidOrContract = !unnecessaryStatus.includes(status)
 
-      const firstOption =
-        notSolidOrContract &&
-        status === "booked" &&
-        sameUserId &&
-        permissionApartment.contract;
-      const secondOption =
-        !notSolidOrContract &&
-        permissionApartment &&
-        permissionApartment.root_contract;
-      const thirdOption =
-        notSolidOrContract &&
-        status === "available" &&
-        permissionApartment.contract;
+      const firstOption = notSolidOrContract
+        && status === 'booked'
+        && sameUserId
+        && permissionApartment.contract
+      const secondOption = !notSolidOrContract
+        && permissionApartment
+        && permissionApartment.root_contract
+      const thirdOption = notSolidOrContract
+        && status === 'available'
+        && permissionApartment.contract
 
-      return (firstOption || secondOption || thirdOption) && status === "hold";
+      return (firstOption || secondOption || thirdOption) && status === 'hold'
     },
     clientsView(data) {
-      const firstOption =
-        data.item.order.status === "booked" &&
-        data.item.order.user.id === this.getMe.user.id;
-      const secondOption =
-        this.getPermission.apartments &&
-        this.getPermission.apartments.root_contract &&
-        data.item.order.status === "booked";
-      return firstOption || secondOption;
+      const firstOption = data.item.order.status === 'booked'
+        && data.item.order.user.id === this.getMe.user.id
+      const secondOption = this.getPermission.apartments
+        && this.getPermission.apartments.root_contract
+        && data.item.order.status === 'booked'
+      return firstOption || secondOption
     },
     // async toggleApartmentToSale(item) {
     //   const {status} = this.$route.query
@@ -333,42 +326,42 @@ export default {
     //   // })
     // },
     async getUnfinishedOrders() {
-      await api.orders.fetchUnfinishedOrders().then((res) => {
+      await api.orders.fetchUnfinishedOrders().then(res => {
         if (res) {
-          this.unsfinishedContracts = res.data;
+          this.unsfinishedContracts = res.data
         }
-      });
+      })
     },
 
     async orderHold(arr) {
-      this.loading = true;
-      await api.orders.holdOrder(arr).then((res) => {
-        this.loading = false;
+      this.loading = true
+      await api.orders.holdOrder(arr).then(res => {
+        this.loading = false
         if (res) {
           // localStorage.setItem("order", JSON.stringify(res.data));
           this.$router.push({
-            name: "confirm-apartment",
+            name: 'confirm-apartment',
             params: { id: res.data.uuid },
-          });
-          this.selected.view = false;
-          this.selected.values = [];
-          this.selectable = true;
+          })
+          this.selected.view = false
+          this.selected.values = []
+          this.selectable = true
         }
-      });
+      })
     },
     goOrderHold(order_id) {
-      this.selected.view = false;
-      this.selected.values = [];
-      this.selectable = true;
+      this.selected.view = false
+      this.selected.values = []
+      this.selectable = true
       this.$router.push({
-        name: "confirm-apartment",
+        name: 'confirm-apartment',
         params: { id: order_id[0] },
-      });
+      })
     },
     multiSelectOn() {
-      this.selected.view = true;
-      this.selectable = true;
-      this.scrollActive = false;
+      this.selected.view = true
+      this.selectable = true
+      this.scrollActive = false
       // this.page = 1;
       // this.filter.page = 1;
       // this.filter.status = true;
@@ -384,11 +377,11 @@ export default {
       // });
     },
     multiSelectOff() {
-      this.selected.view = false;
-      this.selected.values = [];
-      this.selectable = true;
+      this.selected.view = false
+      this.selected.values = []
+      this.selectable = true
 
-      this.scrollActive = true;
+      this.scrollActive = true
       // this.page = 1;
       // this.filter.page = 1;
       // this.filter.status = null;
@@ -405,31 +398,31 @@ export default {
     },
     onRowSelected(items) {
       this.$router.push({
-        name: "apartment-view",
+        name: 'apartment-view',
         params: { id: items[0].id },
-      });
+      })
     },
     async PageCallBack(event) {
-      this.scrollActive = false;
-      this.page = event;
-      this.filter.page = Number(this.page);
+      this.scrollActive = false
+      this.page = event
+      this.filter.page = Number(this.page)
       this.$router.push({
-        name: "apartments",
+        name: 'apartments',
         query: this.filter,
-      });
+      })
       // await this.fetchApartments(this).then(() => {
       //   const element = document.getElementById("my-table");
       //   element.scrollIntoView();
       // });
     },
     async getFilterTabsContent(status) {
-      this.filter.status = status;
-      this.scrollActive = false;
-      delete this.filter.page;
+      this.filter.status = status
+      this.scrollActive = false
+      delete this.filter.page
       this.$router.push({
-        name: "apartments",
+        name: 'apartments',
         query: this.filter,
-      });
+      })
       // await this.fetchApartments(this).then(() => {
       //   const element = document.getElementById("my-table")
       //   element.scrollIntoView()
@@ -437,36 +430,36 @@ export default {
     },
     async handleScroll(event) {
       if (!this.scrollActive) {
-        this.scrollActive = true;
-        return;
+        this.scrollActive = true
+        return
       }
 
       if (
-        event.target.scrollTop + event.target.clientHeight >=
-        event.target.scrollHeight
+        event.target.scrollTop + event.target.clientHeight
+        >= event.target.scrollHeight
       ) {
         if (this.getApartments.pagination.next) {
-          this.page = this.page + 1;
-          this.filter.page = Number(this.page);
-          this.currentPage = this.filter.page;
+          this.page += 1
+          this.filter.page = Number(this.page)
+          this.currentPage = this.filter.page
           this.$router.push({
-            name: "apartments",
+            name: 'apartments',
             query: this.filter,
-          });
+          })
           // await this.fetchApartments(this);
         }
       }
     },
     sortingChanged(val) {
-      this.scrollActive = false;
-      this.filter.filtered = true;
-      this.filter.sort_by = val.sortBy;
-      this.filter.order_by = val.sortDesc ? "desc" : "asc";
+      this.scrollActive = false
+      this.filter.filtered = true
+      this.filter.sort_by = val.sortBy
+      this.filter.order_by = val.sortDesc ? 'desc' : 'asc'
 
       this.$router.push({
-        name: "apartments",
+        name: 'apartments',
         query: this.filter,
-      });
+      })
       // setTimeout(() => {
       //   this.fetchApartments(this).then(() => {
       //     const element = document.getElementById("my-table");
@@ -476,145 +469,145 @@ export default {
     },
 
     rowClass(item, type) {
-      if (item && type === "row") {
-        if (item.order.status === "booked") {
-          return "";
+      if (item && type === 'row') {
+        if (item.order.status === 'booked') {
+          return ''
         }
-        if (item.order.status === "contract") {
-          return "table-info";
+        if (item.order.status === 'contract') {
+          return 'table-info'
         }
-        if (item.order.status === "sold") {
-          return "table-success";
+        if (item.order.status === 'sold') {
+          return 'table-success'
         }
-        if (item.order.status === "hold") {
-          return "table-warning";
+        if (item.order.status === 'hold') {
+          return 'table-warning'
         }
       } else {
-        return null;
+        return null
       }
     },
 
     getPrice(area, price) {
-      return price * area;
+      return price * area
     },
 
-    moment: function () {
-      return this.$moment();
+    moment() {
+      return this.$moment()
     },
 
     async filteredForm(event) {
-      this.filter = event;
-      this.selected.view = false;
-      this.selected.values = [];
-      this.selectable = true;
-      this.scrollActive = true;
-      this.page = 1;
-      this.filter.page = 1;
-      this.currentPage = this.filter.page;
+      this.filter = event
+      this.selected.view = false
+      this.selected.values = []
+      this.selectable = true
+      this.scrollActive = true
+      this.page = 1
+      this.filter.page = 1
+      this.currentPage = this.filter.page
 
       await this.$router.push({
-        name: "apartments",
+        name: 'apartments',
         query: this.filter,
-      });
+      })
 
-      const vm = this;
+      const vm = this
       // await this.fetchApartments(vm)
     },
 
     CreateReserve(id) {
-      this.reserve = true;
-      this.apartment_id = id;
+      this.reserve = true
+      this.apartment_id = id
     },
 
     CreateReserveSuccess() {
       this.fetchApartments(this).then(() => {
-        location.reload();
-      });
+        location.reload()
+      })
     },
 
     CloseReserveInfo() {
-      this.info_reserve = false;
-      this.apartment_preview = {};
+      this.info_reserve = false
+      this.apartment_preview = {}
       this.fetchApartments(this).then(() => {
-        location.reload();
-      });
+        location.reload()
+      })
     },
 
     ReserveInfo(apartment) {
-      this.info_reserve = true;
-      this.apartment_preview = apartment;
-      this.order_id = apartment.order.id;
+      this.info_reserve = true
+      this.apartment_preview = apartment
+      this.order_id = apartment.order.id
       this.fetchReserveClient(this).then(() => {
-        this.$root.$emit("bv::show::modal", "modal-view-reserved-client");
-      });
+        this.$root.$emit('bv::show::modal', 'modal-view-reserved-client')
+      })
     },
 
     getInfoReserve(apartment) {
-      this.info_manager = true;
-      this.manager_apartment = apartment.order.user;
+      this.info_manager = true
+      this.manager_apartment = apartment.order.user
     },
 
     ManagerInfo() {
-      this.info_manager = false;
-      this.manager_apartment = {};
+      this.info_manager = false
+      this.manager_apartment = {}
     },
 
     async EditApartment() {
-      this.apartment_id = 0;
-      this.edit = false;
+      this.apartment_id = 0
+      this.edit = false
 
       await this.$router.push({
-        name: "apartments",
+        name: 'apartments',
         query: this.filter,
-      });
+      })
 
-      if (this.filter.filtered) await this.fetchApartments(this);
-      else await this.fetchApartments(this);
+      if (this.filter.filtered) await this.fetchApartments(this)
+      else await this.fetchApartments(this)
     },
 
     CloseAgree() {
-      this.confirm = false;
+      this.confirm = false
     },
 
     async successAgree(value) {
-      this.contract = value;
-      await this.fetchApartments(this);
+      this.contract = value
+      await this.fetchApartments(this)
       // this.$bvModal.show("modal-success-agree");
-      this.selected.confirm = false;
-      this.selected.view = false;
-      this.selected.values = [];
-      this.selectable = true;
+      this.selected.confirm = false
+      this.selected.view = false
+      this.selected.values = []
+      this.selectable = true
     },
   },
 
   filters: {
     getStatus(status, booking_date) {
-      let msg;
+      let msg
       switch (status) {
-        case "sold":
-          msg = "Продано";
-          break;
-        case "booked":
-          msg = "Забронировано до " + booking_date;
-          break;
-        case "available":
-          msg = "Свободен";
-          break;
-        case "contract":
-          msg = "Ждет оплата";
-          break;
-        case "hold":
-          msg = "Оформляется...";
-          break;
+        case 'sold':
+          msg = 'Продано'
+          break
+        case 'booked':
+          msg = `Забронировано до ${booking_date}`
+          break
+        case 'available':
+          msg = 'Свободен'
+          break
+        case 'contract':
+          msg = 'Ждет оплата'
+          break
+        case 'hold':
+          msg = 'Оформляется...'
+          break
         default:
-          msg = "Свободен";
-          break;
+          msg = 'Свободен'
+          break
       }
 
-      return msg;
+      return msg
     },
   },
-};
+}
 </script>
 
 <template>
@@ -624,10 +617,14 @@ export default {
         :bread-crumbs="breadCrumbs"
         :active-content="activeContent"
         class="mb-4"
-      ></base-bread-crumb>
+      />
 
       <div v-if="unsfinishedContracts.length">
-        <b-alert variant="warning" class="py-2" show>
+        <b-alert
+          variant="warning"
+          class="py-2"
+          show
+        >
           <div
             class="alert-body py-0 d-flex w-100 align-items-center justify-content-center"
           >
@@ -637,10 +634,10 @@ export default {
               продолжайте или отмените эти оформления
             </span>
             <b-button
+              v-if="getMe.user"
               variant="info"
               class="mt-0 mr-0 ml-2 h-auto"
               to="/objects/unfinished-contracts"
-              v-if="getMe.user"
               style="padding: 7px 15px !important"
             >
               Подробнее
@@ -651,39 +648,39 @@ export default {
 
       <div class="d-flex justify-content-between flex-md-row flex-column">
         <div
-          class="d-flex justify-content-center align-items-center flex-md-row flex-column"
           v-if="showApartmentsContract"
+          class="d-flex justify-content-center align-items-center flex-md-row flex-column"
         >
           <button
             v-if="!selected.view && getPermission.apartments.contract"
             class="btn btn-secondary mr-md-2 mr-0 mt-md-0 order-2"
             @click="multiSelectOn"
           >
-            <i class="far fa-list"></i> {{ $t("apartments.list.choose") }}
+            <i class="far fa-list" /> {{ $t("apartments.list.choose") }}
           </button>
 
           <b-button
-            v-b-modal.modal-agree
             v-if="
               selected.view &&
-              selected.values.length > 1 &&
-              getPermission.apartments &&
-              getPermission.apartments.contract
+                selected.values.length > 1 &&
+                getPermission.apartments &&
+                getPermission.apartments.contract
             "
-            @click="orderHold(selected.values)"
+            v-b-modal.modal-agree
             variant="success"
             class="btn btn-primary mr-md-2 mr-0 mt-md-0 order-3"
+            @click="orderHold(selected.values)"
           >
-            <i class="far fa-ballot-check"></i>
+            <i class="far fa-ballot-check" />
             {{ $t("apartments.list.contract_all") }}
           </b-button>
 
           <b-button
-            v-b-modal.booking-creation-modal
             v-if="bookingPermission"
+            v-b-modal.booking-creation-modal
             class="mr-md-2 mr-0 mt-md-0 btn btn-primary order-4 booking__button"
           >
-            <i class="far fa-calendar-check"></i>
+            <i class="far fa-calendar-check" />
             {{ $t("objects.booking") }}
           </b-button>
 
@@ -692,7 +689,7 @@ export default {
             class="btn btn-warning mr-md-2 mr-0 mt-md-0 order-2"
             @click="multiSelectOff"
           >
-            <i class="far fa-redo"></i> {{ $t("apartments.list.reset") }}
+            <i class="far fa-redo" /> {{ $t("apartments.list.reset") }}
           </button>
 
           <div class="mt-md-0 order-md-6 order-1">
@@ -704,27 +701,29 @@ export default {
         </div>
 
         <button
-          class="btn btn-primary mr-0 mt-md-0 ml-md-auto"
-          v-b-toggle.apartment-list-filter
           v-if="getPermission.apartments && getPermission.apartments.filter"
+          v-b-toggle.apartment-list-filter
+          class="btn btn-primary mr-0 mt-md-0 ml-md-auto"
         >
-          <i class="fas fa-filter"></i>
-          <i class="far fa-sliders-h mr-2"></i>
+          <i class="fas fa-filter" />
+          <i class="far fa-sliders-h mr-2" />
           {{ $t("apartments.list.filter") }}
         </button>
       </div>
 
       <!--  TODO: FILTER SECTION    -->
       <base-filter-tabs-content
-        @get-new-content="getFilterTabsContent"
         :filter-tab-list="filterTabList"
+        @get-new-content="getFilterTabsContent"
       />
       <!--  TODO: END OF FILTER SECTION    -->
 
       <div>
         <b-table
-          ref="apartment-list-table"
           id="my-table"
+          ref="apartment-list-table"
+          v-model:sort-by="sortBy"
+          v-model:sort-desc="sortDesc"
           class="custom-table"
           sticky-header
           borderless
@@ -733,17 +732,18 @@ export default {
           sort-icon-left
           :items="items"
           :fields="fields"
-          v-model:sort-by="sortBy"
-          v-model:sort-desc="sortDesc"
           :tbody-tr-class="rowClass"
           :empty-text="$t('no_data')"
-          @sort-changed="sortingChanged"
-          @scroll.native="handleScroll"
           :selectable="selectable"
           :select-mode="selectMode"
+          @sort-changed="sortingChanged"
+          @scroll.native="handleScroll"
           @row-selected="onRowSelected"
         >
-          <template #empty="scope" class="text-center">
+          <template
+            #empty="scope"
+            class="text-center"
+          >
             <span class="d-flex justify-content-center align-items-center">
               {{ scope.emptyText }}
             </span>
@@ -755,9 +755,15 @@ export default {
           <!--            </span>-->
           <!--          </template>-->
 
-          <template #cell(number)="data" class="p-0">
+          <template
+            #cell(number)="data"
+            class="p-0"
+          >
             <div class="position-relative">
-              <div v-if="!data.item.is_sold" class="apartments__lock">
+              <div
+                v-if="!data.item.is_sold"
+                class="apartments__lock"
+              >
                 <svg
                   width="16"
                   height="16"
@@ -772,17 +778,17 @@ export default {
               </div>
               <div class="table-multi-select">
                 <b-form-checkbox
-                  title="Выберите"
                   v-if="
                     data.item.is_sold &&
-                    selected.view &&
-                    data.item.order.status === 'available'
+                      selected.view &&
+                      data.item.order.status === 'available'
                   "
                   :id="'checkbox-' + data.item.id"
                   v-model="selected.values"
+                  title="Выберите"
                   :name="'checkbox-' + data.item.id"
                   :value="data.item.id"
-                ></b-form-checkbox>
+                />
                 <span>{{ data.item.number }}</span>
               </div>
             </div>
@@ -835,18 +841,18 @@ export default {
                   class="dropdown-toggle"
                   data-toggle="dropdown"
                 >
-                  <i class="far fa-ellipsis-h"></i>
+                  <i class="far fa-ellipsis-h" />
                 </button>
 
                 <div class="dropdown-menu">
                   <template v-if="hasPermission">
                     <!-- Редактировать -->
                     <b-link
+                      v-b-modal.modal-edit
                       class="dropdown-item dropdown-item--inside"
                       @click="[(edit = true), (apartment_id = data.item.id)]"
-                      v-b-modal.modal-edit
                     >
-                      <i class="far fa-pencil"></i> {{ $t("edit") }}
+                      <i class="far fa-pencil" /> {{ $t("edit") }}
                     </b-link>
 
                     <!--        Вернуть к продаже          -->
@@ -861,12 +867,12 @@ export default {
                     <b-link
                       v-if="
                         !data.item.is_sold &&
-                        data.item.order.status === 'available'
+                          data.item.order.status === 'available'
                       "
-                      @click="toggleApartmentToSale(data.item)"
                       class="dropdown-item dropdown-item--inside"
+                      @click="toggleApartmentToSale(data.item)"
                     >
-                      <i class="far fa-lock"></i> {{ $t("return_to_sale") }}
+                      <i class="far fa-lock" /> {{ $t("return_to_sale") }}
                     </b-link>
                   </template>
 
@@ -874,25 +880,25 @@ export default {
                   <b-link
                     v-if="
                       data.item.is_sold &&
-                      getPermission.apartments &&
-                      getPermission.apartments.reserve &&
-                      data.item.order.status === 'available'
+                        getPermission.apartments &&
+                        getPermission.apartments.reserve &&
+                        data.item.order.status === 'available'
                     "
-                    @click="[(reserve = true), (apartment_id = data.item.id)]"
                     v-b-modal.modal-reserve-create
                     class="dropdown-item dropdown-item--inside"
+                    @click="[(reserve = true), (apartment_id = data.item.id)]"
                   >
-                    <i class="far fa-calendar-check"></i>
+                    <i class="far fa-calendar-check" />
                     {{ $t("apartments.list.book") }}
                   </b-link>
 
                   <!-- Посмотреть клиент  -->
                   <b-link
                     v-if="clientsView(data)"
-                    @click="ReserveInfo(data.item)"
                     class="dropdown-item dropdown-item--inside"
+                    @click="ReserveInfo(data.item)"
                   >
-                    <i class="far fa-eye"></i>
+                    <i class="far fa-eye" />
                     {{ $t("apartments.list.view_client") }}
                   </b-link>
 
@@ -900,13 +906,13 @@ export default {
                   <b-link
                     v-if="
                       data.item.order.status === 'booked' &&
-                      data.item.order.user.id !== getMe.user.id
+                        data.item.order.user.id !== getMe.user.id
                     "
-                    @click="getInfoReserve(data.item)"
                     v-b-modal.modal-view-info-manager
                     class="dropdown-item dropdown-item--inside"
+                    @click="getInfoReserve(data.item)"
                   >
-                    <i class="far fa-info-circle"></i>
+                    <i class="far fa-info-circle" />
                     {{ $t("apartments.list.view_manager") }}
                   </b-link>
 
@@ -918,7 +924,7 @@ export default {
                     }"
                     :class="'dropdown-item dropdown-item--inside'"
                   >
-                    <i class="far fa-eye"></i>
+                    <i class="far fa-eye" />
                     {{ $t("apartments.list.more") }}
                   </router-link>
 
@@ -926,21 +932,21 @@ export default {
 
                   <!--  Оформить -->
                   <b-link
-                    @click="orderHold([data.item.id])"
-                    :class="'dropdown-item dropdown-item--inside'"
                     v-if="allowViewWhenProcessing(data) && !statusHold(data)"
+                    :class="'dropdown-item dropdown-item--inside'"
+                    @click="orderHold([data.item.id])"
                   >
-                    <i class="far fa-ballot-check"></i>
+                    <i class="far fa-ballot-check" />
                     {{ $t("apartments.list.confirm") }}
                   </b-link>
 
                   <!--  Оформить when processing  -->
                   <b-link
-                    @click="goOrderHold([data.item.order.id])"
-                    :class="'dropdown-item dropdown-item--inside'"
                     v-if="allowViewWhenProcessing(data) && statusHold(data)"
+                    :class="'dropdown-item dropdown-item--inside'"
+                    @click="goOrderHold([data.item.order.id])"
                   >
-                    <i class="far fa-ballot-check"></i>
+                    <i class="far fa-ballot-check" />
                     Продолжить оформление
                   </b-link>
                 </div>
@@ -949,14 +955,18 @@ export default {
           </template>
         </b-table>
 
-        <b-overlay :show="loading" no-wrap opacity="0.5">
+        <b-overlay
+          :show="loading"
+          no-wrap
+          opacity="0.5"
+        >
           <template #overlay>
             <div class="d-flex justify-content-center w-100">
               <div class="lds-ellipsis">
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
+                <div />
+                <div />
+                <div />
+                <div />
               </div>
             </div>
           </template>
@@ -964,10 +974,11 @@ export default {
 
         <paginate
           v-if="getPagination"
-          :pageCount="getPagination"
+          v-model="currentPage"
+          :page-count="getPagination"
           :click-handler="PageCallBack"
-          :prevText="`<i class='fa fa-chevron-left'></i>`"
-          :nextText="`<i class='fa fa-chevron-right'></i>`"
+          :prev-text="`<i class='fa fa-chevron-left'></i>`"
+          :next-text="`<i class='fa fa-chevron-right'></i>`"
           :container-class="'pagination'"
           :page-class="'page-item'"
           :page-link-class="'page-link'"
@@ -975,32 +986,30 @@ export default {
           :prev-class="'page-item'"
           :prev-link-class="'page-link'"
           :next-link-class="'page-link'"
-          v-model="currentPage"
-        >
-        </paginate>
+        />
       </div>
 
       <div>
         <reserve-add
           v-if="
             reserve ||
-            (getPermission.apartments && getPermission.apartments.reserve)
+              (getPermission.apartments && getPermission.apartments.reserve)
           "
           :apartment="apartment_id"
           @CreateReserve="CreateReserveSuccess"
-        ></reserve-add>
+        />
 
         <filter-form
           v-if="getPermission.apartments && getPermission.apartments.filter"
-          @filteredForm="filteredForm"
           :filtered="filter"
-        ></filter-form>
+          @filteredForm="filteredForm"
+        />
 
         <view-client
           v-if="info_reserve"
-          @CancelReserve="CloseReserveInfo"
           :apartment-data="apartment_preview"
-        ></view-client>
+          @CancelReserve="CloseReserveInfo"
+        />
 
         <edit-modal
           v-if="
@@ -1008,21 +1017,24 @@ export default {
           "
           :apartment="apartment_id"
           @EditApartment="EditApartment"
-        ></edit-modal>
+        />
 
         <info-manager-modal
           :manager-data="this.manager_apartment"
           @ManagerInfo="ManagerInfo"
-        ></info-manager-modal>
+        />
 
         <agree-modal
           v-if="selected.confirm"
           :apartments="selected.values"
           @successAgree="successAgree"
           @CloseAgree="CloseAgree"
-        ></agree-modal>
+        />
 
-        <success-agree :contract="contract" :uuid="contract.id"></success-agree>
+        <success-agree
+          :contract="contract"
+          :uuid="contract.id"
+        />
       </div>
     </div>
     <apartments-booking-modal @set-client-data="bookSelectedApartments" />

@@ -1,6 +1,6 @@
 <script>
 export default {
-  name: "BaseTooltip",
+  name: 'BaseTooltip',
   props: {
     text: {
       type: String,
@@ -13,7 +13,7 @@ export default {
     placement: {
       type: String,
       required: false,
-      default: () => "top",
+      default: () => 'top',
     },
     show: {
       type: Boolean,
@@ -23,7 +23,7 @@ export default {
     triggers: {
       type: String,
       required: false,
-      default: () => "hover",
+      default: () => 'hover',
     },
     variant: {
       type: String,
@@ -38,7 +38,7 @@ export default {
       required: false,
     },
   },
-};
+}
 </script>
 
 <template>

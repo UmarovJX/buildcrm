@@ -1,13 +1,14 @@
-export default class hyperlink extends require("./field") {
+export default class hyperlink extends require('./field') {
   constructor(instruct) {
-    super(...arguments);
-    this.link = instruct.split('"')[1];
+    super(...arguments)
+    this.link = instruct.split('"')[1]
   }
+
   getLink() {
-    return this.link;
+    return this.link
   }
 
   static get type() {
-    return "field.hyperlink";
+    return 'field.hyperlink'
   }
 }

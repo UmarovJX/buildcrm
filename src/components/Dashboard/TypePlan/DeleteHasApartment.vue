@@ -1,8 +1,8 @@
 <script>
-import api from "@/services/api";
+import api from '@/services/api'
 
 export default {
-  name: "DeleteHasApartment",
+  name: 'DeleteHasApartment',
   props: {
     planList: {
       type: Array,
@@ -13,76 +13,82 @@ export default {
       required: true,
     },
   },
-  emits: ["close-delete-modal", "successfully-updated"],
+  emits: ['close-delete-modal', 'successfully-updated'],
   data() {
     return {
       showLoading: false,
       bindingPlan: null,
       error: {
         show: false,
-        message: this.$t("type_plan.plan_required"),
+        message: this.$t('type_plan.plan_required'),
       },
-    };
+    }
   },
   computed: {
     apartmentsCount() {
-      return this.removePlan.apartments_count;
+      return this.removePlan.apartments_count
     },
   },
   watch: {
     bindingPlan(last) {
       if (last) {
-        this.error.show = false;
+        this.error.show = false
       }
     },
   },
   methods: {
     async saveExportApartments() {
       if (this.bindingPlan) {
-        this.showLoading = true;
-        const objectId = this.$route.params.id;
-        const planId = this.removePlan.id;
+        this.showLoading = true
+        const objectId = this.$route.params.id
+        const planId = this.removePlan.id
         const body = {
           plan_id: this.bindingPlan,
-        };
+        }
         api.plans
           .changePlan(objectId, planId, body)
           .then(() => {
-            this.$emit("successfully-updated");
+            this.$emit('successfully-updated')
           })
           .catch(() => {
-            const message =
-              "Something went wrong ." +
-              "We are working on getting this fixed as soon as we can." +
-              "You may be able to try again.";
+            const message = 'Something went wrong .'
+              + 'We are working on getting this fixed as soon as we can.'
+              + 'You may be able to try again.'
             this.$toasted.show(message, {
-              type: "error",
-            });
+              type: 'error',
+            })
           })
           .finally(() => {
-            this.showLoading = false;
-          });
+            this.showLoading = false
+          })
       } else {
-        this.error.show = true;
+        this.error.show = true
       }
     },
     closeModal() {
-      this.$emit("close-delete-modal");
+      this.$emit('close-delete-modal')
     },
   },
-};
+}
 </script>
 
 <template>
   <b-modal
+    id="delete-plan-modal"
     size="lg"
     :no-close-on-backdrop="true"
     :hide-header-close="true"
     :no-close-on-esc="true"
-    id="delete-plan-modal"
   >
-    <b-overlay :show="showLoading" rounded="sm">
-      <b-alert variant="danger" class="py-2 mb-0" show>
+    <b-overlay
+      :show="showLoading"
+      rounded="sm"
+    >
+      <b-alert
+        variant="danger"
+        class="py-2 mb-0"
+        show
+      >
         <div
           class="alert-body py-0 d-flex w-100 align-items-center justify-content-center"
         >
@@ -97,19 +103,18 @@ export default {
       </b-alert>
       <b-form-group v-slot="{ ariaDescribedby }">
         <label
-          class="d-flex align-items-center form__radio my-2"
           v-for="plan in planList"
           :key="plan.id"
+          class="d-flex align-items-center form__radio my-2"
           :for="plan.id"
         >
           <b-form-radio
-            :value="`${plan.id}`"
+            :id="`${plan.id}`"
             v-model="bindingPlan"
+            :value="`${plan.id}`"
             :aria-describedby="ariaDescribedby"
             name="some-radios"
-            :id="`${plan.id}`"
-          >
-          </b-form-radio>
+          />
           <span class="d-flex align-items-center">
             <!--            <picture>-->
             <!--              <source :srcset="plan.image">-->
@@ -121,7 +126,10 @@ export default {
             <!--                  style="cursor: pointer; object-fit: contain"-->
             <!--              />-->
             <!--            </picture>-->
-            <span v-if="plan.name" class="mx-4">
+            <span
+              v-if="plan.name"
+              class="mx-4"
+            >
               {{ plan.name }}
             </span>
             <span class="mx-4">
@@ -134,13 +142,22 @@ export default {
           </span>
         </label>
       </b-form-group>
-      <span v-if="error.show" class="error__provider">
+      <span
+        v-if="error.show"
+        class="error__provider"
+      >
         {{ error.message }}
       </span>
       <template #overlay>
         <div class="text-center">
-          <b-icon icon="stopwatch" font-scale="3" animation="cylon"></b-icon>
-          <p id="cancel-label">Please wait...</p>
+          <b-icon
+            icon="stopwatch"
+            font-scale="3"
+            animation="cylon"
+          />
+          <p id="cancel-label">
+            Please wait...
+          </p>
         </div>
       </template>
     </b-overlay>

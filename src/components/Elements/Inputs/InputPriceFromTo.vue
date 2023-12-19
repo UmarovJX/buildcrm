@@ -1,12 +1,12 @@
 <script>
-import BasePriceInput from "@/components/Reusable/BasePriceInput";
+import BasePriceInput from '@/components/Reusable/BasePriceInput'
 
 export default {
-  name: "InputPriceFromTo",
+  name: 'InputPriceFromTo',
   components: {
     BasePriceInput,
   },
-  emits: ["input"],
+  emits: ['input'],
   props: {
     defaultFrom: {
       type: [String, Number],
@@ -23,30 +23,30 @@ export default {
         from: null,
         to: null,
       },
-    };
+    }
   },
   watch: {
     price: {
       handler(value) {
-        this.$emit("input", value);
+        this.$emit('input', value)
       },
       deep: true,
     },
   },
   created() {
-    this.setDefaultFields();
+    this.setDefaultFields()
   },
   methods: {
     setDefaultFields() {
-      this.price.to = this.defaultTo;
-      this.price.from = this.defaultFrom;
+      this.price.to = this.defaultTo
+      this.price.from = this.defaultFrom
     },
     resetFields() {
-      this.$refs["input-price-from"].clearPriceAmountValue();
-      this.$refs["input-price-to"].clearPriceAmountValue();
+      this.$refs['input-price-from'].clearPriceAmountValue()
+      this.$refs['input-price-to'].clearPriceAmountValue()
     },
   },
-};
+}
 </script>
 
 <template>
@@ -59,8 +59,8 @@ export default {
       :value="defaultFrom"
       :permission-change="true"
       :top-placeholder="true"
-      @input="price.from = $event"
       class="price-from"
+      @input="price.from = $event"
     />
     <!--  PRICE TO  -->
     <base-price-input
@@ -70,8 +70,8 @@ export default {
       :value="defaultTo"
       :top-placeholder="true"
       :permission-change="true"
-      @input="price.to = $event"
       class="price-to"
+      @input="price.to = $event"
     />
   </div>
 </template>

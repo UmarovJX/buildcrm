@@ -1,8 +1,9 @@
-export default class noBreakHyphen extends require("./text") {
+export default class noBreakHyphen extends require('./text') {
   static get type() {
-    return "noBreakHyphen";
+    return 'noBreakHyphen'
   }
+
   getText() {
-    return String.fromCharCode(0x2011);
+    return String.fromCharCode(0x2011)
   }
 }

@@ -1,17 +1,17 @@
 <script>
-import "vue2-datepicker/index.css";
+import 'vue2-datepicker/index.css'
 
-import BaseCalendarIcon from "@/components/icons/BaseCalendarIcon";
-import DatePicker from "vue2-datepicker";
-import "vue2-datepicker/locale/en";
+import BaseCalendarIcon from '@/components/icons/BaseCalendarIcon'
+import DatePicker from 'vue2-datepicker'
+import 'vue2-datepicker/locale/en'
 
 export default {
-  name: "BaseDatePicker",
+  name: 'BaseDatePicker',
   components: {
     DatePicker,
     BaseCalendarIcon,
   },
-  emits: ["input", "select"],
+  emits: ['input', 'select'],
   props: {
     defaultValue: {
       type: [Array, String],
@@ -27,15 +27,15 @@ export default {
     },
     format: {
       type: String,
-      default: "YYYY-MM-DD",
+      default: 'YYYY-MM-DD',
     },
     valueType: {
       type: String,
-      default: "YYYY-MM-DD",
+      default: 'YYYY-MM-DD',
     },
     placeholder: {
       type: String,
-      default: "Select date range",
+      default: 'Select date range',
     },
     iconSquareSize: {
       type: Number,
@@ -43,7 +43,7 @@ export default {
     },
     iconFill: {
       type: String,
-      default: "#9CA3AF",
+      default: '#9CA3AF',
     },
     error: {
       type: Boolean,
@@ -55,35 +55,35 @@ export default {
     },
     type: {
       type: String,
-      default: 'date'
-    }
+      default: 'date',
+    },
   },
   data() {
     return {
       dateValue: null,
-    };
+    }
+  },
+  computed: {
+    hasLabel() {
+      return this.value && this.value.length && this.label
+    },
   },
   watch: {
     dateValue(lastValue) {
-      this.$emit("input", lastValue);
-      this.$emit("select", lastValue);
+      this.$emit('input', lastValue)
+      this.$emit('select', lastValue)
     },
     defaultValue: {
       immediate: true,
       handler(nextValue) {
-        this.dateValue = nextValue;
+        this.dateValue = nextValue
       },
     },
     value: {
       immediate: true,
       handler(nextValue) {
-        this.dateValue = nextValue;
+        this.dateValue = nextValue
       },
-    },
-  },
-  computed: {
-    hasLabel() {
-      return this.value && this.value.length && this.label;
     },
   },
   // mounted() {
@@ -107,37 +107,44 @@ export default {
     //   }
     // },
     clearField() {
-      this.dateValue = undefined;
+      this.dateValue = undefined
     },
   },
-};
+}
 </script>
 
 <template>
   <div class="base-calendar">
-    <div v-if="hasLabel" class="input-label">
+    <div
+      v-if="hasLabel"
+      class="input-label"
+    >
       <span>
         {{ placeholder }}
       </span>
     </div>
     <date-picker
-        ref="data-picker"
-        :type="type"
-        :value-type="valueType"
-        :format="format"
-        lang="en"
-        :placeholder="placeholder"
-        v-model="dateValue"
-        class="date-picker"
-        :class="{ error: error, label: hasLabel }"
-        :range="range"
-        :popup-style="{zIndex:9999}"
+      ref="data-picker"
+      v-model="dateValue"
+      :type="type"
+      :value-type="valueType"
+      :format="format"
+      lang="en"
+      :placeholder="placeholder"
+      class="date-picker"
+      :class="{ error: error, label: hasLabel }"
+      :range="range"
+      :popup-style="{zIndex:9999}"
     >
-      <template @click="togglePicker" class="calendar-icon" #icon-calendar>
+      <template
+        #icon-calendar
+        class="calendar-icon"
+        @click="togglePicker"
+      >
         <base-calendar-icon
-            :fill="iconFill"
-            :width="iconSquareSize"
-            :height="iconSquareSize"
+          :fill="iconFill"
+          :width="iconSquareSize"
+          :height="iconSquareSize"
         />
       </template>
     </date-picker>

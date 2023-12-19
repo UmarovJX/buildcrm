@@ -1,8 +1,8 @@
 <script>
-import { formatToPrice, formatDateWithDot } from "@/util/reusable";
+import { formatToPrice, formatDateWithDot } from '@/util/reusable'
 
 export default {
-  name: "ParkingPrimaryTabItem",
+  name: 'ParkingPrimaryTabItem',
   props: {
     apartment: {
       type: Object,
@@ -12,50 +12,50 @@ export default {
 
   methods: {
     priceDiscount(value) {
-      return formatToPrice(value, 2);
+      return formatToPrice(value, 2)
     },
     startDate(value) {
-      return formatDateWithDot(value);
+      return formatDateWithDot(value)
     },
     getName(name) {
-      let locale = localStorage.locale;
-      let value = "";
+      const { locale } = localStorage
+      let value = ''
 
       if (locale) {
         switch (locale) {
-          case "ru":
-            value = name.ru;
-            break;
-          case "uz":
-            value = name.uz;
-            break;
+          case 'ru':
+            value = name.ru
+            break
+          case 'uz':
+            value = name.uz
+            break
         }
       } else {
-        value = name.ru;
+        value = name.ru
       }
 
-      return value;
+      return value
     },
     buildingDate(time) {
-      const date = new Date(time);
-      const year = date.getFullYear();
-      let month = date.getMonth();
+      const date = new Date(time)
+      const year = date.getFullYear()
+      let month = date.getMonth()
       if (month < 3) {
-        month = "1";
+        month = '1'
       } else if (month >= 3 && month < 6) {
-        month = "2";
+        month = '2'
       } else if (month >= 6 && month < 9) {
-        month = "3";
+        month = '3'
       } else {
-        month = "4";
+        month = '4'
       }
 
-      return ` ${month} - ${this.$t("quarter")} ${year} ${this.$t(
-        "of_the_year"
-      )}`;
+      return ` ${month} - ${this.$t('quarter')} ${year} ${this.$t(
+        'of_the_year',
+      )}`
     },
   },
-};
+}
 </script>
 
 <template>
@@ -82,7 +82,9 @@ export default {
 
     <!--   APARTMENT DETAILS     -->
     <div class="apartment__details my-3">
-      <h5 class="apartment__details-title">{{ $t("characters") }}</h5>
+      <h5 class="apartment__details-title">
+        {{ $t("characters") }}
+      </h5>
       <span class="apartment__details-row">
         <span class="property">№ {{ $t("number") }}</span>
         <span class="value">{{ apartment.number }}</span>
@@ -91,13 +93,13 @@ export default {
       <span class="apartment__details-row">
         <span class="property">{{ $t("object.building") }}</span>
         <span class="value">
-          {{ apartment.building.name}}
+          {{ apartment.building.name }}
         </span>
       </span>
       <span class="apartment__details-row">
         <span class="property">{{ $t("floor") }}</span>
         <span class="value">
-          {{ apartment.floor}}
+          {{ apartment.floor }}
         </span>
       </span>
 
@@ -117,12 +119,10 @@ export default {
     color: var(--gray-600) !important
     line-height: 28px
 
-
   &-square-amount
     color: var(--gray-500) !important
     font-size: 18px
     line-height: 22px
-
 
 .button__view
   display: inline-block
@@ -130,7 +130,6 @@ export default {
   background-color: var(--gray-100)
   border-radius: 2rem
   font-family: Inter, sans-serif
-
 
 .promos
   margin-top: .5rem
@@ -173,7 +172,6 @@ export default {
       font-size: 1.5rem
       line-height: 30px
 
-
 .apartment__details
   padding-top: 1rem
   padding-bottom: 1rem
@@ -200,14 +198,12 @@ export default {
     .value
       color: var(--gray-600)
 
-
 .particular__qualities
   font-family: Inter, sans-serif
   margin-bottom: 2.5rem
 
   .title
     font-size: 1.25rem
-
 
   &-content
     display: flex

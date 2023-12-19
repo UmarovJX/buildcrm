@@ -1,17 +1,17 @@
 <script>
-import AppHeader from "@/components/Header/AppHeader";
-import BaseArrowLeft from "@/components/icons/BaseArrowLeftIcon";
-import api from "@/services/api";
-import { v3ServiceApi } from "@/services/v3/v3.service";
+import AppHeader from '@/components/Header/AppHeader'
+import BaseArrowLeft from '@/components/icons/BaseArrowLeftIcon'
+import api from '@/services/api'
+import { v3ServiceApi } from '@/services/v3/v3.service'
 
-import { yandexMap, ymapMarker } from "vue-yandex-maps";
-import { XFormSelect } from "@/components/ui-components/form-select";
-import BaseButton from "@/components/Reusable/BaseButton";
-import { XIcon } from "@/components/ui-components/material-icons";
-import { XCircularBackground } from "@/components/ui-components/circular-background";
+import { yandexMap, ymapMarker } from 'vue-yandex-maps'
+import { XFormSelect } from '@/components/ui-components/form-select'
+import BaseButton from '@/components/Reusable/BaseButton'
+import { XIcon } from '@/components/ui-components/material-icons'
+import { XCircularBackground } from '@/components/ui-components/circular-background'
 
 export default {
-  name: "Facilities",
+  name: 'Facilities',
   components: {
     BaseButton,
     XFormSelect,
@@ -25,7 +25,7 @@ export default {
   data() {
     return {
       map: {},
-      name: "",
+      name: '',
       object: {},
       objectFacilities: [],
       coords: [0, 0],
@@ -34,29 +34,29 @@ export default {
       settings: {
         // eslint-disable-next-line no-undef
         apiKey: process.env.VUE_APP_YKEY,
-        lang: "ru_RU",
-        coordorder: "latlong",
+        lang: 'ru_RU',
+        coordorder: 'latlong',
         enterprise: false,
-        version: "2.1",
+        version: '2.1',
       },
 
-      sortBy: "id",
+      sortBy: 'id',
       sortDesc: false,
       fields: [
         {
-          key: "index",
-          label: "",
-          thStyle: { width: "10%" },
+          key: 'index',
+          label: '',
+          thStyle: { width: '10%' },
         },
         {
-          key: "text",
-          label: "TYPE",
+          key: 'text',
+          label: 'TYPE',
         },
 
         {
-          key: "actions",
-          label: "",
-          thStyle: { width: "20%" },
+          key: 'actions',
+          label: '',
+          thStyle: { width: '20%' },
         },
       ],
       objSelectOptions: [],
@@ -65,126 +65,126 @@ export default {
       facility: null,
 
       loading: false,
-    };
+    }
   },
 
   computed: {
     facilityOptions() {
-      return this.facilityList.map((el) => ({
+      return this.facilityList.map(el => ({
         value: el.id,
         text: el.name[this.$i18n.locale],
-      }));
+      }))
     },
     mapMarkers() {
-      const l = this.object.location;
+      const l = this.object.location
       const fM = this.objectFacilities.map((el, i) => ({
-        id: el.latitude + "," + el.longitude + "," + i,
+        id: `${el.latitude},${el.longitude},${i}`,
         coords: [el.latitude, el.longitude],
         text: el.text,
         url: el.url,
         properties: {
-          iconCaption: i + 1 + ". " + el.text,
+          iconCaption: `${i + 1}. ${el.text}`,
         },
-        options: { preset: "islands#blueDotIcon" },
+        options: { preset: 'islands#blueDotIcon' },
         icon: {
-          preset: "default#imageWithContent",
+          preset: 'default#imageWithContent',
           imageHref: el.url,
           imageSize: [43, 55], // размер иконки в px
           imageOffset: [-22, -55],
         },
-      }));
+      }))
       if (l) {
         const mainM = {
-          id: l.latitude + "," + l.longitude,
+          id: `${l.latitude},${l.longitude}`,
           coords: [l.latitude, l.longitude],
           text: this.object.name,
           properties: {
             iconContent: this.object.name,
           },
-          options: { preset: "islands#redStretchyIcon" },
+          options: { preset: 'islands#redStretchyIcon' },
 
           icon: {
-            color: "red",
+            color: 'red',
           },
-        };
-        return [mainM, ...fM];
+        }
+        return [mainM, ...fM]
       }
 
-      return [...fM];
+      return [...fM]
     },
   },
 
   mounted() {
-    this.fetchObject();
-    this.fetchFacilities();
+    this.fetchObject()
+    this.fetchFacilities()
   },
 
   methods: {
     showMarker(item) {
-      this.coords = [item.latitude, item.longitude];
+      this.coords = [item.latitude, item.longitude]
     },
     removeFacility(index) {
       this.objectFacilities = this.objectFacilities.filter(
-        (_, i) => i !== index
-      );
+        (_, i) => i !== index,
+      )
     },
     saveFacilities() {
-      if (this.isLoading) return;
-      this.isLoading = true;
+      if (this.isLoading) return
+      this.isLoading = true
       api.objectsV3
         .attachFacilities({
           id: this.$route.params.object,
           facilities: this.objectFacilities,
         })
         .then(() => {
-          this.$toasted.show(`Object facilities Succesfully updated`, {
-            type: "success",
-          });
-          this.fetchObject();
+          this.$toasted.show('Object facilities Succesfully updated', {
+            type: 'success',
+          })
+          this.fetchObject()
         })
-        .catch((e) => this.toastedWithErrorCode(e))
-        .finally(() => (this.isLoading = false));
+        .catch(e => this.toastedWithErrorCode(e))
+        .finally(() => (this.isLoading = false))
     },
     addFacility() {
-      const f = this.facilityList.find((el) => el.id === this.facility);
+      const f = this.facilityList.find(el => el.id === this.facility)
       this.objectFacilities.push({
         id: this.facility,
-        latitude: this.selectedObject.split(",")[0],
-        longitude: this.selectedObject.split(",")[1],
+        latitude: this.selectedObject.split(',')[0],
+        longitude: this.selectedObject.split(',')[1],
         text: f.name[this.$i18n.locale],
         url: f.upload.path,
-      });
-      this.facility = null;
-      this.selectedObject = null;
-      this.map.balloon.close();
+      })
+      this.facility = null
+      this.selectedObject = null
+      this.map.balloon.close()
     },
     handleClick(e) {
       this.objSelectOptions = [
-        { value: e.get("coords").join(","), text: "Custom Location" },
-      ];
+        { value: e.get('coords').join(','), text: 'Custom Location' },
+      ]
     },
     backNavigation() {
-      this.$router.go(-1);
+      this.$router.go(-1)
     },
     fetchObject() {
-      this.loading = true;
+      this.loading = true
       api.objectsV3
         .getFacilities({ id: this.$route.params.object })
-        .then((res) => {
-          this.object = res.data.result;
-          this.objectFacilities = res.data.result.facilities.map((el) => ({
+        .then(res => {
+          this.object = res.data.result
+          this.objectFacilities = res.data.result.facilities.map(el => ({
             id: el.id,
             latitude: el.latitude,
             longitude: el.longitude,
             text: el.name[this.$i18n.locale],
             url: el.upload.path,
-          }));
+          }))
           this.coords = [
             res.data.result.location.latitude,
             res.data.result.location.longitude,
-          ];
+          ]
         })
-        .finally(() => (this.loading = false));
+        .finally(() => (this.loading = false))
     },
     fetchFacilities() {
       v3ServiceApi.facility
@@ -192,41 +192,47 @@ export default {
           page: 1,
           limit: 100,
         })
-        .then((res) => {
-          this.facilityList = res.data.result;
-        });
+        .then(res => {
+          this.facilityList = res.data.result
+        })
     },
     mapHandler(e) {
-      this.map = e;
-      this.map.events.add("balloonopen", (e) => {
-        this.selectedObject = null;
-        var target = e.get("target");
-        this.objects = target._objects;
+      this.map = e
+      this.map.events.add('balloonopen', e => {
+        this.selectedObject = null
+        const target = e.get('target')
+        this.objects = target._objects
         // const obj = target._objects[target._objects.length - 1];
-        this.objSelectOptions = target._objects.map((el) => ({
-          value: console.log(el) || el._geometry.coordinates.join(","),
+        this.objSelectOptions = target._objects.map(el => ({
+          value: console.log(el) || el._geometry.coordinates.join(','),
           text: el._properties.name,
-        }));
-      });
-      this.map.geoObjects.events.add("balloonopen", function (e) {
-        alert("balloonopen");
-        var target = e.get("target");
-        console.log(target.geometry.get("coords"));
-      });
+        }))
+      })
+      this.map.geoObjects.events.add('balloonopen', e => {
+        alert('balloonopen')
+        const target = e.get('target')
+        console.log(target.geometry.get('coords'))
+      })
     },
     planView(id) {
-      this.$router.push({ name: "type-plan-view", params: { id: id } });
+      this.$router.push({ name: 'type-plan-view', params: { id } })
     },
   },
-};
+}
 </script>
 
 <template>
   <div>
     <app-header>
       <template #header-title>
-        <div class="go__back" @click="backNavigation">
-          <BaseArrowLeft :width="32" :height="32"></BaseArrowLeft>
+        <div
+          class="go__back"
+          @click="backNavigation"
+        >
+          <BaseArrowLeft
+            :width="32"
+            :height="32"
+          />
         </div>
         <div>
           {{ $t("Facilities") }}
@@ -240,9 +246,9 @@ export default {
           :coords="coords"
           ymap-class="map-box"
           :settings="settings"
+          :zoom="17"
           @map-was-initialized="mapHandler"
           @click="handleClick"
-          :zoom="17"
         >
           <ymap-marker
             v-for="m of mapMarkers"
@@ -257,18 +263,18 @@ export default {
         <div class="row mt-3 align-items-center">
           <div class="col-6">
             <x-form-select
-              placeholder="Object"
               ref="select"
-              :options="objSelectOptions"
               v-model="selectedObject"
-            ></x-form-select>
+              placeholder="Object"
+              :options="objSelectOptions"
+            />
           </div>
           <div class="col-6">
             <x-form-select
+              v-model="facility"
               placeholder="Facility"
               :options="facilityOptions"
-              v-model="facility"
-            ></x-form-select>
+            />
           </div>
         </div>
 
@@ -286,14 +292,14 @@ export default {
       </div>
       <div class="col-6">
         <b-table
+          v-model:sort-by="sortBy"
+          v-model:sort-desc="sortDesc"
           sticky-header
           borderless
           responsive
           :items="objectFacilities"
           :fields="fields"
           show-empty
-          v-model:sort-by="sortBy"
-          v-model:sort-desc="sortDesc"
           sort-icon-left
           class="custom-table"
           style="min-height: unset"
@@ -311,31 +317,39 @@ export default {
           <template #table-busy>
             <div class="d-flex justify-content-center w-100">
               <div class="lds-ellipsis">
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
+                <div />
+                <div />
+                <div />
+                <div />
               </div>
             </div>
           </template>
 
-          <template #cell(index)="{ index }">{{ index + 1 }}</template>
+          <template #cell(index)="{ index }">
+            {{ index + 1 }}
+          </template>
           <template #cell(actions)="{ item, index }">
             <div class="float-right d-flex x-gap-1 cursor-pointer">
               <div title="save">
                 <x-circular-background
-                  @click="showMarker(item)"
                   class="bg-violet-400"
+                  @click="showMarker(item)"
                 >
-                  <x-icon name="visibility" class="color-white" />
+                  <x-icon
+                    name="visibility"
+                    class="color-white"
+                  />
                 </x-circular-background>
               </div>
               <div title="save">
                 <x-circular-background
-                  @click="removeFacility(index)"
                   class="bg-red-600"
+                  @click="removeFacility(index)"
                 >
-                  <x-icon name="delete" class="color-white" />
+                  <x-icon
+                    name="delete"
+                    class="color-white"
+                  />
                 </x-circular-background>
               </div>
             </div>
@@ -347,23 +361,27 @@ export default {
               class="float-right d-flex justify-content-center align-items-cente"
               design="violet-gradient px-5"
               :text="$t('Save')"
-              @click="saveFacilities"
               :loading="isLoading"
-            >
-            </base-button>
+              @click="saveFacilities"
+            />
           </div>
         </div>
       </div>
     </div>
 
-    <b-overlay :show="loading" no-wrap opacity="0.5" style="z-index: 2222">
+    <b-overlay
+      :show="loading"
+      no-wrap
+      opacity="0.5"
+      style="z-index: 2222"
+    >
       <template #overlay>
         <div class="d-flex justify-content-center w-100">
           <div class="lds-ellipsis">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
+            <div />
+            <div />
+            <div />
+            <div />
           </div>
         </div>
       </template>

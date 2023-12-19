@@ -1,9 +1,9 @@
 <script>
-import AccordionContentInput from "@/components/Dashboard/Objects/Promo/components/AccordionContentInput";
-import { idGenerator } from "@/util/reusable";
+import AccordionContentInput from '@/components/Dashboard/Objects/Promo/components/AccordionContentInput'
+import { idGenerator } from '@/util/reusable'
 
 export default {
-  name: "AccordionContent",
+  name: 'AccordionContent',
   components: {
     AccordionContentInput,
   },
@@ -13,43 +13,28 @@ export default {
       required: true,
     },
   },
-  created() {
-    this.setHistoryValues();
-    this.setCloningValues();
-    if (this.block.index === 0) {
-      setTimeout(() => {
-        this.visible = true;
-      }, 50);
-    }
-  },
-  emits: [
-    "save-accordion-content",
-    "warn-error-found",
-    "save-inputs-variable",
-    "delete-input-variable",
-  ],
   data() {
     const typeOptions = [
       {
-        type: "apartment",
-        name: this.$t("promo.select_by_apartment"),
+        type: 'apartment',
+        name: this.$t('promo.select_by_apartment'),
       },
       {
-        type: "plan",
-        name: this.$t("promo.select_by_plan"),
+        type: 'plan',
+        name: this.$t('promo.select_by_plan'),
       },
-    ];
+    ]
 
     const sumOptions = [
       {
-        name: this.$t("sum_text"),
-        value: "uzs",
+        name: this.$t('sum_text'),
+        value: 'uzs',
       },
       {
-        name: this.$t("usd_text"),
-        value: "usd",
+        name: this.$t('usd_text'),
+        value: 'usd',
       },
-    ];
+    ]
 
     return {
       sumOptions,
@@ -59,25 +44,40 @@ export default {
       error: {
         full: false,
       },
-    };
+    }
   },
+  created() {
+    this.setHistoryValues()
+    this.setCloningValues()
+    if (this.block.index === 0) {
+      setTimeout(() => {
+        this.visible = true
+      }, 50)
+    }
+  },
+  emits: [
+    'save-accordion-content',
+    'warn-error-found',
+    'save-inputs-variable',
+    'delete-input-variable',
+  ],
   methods: {
     toggleAccordion() {
-      this.visible = !this.visible;
+      this.visible = !this.visible
     },
     highlightError() {
-      this.visible = true;
-      this.error.full = true;
+      this.visible = true
+      this.error.full = true
     },
     removeHighlightedError() {
-      this.error.full = false;
+      this.error.full = false
     },
     idGenerator() {
       return (
-        String.fromCharCode(Math.floor(Math.random() * 26) + 97) +
-        Math.random().toString(16).slice(2) +
-        Date.now().toString(16).slice(4)
-      );
+        String.fromCharCode(Math.floor(Math.random() * 26) + 97)
+        + Math.random().toString(16).slice(2)
+        + Date.now().toString(16).slice(4)
+      )
     },
     addAccordionContentInput() {
       const additionContext = {
@@ -86,21 +86,23 @@ export default {
         currency_type: null,
         type: null,
         values: [],
-      };
+      }
 
-      this.inputVariables.push(additionContext);
+      this.inputVariables.push(additionContext)
     },
     deleteAccordionInputContent(id) {
       const currentIndex = this.inputVariables.findIndex(
-        (inputVar) => inputVar.id === id
-      );
-      const deletedVar = this.inputVariables.splice(currentIndex, 1);
-      this.$emit("delete-input-variable", deletedVar[0]);
+        inputVar => inputVar.id === id,
+      )
+      const deletedVar = this.inputVariables.splice(currentIndex, 1)
+      this.$emit('delete-input-variable', deletedVar[0])
     },
-    saveEnteredData({ id, price, values, type, currency_type, floor }) {
+    saveEnteredData({
+      id, price, values, type, currency_type, floor,
+    }) {
       const currentIndex = this.inputVariables.findIndex(
-        (inputVar) => inputVar.id === id
-      );
+        inputVar => inputVar.id === id,
+      )
       this.inputVariables[currentIndex] = {
         id,
         price,
@@ -109,20 +111,20 @@ export default {
         floor,
         currency_type,
         blockId: this.block.id,
-      };
+      }
 
-      this.$emit("save-inputs-variable", this.inputVariables);
+      this.$emit('save-inputs-variable', this.inputVariables)
     },
     setHistoryValues() {
       if (this.block.history) {
-        const loopPackage = [];
-        for (let type of this.block.types) {
+        const loopPackage = []
+        for (const type of this.block.types) {
           loopPackage.push({
             ...type,
             history: true,
-          });
+          })
         }
-        this.inputVariables = loopPackage;
+        this.inputVariables = loopPackage
       } else {
         this.inputVariables = [
           {
@@ -132,23 +134,23 @@ export default {
             type: null,
             values: [],
           },
-        ];
+        ]
       }
     },
     setCloningValues() {
       if (this.block.clone) {
-        const loopPackage = [];
-        for (let type of this.block.types) {
+        const loopPackage = []
+        for (const type of this.block.types) {
           loopPackage.push({
             ...type,
             clone: true,
-          });
+          })
         }
-        this.inputVariables = loopPackage;
+        this.inputVariables = loopPackage
       }
     },
   },
-};
+}
 </script>
 
 <template>
@@ -163,18 +165,27 @@ export default {
       :class="{ 'pb-1 pt-1': visible }"
       role="tab"
     >
-      <span @click="toggleAccordion" class="accordion__toggle-btn">
+      <span
+        class="accordion__toggle-btn"
+        @click="toggleAccordion"
+      >
         <span>{{ block.name }}</span>
         <span v-if="visible">
-          <i class="fas fa-chevron-down"></i>
+          <i class="fas fa-chevron-down" />
         </span>
         <span v-else>
-          <i class="fas fa-chevron-right"></i>
+          <i class="fas fa-chevron-right" />
         </span>
       </span>
     </b-card-header>
-    <b-card-body class="p-0" :class="{ accordion__body: visible }">
-      <b-collapse v-model="visible" role="tabpanel">
+    <b-card-body
+      class="p-0"
+      :class="{ accordion__body: visible }"
+    >
+      <b-collapse
+        v-model="visible"
+        role="tabpanel"
+      >
         <div
           v-for="(inputVariable, index) in inputVariables"
           :key="inputVariable.id"
@@ -193,8 +204,8 @@ export default {
         </div>
         <!--   Add Button     -->
         <button
-          @click="addAccordionContentInput"
           class="btn btn-green-bg mr-4 mt-md-0 addition__button"
+          @click="addAccordionContentInput"
         >
           {{ $t("promo.add_price") }}
         </button>

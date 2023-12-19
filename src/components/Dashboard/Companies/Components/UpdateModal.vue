@@ -1,6 +1,6 @@
 <script>
-import { mapActions, mapGetters } from "vuex";
-import api from "@/services/api";
+import { mapActions, mapGetters } from 'vuex'
+import api from '@/services/api'
 
 export default {
   props: {
@@ -8,11 +8,11 @@ export default {
   },
 
   mounted() {
-    this.getBranch();
-    this.fetchBranchTypes(this);
+    this.getBranch()
+    this.fetchBranchTypes(this)
   },
 
-  computed: mapGetters(["getBranchTypes", "getBranch"]),
+  computed: mapGetters(['getBranchTypes', 'getBranch']),
 
   data() {
     return {
@@ -39,85 +39,83 @@ export default {
 
       header: {
         headers: {
-          Authorization: "Bearer " + localStorage.token,
+          Authorization: `Bearer ${localStorage.token}`,
         },
       },
-    };
+    }
   },
 
   methods: {
-    ...mapActions(["fetchBranchTypes"]),
+    ...mapActions(['fetchBranchTypes']),
 
     resetModal() {
-      this.$bvModal.hide("modal-update");
+      this.$bvModal.hide('modal-update')
 
       // this.$emit('UpdateCompany', this.company);
 
-      this.error = false;
-      this.errors = [];
+      this.error = false
+      this.errors = []
 
-      this.objects = [];
+      this.objects = []
     },
 
     handleOk(bvModalEvt) {
-      bvModalEvt.preventDefault();
-      this.handleSubmit();
+      bvModalEvt.preventDefault()
+      this.handleSubmit()
     },
 
     async handleSubmit() {
-      const branch = this.getBranch;
+      const branch = this.getBranch
 
       try {
-        branch.id = this.branchId;
-        const response = await api.companies.updateCompany(branch);
-        this.toasted(response.data.message, "success");
+        branch.id = this.branchId
+        const response = await api.companies.updateCompany(branch)
+        this.toasted(response.data.message, 'success')
 
         this.$nextTick(() => {
-          this.$bvModal.hide("modal-update");
-        });
+          this.$bvModal.hide('modal-update')
+        })
 
-        this.$emit("UpdateCompany");
+        this.$emit('UpdateCompany')
       } catch (error) {
         if (!error.response) {
-          this.toasted("Error: Network Error", "error");
+          this.toasted('Error: Network Error', 'error')
+        } else if (error.response.status === 403) {
+          this.toasted(error.response.data.message, 'error')
+        } else if (error.response.status === 401) {
+          this.toasted(error.response.data, 'error')
+        } else if (error.response.status === 500) {
+          this.toasted(error.response.data.message, 'error')
+        } else if (error.response.status === 422) {
+          this.error = true
+          this.errors = error.response.data
         } else {
-          if (error.response.status === 403) {
-            this.toasted(error.response.data.message, "error");
-          } else if (error.response.status === 401) {
-            this.toasted(error.response.data, "error");
-          } else if (error.response.status === 500) {
-            this.toasted(error.response.data.message, "error");
-          } else if (error.response.status === 422) {
-            this.error = true;
-            this.errors = error.response.data;
-          } else {
-            this.toasted(error.response.data.message, "error");
-          }
+          this.toasted(error.response.data.message, 'error')
         }
       }
     },
 
     getName(name) {
-      let locale = localStorage.locale;
-      let value = "";
+      const { locale } = localStorage
+      let value = ''
 
       if (locale) {
         switch (locale) {
-          case "ru":
-            value = name.ru;
-            break;
-          case "uz":
-            value = name.uz;
-            break;
+          case 'ru':
+            value = name.ru
+            break
+          case 'uz':
+            value = name.uz
+            break
         }
       } else {
-        value = name.ru;
+        value = name.ru
       }
 
-      return value;
+      return value
     },
   },
-};
+}
 </script>
 
 <template>
@@ -129,19 +127,38 @@ export default {
       hide-footer
       @show="resetModal"
     >
-      <b-alert show variant="danger" v-if="error">
+      <b-alert
+        v-if="error"
+        show
+        variant="danger"
+      >
         <ul>
-          <li v-for="(error, index) in errors" :key="index">
-            <span v-for="msg in error" :key="msg">
+          <li
+            v-for="(error, index) in errors"
+            :key="index"
+          >
+            <span
+              v-for="msg in error"
+              :key="msg"
+            >
               {{ msg }}
             </span>
           </li>
         </ul>
       </b-alert>
 
-      <form ref="form" @submit.stop.prevent="handleSubmit">
-        <b-form-group :label="$t('companies.type')" label-for="roles">
-          <b-form-select v-model="getBranch.type_id" id="roles">
+      <form
+        ref="form"
+        @submit.stop.prevent="handleSubmit"
+      >
+        <b-form-group
+          :label="$t('companies.type')"
+          label-for="roles"
+        >
+          <b-form-select
+            id="roles"
+            v-model="getBranch.type_id"
+          >
             <b-form-select-option value="0">
               {{ $t("companies.type_enter") }}
             </b-form-select-option>
@@ -156,8 +173,14 @@ export default {
           </b-form-select>
         </b-form-group>
 
-        <b-form-group :label="$t('companies.name')" label-for="name">
-          <b-form-input id="name" v-model="getBranch.name"></b-form-input>
+        <b-form-group
+          :label="$t('companies.name')"
+          label-for="name"
+        >
+          <b-form-input
+            id="name"
+            v-model="getBranch.name"
+          />
         </b-form-group>
 
         <b-form-group
@@ -167,15 +190,27 @@ export default {
           <b-form-input
             id="payment_account"
             v-model="getBranch.payment_account"
-          ></b-form-input>
+          />
         </b-form-group>
 
-        <b-form-group :label="$t('companies.inn')" label-for="inn">
-          <b-form-input id="inn" v-model="getBranch.inn"></b-form-input>
+        <b-form-group
+          :label="$t('companies.inn')"
+          label-for="inn"
+        >
+          <b-form-input
+            id="inn"
+            v-model="getBranch.inn"
+          />
         </b-form-group>
 
-        <b-form-group :label="$t('companies.mfo')" label-for="mfo">
-          <b-form-input id="mfo" v-model="getBranch.mfo"></b-form-input>
+        <b-form-group
+          :label="$t('companies.mfo')"
+          label-for="mfo"
+        >
+          <b-form-input
+            id="mfo"
+            v-model="getBranch.mfo"
+          />
         </b-form-group>
 
         <b-form-group
@@ -185,14 +220,17 @@ export default {
           <b-form-input
             id="first_name"
             v-model="getBranch.first_name"
-          ></b-form-input>
+          />
         </b-form-group>
 
-        <b-form-group :label="$t('companies.last_name')" label-for="last_name">
+        <b-form-group
+          :label="$t('companies.last_name')"
+          label-for="last_name"
+        >
           <b-form-input
             id="last_name"
             v-model="getBranch.last_name"
-          ></b-form-input>
+          />
         </b-form-group>
 
         <b-form-group
@@ -202,11 +240,17 @@ export default {
           <b-form-input
             id="second_name"
             v-model="getBranch.second_name"
-          ></b-form-input>
+          />
         </b-form-group>
 
-        <b-form-group :label="$t('companies.phone')" label-for="phone">
-          <b-form-input id="phone" v-model="getBranch.phone"></b-form-input>
+        <b-form-group
+          :label="$t('companies.phone')"
+          label-for="phone"
+        >
+          <b-form-input
+            id="phone"
+            v-model="getBranch.phone"
+          />
         </b-form-group>
 
         <b-form-group
@@ -216,7 +260,7 @@ export default {
           <b-form-input
             id="other_phone"
             v-model="getBranch.other_phone"
-          ></b-form-input>
+          />
         </b-form-group>
 
         <b-form-group
@@ -226,7 +270,7 @@ export default {
           <b-form-input
             id="bank_name_ru"
             v-model="getBranch.bank_name.ru"
-          ></b-form-input>
+          />
         </b-form-group>
 
         <b-form-group
@@ -236,16 +280,23 @@ export default {
           <b-form-input
             id="bank_name_uz"
             v-model="getBranch.bank_name.uz"
-          ></b-form-input>
+          />
         </b-form-group>
 
         <div class="d-flex justify-content-center pb-4">
-          <b-button variant="light" @click="resetModal">
+          <b-button
+            variant="light"
+            @click="resetModal"
+          >
             {{ $t("cancel") }}
           </b-button>
 
-          <b-button type="submit" class="ml-1" variant="success">
-            <i class="fas fa-save"></i> {{ $t("save") }}
+          <b-button
+            type="submit"
+            class="ml-1"
+            variant="success"
+          >
+            <i class="fas fa-save" /> {{ $t("save") }}
           </b-button>
         </div>
       </form>

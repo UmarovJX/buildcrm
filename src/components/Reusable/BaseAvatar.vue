@@ -1,12 +1,12 @@
 <script>
-import AppDropdown from "@/components/Reusable/Dropdown/AppDropdown";
-import { localeChanged } from "vee-validate";
-import GeneralPermission from "@/permission/general";
-import { mapActions } from "vuex";
-import Permission from "@/permission";
+import AppDropdown from '@/components/Reusable/Dropdown/AppDropdown'
+import { localeChanged } from 'vee-validate'
+import GeneralPermission from '@/permission/general'
+import { mapActions } from 'vuex'
+import Permission from '@/permission'
 
 export default {
-  name: "BaseAvatar",
+  name: 'BaseAvatar',
   components: {
     AppDropdown,
   },
@@ -14,7 +14,7 @@ export default {
     background: {
       type: String,
       required: false,
-      default: "#F3F4F6",
+      default: '#F3F4F6',
     },
     avatar: {
       type: String,
@@ -34,105 +34,126 @@ export default {
     },
   },
   data() {
-    const settingsPermission =
-      GeneralPermission.getSettingsPermission() &&
-      (GeneralPermission.getPasswordSettingsPermission() ||
-        GeneralPermission.getProfileSettingsPermission());
+    const settingsPermission = GeneralPermission.getSettingsPermission()
+      && (GeneralPermission.getPasswordSettingsPermission()
+        || GeneralPermission.getProfileSettingsPermission())
     return {
       settingsPermission,
       locale: false,
       languagePermission: GeneralPermission.getLanguagePermission(),
-    };
+    }
   },
   computed: {
     hasAvatarSlot() {
-      return this.$slots.hasOwnProperty("avatar");
+      return this.$slots.hasOwnProperty('avatar')
     },
     hasFullNameSlot() {
-      return this.$slots.hasOwnProperty("full_name");
+      return this.$slots.hasOwnProperty('full_name')
     },
     hasRoleSlot() {
-      return this.$slots.hasOwnProperty("role");
+      return this.$slots.hasOwnProperty('role')
     },
     imagePath() {
-      if (this.avatar !== "") {
-        return this.avatar;
+      if (this.avatar !== '') {
+        return this.avatar
       }
-      return "";
+      return ''
     },
   },
   created() {
-    this.locale = localStorage.locale !== "uz";
+    this.locale = localStorage.locale !== 'uz'
   },
   methods: {
-    ...mapActions(["nullableAuth", "nullMe"]),
+    ...mapActions(['nullableAuth', 'nullMe']),
     openUserSetting() {
-      this.$router.push({ name: "user-settings" });
+      this.$router.push({ name: 'user-settings' })
     },
     changeLocale() {
       if (this.locale === false) {
-        localStorage.setItem("locale", "ru");
-        localStorage.locale = "ru";
-        this.$i18n.locale = "ru";
-        this.locale = true;
-        localeChanged();
+        localStorage.setItem('locale', 'ru')
+        localStorage.locale = 'ru'
+        this.$i18n.locale = 'ru'
+        this.locale = true
+        localeChanged()
       } else {
-        localStorage.setItem("locale", "uz");
-        localStorage.locale = "uz";
-        this.$i18n.locale = "uz";
-        this.locale = false;
-        localeChanged();
+        localStorage.setItem('locale', 'uz')
+        localStorage.locale = 'uz'
+        this.$i18n.locale = 'uz'
+        this.locale = false
+        localeChanged()
       }
       this.$nextTick(() => {
-        this.$forceUpdate();
-      });
+        this.$forceUpdate()
+      })
     },
     logout() {
-      localStorage.clear();
-      sessionStorage.clear();
-      this.nullableAuth();
-      this.nullMe();
-      Permission.clearUserPermission();
-      this.$router.push({ name: "login" });
+      localStorage.clear()
+      sessionStorage.clear()
+      this.nullableAuth()
+      this.nullMe()
+      Permission.clearUserPermission()
+      this.$router.push({ name: 'login' })
     },
   },
-};
+}
 </script>
 
 <template>
   <div>
-    <app-dropdown :collapse-arrow="true" :position-right="true">
+    <app-dropdown
+      :collapse-arrow="true"
+      :position-right="true"
+    >
       <template #header>
-        <div class="base-avatar" :style="{ background }">
-          <slot name="avatar"></slot>
+        <div
+          class="base-avatar"
+          :style="{ background }"
+        >
+          <slot name="avatar" />
           <b-avatar
             variant="primary"
             :src="imagePath"
             :text="nameSnippet"
             size="40px"
             class="d-flex"
-          ></b-avatar>
+          />
           <div class="person">
             <p class="full_name">
-              <slot name="full_name"></slot>
+              <slot name="full_name" />
             </p>
-            <p class="full_name" v-if="!hasFullNameSlot">{{ full_name }}</p>
+            <p
+              v-if="!hasFullNameSlot"
+              class="full_name"
+            >
+              {{ full_name }}
+            </p>
             <p class="role">
-              <slot name="role"></slot>
+              <slot name="role" />
             </p>
-            <p class="role" v-if="!hasRoleSlot">{{ role }}</p>
+            <p
+              v-if="!hasRoleSlot"
+              class="role"
+            >
+              {{ role }}
+            </p>
           </div>
         </div>
       </template>
       <template #list>
         <b-dropdown-item
-          class="lang-block"
           v-if="languagePermission"
+          class="lang-block"
           style="touch-action: none"
         >
           <a href="javascript:void(0)">
-            <label class="switch" @click="changeLocale">
-              <input type="checkbox" v-model="locale" />
+            <label
+              class="switch"
+              @click="changeLocale"
+            >
+              <input
+                v-model="locale"
+                type="checkbox"
+              >
               <div class="slider round">
                 <span>Русский</span>
                 <span>O’zbekcha</span>
@@ -140,7 +161,10 @@ export default {
             </label>
           </a>
         </b-dropdown-item>
-        <b-dropdown-item v-if="settingsPermission" @click="openUserSetting">
+        <b-dropdown-item
+          v-if="settingsPermission"
+          @click="openUserSetting"
+        >
           {{ $t("settings.title") }}
         </b-dropdown-item>
         <b-dropdown-item @click="logout">

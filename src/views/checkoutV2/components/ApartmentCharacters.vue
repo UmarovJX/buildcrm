@@ -1,13 +1,13 @@
 <script>
-import { makeProp as p } from "@/util/props";
-import { hasChild, hasOwnProperty } from "@/util/object";
-import { PROP_TYPE_OBJECT } from "@/constants/props";
-import SwiperSlider from "@/views/checkoutV2/elements/SwiperSlider";
-import SectionTitle from "@/views/checkoutV2/elements/SectionTitle";
-import ChPlanDetails from "@/views/checkoutV2/components/PlanDetails";
+import { makeProp as p } from '@/util/props'
+import { hasChild, hasOwnProperty } from '@/util/object'
+import { PROP_TYPE_OBJECT } from '@/constants/props'
+import SwiperSlider from '@/views/checkoutV2/elements/SwiperSlider'
+import SectionTitle from '@/views/checkoutV2/elements/SectionTitle'
+import ChPlanDetails from '@/views/checkoutV2/components/PlanDetails'
 
 export default {
-  name: "ChApartmentDetails",
+  name: 'ChApartmentDetails',
   components: {
     SwiperSlider,
     SectionTitle,
@@ -19,27 +19,27 @@ export default {
   data() {
     return {
       check: false,
-    };
-  },
-  mounted() {
-    this.$nextTick(() => {
-      this.check = true;
-    });
+    }
   },
   computed: {
     swiperItems() {
       if (this.apartment && hasChild(this.apartment)) {
-        const { plan } = this.apartment;
-        if (hasOwnProperty(plan, "images")) {
-          return this.apartment.plan.images.map((img) => ({ image: img }));
-        } else if (hasOwnProperty(plan, "image")) {
-          return this.apartment.plan.image.map((img) => ({ image: img }));
+        const { plan } = this.apartment
+        if (hasOwnProperty(plan, 'images')) {
+          return this.apartment.plan.images.map(img => ({ image: img }))
+        } if (hasOwnProperty(plan, 'image')) {
+          return this.apartment.plan.image.map(img => ({ image: img }))
         }
       }
-      return [];
+      return []
     },
   },
-};
+  mounted() {
+    this.$nextTick(() => {
+      this.check = true
+    })
+  },
+}
 </script>
 
 <template>

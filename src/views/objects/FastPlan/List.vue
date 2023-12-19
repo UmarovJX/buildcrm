@@ -1,26 +1,26 @@
 <script>
-import { Fancybox } from "@fancyapps/ui";
-import "@fancyapps/ui/dist/fancybox.css";
-import { mapGetters, mapActions, mapMutations } from "vuex";
-import api from "@/services/api";
-import CreateModal from "@/views/objects/FastPlan/CreateModal.vue";
-import BaseSearchInput from "@/components/Reusable/BaseSearchInput";
-import BaseEditIcon from "@/components/icons/BaseEditIcon";
-import DeleteHasApartment from "@/components/Dashboard/TypePlan/DeleteHasApartment";
-import PlansPermission from "@/permission/plans";
-import BaseButton from "@/components/Reusable/BaseButton";
-import BaseDeleteIcon from "@/components/icons/BaseDeleteIcon";
-import BaseLoadingContent from "@/components/BaseLoadingContent";
-import AppHeader from "@/components/Header/AppHeader";
-import { XButton } from "@/components/ui-components/button";
-import AppBreadcrumb from "@/components/AppBreadcrumb.vue";
-import { XCircularBackground } from "@/components/ui-components/circular-background";
-import { XIcon } from "@/components/ui-components/material-icons";
-import BaseLoading from "@/components/Reusable/BaseLoading.vue";
-import { sortObjectValues } from "@/util/reusable";
+import { Fancybox } from '@fancyapps/ui'
+import '@fancyapps/ui/dist/fancybox.css'
+import { mapGetters, mapActions, mapMutations } from 'vuex'
+import api from '@/services/api'
+import CreateModal from '@/views/objects/FastPlan/CreateModal.vue'
+import BaseSearchInput from '@/components/Reusable/BaseSearchInput'
+import BaseEditIcon from '@/components/icons/BaseEditIcon'
+import DeleteHasApartment from '@/components/Dashboard/TypePlan/DeleteHasApartment'
+import PlansPermission from '@/permission/plans'
+import BaseButton from '@/components/Reusable/BaseButton'
+import BaseDeleteIcon from '@/components/icons/BaseDeleteIcon'
+import BaseLoadingContent from '@/components/BaseLoadingContent'
+import AppHeader from '@/components/Header/AppHeader'
+import { XButton } from '@/components/ui-components/button'
+import AppBreadcrumb from '@/components/AppBreadcrumb.vue'
+import { XCircularBackground } from '@/components/ui-components/circular-background'
+import { XIcon } from '@/components/ui-components/material-icons'
+import BaseLoading from '@/components/Reusable/BaseLoading.vue'
+import { sortObjectValues } from '@/util/reusable'
 
 export default {
-  name: "FastPlanList",
+  name: 'FastPlanList',
   components: {
     BaseLoading,
     BaseLoadingContent,
@@ -39,21 +39,21 @@ export default {
   data() {
     const header = {
       pageInfo: {
-        title: this.$t("objects.create.fast_plan.name"),
-        titleHighlight: "",
+        title: this.$t('objects.create.fast_plan.name'),
+        titleHighlight: '',
       },
       page: {
-        type: "multi_language",
-        path: "objects.create.fast_plan.name",
+        type: 'multi_language',
+        path: 'objects.create.fast_plan.name',
       },
       breadcrumbs: [
         {
           content: {
-            type: "multi_language",
-            path: "objects.title",
+            type: 'multi_language',
+            path: 'objects.title',
           },
           route: {
-            name: "objects",
+            name: 'objects',
           },
         },
         // {
@@ -68,142 +68,142 @@ export default {
         // },
         {
           content: {
-            type: "multi_language",
-            path: "objects.create.plan.name",
+            type: 'multi_language',
+            path: 'objects.create.plan.name',
           },
           route: {
-            name: "type-plan-view",
+            name: 'type-plan-view',
             params: {
               id: this.$route.params.object,
             },
           },
         },
       ],
-    };
+    }
     return {
       header,
       showLoading: false,
       fields: [
         {
-          key: "image",
-          label: this.$t("type_plan.image"),
+          key: 'image',
+          label: this.$t('type_plan.image'),
         },
         {
-          key: "name",
-          label: this.$t("type_plan.name"),
+          key: 'name',
+          label: this.$t('type_plan.name'),
         },
         {
-          key: "apartments_count",
-          label: this.$t("objects.create.count_apartments"),
+          key: 'apartments_count',
+          label: this.$t('objects.create.count_apartments'),
         },
         {
-          key: "actions",
-          label: this.$t("type_plan.actions"),
+          key: 'actions',
+          label: this.$t('type_plan.actions'),
         },
       ],
       sendPlan: {},
       loading: false,
 
-      //last
-      searchPlan: "",
+      // last
+      searchPlan: '',
       fastList: [],
-    };
+    }
   },
   computed: {
-    ...mapGetters(["getLoading", "getPermission"]),
+    ...mapGetters(['getLoading', 'getPermission']),
     query() {
-      return Object.assign({}, this.$route.query);
+      return { ...this.$route.query }
     },
   },
   watch: {
-    "$route.query": {
+    '$route.query': {
       handler(value) {
         if (value) {
-          this.fetchFastPlans();
+          this.fetchFastPlans()
         }
       },
       deep: true,
     },
   },
   mounted() {
-    this.fetchFastPlans();
-    Fancybox.bind("[data-fancybox]");
+    this.fetchFastPlans()
+    Fancybox.bind('[data-fancybox]')
   },
   methods: {
     ...mapMutations[
       {
-        updateFastPlanImage: "updateFastPlanImage",
-        updateFastPlanName: "updateFastPlanName",
+        updateFastPlanImage: 'updateFastPlanImage',
+        updateFastPlanName: 'updateFastPlanName',
       }
     ],
     async fetchFastPlans() {
-      this.showLoading = true;
-      const objectId = this.$route.params.object;
+      this.showLoading = true
+      const objectId = this.$route.params.object
       await api.plans
         .fastPlanList(objectId, this.query)
-        .then((res) => {
-          this.fastList = res.data;
+        .then(res => {
+          this.fastList = res.data
         })
-        .catch((error) => error.response)
+        .catch(error => error.response)
         .finally(() => {
-          this.showLoading = false;
-        });
+          this.showLoading = false
+        })
     },
     searchByPlan(event) {
-      this.searchPlan = event;
-      event ? (this.query["search"] = event) : delete this.query["search"];
-      this.pushRouter(this.query);
+      this.searchPlan = event
+      event ? (this.query.search = event) : delete this.query.search
+      this.pushRouter(this.query)
     },
     pushRouter(query) {
-      const sortQuery = sortObjectValues(query);
-      this.$router.push({ query: sortQuery });
+      const sortQuery = sortObjectValues(query)
+      this.$router.push({ query: sortQuery })
     },
     backObject() {
-      const { object } = this.$route.params;
-      this.$router.push({ name: "type-plan-view", params: { id: object } });
+      const { object } = this.$route.params
+      this.$router.push({ name: 'type-plan-view', params: { id: object } })
     },
     imagePath(item) {
-      if (item && item.image) return item.image;
-      return null;
+      if (item && item.image) return item.image
+      return null
     },
     async deletePlanFunction(id) {
-      const objectId = this.$route.params.object;
-      this.showLoading = true;
+      const objectId = this.$route.params.object
+      this.showLoading = true
       return await api.plans
         .deleteFastPlan(objectId, id)
         .then(() => {
-          this.$swal(this.$t("sweetAlert.deleted"), "", "success");
-          this.fetchFastPlans();
+          this.$swal(this.$t('sweetAlert.deleted'), '', 'success')
+          this.fetchFastPlans()
         })
         .catch(() => {
-          this.$swal(this.$t("error"), "", "error");
+          this.$swal(this.$t('error'), '', 'error')
         })
         .finally(() => {
-          this.showLoading = false;
-        });
+          this.showLoading = false
+        })
     },
     async updateList() {
-      this.loading = true;
-      await this.fetchFastPlans();
-      this.loading = false;
+      this.loading = true
+      await this.fetchFastPlans()
+      this.loading = false
     },
     showAddModal() {
-      this.$refs["create-update"].openModal();
+      this.$refs['create-update'].openModal()
     },
     createPlan() {
-      this.$store.commit("updateFastPlanImage", null);
-      this.$store.commit("updateFastPlanName", null);
-      this.$store.commit("updateFastPlanId", null);
-      this.showAddModal();
+      this.$store.commit('updateFastPlanImage', null)
+      this.$store.commit('updateFastPlanName', null)
+      this.$store.commit('updateFastPlanId', null)
+      this.showAddModal()
     },
     editPlan(item) {
-      this.$store.commit("updateFastPlanImage", item.image);
-      this.$store.commit("updateFastPlanName", item.name);
-      this.$store.commit("updateFastPlanId", item.id);
-      this.showAddModal();
+      this.$store.commit('updateFastPlanImage', item.image)
+      this.$store.commit('updateFastPlanName', item.name)
+      this.$store.commit('updateFastPlanId', item.id)
+      this.showAddModal()
     },
   },
-};
+}
 </script>
 
 <template>
@@ -224,14 +224,14 @@ export default {
       <base-search-input
         class="base-search-input w-100"
         :value="searchPlan"
-        @trigger-input="searchByPlan"
         :placeholder="`${$t('objects.create.fast_plan.search')}`"
+        @trigger-input="searchByPlan"
       />
 
       <x-button
-        @click="createPlan"
         :text="$t('objects.create.fast_plan.add')"
         left-icon="add"
+        @click="createPlan"
       />
     </div>
 
@@ -250,7 +250,10 @@ export default {
           :fields="fields"
           :busy="showLoading"
         >
-          <template #empty="scope" class="text-center">
+          <template
+            #empty="scope"
+            class="text-center"
+          >
             <div class="d-flex justify-content-center align-items-center">
               {{ scope.emptyText }}
             </div>
@@ -272,7 +275,7 @@ export default {
               height="80"
               alt="plan_image"
               fluid
-            />
+            >
           </template>
 
           <template #cell(apartments_count)="data">
@@ -283,17 +286,23 @@ export default {
             <div class="actions">
               <x-circular-background
                 size="small"
-                @click="editPlan(data.item)"
                 class="bg-violet-600"
+                @click="editPlan(data.item)"
               >
-                <x-icon name="edit" class="color-white" />
+                <x-icon
+                  name="edit"
+                  class="color-white"
+                />
               </x-circular-background>
               <x-circular-background
                 size="small"
-                @click="deletePlanFunction(data.item.id)"
                 class="bg-red-600"
+                @click="deletePlanFunction(data.item.id)"
               >
-                <x-icon name="delete" class="color-white" />
+                <x-icon
+                  name="delete"
+                  class="color-white"
+                />
               </x-circular-background>
             </div>
           </template>

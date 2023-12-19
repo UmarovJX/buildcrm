@@ -1,58 +1,54 @@
-import api from "@/services/api";
+import api from '@/services/api'
 
 export default {
   actions: {
     async fetchObjects(ctx, vm) {
-      ctx.commit("updateLoading", true, { root: true });
-      ctx.commit("updateObjects", []);
+      ctx.commit('updateLoading', true, { root: true })
+      ctx.commit('updateObjects', [])
 
       try {
-        let response;
-        if (vm.archived) response = await api.objectsV3.getArchivedObjects();
-        else response = await api.objectsV3.getObjects();
-        const objects = response.data.result;
-        ctx.commit("updateObjects", objects);
+        let response
+        if (vm.archived) response = await api.objectsV3.getArchivedObjects()
+        else response = await api.objectsV3.getObjects()
+        const objects = response.data.result
+        ctx.commit('updateObjects', objects)
       } catch (error) {
         if (!error.response) {
-          vm.toasted("Error: Network Error", "error");
+          vm.toasted('Error: Network Error', 'error')
+        } else if (error.response.status === 403) {
+          vm.toasted(error.response.data.message, 'error')
+        } else if (error.response.status === 401) {
+          vm.toasted(error.response.data.message, 'error')
+        } else if (error.response.status === 500) {
+          vm.toasted(error.response.data.message, 'error')
         } else {
-          if (error.response.status === 403) {
-            vm.toasted(error.response.data.message, "error");
-          } else if (error.response.status === 401) {
-            vm.toasted(error.response.data.message, "error");
-          } else if (error.response.status === 500) {
-            vm.toasted(error.response.data.message, "error");
-          } else {
-            vm.toasted(error.response.data.message, "error");
-          }
+          vm.toasted(error.response.data.message, 'error')
         }
       } finally {
-        ctx.commit("updateLoading", false, { root: true });
+        ctx.commit('updateLoading', false, { root: true })
       }
     },
 
     async fetchRoles(ctx, vm) {
-      ctx.commit("updateLoading", true, { root: true });
+      ctx.commit('updateLoading', true, { root: true })
       try {
-        const response = await api.roles.fetchRoles();
-        const roles = response.data;
-        ctx.commit("updateRoles", roles);
+        const response = await api.roles.fetchRoles()
+        const roles = response.data
+        ctx.commit('updateRoles', roles)
       } catch (error) {
         if (!error.response) {
-          vm.toasted("Error: Network Error", "error");
+          vm.toasted('Error: Network Error', 'error')
+        } else if (error.response.status === 403) {
+          vm.toasted(error.response.data.message, 'error')
+        } else if (error.response.status === 401) {
+          vm.toasted(error.response.data.message, 'error')
+        } else if (error.response.status === 500) {
+          vm.toasted(error.response.data.message, 'error')
         } else {
-          if (error.response.status === 403) {
-            vm.toasted(error.response.data.message, "error");
-          } else if (error.response.status === 401) {
-            vm.toasted(error.response.data.message, "error");
-          } else if (error.response.status === 500) {
-            vm.toasted(error.response.data.message, "error");
-          } else {
-            vm.toasted(error.response.data.message, "error");
-          }
+          vm.toasted(error.response.data.message, 'error')
         }
       } finally {
-        ctx.commit("updateLoading", false, { root: true });
+        ctx.commit('updateLoading', false, { root: true })
       }
     },
   },
@@ -64,21 +60,21 @@ export default {
 
   mutations: {
     updateObjects(state, objects) {
-      state.objects = objects;
+      state.objects = objects
     },
 
     updateRoles(state, roles) {
-      state.roles = roles;
+      state.roles = roles
     },
   },
 
   getters: {
     getObjects(state) {
-      return state.objects;
+      return state.objects
     },
 
     getRoles(state) {
-      return state.roles;
+      return state.roles
     },
   },
-};
+}

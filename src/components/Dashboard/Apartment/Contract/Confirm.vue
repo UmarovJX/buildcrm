@@ -1,8 +1,8 @@
 <script>
-import api from "@/services/api";
+import api from '@/services/api'
 
 export default {
-  name: "Confirm",
+  name: 'Confirm',
 
   props: {
     edit: {
@@ -17,65 +17,63 @@ export default {
     order: {},
   },
 
-  emits: ["redirect-to-contract"],
+  emits: ['redirect-to-contract'],
 
   data() {
     return {
       header: {
         headers: {
-          Authorization: "Bearer " + localStorage.token,
+          Authorization: `Bearer ${localStorage.token}`,
         },
       },
-    };
+    }
   },
 
   methods: {
     removeBlock() {
       this.$swal({
-        title: this.$t("sweetAlert.title"),
-        text: this.$t("sweetAlert.text_cancel_agree"),
-        icon: "warning",
+        title: this.$t('sweetAlert.title'),
+        text: this.$t('sweetAlert.text_cancel_agree'),
+        icon: 'warning',
         showCancelButton: true,
-        cancelButtonText: this.$t("cancel"),
-        confirmButtonText: this.$t("sweetAlert.yes_close"),
-      }).then((result) => {
+        cancelButtonText: this.$t('cancel'),
+        confirmButtonText: this.$t('sweetAlert.yes_close'),
+      }).then(result => {
         if (result.value) {
-          this.$emit("redirect-to-contract");
+          this.$emit('redirect-to-contract')
         }
-      });
+      })
     },
 
     async expiredConfirm() {
       try {
-        this.loading = true;
+        this.loading = true
         await api.orders
           .deactivateOrderHold(this.order.uuid)
           .then(() => {
-            this.loading = false;
+            this.loading = false
             this.$router.push({
-              name: "apartments",
-            });
+              name: 'apartments',
+            })
           })
-          .catch();
+          .catch()
       } catch (error) {
-        this.loading = false;
+        this.loading = false
         if (!error.response) {
-          this.toasted("Error: Network Error", "error");
+          this.toasted('Error: Network Error', 'error')
+        } else if (error.response.status === 403) {
+          this.toasted(error.response.data.message, 'error')
+        } else if (error.response.status === 401) {
+          this.toasted(error.response.data.message, 'error')
+        } else if (error.response.status === 500) {
+          this.toasted(error.response.data.message, 'error')
         } else {
-          if (error.response.status === 403) {
-            this.toasted(error.response.data.message, "error");
-          } else if (error.response.status === 401) {
-            this.toasted(error.response.data.message, "error");
-          } else if (error.response.status === 500) {
-            this.toasted(error.response.data.message, "error");
-          } else {
-            this.toasted(error.response.data.message, "error");
-          }
+          this.toasted(error.response.data.message, 'error')
         }
       }
     },
   },
-};
+}
 </script>
 
 <template>
@@ -84,18 +82,27 @@ export default {
     <div class="">
       <label>{{ $t("userComment") }}</label>
       <textarea
+        v-model="contract.comment"
         rows="3"
         cols="3"
-        v-model="contract.comment"
         class="form-control"
-      ></textarea>
+      />
     </div>
 
     <!-- error msg -->
-    <div class="alert alert-danger mt-3" v-if="error">
+    <div
+      v-if="error"
+      class="alert alert-danger mt-3"
+    >
       <ul>
-        <li v-for="(error, index) in errors" :key="index">
-          <span v-for="msg in error" :key="msg">
+        <li
+          v-for="(error, index) in errors"
+          :key="index"
+        >
+          <span
+            v-for="msg in error"
+            :key="msg"
+          >
             {{ msg }}
           </span>
         </li>
@@ -124,18 +131,18 @@ export default {
             ]
           "
         >
-          <i class="fa fa-chevron-circle-left"></i>
+          <i class="fa fa-chevron-circle-left" />
           {{ $t("back") }}
         </button>
 
         <template v-if="!edit">
           <button
+            v-if="!buttons.loading && buttons.confirm"
             type="submit"
             class="btn btn-success mr-0"
-            v-if="!buttons.loading && buttons.confirm"
           >
             {{ $t("create_agree") }}
-            <i class="fa fa-file-contract"></i>
+            <i class="fa fa-file-contract" />
           </button>
           <button
             v-if="buttons.loading && buttons.confirm"
@@ -143,17 +150,17 @@ export default {
             class="btn btn-success mr-0"
           >
             {{ $t("create_agree") }}
-            <i class="fas fa-spinner fa-spin"></i>
+            <i class="fas fa-spinner fa-spin" />
           </button>
         </template>
         <template v-else>
           <button
+            v-if="!buttons.loading && buttons.confirm"
             type="submit"
             class="btn btn-success mr-0"
-            v-if="!buttons.loading && buttons.confirm"
           >
             {{ $t("save_changes") }}
-            <i class="fa fa-file-contract"></i>
+            <i class="fa fa-file-contract" />
           </button>
           <button
             v-if="buttons.loading && buttons.confirm"
@@ -161,7 +168,7 @@ export default {
             class="btn btn-success mr-0"
           >
             {{ $t("save_changes") }}
-            <i class="fas fa-spinner fa-spin"></i>
+            <i class="fas fa-spinner fa-spin" />
           </button>
         </template>
       </div>

@@ -1,10 +1,10 @@
 <script>
 export default {
-  name: "BaseCancelIcon",
+  name: 'BaseCancelIcon',
   props: {
     fill: {
       type: String,
-      default: "#4B5563",
+      default: '#4B5563',
     },
     width: {
       type: Number,
@@ -15,7 +15,7 @@ export default {
       default: 20,
     },
   },
-};
+}
 </script>
 <template>
   <svg

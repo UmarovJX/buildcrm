@@ -1,5 +1,5 @@
-export default class dropdown extends require("../control") {
+export default class dropdown extends require('../control') {
   static get type() {
-    return "control.dropdown";
+    return 'control.dropdown'
   }
 }

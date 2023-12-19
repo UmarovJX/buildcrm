@@ -1,8 +1,8 @@
 <script>
-import Multiselect from "vue-multiselect";
+import Multiselect from 'vue-multiselect'
 
 export default {
-  name: "BaseMultiselect",
+  name: 'BaseMultiselect',
   components: {
     Multiselect,
   },
@@ -13,11 +13,11 @@ export default {
     },
     trackBy: {
       type: String,
-      default: "id",
+      default: 'id',
     },
     label: {
       type: String,
-      default: "name",
+      default: 'name',
     },
     multiple: {
       type: Boolean,
@@ -37,45 +37,43 @@ export default {
     },
     placeholder: {
       type: String,
-      default: "Select option",
+      default: 'Select option',
     },
   },
-  emits: ["input"],
+  emits: ['input'],
   data() {
     return {
       value: [],
-    };
-  },
-  created() {
-    this.initializeValue();
+    }
   },
   watch: {
     value() {
-      this.inputEventTrigger();
+      this.inputEventTrigger()
     },
     defaultValues(lastValue) {
       if (!Array.isArray(lastValue)) {
-        this.value = [];
+        this.value = []
       }
     },
+  },
+  created() {
+    this.initializeValue()
   },
   methods: {
     initializeValue() {
-      const { trackBy } = this;
-      const isInitialized = Array.isArray(this.defaultValues);
+      const { trackBy } = this
+      const isInitialized = Array.isArray(this.defaultValues)
       if (isInitialized) {
-        this.value = this.defaultValues.map((defaultValue) => {
-          return this.options.find(
-            (option) => option[trackBy] === defaultValue
-          );
-        });
+        this.value = this.defaultValues.map(defaultValue => this.options.find(
+          option => option[trackBy] === defaultValue,
+        ))
       }
     },
     inputEventTrigger() {
-      this.$emit("input", this.value);
+      this.$emit('input', this.value)
     },
   },
-};
+}
 </script>
 
 <template>

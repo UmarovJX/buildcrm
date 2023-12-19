@@ -1,14 +1,14 @@
 <script>
 // import api from "@/services/api";
-import { directive } from "vue-awesome-swiper";
-import "swiper/css/swiper.css";
-import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
-import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
-import { formatToPrice } from "@/util/reusable";
+import { directive } from 'vue-awesome-swiper'
+import 'swiper/css/swiper.css'
+import BaseArrowLeftIcon from '@/components/icons/BaseArrowLeftIcon'
+import BaseArrowRightIcon from '@/components/icons/BaseArrowRightIcon'
+import { formatToPrice } from '@/util/reusable'
 // import BaseEditIcon from "@/components/icons/BaseEditIcon";
 
 export default {
-  name: "ObjectPlan",
+  name: 'ObjectPlan',
 
   components: {
     BaseArrowLeftIcon,
@@ -44,38 +44,44 @@ export default {
       swiperOption: {
         slidesPerView: 1,
         spaceBetween: 80,
-        direction: "horizontal",
+        direction: 'horizontal',
         paginationClickable: true,
         draggable: true,
         loop: false,
         navigation: {
-          nextEl: ".swiper-button-next",
-          prevEl: ".swiper-button-prev",
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev',
         },
       },
-    };
+    }
   },
   mounted() {
     // this.getObjectPlans()
   },
   methods: {
     price(value) {
-      return formatToPrice(value, 2);
+      return formatToPrice(value, 2)
     },
     showExpressSidebar(item) {
-      this.$emit("show-plan-sidebar", item);
+      this.$emit('show-plan-sidebar', item)
     },
   },
-};
+}
 </script>
 
 <template>
-  <div class="position-relative" style="min-height: 300px">
-    <div v-if="!planLoad && plans.length" class="object-cards">
+  <div
+    class="position-relative"
+    style="min-height: 300px"
+  >
+    <div
+      v-if="!planLoad && plans.length"
+      class="object-cards"
+    >
       <div
-        class="card"
         v-for="plan in plans"
         :key="plan.id"
+        class="card"
         @click="showExpressSidebar(plan)"
       >
         <div class="card-body">
@@ -91,8 +97,13 @@ export default {
           </div>
           <div class="card-content">
             <div class="card-block">
-              <p class="card-block__title">{{ plan.area }} m<sup>2</sup></p>
-              <p v-if="!isHidePrice" class="card-block__subtitle">
+              <p class="card-block__title">
+                {{ plan.area }} m<sup>2</sup>
+              </p>
+              <p
+                v-if="!isHidePrice"
+                class="card-block__subtitle"
+              >
                 {{ price(plan.price_m2) }} {{ $t("ye") }}/M<sup>2</sup>
               </p>
             </div>
@@ -112,9 +123,9 @@ export default {
           </div>
           <div class="card-bottom">
             <div
-              class="swiper"
-              v-swiper="swiperOption"
               :id="plan.id"
+              v-swiper="swiperOption"
+              class="swiper"
               style="padding: 0 60px"
             >
               <!--     MAIN CONTENT OF SLIDE       -->
@@ -130,13 +141,13 @@ export default {
                     class="swiper-image"
                     :src="key"
                     alt="no_image"
-                  />
+                  >
                   <img
                     v-else
                     class="swiper-image"
                     :src="require('@/assets/img/no-image.jpg')"
                     alt="img"
-                  />
+                  >
                   <!--                                    </div>-->
                 </div>
               </div>
@@ -162,14 +173,19 @@ export default {
       </div>
     </div>
 
-    <b-overlay :show="planLoad" no-wrap opacity="0" style="z-index: 2222">
+    <b-overlay
+      :show="planLoad"
+      no-wrap
+      opacity="0"
+      style="z-index: 2222"
+    >
       <template #overlay>
         <div class="d-flex justify-content-center w-100">
           <div class="lds-ellipsis">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
+            <div />
+            <div />
+            <div />
+            <div />
           </div>
         </div>
       </template>

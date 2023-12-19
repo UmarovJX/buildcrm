@@ -1,24 +1,24 @@
 <script>
-import { Fancybox } from "@fancyapps/ui";
-import "@fancyapps/ui/dist/fancybox.css";
-import { mapGetters, mapMutations } from "vuex";
-import api from "@/services/api";
-import CreateModal from "@/components/Dashboard/TypeParking/Components/CreateModal";
-import CreateModalMultiple from "@/components/Dashboard/TypeParking/Components/CreateModalMultiple";
-import BaseSearchInput from "@/components/Reusable/BaseSearchInput";
-import BaseEditIcon from "@/components/icons/BaseEditIcon";
-import PlansPermission from "@/permission/plans";
-import BaseButton from "@/components/Reusable/BaseButton";
-import BaseDeleteIcon from "@/components/icons/BaseDeleteIcon";
-import BaseLoadingContent from "@/components/BaseLoadingContent";
-import AppHeader from "@/components/Header/AppHeader";
-import { XButton } from "@/components/ui-components/button";
-import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
-import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
-import { XFormSelect } from "@/components/ui-components/form-select";
+import { Fancybox } from '@fancyapps/ui'
+import '@fancyapps/ui/dist/fancybox.css'
+import { mapGetters, mapMutations } from 'vuex'
+import api from '@/services/api'
+import CreateModal from '@/components/Dashboard/TypeParking/Components/CreateModal'
+import CreateModalMultiple from '@/components/Dashboard/TypeParking/Components/CreateModalMultiple'
+import BaseSearchInput from '@/components/Reusable/BaseSearchInput'
+import BaseEditIcon from '@/components/icons/BaseEditIcon'
+import PlansPermission from '@/permission/plans'
+import BaseButton from '@/components/Reusable/BaseButton'
+import BaseDeleteIcon from '@/components/icons/BaseDeleteIcon'
+import BaseLoadingContent from '@/components/BaseLoadingContent'
+import AppHeader from '@/components/Header/AppHeader'
+import { XButton } from '@/components/ui-components/button'
+import BaseArrowLeftIcon from '@/components/icons/BaseArrowLeftIcon'
+import BaseArrowRightIcon from '@/components/icons/BaseArrowRightIcon'
+import { XFormSelect } from '@/components/ui-components/form-select'
 
 export default {
-  name: "TypeParkingList",
+  name: 'TypeParkingList',
   components: {
     XFormSelect,
     BaseArrowRightIcon,
@@ -39,7 +39,7 @@ export default {
       limit: +this.$route.query.limit || 10,
       totalPage: 0,
       showByValue: +this.$route.query.limit || 10,
-      showByOptions: [5, 10, 20, 30].map((el) => ({ value: el, text: el })),
+      showByOptions: [5, 10, 20, 30].map(el => ({ value: el, text: el })),
       parkings: [],
       parking: {
         uuid: null,
@@ -57,57 +57,57 @@ export default {
       manager_id: null,
       header: {
         modalProperties: {
-          position: "create",
-          title: this.$t("add"),
+          position: 'create',
+          title: this.$t('add'),
         },
       },
       fields: [
         {
-          key: "image",
-          label: this.$t("type_plan.image"),
+          key: 'image',
+          label: this.$t('type_plan.image'),
         },
         {
-          key: "number",
-          label: this.$t("parking_number"),
+          key: 'number',
+          label: this.$t('parking_number'),
         },
         {
-          key: "floor",
-          label: this.$t("floor"),
+          key: 'floor',
+          label: this.$t('floor'),
         },
         {
-          key: "building.name",
-          label: this.$t("object.building"),
+          key: 'building.name',
+          label: this.$t('object.building'),
         },
 
         {
-          key: "price",
-          label: this.$t("contracts.price"),
+          key: 'price',
+          label: this.$t('contracts.price'),
         },
         {
-          key: "actions",
-          label: "",
+          key: 'actions',
+          label: '',
         },
       ],
       deletePlan: {
         plans: [],
-        message: "",
+        message: '',
         removePlan: {},
       },
 
       loading: false,
-    };
+    }
   },
   computed: {
-    ...mapGetters(["getLoading", "getPermission"]),
+    ...mapGetters(['getLoading', 'getPermission']),
     query() {
-      return Object.assign({}, this.$route.query);
+      return { ...this.$route.query }
     },
   },
   watch: {
-    "$route.query": {
+    '$route.query': {
       handler(value) {
         if (value) {
-          this.fetchParkings();
+          this.fetchParkings()
         }
       },
       deep: true,
@@ -116,66 +116,64 @@ export default {
   mounted() {
     this.$router.push({
       query: { ...this.query, page: this.page, limit: this.limit },
-    });
-    this.fetchParkings();
-    Fancybox.bind("[data-fancybox]");
+    })
+    this.fetchParkings()
+    Fancybox.bind('[data-fancybox]')
   },
   methods: {
     changeFetchLimit() {
       const query = {
         ...this.query,
         page: this.query.page || 1,
-      };
-      const limit = this.showByValue;
-      this.$router.push({ query: { ...query, limit } });
+      }
+      const limit = this.showByValue
+      this.$router.push({ query: { ...query, limit } })
     },
     changeCurrentPage(page) {
-      const currentPage = this.query.page;
-      if (+page === +currentPage) return;
-      this.page = page;
+      const currentPage = this.query.page
+      if (+page === +currentPage) return
+      this.page = page
       const query = {
         ...this.query,
         page: this.query.page || 1,
-      };
-      const limit = this.query.limit || 10;
-      this.$router.replace({ query: { ...query, page, limit } });
+      }
+      const limit = this.query.limit || 10
+      this.$router.replace({ query: { ...query, page, limit } })
     },
-    ...mapMutations(["updateLoading"]),
+    ...mapMutations(['updateLoading']),
     async fetchParkings() {
-      this.updateLoading(true, { root: true });
-      this.showLoading = true;
+      this.updateLoading(true, { root: true })
+      this.showLoading = true
       try {
         const response = await api.parkingsV3.getObjectParkings({
           page: this.page,
           limit: this.showByValue,
           object_id: this.$route.params.id,
-        });
-        this.parkings = response.data.result;
-        this.totalPage = response.data.pagination.totalPage;
+        })
+        this.parkings = response.data.result
+        this.totalPage = response.data.pagination.totalPage
 
-        this.updateLoading(false, { root: true });
-        this.showLoading = false;
+        this.updateLoading(false, { root: true })
+        this.showLoading = false
       } catch (error) {
-        this.updateLoading(false, { root: true });
-        this.showLoading = false;
+        this.updateLoading(false, { root: true })
+        this.showLoading = false
         if (!error.response) {
-          this.toasted("Error: Network Error", "error");
+          this.toasted('Error: Network Error', 'error')
+        } else if (error.response.status === 403) {
+          this.toasted(error.response.data.message, 'error')
+        } else if (error.response.status === 401) {
+          this.toasted(error.response.data.message, 'error')
+        } else if (error.response.status === 500) {
+          this.toasted(error.response.data.message, 'error')
         } else {
-          if (error.response.status === 403) {
-            this.toasted(error.response.data.message, "error");
-          } else if (error.response.status === 401) {
-            this.toasted(error.response.data.message, "error");
-          } else if (error.response.status === 500) {
-            this.toasted(error.response.data.message, "error");
-          } else {
-            this.toasted(error.response.data.message, "error");
-          }
+          this.toasted(error.response.data.message, 'error')
         }
       }
     },
     imagePath(item) {
-      if (item && item.upload) return item.upload.path;
-      return null;
+      if (item && item.upload) return item.upload.path
+      return null
     },
     clearModal() {
       this.parking = {
@@ -186,29 +184,29 @@ export default {
         price: null,
         img: null,
         building_id: null,
-      };
+      }
     },
     async deleteTypeParking(item) {
       try {
-        const d = new FormData();
-        d.append("id", item.id);
-        const res = await api.parkingsV3.removeParking(d);
-        console.log(res.data);
+        const d = new FormData()
+        d.append('id', item.id)
+        const res = await api.parkingsV3.removeParking(d)
+        console.log(res.data)
         if (res.data.message) {
-          throw new Error(res.data.message);
+          throw new Error(res.data.message)
         }
-        const message = `${this.$t("sweetAlert.deleted")}`;
-        this.$swal(message, "", "success");
-        this.fetchParkings();
+        const message = `${this.$t('sweetAlert.deleted')}`
+        this.$swal(message, '', 'success')
+        this.fetchParkings()
       } catch (e) {
-        const message = `${this.$t("sweetAlert.error")}:${e.message}`;
-        this.$swal(message, "", "error");
+        const message = `${this.$t('sweetAlert.error')}:${e.message}`
+        this.$swal(message, '', 'error')
       }
     },
     async updateList() {
-      this.loading = true;
-      await this.fetchParkings();
-      this.loading = false;
+      this.loading = true
+      await this.fetchParkings()
+      this.loading = false
     },
     showAddModal() {
       this.parking = {
@@ -219,12 +217,12 @@ export default {
         price: null,
         img: null,
         building_id: null,
-      };
-      this.$refs["create-multiple"].openPlanModal();
+      }
+      this.$refs['create-multiple'].openPlanModal()
     },
 
     closeDeletePlanModal() {
-      this.$bvModal.hide("delete-plan-modal");
+      this.$bvModal.hide('delete-plan-modal')
     },
     edit(item) {
       this.parking = {
@@ -235,12 +233,12 @@ export default {
         price: item.price,
         img: item.upload?.path,
         building_id: item.building.id,
-      };
-      console.log("prop", this.parking);
-      this.$refs["create-update"].openPlanModal();
+      }
+      console.log('prop', this.parking)
+      this.$refs['create-update'].openPlanModal()
     },
   },
-};
+}
 </script>
 
 <template>
@@ -260,11 +258,11 @@ export default {
 
       <div class="d-flex x-gap-1">
         <x-button
-          @click="showAddModal"
           :text="$t('objects.create.parking.add')"
           variant="secondary"
           left-icon="add"
           color-icon="var(--violet-600)"
+          @click="showAddModal"
         />
       </div>
     </div>
@@ -284,7 +282,10 @@ export default {
           :fields="fields"
           :busy="showLoading"
         >
-          <template #empty="scope" class="text-center">
+          <template
+            #empty="scope"
+            class="text-center"
+          >
             <div class="d-flex justify-content-center align-items-center">
               {{ scope.emptyText }}
             </div>
@@ -292,10 +293,10 @@ export default {
           <template #table-busy>
             <div class="d-flex justify-content-center w-100">
               <div class="lds-ellipsis">
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
+                <div />
+                <div />
+                <div />
+                <div />
               </div>
             </div>
           </template>
@@ -313,7 +314,7 @@ export default {
               height="80"
               alt="plan_image"
               fluid
-            />
+            >
           </template>
 
           <template #cell(balcony_area)="data">
@@ -321,7 +322,10 @@ export default {
           </template>
 
           <template #cell(actions)="data">
-            <div v-if="editPermission || deletePermission" class="actions">
+            <div
+              v-if="editPermission || deletePermission"
+              class="actions"
+            >
               <BaseButton
                 v-if="editPermission"
                 class="button rounded-circle"
@@ -345,7 +349,10 @@ export default {
             </div>
           </template>
         </b-table>
-        <div class="pagination__vue" v-if="!showLoading && totalPage">
+        <div
+          v-if="!showLoading && totalPage"
+          class="pagination__vue"
+        >
           <vue-paginate
             :page-count="totalPage"
             :value="page"
@@ -373,9 +380,9 @@ export default {
 
           <div class="show__by">
             <x-form-select
+              v-model="showByValue"
               :label="false"
               :options="showByOptions"
-              v-model="showByValue"
               @change="changeFetchLimit"
             >
               <template #output-prefix>
@@ -390,15 +397,15 @@ export default {
 
       <create-modal
         ref="create-update"
+        :parking="parking"
         @update-list="updateList"
         @clear-field="clearModal"
-        :parking="parking"
       />
       <create-modal-multiple
         ref="create-multiple"
+        :parking="parking"
         @update-list="updateList"
         @clear-field="clearModal"
-        :parking="parking"
       />
     </div>
 

@@ -10,80 +10,75 @@ export default {
 
   mutations: {
     togglePromoError(state) {
-      state.showPromoError = !state.showPromoError;
+      state.showPromoError = !state.showPromoError
     },
     makeDefaultCreationSelectedBlocks(state) {
-      state.creationSelectedBlocks = [];
+      state.creationSelectedBlocks = []
     },
     setUpSelectedBlocks(state, blocks) {
-      state.creationSelectedBlocks = blocks;
+      state.creationSelectedBlocks = blocks
     },
     updatePromoValue(state, { next, prepayId }) {
       const findIndex = state.creationSelectedBlocks.findIndex(
-        (selectedBlock) => selectedBlock.prepayId === prepayId
-      );
+        selectedBlock => selectedBlock.prepayId === prepayId,
+      )
       if (findIndex !== -1) {
-        state.creationSelectedBlocks[findIndex].discount.prepay =
-          parseFloat(next);
+        state.creationSelectedBlocks[findIndex].discount.prepay = parseFloat(next)
       }
     },
     mutateFormButton(state) {
-      state.promoFormButtonClicked = !state.promoFormButtonClicked;
+      state.promoFormButtonClicked = !state.promoFormButtonClicked
     },
     changeEditHistory(state, currentHistory) {
-      state.editHistoryContext = currentHistory;
+      state.editHistoryContext = currentHistory
     },
     updateCreationSelectedBlocks(state, updatingValue) {
-      const { id, discount } = updatingValue;
+      const { id, discount } = updatingValue
       if (state.creationSelectedBlocks.length) {
         const findIndex = state.creationSelectedBlocks.findIndex(
-          (selectedBlock) => {
-            return (
-              selectedBlock.id === id &&
-              selectedBlock.discount.prepay === discount.prepay
-            );
-          }
-        );
+          selectedBlock => (
+            selectedBlock.id === id
+              && selectedBlock.discount.prepay === discount.prepay
+          ),
+        )
 
         if (findIndex !== -1) {
           state.creationSelectedBlocks = state.creationSelectedBlocks.map(
-            (selectedBlock) => {
+            selectedBlock => {
               if (
-                selectedBlock.id === id &&
-                selectedBlock.discount.prepay === discount.prepay
+                selectedBlock.id === id
+                && selectedBlock.discount.prepay === discount.prepay
               ) {
-                return updatingValue;
+                return updatingValue
               }
 
-              return selectedBlock;
-            }
-          );
+              return selectedBlock
+            },
+          )
         } else {
-          state.creationSelectedBlocks.push(updatingValue);
+          state.creationSelectedBlocks.push(updatingValue)
         }
       } else {
-        state.creationSelectedBlocks.push(updatingValue);
+        state.creationSelectedBlocks.push(updatingValue)
       }
     },
     deletePromoCreationBlock(state, prepay) {
       state.creationSelectedBlocks = state.creationSelectedBlocks.filter(
-        (selectedBlock) => selectedBlock.discount.prepay !== prepay
-      );
+        selectedBlock => selectedBlock.discount.prepay !== prepay,
+      )
     },
     deleteRemovedBlock(state, { prepayId, id }) {
       const findIndex = state.creationSelectedBlocks.findIndex(
-        (creationBlock) => {
-          return creationBlock.id === id && creationBlock.prepayId === prepayId;
-        }
-      );
-      state.creationSelectedBlocks.splice(findIndex, 1);
+        creationBlock => creationBlock.id === id && creationBlock.prepayId === prepayId,
+      )
+      state.creationSelectedBlocks.splice(findIndex, 1)
     },
   },
 
   getters: {
-    togglePromoSubmitButton: (state) => state.promoFormButtonClicked,
-    getEditHistoryContext: (state) => state.editHistoryContext,
-    getSelectedBlocks: (state) => state.creationSelectedBlocks,
-    getInputValidationError: (state) => state.showPromoError,
+    togglePromoSubmitButton: state => state.promoFormButtonClicked,
+    getEditHistoryContext: state => state.editHistoryContext,
+    getSelectedBlocks: state => state.creationSelectedBlocks,
+    getInputValidationError: state => state.showPromoError,
   },
-};
+}

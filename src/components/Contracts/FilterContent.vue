@@ -1,37 +1,19 @@
 <script>
-import BaseSearchInput from "@/components/Reusable/BaseSearchInput";
-import BaseFilterButton from "@/components/Elements/BaseFilterButton";
-import BaseRightModal from "@/components/Reusable/BaseRightModal";
-import BootstrapSelect from "@/components/Elements/Selects/BootstrapSelect";
-import { sortObjectValues } from "@/util/reusable";
-import api from "@/services/api";
+import BaseSearchInput from '@/components/Reusable/BaseSearchInput'
+import BaseFilterButton from '@/components/Elements/BaseFilterButton'
+import BaseRightModal from '@/components/Reusable/BaseRightModal'
+import BootstrapSelect from '@/components/Elements/Selects/BootstrapSelect'
+import { sortObjectValues } from '@/util/reusable'
+import api from '@/services/api'
 
 export default {
-  name: "FilterContent",
+  name: 'FilterContent',
   components: {
     BaseSearchInput,
     BaseFilterButton,
     BaseRightModal,
     BootstrapSelect,
   },
-  computed: {
-    typesOptions() {
-      return this.filterFields.types.map((type) =>
-        this.$t("contracts.activity_log.actions." + type)
-      );
-    },
-    actionsTypes() {
-      return this.filterFields.actions.map((type) =>
-        this.$t("contracts.activity_log." + type)
-      );
-    },
-    usersOptions() {
-      return this.filterFields.users.map(
-        (user) => `${user.first_name} ${user.last_name}`
-      );
-    },
-  },
-  emits: ["reset-filter-fields", "sort-by-search", "sort-items"],
   data() {
     return {
       filter: {
@@ -42,61 +24,75 @@ export default {
       filterFields: null,
       filterItemsValues: {
         types: {
-          deleted: "Удаление",
-          reissue: "Переоформление",
-          created: "Создание",
-          updated: "Редактирование",
+          deleted: 'Удаление',
+          reissue: 'Переоформление',
+          created: 'Создание',
+          updated: 'Редактирование',
         },
         actions: {
-          reissue: "в переоформление",
-          comments: "в комментарие",
-          payments_histories: "в историе оплаты",
-          orders: "в договоре",
+          reissue: 'в переоформление',
+          comments: 'в комментарие',
+          payments_histories: 'в историе оплаты',
+          orders: 'в договоре',
         },
       },
-    };
+    }
   },
+  computed: {
+    typesOptions() {
+      return this.filterFields.types.map(type => this.$t(`contracts.activity_log.actions.${type}`))
+    },
+    actionsTypes() {
+      return this.filterFields.actions.map(type => this.$t(`contracts.activity_log.${type}`))
+    },
+    usersOptions() {
+      return this.filterFields.users.map(
+        user => `${user.first_name} ${user.last_name}`,
+      )
+    },
+  },
+  emits: ['reset-filter-fields', 'sort-by-search', 'sort-items'],
   created() {
-    this.fetchFilterFieldsLog();
+    this.fetchFilterFieldsLog()
   },
   methods: {
     replaceRouter() {
-      const sortQuery = sortObjectValues(this.filter);
-      this.$router.replace({ query: sortQuery });
+      const sortQuery = sortObjectValues(this.filter)
+      this.$router.replace({ query: sortQuery })
     },
     async fetchFilterFieldsLog() {
-      const { id } = this.$route.params;
+      const { id } = this.$route.params
       await api.contractV2
         .fetchActivityLogFilterFields(id)
-        .then((response) => {
-          this.filterFields = response.data;
+        .then(response => {
+          this.filterFields = response.data
         })
-        .catch((err) => {
-          this.toastedWithErrorCode(err);
+        .catch(err => {
+          this.toastedWithErrorCode(err)
         })
         .finally(() => {
-          this.finishLoading = true;
-        });
+          this.finishLoading = true
+        })
     },
     openFilterContent() {
-      this.$refs["filter-modal"].show();
+      this.$refs['filter-modal'].show()
     },
     filterItems() {
-      this.replaceRouter();
-      this.$emit("sort-items", this.filter);
+      this.replaceRouter()
+      this.$emit('sort-items', this.filter)
     },
     resetFilterFields() {
-      this.filter.type = null;
-      this.filter.action = null;
-      this.filter.user = null;
-      this.query = this.filter;
-      this.$emit("reset-filter-fields");
+      this.filter.type = null
+      this.filter.action = null
+      this.filter.user = null
+      this.query = this.filter
+      this.$emit('reset-filter-fields')
     },
     filterBySearchContent(searchingValue) {
-      this.$emit("sort-by-search", searchingValue);
+      this.$emit('sort-by-search', searchingValue)
     },
   },
-};
+}
 </script>
 
 <template>
@@ -154,15 +150,15 @@ export default {
         <bootstrap-select
           v-if="
             filterFields.users[0] &&
-            filterFields.users[0].first_name &&
-            filterFields.users[0].last_name
+              filterFields.users[0].first_name &&
+              filterFields.users[0].last_name
           "
           :class="{ 'client-type-selection': !filterFields.users }"
           :options="usersOptions"
           :default-value="
             filterFields.users[0].first_name +
-            ' ' +
-            filterFields.users[0].last_name
+              ' ' +
+              filterFields.users[0].last_name
           "
           @select="
             (newValue) =>

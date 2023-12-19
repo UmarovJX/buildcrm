@@ -1,27 +1,27 @@
 <script>
-import {computed, getCurrentInstance, ref} from "vue";
-import {v3ServiceApi} from "@/services/v3/v3.service";
-import {useToastError} from "@/composables/useToastError";
-import SettingsPermission from "@/permission/settings.permission";
+import { computed, getCurrentInstance, ref } from 'vue'
+import { v3ServiceApi } from '@/services/v3/v3.service'
+import { useToastError } from '@/composables/useToastError'
+import SettingsPermission from '@/permission/settings.permission'
 
-import {XButton} from "@/components/ui-components/button";
-import {XIcon} from "@/components/ui-components/material-icons";
-import {XCircularBackground} from "@/components/ui-components/circular-background";
-import AppHeader from "@/components/Header/AppHeader.vue";
-import BaseLoading from "@/components/Reusable/BaseLoading.vue";
-import PlanPagination from "@/views/plan/components/PlanPagination.vue";
-import PlanUpsert from "@/views/plan/components/PlanUpsert.vue";
-import PlanFilter from "@/views/plan/components/PlanFilter.vue";
+import { XButton } from '@/components/ui-components/button'
+import { XIcon } from '@/components/ui-components/material-icons'
+import { XCircularBackground } from '@/components/ui-components/circular-background'
+import AppHeader from '@/components/Header/AppHeader.vue'
+import BaseLoading from '@/components/Reusable/BaseLoading.vue'
+import PlanPagination from '@/views/plan/components/PlanPagination.vue'
+import PlanUpsert from '@/views/plan/components/PlanUpsert.vue'
+import PlanFilter from '@/views/plan/components/PlanFilter.vue'
 
-import GroupUpsert from "@/views/settings/views/permission-group/components/GroupUpsert.vue";
-import GroupTable from "@/views/settings/views/permission-group/components/GroupTable.vue";
-import GroupTree from "@/views/settings/views/permission-group/components/GroupTree.vue";
-import PermissionUpsert from "@/views/settings/views/permission-group/components/PermissionUpsert.vue";
-import XPagination from "@/components/ui-components/pagination/XPagination.vue";
-import {usePermissionUpsert} from "@/views/settings/views/permission-group/usePermissionUpsert";
+import GroupUpsert from '@/views/settings/views/permission-group/components/GroupUpsert.vue'
+import GroupTable from '@/views/settings/views/permission-group/components/GroupTable.vue'
+import GroupTree from '@/views/settings/views/permission-group/components/GroupTree.vue'
+import PermissionUpsert from '@/views/settings/views/permission-group/components/PermissionUpsert.vue'
+import XPagination from '@/components/ui-components/pagination/XPagination.vue'
+import { usePermissionUpsert } from '@/views/settings/views/permission-group/usePermissionUpsert'
 
 export default {
-  name: "PermissionGroup",
+  name: 'PermissionGroup',
   components: {
     XIcon,
     XButton,
@@ -36,11 +36,11 @@ export default {
     GroupTree,
     GroupUpsert,
     XPagination,
-    PermissionUpsert
+    PermissionUpsert,
   },
   setup() {
     const vm = getCurrentInstance().proxy
-    const {toastError} = useToastError()
+    const { toastError } = useToastError()
 
     const {
       showModal: pmsShowModal,
@@ -71,35 +71,33 @@ export default {
     })
     const tableItems = ref([])
     const permission = {
-      view: SettingsPermission.getPermission("plan.view"),
-      create: SettingsPermission.getPermission("plan.create"),
-      edit: SettingsPermission.getPermission("plan.edit"),
-      delete: SettingsPermission.getPermission("plan.delete"),
+      view: SettingsPermission.getPermission('plan.view'),
+      create: SettingsPermission.getPermission('plan.create'),
+      edit: SettingsPermission.getPermission('plan.edit'),
+      delete: SettingsPermission.getPermission('plan.delete'),
     }
-    const showPagination = computed(() => {
-      return !tableData.value.loading && pagination.value.totalItem
-    })
+    const showPagination = computed(() => !tableData.value.loading && pagination.value.totalItem)
 
     function startLoading() {
-      tableData.value.loading = true;
+      tableData.value.loading = true
     }
 
     function finishLoading() {
-      tableData.value.loading = false;
+      tableData.value.loading = false
     }
 
-    function findTreeElement(arr, target, path = "") {
+    function findTreeElement(arr, target, path = '') {
       for (let i = 0; i < arr.length; i++) {
-        const element = arr[i];
-        const newPath = `${path}.${i}`;
+        const element = arr[i]
+        const newPath = `${path}.${i}`
         if (element.id === target) {
-          return {element, path: newPath};
-        } else if (element.children.length) {
-          const result = findTreeElement(element.children, target, newPath);
-          if (result) return result;
+          return { element, path: newPath }
+        } if (element.children.length) {
+          const result = findTreeElement(element.children, target, newPath)
+          if (result) return result
         }
       }
-      return null;
+      return null
     }
 
     function activateFirstItem() {
@@ -107,102 +105,100 @@ export default {
       console.log('result', result)
       if (result) {
         tableItems.value = result.element.permissions
-      } else {
-        if (tableData.value.items.length) {
-          tableItems.value = tableData.value.items[0].permissions
-          vm.$router.push({
-            query: {
-              tree: tableData.value.items[0].id
-            }
-          })
-        }
+      } else if (tableData.value.items.length) {
+        tableItems.value = tableData.value.items[0].permissions
+        vm.$router.push({
+          query: {
+            tree: tableData.value.items[0].id,
+          },
+        })
       }
     }
 
-    async function findAll({page = null, perPage = null}) {
+    async function findAll({ page = null, perPage = null }) {
       try {
-        startLoading();
+        startLoading()
         const response = await v3ServiceApi.permission.group.index({
           page: page ?? pagination.value.current,
-          limit: perPage ?? pagination.value.perPage
-        });
-        tableData.value.items = response.data.result;
-        pagination.value = response.data.pagination;
+          limit: perPage ?? pagination.value.perPage,
+        })
+        tableData.value.items = response.data.result
+        pagination.value = response.data.pagination
         activateFirstItem()
       } catch (e) {
         toastError(e)
       } finally {
-        finishLoading();
+        finishLoading()
       }
     }
 
     function createClientType() {
-      setUpsertType("create");
-      openCreatingClientTypeModal();
+      setUpsertType('create')
+      openCreatingClientTypeModal()
     }
 
     function setUpsertType(eType) {
-      if (["create", "edit"].includes(eType)) {
-        upsertType.value = eType;
+      if (['create', 'edit'].includes(eType)) {
+        upsertType.value = eType
       }
     }
 
     function openCreatingClientTypeModal() {
-      showCreateModal.value = true;
+      showCreateModal.value = true
     }
 
     function closeCreatingClientTypeModal() {
-      showCreateModal.value = false;
+      showCreateModal.value = false
     }
 
     function clientTypeCreated() {
-      closeCreatingClientTypeModal();
-      findAll({});
+      closeCreatingClientTypeModal()
+      findAll({})
     }
 
     async function deleteTrigger() {
       vm.$swal({
-        title: vm.$t("sweetAlert.title"),
-        text: vm.$t("sweetAlert.text"),
-        icon: "warning",
+        title: vm.$t('sweetAlert.title'),
+        text: vm.$t('sweetAlert.text'),
+        icon: 'warning',
         showCancelButton: true,
-        cancelButtonText: vm.$t("cancel"),
-        confirmButtonText: vm.$t("sweetAlert.yes"),
-      }).then(async (result) => {
+        cancelButtonText: vm.$t('cancel'),
+        confirmButtonText: vm.$t('sweetAlert.yes'),
+      }).then(async result => {
         if (result.value) {
           try {
-            startLoading();
-            await v3ServiceApi.permission.group.remove({id: vm.$route.query.tree});
+            startLoading()
+            await v3ServiceApi.permission.group.remove({ id: vm.$route.query.tree })
             await findAll({})
           } catch (e) {
             toastError(e)
           } finally {
-            finishLoading();
+            finishLoading()
           }
         }
-      });
+      })
     }
 
     async function editTrigger() {
       try {
-        startLoading();
+        startLoading()
         const {
-          data: {result},
-        } = await v3ServiceApi.permission.group.show({id: vm.$route.query.tree});
-        editStorage.value = result;
-        setUpsertType("edit");
-        openCreatingClientTypeModal();
+          data: { result },
+        } = await v3ServiceApi.permission.group.show({ id: vm.$route.query.tree })
+        editStorage.value = result
+        setUpsertType('edit')
+        openCreatingClientTypeModal()
       } catch (e) {
         toastError(e)
       } finally {
-        finishLoading();
+        finishLoading()
       }
     }
 
-    function paginationChange({page, perPage}) {
+    function paginationChange({ page, perPage }) {
       findAll({
         page,
-        perPage
+        perPage,
       })
     }
 
@@ -273,57 +269,62 @@ export default {
       showGroupPermission,
       pmsEditTrigger,
       pmsDeleteTrigger,
-      findTreeElement
+      findTreeElement,
     }
   },
-};
+}
 </script>
 
 <template>
   <div class="app-settings-client-type">
     <section>
       <x-button
-          variant="secondary"
-          text="common.add_group"
-          :bilingual="true"
-          @click="createClientType"
+        variant="secondary"
+        text="common.add_group"
+        :bilingual="true"
+        @click="createClientType"
       >
         <template #left-icon>
-          <x-icon name="add" class="violet-600"/>
+          <x-icon
+            name="add"
+            class="violet-600"
+          />
         </template>
       </x-button>
     </section>
 
-
     <section class="d-flex x-gap-2">
       <div class="group__tree__section mt-4">
-        <b-skeleton-wrapper :loading="tableData.loading" class="w-100">
+        <b-skeleton-wrapper
+          :loading="tableData.loading"
+          class="w-100"
+        >
           <template #loading>
-            <b-skeleton width="85%"></b-skeleton>
-            <b-skeleton width="55%"></b-skeleton>
-            <b-skeleton width="70%"></b-skeleton>
-            <b-skeleton width="35%"></b-skeleton>
-            <b-skeleton width="75%"></b-skeleton>
-            <b-skeleton width="95%"></b-skeleton>
-            <b-skeleton width="75%"></b-skeleton>
-            <b-skeleton width="55%"></b-skeleton>
-            <b-skeleton width="85%"></b-skeleton>
-            <b-skeleton width="85%"></b-skeleton>
-            <b-skeleton width="55%"></b-skeleton>
-            <b-skeleton width="70%"></b-skeleton>
-            <b-skeleton width="35%"></b-skeleton>
-            <b-skeleton width="75%"></b-skeleton>
-            <b-skeleton width="95%"></b-skeleton>
-            <b-skeleton width="75%"></b-skeleton>
-            <b-skeleton width="55%"></b-skeleton>
-            <b-skeleton width="85%"></b-skeleton>
+            <b-skeleton width="85%" />
+            <b-skeleton width="55%" />
+            <b-skeleton width="70%" />
+            <b-skeleton width="35%" />
+            <b-skeleton width="75%" />
+            <b-skeleton width="95%" />
+            <b-skeleton width="75%" />
+            <b-skeleton width="55%" />
+            <b-skeleton width="85%" />
+            <b-skeleton width="85%" />
+            <b-skeleton width="55%" />
+            <b-skeleton width="70%" />
+            <b-skeleton width="35%" />
+            <b-skeleton width="75%" />
+            <b-skeleton width="95%" />
+            <b-skeleton width="75%" />
+            <b-skeleton width="55%" />
+            <b-skeleton width="85%" />
           </template>
 
           <group-tree
-              v-for="item in tableData.items"
-              :item="item"
-              :key="item.id"
-              @show="showGroupPermission"
+            v-for="item in tableData.items"
+            :key="item.id"
+            :item="item"
+            @show="showGroupPermission"
           />
         </b-skeleton-wrapper>
       </div>
@@ -331,63 +332,70 @@ export default {
       <div class="mt-4 w-100">
         <div class="d-flex justify-content-end x-gap-1">
           <x-button
-              variant="secondary"
-              text="edit"
-              :bilingual="true"
-              @click="editTrigger"
+            variant="secondary"
+            text="edit"
+            :bilingual="true"
+            @click="editTrigger"
           >
             <template #left-icon>
-              <x-icon name="draw" class="violet-600"/>
+              <x-icon
+                name="draw"
+                class="violet-600"
+              />
             </template>
           </x-button>
           <x-button
-              variant="secondary"
-              text="delete"
-              :bilingual="true"
-              @click="deleteTrigger"
-              class="red-600"
+            variant="secondary"
+            text="delete"
+            :bilingual="true"
+            class="red-600"
+            @click="deleteTrigger"
           >
             <template #left-icon>
-              <x-icon name="delete" class="red-600"/>
+              <x-icon
+                name="delete"
+                class="red-600"
+              />
             </template>
           </x-button>
           <x-button
-              variant="secondary"
-              text="common.add_permission"
-              :bilingual="true"
-              @click="pmsCreate"
+            variant="secondary"
+            text="common.add_permission"
+            :bilingual="true"
+            @click="pmsCreate"
           >
             <template #left-icon>
-              <x-icon name="add" class="violet-600"/>
+              <x-icon
+                name="add"
+                class="violet-600"
+              />
             </template>
           </x-button>
         </div>
         <group-table
-            class="mt-2"
-            :busy="tableData.loading"
-            :items="tableItems"
-            @edit="pmsEditTrigger"
-            @delete="pmsDeleteTrigger"
-        >
-        </group-table>
+          class="mt-2"
+          :busy="tableData.loading"
+          :items="tableItems"
+          @edit="pmsEditTrigger"
+          @delete="pmsDeleteTrigger"
+        />
       </div>
     </section>
 
-
     <group-upsert
-        v-if="showCreateModal"
-        :upsert-type="upsertType"
-        :edit-item="editStorage"
-        @created="clientTypeCreated"
-        @close-creating-modal="closeCreatingClientTypeModal"
+      v-if="showCreateModal"
+      :upsert-type="upsertType"
+      :edit-item="editStorage"
+      @created="clientTypeCreated"
+      @close-creating-modal="closeCreatingClientTypeModal"
     />
 
     <permission-upsert
-        v-if="pmsShowModal"
-        :upsert-type="pmsUpsertType"
-        :edit-item="pmsEditItem"
-        @created="pmsCreated"
-        @close-creating-modal="pmsCloseModal"
+      v-if="pmsShowModal"
+      :upsert-type="pmsUpsertType"
+      :edit-item="pmsEditItem"
+      @created="pmsCreated"
+      @close-creating-modal="pmsCloseModal"
     />
   </div>
 </template>

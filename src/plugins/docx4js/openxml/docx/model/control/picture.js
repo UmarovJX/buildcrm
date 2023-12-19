@@ -1,5 +1,5 @@
-export default class picture extends require("../control") {
+export default class picture extends require('../control') {
   static get type() {
-    return "control.picture";
+    return 'control.picture'
   }
 }

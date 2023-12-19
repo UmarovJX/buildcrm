@@ -1,16 +1,16 @@
 <script>
-import { hasChild } from "@/util/object";
-import { makeProp as p } from "@/util/props";
-import { numberFormatDecimal as fmd } from "@/util/numberHelper";
-import { mapActions, mapGetters, mapMutations } from "vuex";
-import { PROP_TYPE_OBJECT } from "@/constants/props";
+import { hasChild } from '@/util/object'
+import { makeProp as p } from '@/util/props'
+import { numberFormatDecimal as fmd } from '@/util/numberHelper'
+import { mapActions, mapGetters, mapMutations } from 'vuex'
+import { PROP_TYPE_OBJECT } from '@/constants/props'
 
-import { XFormSelect } from "@/components/ui-components/form-select";
-import { XFormInput } from "@/components/ui-components/form-input";
-import BaseDatePicker from "@/components/Reusable/BaseDatePicker";
+import { XFormSelect } from '@/components/ui-components/form-select'
+import { XFormInput } from '@/components/ui-components/form-input'
+import BaseDatePicker from '@/components/Reusable/BaseDatePicker'
 
 export default {
-  name: "ChCalculator",
+  name: 'ChCalculator',
   components: {
     XFormSelect,
     XFormInput,
@@ -19,7 +19,7 @@ export default {
   props: {
     apartment: p(PROP_TYPE_OBJECT, {}),
   },
-  emits: ["set-v-flags"],
+  emits: ['set-v-flags'],
   data() {
     const {
       monthly_payment_period,
@@ -31,11 +31,11 @@ export default {
       first_payment_date,
       payment_date,
       other,
-    } = this.apartment.calc;
+    } = this.apartment.calc
 
     return {
-      datePickerIconFill: "var(--violet-600)",
-      calcRef: "ch-calculator-" + this.apartment.id,
+      datePickerIconFill: 'var(--violet-600)',
+      calcRef: `ch-calculator-${this.apartment.id}`,
       paymentDetails: {
         monthly_payment_period,
         discount: discount.id,
@@ -48,118 +48,118 @@ export default {
         price_m2: other.price_m2,
         starting_price: other.starting_price,
       },
-    };
+    }
   },
   computed: {
-    ...mapGetters("ParkingCheckout", [
-      "getApm",
-      "apartmentArea",
-      "findApmIdx",
-      "gtsEditFirstAttempt",
-      "getPrice",
-      "apartmentArea",
+    ...mapGetters('ParkingCheckout', [
+      'getApm',
+      'apartmentArea',
+      'findApmIdx',
+      'gtsEditFirstAttempt',
+      'getPrice',
+      'apartmentArea',
     ]),
     paymentOptions() {
       if (hasChild(this.apartment)) {
         const discounts = this.apartment.discounts.map((discount, index) => {
-          let text = this.$t("apartments.view.variant");
-          if (discount.type === "promo") {
-            text += ` ${this.$t("promo.by_promo")}`;
+          let text = this.$t('apartments.view.variant')
+          if (discount.type === 'promo') {
+            text += ` ${this.$t('promo.by_promo')}`
           }
-          text += `  ${index + 1} - ${discount.prepay}%`;
+          text += `  ${index + 1} - ${discount.prepay}%`
           return {
             text,
             value: discount.id,
             ...discount,
-          };
-        });
+          }
+        })
 
         discounts.push({
-          text: " " + this.$t("apartments.view.other_variant"),
-          value: "other",
-          type: "percent",
+          text: ` ${this.$t('apartments.view.other_variant')}`,
+          value: 'other',
+          type: 'percent',
           currency: null,
           amount: 0,
-          id: "other",
+          id: 'other',
           prepay: 30,
-        });
-        return discounts;
+        })
+        return discounts
       }
-      return [];
+      return []
     },
     showAnotherPriceFields() {
-      return this.paymentDetails.discount === "other";
+      return this.paymentDetails.discount === 'other'
     },
     allowToShowPrepay() {
       // return this.paymentDetails.prepay !== 0
-      return true;
+      return true
     },
     allowToShowInitialPrice() {
       // return this.paymentDetails.prepay !== 0
-      return true;
+      return true
     },
     allowToShowFullPayment() {
       // return this.paymentDetails.prepay === 100;
-      return false;
+      return false
     },
     disableInitialPrice() {
-      return this.paymentDetails.prepay === 100;
+      return this.paymentDetails.prepay === 100
     },
     maxTotalDiscountAmount() {
-      const idx = this.findApmIdx(this.apartment.id);
-      return this.getPrice(idx);
+      const idx = this.findApmIdx(this.apartment.id)
+      return this.getPrice(idx)
     },
     maxDiscountEachSquare() {
-      const idx = this.findApmIdx(this.apartment.id);
-      return this.maxTotalDiscountAmount / this.apartmentArea(idx);
+      const idx = this.findApmIdx(this.apartment.id)
+      return this.maxTotalDiscountAmount / this.apartmentArea(idx)
     },
   },
   watch: {
-    "apartment.calc.monthly_payment_period": {
+    'apartment.calc.monthly_payment_period': {
       handler(mthPymPeriod) {
         if (this.paymentDetails.monthly_payment_period !== mthPymPeriod) {
-          this.paymentDetails.monthly_payment_period = mthPymPeriod;
+          this.paymentDetails.monthly_payment_period = mthPymPeriod
         }
       },
       immediate: false,
     },
     paymentDetails: {
       handler() {
-        this.checkValidation();
+        this.checkValidation()
       },
       deep: true,
       immediate: false,
     },
   },
   methods: {
-    ...mapActions("ParkingCheckout", [
-      "updateApmDiscount",
-      "setMonthlyPaymentPeriod",
-      "editPrepay",
-      "editInitialPrice",
-      "updateDiscount",
-      "updateFirstPaymentDate",
-      "updatePaymentDate",
-      "setIndividualPrice",
-      "updateValidationState",
-      "changeFirstAttempt",
-      "turnInitialEditStateOn",
-      "turnInitialEditStateOff",
+    ...mapActions('ParkingCheckout', [
+      'updateApmDiscount',
+      'setMonthlyPaymentPeriod',
+      'editPrepay',
+      'editInitialPrice',
+      'updateDiscount',
+      'updateFirstPaymentDate',
+      'updatePaymentDate',
+      'setIndividualPrice',
+      'updateValidationState',
+      'changeFirstAttempt',
+      'turnInitialEditStateOn',
+      'turnInitialEditStateOff',
     ]),
-    ...mapMutations("ParkingCheckout", ["updateApartment"]),
+    ...mapMutations('ParkingCheckout', ['updateApartment']),
     focusTotalDiscount() {
-      this.focusOnFieldHandler("total_discount");
-      this.disableInitialForChange();
+      this.focusOnFieldHandler('total_discount')
+      this.disableInitialForChange()
     },
     focusDiscountEachSquare() {
-      this.focusOnFieldHandler("discount_per_m2");
-      this.disableInitialForChange();
+      this.focusOnFieldHandler('discount_per_m2')
+      this.disableInitialForChange()
     },
     blurTotalDiscount() {
-      this.changeEditForInitial();
+      this.changeEditForInitial()
     },
     blurDiscountEachSquare() {
-      this.changeEditForInitial();
+      this.changeEditForInitial()
     },
     disableInitialForChange() {
       this.updateApartment({
@@ -168,7 +168,7 @@ export default {
           initial_price: true,
           prepay: true,
         },
-      });
+      })
     },
     changeEditForInitial() {
       this.updateApartment({
@@ -177,16 +177,16 @@ export default {
           initial_price: false,
           prepay: false,
         },
-      });
+      })
     },
     focusOnFieldHandler() {
       this.changeFirstAttempt({
         apmId: this.apartment.id,
         firstAttempt: false,
-      });
+      })
     },
     getCalc() {
-      return this.getApm({ uuid: this.apartment.id }).calc;
+      return this.getApm({ uuid: this.apartment.id }).calc
     },
     refreshFieldsValue() {
       const {
@@ -199,7 +199,7 @@ export default {
         first_payment_date,
         payment_date,
         other,
-      } = this.getCalc();
+      } = this.getCalc()
 
       this.paymentDetails = {
         monthly_payment_period,
@@ -212,92 +212,92 @@ export default {
         payment_date,
         price_m2: other.price_m2,
         starting_price: other.starting_price,
-      };
+      }
     },
     changeDiscount(discountId) {
-      const { calc, id: apmId } = this.apartment;
+      const { calc, id: apmId } = this.apartment
       if (calc.discount.id !== discountId) {
         this.changeFirstAttempt({
           apmId,
           firstAttempt: false,
-        });
+        })
 
         this.updateApmDiscount({
           apmId,
           discountId,
-        });
-        this.refreshFieldsValue();
+        })
+        this.refreshFieldsValue()
       }
     },
     updateMonthlyPaymentPeriod(monthly_payment_period) {
       if (this.gtsEditFirstAttempt) {
-        return;
+        return
       }
-      const m = monthly_payment_period.toString().trim();
+      const m = monthly_payment_period.toString().trim()
       // const lts = this.getCalc().monthly_payment_period.toString().trim();
       // if (m !== lts && m !== "") {
       this.setMonthlyPaymentPeriod({
         apmId: this.apartment.id,
         monthly_payment_period: parseInt(m),
-      });
-      this.refreshFieldsValue();
+      })
+      this.refreshFieldsValue()
       // }
     },
     editPrepayHandler(prepay) {
       if (this.gtsEditFirstAttempt) {
-        return;
+        return
       }
 
       if (this.getCalc().prepay !== prepay) {
         this.turnInitialEditStateOff({
           apmId: this.apartment.id,
-        });
+        })
         this.editPrepay({
           apmId: this.apartment.id,
           prepay,
-        });
-        this.refreshFieldsValue();
+        })
+        this.refreshFieldsValue()
       }
     },
     editInitialPriceHandler(initial_price) {
       if (this.gtsEditFirstAttempt) {
-        return;
+        return
       }
 
       this.turnInitialEditStateOn({
         apmId: this.apartment.id,
-      });
+      })
 
       if (this.getCalc().initial_price !== initial_price) {
         this.editInitialPrice({
           apmId: this.apartment.id,
           initial_price,
-        });
-        this.refreshFieldsValue();
+        })
+        this.refreshFieldsValue()
       }
     },
     addDiscount(total_discount) {
       if (this.gtsEditFirstAttempt) {
-        return;
+        return
       }
       if (this.getCalc().total_discount !== total_discount) {
         // const discount_per_m2 = fmd(total_discount / this.getCalc().plan.area);
         this.updateDiscountMtd({
           discount_per_m2: total_discount,
           total_discount,
-        });
+        })
       }
     },
     addDiscountEachSquare(discount_per_m2) {
       if (this.gtsEditFirstAttempt) {
-        return;
+        return
       }
       if (this.getCalc().discount_per_m2 !== discount_per_m2) {
         // const total_discount = fmd(discount_per_m2 * this.getCalc().plan.area);
         this.updateDiscountMtd({
           discount_per_m2,
           total_discount: discount_per_m2,
-        });
+        })
       }
     },
     updateDiscountMtd({ total_discount, discount_per_m2 }) {
@@ -305,15 +305,15 @@ export default {
         apmId: this.apartment.id,
         discount_per_m2,
         total_discount,
-      });
-      this.refreshFieldsValue();
+      })
+      this.refreshFieldsValue()
     },
     setFirstPaymentDate(first_payment_date) {
       if (this.getCalc().first_payment_date !== first_payment_date) {
         this.updateFirstPaymentDate({
           apmId: this.apartment.id,
           first_payment_date,
-        });
+        })
       }
     },
     setMonthlyPaymentDate(payment_date) {
@@ -321,57 +321,55 @@ export default {
         this.updatePaymentDate({
           apmId: this.apartment.id,
           payment_date,
-        });
+        })
       }
     },
-    updateIndividualPrice(from = "starting_price") {
+    updateIndividualPrice(from = 'starting_price') {
       if (this.gtsEditFirstAttempt) {
-        return;
+        return
       }
-      const index = this.findApmIdx(this.apartment.id);
-      const { price_m2, starting_price } = this.paymentDetails;
-      if (from === "price_m2") {
+      const index = this.findApmIdx(this.apartment.id)
+      const { price_m2, starting_price } = this.paymentDetails
+      if (from === 'price_m2') {
         if (this.apartment.price_m2 !== price_m2) {
           this.setIndividualPrice({
             index,
             price_m2,
             starting_price: fmd(price_m2 * this.apartmentArea(index)),
-          });
+          })
         }
-      } else {
-        if (this.apartment.price !== starting_price) {
-          this.setIndividualPrice({
-            index,
-            price_m2: fmd(starting_price / this.apartmentArea(index)),
-            starting_price,
-          });
-        }
+      } else if (this.apartment.price !== starting_price) {
+        this.setIndividualPrice({
+          index,
+          price_m2: fmd(starting_price / this.apartmentArea(index)),
+          starting_price,
+        })
       }
-      this.refreshFieldsValue();
+      this.refreshFieldsValue()
     },
     async checkValidation() {
       await this.validate().then(() => {
         this.updateValidationState({
           apmId: this.apartment.id,
           validate: this.getValidationFlags(),
-        });
-        this.$emit("set-v-flags", this.getValidationFlags());
-      });
+        })
+        this.$emit('set-v-flags', this.getValidationFlags())
+      })
     },
     async validate() {
-      return await this.$refs[this.calcRef].validate();
+      return await this.$refs[this.calcRef].validate()
     },
     getValidationFlags() {
-      return this.$refs[this.calcRef].flags;
+      return this.$refs[this.calcRef].flags
     },
   },
-};
+}
 </script>
 
 <template>
   <validation-observer
-    tag="div"
     :ref="calcRef"
+    tag="div"
     class="ch-calculator-wrapper"
     :class="{
       'ch-another-price-content': showAnotherPriceFields,
@@ -386,12 +384,12 @@ export default {
       class="cw-payment-option"
     >
       <x-form-select
+        v-model="paymentDetails.discount"
         :bilingual="true"
         :error="!!errors[0]"
         :options="paymentOptions"
         :placeholder="$t('enter_discount')"
         value-field="id"
-        v-model="paymentDetails.discount"
         @change="changeDiscount"
       />
     </validation-provider>
@@ -406,8 +404,8 @@ export default {
       class="cw-starting-price"
     >
       <x-form-input
-        type="number"
         v-model="paymentDetails.starting_price"
+        type="number"
         :label="true"
         :precision="2"
         :currency-symbol="true"
@@ -454,8 +452,8 @@ export default {
       class="cw-monthly-payment"
     >
       <x-form-input
-        type="number"
         v-model="paymentDetails.monthly_payment_period"
+        type="number"
         :currency="`${$t('month_lowercase')}`"
         :label="true"
         :max="360"
@@ -478,8 +476,8 @@ export default {
       class="cw-prepayment"
     >
       <x-form-input
-        type="number"
         v-model="paymentDetails.prepay"
+        type="number"
         currency="%"
         :precision="2"
         :label="true"
@@ -501,8 +499,8 @@ export default {
       class="cw-initial-fee"
     >
       <x-form-input
-        type="number"
         v-model="paymentDetails.initial_price"
+        type="number"
         :currency-symbol="true"
         :label="true"
         :precision="2"
@@ -522,8 +520,8 @@ export default {
       class="cw-total-discount"
     >
       <x-form-input
-        type="number"
         v-model="paymentDetails.total_discount"
+        type="number"
         :currency-symbol="true"
         :label="true"
         :precision="2"
@@ -561,9 +559,9 @@ export default {
 
     <!--? FIRST_PAYMENT_DATE  -->
     <validation-provider
+      v-slot="{ errors }"
       :name="`${$t('first_payment_date')}`"
       rules="required"
-      v-slot="{ errors }"
       class="cw-first-payment-date"
     >
       <base-date-picker
@@ -580,9 +578,9 @@ export default {
 
     <!--? MONTHLY_PAYMENT_DATE  -->
     <validation-provider
+      v-slot="{ errors }"
       :name="`${$t('payment_date')}`"
       rules="required"
-      v-slot="{ errors }"
       class="cw-monthly-payment-date"
     >
       <base-date-picker

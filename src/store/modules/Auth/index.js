@@ -1,13 +1,13 @@
 export default {
   actions: {
     setToken(ctx, token) {
-      ctx.commit("updateToken", token);
+      ctx.commit('updateToken', token)
     },
   },
 
   mutations: {
     updateToken(state, token) {
-      state.token = token;
+      state.token = token
     },
   },
 
@@ -17,7 +17,7 @@ export default {
 
   getters: {
     getToken(state) {
-      return state.token;
+      return state.token
     },
   },
-};
+}

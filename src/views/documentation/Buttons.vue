@@ -1,12 +1,13 @@
 <script>
-import BaseButton from "@/components/Reusable/BaseButton";
-import BaseFilterIcon from "@/components/icons/BaseFilterIcon";
-import BaseLoading from "@/components/Reusable/BaseLoading";
-import BaseMultiselect from "@/components/Reusable/BaseMultiselect";
-import BaseLeftIcon from "@/components/icons/BaseLeftIcon";
-import DocHeader from "@/views/documentation/DocHeader";
+import BaseButton from '@/components/Reusable/BaseButton'
+import BaseFilterIcon from '@/components/icons/BaseFilterIcon'
+import BaseLoading from '@/components/Reusable/BaseLoading'
+import BaseMultiselect from '@/components/Reusable/BaseMultiselect'
+import BaseLeftIcon from '@/components/icons/BaseLeftIcon'
+import DocHeader from '@/views/documentation/DocHeader'
+
 export default {
-  name: "Buttons",
+  name: 'Buttons',
   components: {
     DocHeader,
     BaseLeftIcon,
@@ -20,17 +21,17 @@ export default {
       options: [
         {
           value: 1,
-          text: "item1",
+          text: 'item1',
         },
         {
           value: 2,
-          text: "item2",
+          text: 'item2',
         },
       ],
-      options2: ["asf", "asfd"],
-    };
+      options2: ['asf', 'asfd'],
+    }
   },
-};
+}
 </script>
 <template>
   <main class="button">
@@ -55,17 +56,35 @@ export default {
           </BaseButton>
           <BaseButton text="">
             <template #left-icon>
-              <BaseLoading :width="24" :height="24" />
+              <BaseLoading
+                :width="24"
+                :height="24"
+              />
             </template>
           </BaseButton>
         </div>
         <div class="button-content-part1-row">
-          <BaseMultiselect track-by="value" label="text" :options="options" />
-          <BaseMultiselect track-by="value" label="text" :options="options" />
-          <BaseMultiselect track-by="value" label="text" :options="options" />
+          <BaseMultiselect
+            track-by="value"
+            label="text"
+            :options="options"
+          />
+          <BaseMultiselect
+            track-by="value"
+            label="text"
+            :options="options"
+          />
+          <BaseMultiselect
+            track-by="value"
+            label="text"
+            :options="options"
+          />
           <BaseButton text="">
             <template #left-icon>
-              <BaseLoading :width="24" :height="24" />
+              <BaseLoading
+                :width="24"
+                :height="24"
+              />
             </template>
           </BaseButton>
         </div>
@@ -75,7 +94,10 @@ export default {
           <BaseButton text="Текст кнопки" />
           <BaseButton text="">
             <template #left-icon>
-              <BaseLoading :width="24" :height="24" />
+              <BaseLoading
+                :width="24"
+                :height="24"
+              />
             </template>
           </BaseButton>
         </div>
@@ -99,17 +121,35 @@ export default {
           </BaseButton>
           <BaseButton text="">
             <template #right-icon>
-              <BaseLoading :width="24" :height="24" />
+              <BaseLoading
+                :width="24"
+                :height="24"
+              />
             </template>
           </BaseButton>
         </div>
         <div class="button-content-part2-row">
-          <BaseMultiselect track-by="value" label="text" :options="options" />
-          <BaseMultiselect track-by="value" label="text" :options="options" />
-          <BaseMultiselect track-by="value" label="text" :options="options" />
+          <BaseMultiselect
+            track-by="value"
+            label="text"
+            :options="options"
+          />
+          <BaseMultiselect
+            track-by="value"
+            label="text"
+            :options="options"
+          />
+          <BaseMultiselect
+            track-by="value"
+            label="text"
+            :options="options"
+          />
           <BaseButton text="">
             <template #right-icon>
-              <BaseLoading :width="24" :height="24" />
+              <BaseLoading
+                :width="24"
+                :height="24"
+              />
             </template>
           </BaseButton>
         </div>
@@ -119,7 +159,10 @@ export default {
           <BaseButton text="Текст кнопки" />
           <BaseButton text="">
             <template #right-icon>
-              <BaseLoading :width="24" :height="24" />
+              <BaseLoading
+                :width="24"
+                :height="24"
+              />
             </template>
           </BaseButton>
         </div>
@@ -138,7 +181,10 @@ export default {
         <BaseButton text="Текст кнопки" />
         <BaseButton text="">
           <template #left-icon>
-            <BaseLoading :width="24" :height="24" />
+            <BaseLoading
+              :width="24"
+              :height="24"
+            />
           </template>
         </BaseButton>
       </div>

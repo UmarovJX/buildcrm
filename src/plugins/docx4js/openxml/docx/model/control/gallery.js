@@ -1,5 +1,5 @@
-export default class gallery extends require("../control") {
+export default class gallery extends require('../control') {
   static get type() {
-    return "control.gallery";
+    return 'control.gallery'
   }
 }

@@ -2,17 +2,9 @@
 // import VueNumeric from "vue-numeric";
 // import FlipCountdown from "vue2-flip-countdown";
 // import QuickViewApartments from "./Components/QuickViewApartments";
-import { mapActions, mapGetters } from "vuex";
-import SuccessAgree from "./Components/SuccessAgree";
-import ClientInputConfirm from "./Components/ClientInputConfirm";
-import MonthlyPayments from "./Contract/MonthlyPayments";
-import ClientInformation from "./Contract/ClientInformation";
-import ApartmentsList from "./Contract/ApartmentsList";
-import BaseBreadCrumb from "@/components/BaseBreadCrumb";
-import Calculator from "./Contract/Calculator";
-import Confirm from "./Contract/Confirm";
-import BaseValidationBottomWarning from "@/components/Reusable/BaseValidationBottomWarning";
-
+import { mapActions, mapGetters } from 'vuex'
+import BaseBreadCrumb from '@/components/BaseBreadCrumb'
+import BaseValidationBottomWarning from '@/components/Reusable/BaseValidationBottomWarning'
 import {
   editedCreditMonths,
   getDebt,
@@ -21,15 +13,22 @@ import {
   getPrice,
   getPricePerM2,
   getTotal,
-} from "@/util/calculator";
+} from '@/util/calculator'
+import api from '@/services/api'
+import CheckoutPermission from '@/permission/checkout'
+import { formatDateWithDot, getDateProperty } from '@/util/reusable'
+import SuccessAgree from './Components/SuccessAgree'
+import ClientInputConfirm from './Components/ClientInputConfirm'
+import MonthlyPayments from './Contract/MonthlyPayments'
+import ClientInformation from './Contract/ClientInformation'
+import ApartmentsList from './Contract/ApartmentsList'
+import Calculator from './Contract/Calculator'
+import Confirm from './Contract/Confirm'
 
 // import moment from "moment";
-import api from "@/services/api";
-import CheckoutPermission from "@/permission/checkout";
-import { formatDateWithDot, getDateProperty } from "@/util/reusable";
 
 export default {
-  name: "EditApartment",
+  name: 'EditApartment',
 
   components: {
     // VueNumeric,
@@ -55,28 +54,28 @@ export default {
 
       header: {
         headers: {
-          Authorization: "Bearer " + localStorage.token,
+          Authorization: `Bearer ${localStorage.token}`,
         },
       },
 
       client: {
         first_name: {
-          lotin: "",
-          kirill: "",
+          lotin: '',
+          kirill: '',
         },
         last_name: {
-          lotin: "",
-          kirill: "",
+          lotin: '',
+          kirill: '',
         },
         second_name: {
-          lotin: "",
-          kirill: "",
+          lotin: '',
+          kirill: '',
         },
         passport_series: null,
         issued_by_whom: null,
         date_of_issue: null,
-        language: "uz",
-        type_client: "unknown",
+        language: 'uz',
+        type_client: 'unknown',
         birth_day: null,
         phone: null,
         other_phone: null,
@@ -131,41 +130,41 @@ export default {
       getErrors: [],
       paymentDetails: {},
       schedule: {},
-      contract_number: "",
+      contract_number: '',
       monthlyPermission: CheckoutPermission.getMonthlyPaymentPermission(),
-    };
+    }
   },
 
   computed: {
     ...mapGetters([
-      "getReserveClient",
-      "getPermission",
-      "getMe",
+      'getReserveClient',
+      'getPermission',
+      'getMe',
       // "getApartmentOrder",
     ]),
     objectName() {
       if (this.apartments?.length) {
-        return this.apartments[0].object.name;
+        return this.apartments[0].object.name
       }
-      return "";
+      return ''
     },
     breadCrumbs() {
       return [
         {
-          routeName: "contracts",
-          textContent: this.$t("contracts.name"),
+          routeName: 'contracts',
+          textContent: this.$t('contracts.name'),
         },
         {
-          routeName: "contracts-view",
-          textContent: `${this.$t("payments.contract")}`,
+          routeName: 'contracts-view',
+          textContent: `${this.$t('payments.contract')}`,
           params: {
             object: this.$route.params.object,
           },
         },
-      ];
+      ]
     },
     activeContent() {
-      return this.$t("edit");
+      return this.$t('edit')
     },
     // apartmentInfoItem() {
     //   let val = this.getApartmentOrder;
@@ -185,11 +184,11 @@ export default {
   },
 
   watch: {
-    "order.payment_date"(lastValue) {
-      this.contract.payment_date = lastValue;
+    'order.payment_date': function (lastValue) {
+      this.contract.payment_date = lastValue
     },
-    "order.first_payment_date"(paymentDate) {
-      this.contract.first_payment_date = paymentDate;
+    'order.first_payment_date': function (paymentDate) {
+      this.contract.first_payment_date = paymentDate
     },
   },
 
@@ -201,209 +200,205 @@ export default {
   },
 
   async mounted() {
-    await this.getClientData();
+    await this.getClientData()
   },
 
   methods: {
     async getClientData() {
-      const uuid = this.$route.params.id;
-      await api.contractV2.getUpdateContractView(uuid).then((res) => {
-        this.order = res.data;
-        this.discounts = res.data.apartments[0].discounts;
-        this.contract.payment_date = res.data.payment_date;
-        if (res.data.status === "contract") {
+      const uuid = this.$route.params.id
+      await api.contractV2.getUpdateContractView(uuid).then(res => {
+        this.order = res.data
+        this.discounts = res.data.apartments[0].discounts
+        this.contract.payment_date = res.data.payment_date
+        if (res.data.status === 'contract') {
           const initialPayments = res.data.schedule.initial_payment.map(
-            (initialPayment) => {
+            initialPayment => {
               if (!initialPayment.edit) {
-                initialPayment.edit = false;
+                initialPayment.edit = false
               }
 
-              return initialPayment;
-            }
-          );
+              return initialPayment
+            },
+          )
           this.contract = {
             ...this.contract,
             initial_payments: initialPayments,
-            credit_months: res.data.schedule.monthly.map((item) => {
-              return {
-                amount: item.amount,
-                edit: false,
-                edited: item.edited,
-                month: `${
-                  getDateProperty(item.date).day +
-                  "." +
-                  getDateProperty(item.date).month +
-                  "." +
-                  getDateProperty(item.date).year
-                }`,
-              };
-            }),
+            credit_months: res.data.schedule.monthly.map(item => ({
+              amount: item.amount,
+              edit: false,
+              edited: item.edited,
+              month: `${
+                `${getDateProperty(item.date).day
+                }.${
+                  getDateProperty(item.date).month
+                }.${
+                  getDateProperty(item.date).year}`
+              }`,
+            })),
             first_payment_date: res.data.first_payment_date,
             monthly_payments: res.data.schedule.monthly,
             discount:
-              res.data["payments_details"]?.discount ?? this.discounts[0],
+              res.data.payments_details?.discount ?? this.discounts[0],
             discount_amount: res.data.discount_amount,
             contract_number: res.data.contract_number,
-          };
-          this.paymentDetails = res.data["payments_details"];
-          this.schedule = res.data.schedule;
+          }
+          this.paymentDetails = res.data.payments_details
+          this.schedule = res.data.schedule
         }
-        this.apartments = this.order.apartments;
+        this.apartments = this.order.apartments
 
         if (res.data.client.friends) {
           this.client = {
             ...this.client,
             ...res.data.client,
-            type_client: "friends",
-          };
+            type_client: 'friends',
+          }
         } else {
           this.client = {
             ...this.client,
             ...res.data.client,
-            type_client: "unknown",
-          };
+            type_client: 'unknown',
+          }
         }
-      });
+      })
     },
-    ...mapActions(["fetchApartmentOrder"]),
+    ...mapActions(['fetchApartmentOrder']),
 
     async showValidationMessage() {
-      const validate = await this.$refs.observer.validate();
-      this.hasValidationError = !validate;
+      const validate = await this.$refs.observer.validate()
+      this.hasValidationError = !validate
     },
 
     userFocused() {
-      this.hasValidationError = false;
+      this.hasValidationError = false
     },
 
     backToView() {
-      if (this.order.status === "sold") {
+      if (this.order.status === 'sold') {
         this.$router.push({
-          name: "contracts-view",
+          name: 'contracts-view',
           params: { id: this.$route.params.id },
-        });
+        })
       }
     },
 
     redirectToTheMainPage() {
       this.$router.push({
-        name: "contracts-view",
+        name: 'contracts-view',
         params: {
           id: this.$route.params.id,
         },
-      });
+      })
     },
 
     goBackToLastStep() {
       if (this.contract.step === 1) {
-        this.$router.go(-1);
+        this.$router.go(-1)
       }
 
       if (this.contract.step === 2) {
-        this.contract.step = 1;
+        this.contract.step = 1
       }
     },
 
     deepClone(obj) {
-      let temp;
-      if (obj === null || typeof obj !== "object") return obj;
-      if (obj instanceof Date) temp = new obj.constructor();
-      else temp = obj.constructor();
+      let temp
+      if (obj === null || typeof obj !== 'object') return obj
+      if (obj instanceof Date) temp = new obj.constructor()
+      else temp = obj.constructor()
 
-      for (let key in obj) {
+      for (const key in obj) {
         if (Object.prototype.hasOwnProperty.call(obj, key)) {
-          temp[key] = this.deepClone(obj[key]);
+          temp[key] = this.deepClone(obj[key])
         }
       }
-      return temp;
+      return temp
     },
 
     async postStore() {
-      this.buttons.loading = true;
+      this.buttons.loading = true
       await api.clientsV2
         .createClient(this.client)
-        .then((response) => {
-          this.buttons.loading = false;
+        .then(response => {
+          this.buttons.loading = false
           if (response) {
             this.client = {
               ...response.data,
-            };
-            if (this.order.status === "sold") {
+            }
+            if (this.order.status === 'sold') {
               api.contractV2
                 .orderUpdate(this.order.id, {
                   client_id: response.data.id,
                 })
-                .then((res) => {
-                  this.toasted(res.data.message, "success");
+                .then(res => {
+                  this.toasted(res.data.message, 'success')
                   this.$swal({
-                    title: this.$t("successfully"),
-                    text: this.$t("sweetAlert.successfully_edited"),
-                    icon: "success",
+                    title: this.$t('successfully'),
+                    text: this.$t('sweetAlert.successfully_edited'),
+                    icon: 'success',
                   }).then(() => {
-                    this.backToView();
-                  });
+                    this.backToView()
+                  })
                 })
-                .catch((error) => {
-                  this.toasted(error.response.data.message, "error");
-                });
+                .catch(error => {
+                  this.toasted(error.response.data.message, 'error')
+                })
             } else {
-              this.onSubmit();
+              this.onSubmit()
             }
           }
         })
-        .catch((error) => {
-          console.log(error);
+        .catch(error => {
+          console.log(error)
 
-          this.buttons.loading = false;
+          this.buttons.loading = false
           if (!error.response) {
-            this.toasted("Error: Network Error", "error");
+            this.toasted('Error: Network Error', 'error')
+          } else if (error.response.status === 403) {
+            this.toasted(error.response.data.message, 'error')
+          } else if (error.response.status === 401) {
+            this.toasted(error.response.data, 'error')
+          } else if (error.response.status === 500) {
+            this.toasted(error.response.data.message, 'error')
+          } else if (error.response.status === 422) {
+            this.error = true
+            this.getErrors = error.response.data
           } else {
-            if (error.response.status === 403) {
-              this.toasted(error.response.data.message, "error");
-            } else if (error.response.status === 401) {
-              this.toasted(error.response.data, "error");
-            } else if (error.response.status === 500) {
-              this.toasted(error.response.data.message, "error");
-            } else if (error.response.status === 422) {
-              this.error = true;
-              this.getErrors = error.response.data;
-            } else {
-              this.toasted(error.response.data.message, "error");
-            }
+            this.toasted(error.response.data.message, 'error')
           }
-        });
+        })
     },
 
     onSubmit() {
-      this.contract.step = 2;
-      this.buttons.confirm = true;
-      this.buttons.next = false;
+      this.contract.step = 2
+      this.buttons.confirm = true
+      this.buttons.next = false
       this.contract.month = this.deepClone(
-        this.order["payments_details"].month
-      );
+        this.order.payments_details.month,
+      )
     },
 
     getValidationState({ dirty, validated, valid = null }) {
-      return dirty || validated ? valid : null;
+      return dirty || validated ? valid : null
     },
 
     cancelForm() {
       this.$swal({
-        title: this.$t("sweetAlert.title"),
-        text: this.$t("sweetAlert.text_cancel_agree"),
-        icon: "warning",
+        title: this.$t('sweetAlert.title'),
+        text: this.$t('sweetAlert.text_cancel_agree'),
+        icon: 'warning',
         showCancelButton: true,
-        cancelButtonText: this.$t("cancel"),
-        confirmButtonText: this.$t("sweetAlert.yes_close"),
-      }).then((result) => {
+        cancelButtonText: this.$t('cancel'),
+        confirmButtonText: this.$t('sweetAlert.yes_close'),
+      }).then(result => {
         if (result.value) {
-          this.redirectToTheMainPage();
+          this.redirectToTheMainPage()
         }
-      });
+      })
     },
 
     ClientSet(event) {
-      this.client = event;
+      this.client = event
     },
 
     // timeElapsedHandler() {
@@ -428,17 +423,17 @@ export default {
     //   }
     // },
     deepCloneFromApartments(obj) {
-      let temp;
-      if (obj === null || typeof obj !== "object") return obj;
-      if (obj instanceof Date) temp = new obj.constructor();
-      else temp = obj.constructor();
+      let temp
+      if (obj === null || typeof obj !== 'object') return obj
+      if (obj instanceof Date) temp = new obj.constructor()
+      else temp = obj.constructor()
 
-      for (let key in obj) {
+      for (const key in obj) {
         if (Object.prototype.hasOwnProperty.call(obj, key)) {
-          temp[key] = this.deepCloneFromApartments(obj[key]);
+          temp[key] = this.deepCloneFromApartments(obj[key])
         }
       }
-      return temp;
+      return temp
     },
     // setData() {
     //   //   this.order = this.deepCloneFromApartments(
@@ -460,49 +455,49 @@ export default {
 
     initialCalc() {
       // this.calc.prepay = this.getPrepay();
-      getTotal(this.apartments, this.contract);
-      getPrepay(this.apartments, this.contract);
-      getDiscount(this.apartments, this.contract);
-      getPrice(this.apartments, this.contract);
-      getDebt(this.apartments, this.contract);
-      getPricePerM2(this.apartments, this.contract);
-      editedCreditMonths(this.apartments, this.contract);
-      this.contract.edited = this.contract.edited + 1;
+      getTotal(this.apartments, this.contract)
+      getPrepay(this.apartments, this.contract)
+      getDiscount(this.apartments, this.contract)
+      getPrice(this.apartments, this.contract)
+      getDebt(this.apartments, this.contract)
+      getPricePerM2(this.apartments, this.contract)
+      editedCreditMonths(this.apartments, this.contract)
+      this.contract.edited = this.contract.edited + 1
       // this.contract.prepay_amount = getPrepay(this.apartments, this.contract)
     },
 
     MonthlyEdit() {
-      this.edited.monthly = true;
+      this.edited.monthly = true
     },
 
     datePrettier(value) {
-      if (typeof value === "string") return value;
-      return formatDateWithDot(value);
+      if (typeof value === 'string') return value
+      return formatDateWithDot(value)
     },
 
     async sendForm() {
-      if (this.contract.discount && this.contract.discount.id === null) return;
+      if (this.contract.discount && this.contract.discount.id === null) return
       this.$swal({
-        title: this.$t("sweetAlert.title"),
-        text: this.$t("sweetAlert.text_agree"),
-        icon: "warning",
+        title: this.$t('sweetAlert.title'),
+        text: this.$t('sweetAlert.text_agree'),
+        icon: 'warning',
         showCancelButton: true,
-        cancelButtonText: this.$t("cancel"),
-        confirmButtonText: this.$t("sweetAlert.yes_agree"),
-      }).then((result) => {
+        cancelButtonText: this.$t('cancel'),
+        confirmButtonText: this.$t('sweetAlert.yes_agree'),
+      }).then(result => {
         if (result.value) {
-          this.buttons.loading = true;
-          const context = {};
-          context.discount_id = this.contract.discount.id;
+          this.buttons.loading = true
+          const context = {}
+          context.discount_id = this.contract.discount.id
 
           if (this.edited.contract_number) {
-            context.type_client = this.client.type_client;
+            context.type_client = this.client.type_client
           }
 
-          context.client_id = this.client?.id;
+          context.client_id = this.client?.id
           if (this.monthlyPermission) {
             if (this.edited.monthly) {
-              context.monthly = [];
+              context.monthly = []
               for (
                 let monthly = 0;
                 monthly < this.contract.monthly_payments.length;
@@ -511,119 +506,117 @@ export default {
                 // let date = moment(this.contract.monthly_payments[monthly].month).format(
                 //     "YYYY-MM-DD"
                 // )
-                let date = "";
+                let date = ''
                 if (
-                  typeof this.contract.credit_months[monthly].month === "string"
+                  typeof this.contract.credit_months[monthly].month === 'string'
                 ) {
-                  date = this.contract.credit_months[monthly].month;
+                  date = this.contract.credit_months[monthly].month
                 } else {
                   date = this.datePrettier(
-                    this.contract.credit_months[monthly].month
-                  );
+                    this.contract.credit_months[monthly].month,
+                  )
                 }
                 const payload = {
                   edited: !!this.contract.monthly_payments[monthly].edited,
                   amount: this.contract.monthly_payments[monthly].amount,
-                  date: date,
-                };
-                context.monthly.push(payload);
+                  date,
+                }
+                context.monthly.push(payload)
               }
             }
           }
 
           if (this.contract.initial_payments.length > 1) {
-            context.initial_payments = [];
-            const p = "initial_payments";
+            context.initial_payments = []
+            const p = 'initial_payments'
             for (
               let index = 0;
               index < this.contract.initial_payments.length;
               index++
             ) {
-              const { edited, amount, date } = this.contract[p][index];
+              const { edited, amount, date } = this.contract[p][index]
               context.initial_payments.push({
                 edited,
                 amount,
                 date,
-              });
+              })
             }
           } else {
             // if (this.contract.prepay_edited) {
-            context.initial_payments = [];
-            context.prepay_edited = 1;
+            context.initial_payments = []
+            context.prepay_edited = 1
             context.initial_payments.push({
               edited: 1,
               amount: this.contract.prepay_amount,
               date: this.contract.first_payment_date,
-            });
+            })
             // }
           }
 
-          context.comment = this.contract.comment;
-          context.months = parseInt(this.contract.month);
-          context.first_payment_date = this.order.first_payment_date;
-          context.discount_amount = this.contract.discount_amount;
+          context.comment = this.contract.comment
+          context.months = parseInt(this.contract.month)
+          context.first_payment_date = this.order.first_payment_date
+          context.discount_amount = this.contract.discount_amount
 
-          if (this.contract.discount?.id === "other") {
-            context.apartments = [];
+          if (this.contract.discount?.id === 'other') {
+            context.apartments = []
             for (let index = 0; index < this.apartments.length; index++) {
               context.apartments.push({
                 id: this.apartments[index].id,
                 price: this.apartments[index].price_calc,
-              });
+              })
             }
           }
 
-          context.contract_date = this.order.contract_date;
+          context.contract_date = this.order.contract_date
 
           if (this.contract.payment_date) {
-            context.payment_date = this.contract.payment_date;
+            context.payment_date = this.contract.payment_date
           }
 
           if (
-            this.edited.contract_number &&
-            this.contract.number !== this.order.contract_number
+            this.edited.contract_number
+            && this.contract.number !== this.order.contract_number
           ) {
-            context.contract_number = this.contract.number;
+            context.contract_number = this.contract.number
           }
           api.contractV2
             .contractOrderUpdate(this.order.id, context)
-            .then((response) => {
-              this.toasted(response.data.message, "success");
-              this.$bvModal.hide("modal-agree");
-              this.contract = response.data;
-              this.$bvModal.show("modal-success-agree");
+            .then(response => {
+              this.toasted(response.data.message, 'success')
+              this.$bvModal.hide('modal-agree')
+              this.contract = response.data
+              this.$bvModal.show('modal-success-agree')
             })
-            .catch((error) => {
+            .catch(error => {
               if (!error.response) {
-                this.toasted("Error: Network Error", "error");
+                this.toasted('Error: Network Error', 'error')
+              } else if (error.response.status === 403) {
+                this.toasted(error.response.data.message, 'error')
+              } else if (error.response.status === 401) {
+                this.toasted(error.response.data, 'error')
+              } else if (error.response.status === 500) {
+                this.toasted(error.response.data.message, 'error')
+              } else if (error.response.status === 422) {
+                this.error = true
+                this.geteErrors = error.response.data
               } else {
-                if (error.response.status === 403) {
-                  this.toasted(error.response.data.message, "error");
-                } else if (error.response.status === 401) {
-                  this.toasted(error.response.data, "error");
-                } else if (error.response.status === 500) {
-                  this.toasted(error.response.data.message, "error");
-                } else if (error.response.status === 422) {
-                  this.error = true;
-                  this.geteErrors = error.response.data;
-                } else {
-                  this.toasted(error.response.data.message, "error");
-                }
+                this.toasted(error.response.data.message, 'error')
               }
             })
             .finally(() => {
-              this.buttons.loading = false;
-            });
+              this.buttons.loading = false
+            })
         }
-      });
+      })
     },
     changeDiscount() {
-      this.initialCalc();
+      this.initialCalc()
       // this.$emit('changeApartments', this.apartments)
-      editedCreditMonths(this.apartments, this.contract);
+      editedCreditMonths(this.apartments, this.contract)
     },
   },
-};
+}
 </script>
 
 <template>
@@ -640,8 +633,14 @@ export default {
       </base-bread-crumb>
 
       <!-- Step 1 -->
-      <div class="new-object p-3" v-if="contract.step === 1">
-        <validation-observer ref="observer" v-slot="{ handleSubmit }">
+      <div
+        v-if="contract.step === 1"
+        class="new-object p-3"
+      >
+        <validation-observer
+          ref="observer"
+          v-slot="{ handleSubmit }"
+        >
           <form
             ref="form"
             @submit.prevent="
@@ -652,20 +651,20 @@ export default {
             <div class="row">
               <!-- Изменить дата договора -->
               <div
-                class="col-12 mb-2"
                 v-if="
                   (getMe.role && getMe.role.id === 1) ||
-                  (getPermission.contracts && getPermission.contracts.date)
+                    (getPermission.contracts && getPermission.contracts.date)
                 "
+                class="col-12 mb-2"
               >
                 <div class="row">
                   <div class="col-md-4">
                     <div class="row">
                       <div class="col-10 pr-0">
                         <validation-provider
+                          v-slot="validationContext"
                           :name="`'${$t('apartments.agree.number')}'`"
                           :rules="{ required: true }"
-                          v-slot="validationContext"
                           class="mb-3"
                         >
                           <b-form-group
@@ -674,21 +673,21 @@ export default {
                           >
                             <b-form-input
                               id="number"
+                              v-model="order.contract_number"
                               name="number"
                               type="text"
                               :placeholder="
                                 $t('apartments.agree.placeholder.number')
                               "
-                              v-model="order.contract_number"
                               :state="getValidationState(validationContext)"
                               aria-describedby="number-feedback"
                               disabled
                               @focus="userFocused"
-                            ></b-form-input>
+                            />
 
                             <b-form-invalid-feedback
-                              class="error__provider"
                               id="number-feedback"
+                              class="error__provider"
                             >
                               {{ validationContext.errors[0] }}
                             </b-form-invalid-feedback>
@@ -729,9 +728,9 @@ export default {
 
                   <div class="col-md-4">
                     <validation-provider
+                      v-slot="validationContext"
                       :name="`'${$t('apartments.agree.date_contract')}'`"
                       :rules="{ required: false }"
-                      v-slot="validationContext"
                       class="mb-3"
                     >
                       <b-form-group
@@ -740,17 +739,17 @@ export default {
                       >
                         <b-form-input
                           id="date"
+                          v-model="order.contract_date"
                           name="date"
                           type="date"
                           :placeholder="
                             $t('apartments.agree.placeholder.date_contract')
                           "
                           :disabled="order.status === 'sold'"
-                          v-model="order.contract_date"
                           :state="getValidationState(validationContext)"
                           aria-describedby="date-feedback"
                           @focus="userFocused"
-                        ></b-form-input>
+                        />
 
                         <b-form-invalid-feedback
                           id="date-feedback"
@@ -763,7 +762,7 @@ export default {
                   </div>
                 </div>
 
-                <hr />
+                <hr>
               </div>
               <!-- Изменить дата договора END -->
 
@@ -773,15 +772,15 @@ export default {
                   :client="client"
                   @clientSet="ClientSet"
                   @focus="userFocused"
-                ></ClientInputConfirm>
+                />
               </div>
 
               <!-- apartments.agree.first_payment_date -->
               <div class="col-md-4">
                 <validation-provider
+                  v-slot="validationContext"
                   :name="`${$t('apartments.agree.first_payment_date')}`"
                   :rules="{ required: false }"
-                  v-slot="validationContext"
                   class="mb-3"
                 >
                   <b-form-group
@@ -790,14 +789,14 @@ export default {
                   >
                     <b-form-input
                       id="first_payment_date"
+                      v-model="order.first_payment_date"
                       name="first_payment_date"
                       type="date"
                       :disabled="order.status === 'sold'"
-                      v-model="order.first_payment_date"
                       :state="getValidationState(validationContext)"
                       aria-describedby="first_payment_date-feedback"
                       @focus="userFocused"
-                    ></b-form-input>
+                    />
 
                     <b-form-invalid-feedback
                       id="first_payment_date-feedback"
@@ -812,17 +811,20 @@ export default {
               <!-- apartments.agree.payment_date -->
               <div class="col-md-4">
                 <div class="mb-3">
-                  <label class="d-block" for="payment_date">
+                  <label
+                    class="d-block"
+                    for="payment_date"
+                  >
                     {{ $t("apartments.agree.payment_date") }}
                   </label>
                   <input
-                    v-model="order.payment_date"
                     id="payment_date"
+                    v-model="order.payment_date"
                     :disabled="order.status === 'sold'"
                     type="date"
                     class="form-control"
                     @focus="userFocused"
-                  />
+                  >
                 </div>
               </div>
             </div>
@@ -845,7 +847,7 @@ export default {
                 class="btn btn-success"
               >
                 Продолжить
-                <i class="fa fa-file-contract"></i>
+                <i class="fa fa-file-contract" />
               </button>
               <button
                 v-if="buttons.loading && buttons.confirm"
@@ -853,7 +855,7 @@ export default {
                 class="btn btn-success"
               >
                 Продолжить
-                <i class="fas fa-spinner fa-spin"></i>
+                <i class="fas fa-spinner fa-spin" />
               </button>
             </div>
           </form>
@@ -865,7 +867,10 @@ export default {
         v-if="order.status !== 'sold' && contract.step === 2"
         class="container-fluid px-0 mx-0"
       >
-        <form ref="form" @submit.stop.prevent="sendForm">
+        <form
+          ref="form"
+          @submit.stop.prevent="sendForm"
+        >
           <div class="row">
             <!-- Таблица ежемесячных платежей -->
             <div class="col-xl-8">
@@ -874,11 +879,14 @@ export default {
                 :contract="contract"
                 :apartments="apartments"
                 @monthly-edit="MonthlyEdit"
-              ></MonthlyPayments>
+              />
             </div>
 
             <div class="col-xl-4 h-auto">
-              <div class="sticky-top" style="z-index: 1">
+              <div
+                class="sticky-top"
+                style="z-index: 1"
+              >
                 <ClientInformation :client="client" />
                 <ApartmentsList
                   :apartments="apartments"
@@ -920,10 +928,10 @@ export default {
       <template #overlay>
         <div class="d-flex justify-content-center w-100">
           <div class="lds-ellipsis">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
+            <div />
+            <div />
+            <div />
+            <div />
           </div>
         </div>
       </template>

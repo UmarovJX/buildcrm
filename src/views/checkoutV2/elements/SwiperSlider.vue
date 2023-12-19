@@ -1,32 +1,32 @@
 <script>
-import { makeProp as p } from "@/util/props";
-import { PROP_TYPE_OBJECT, PROP_TYPE_ARRAY } from "@/constants/props";
-import { Fancybox } from "@fancyapps/ui";
-import { directive as swiperDirective } from "vue-awesome-swiper";
-import "swiper/css/swiper.css";
+import { makeProp as p } from '@/util/props'
+import { PROP_TYPE_OBJECT, PROP_TYPE_ARRAY } from '@/constants/props'
+import { Fancybox } from '@fancyapps/ui'
+import { directive as swiperDirective } from 'vue-awesome-swiper'
+import 'swiper/css/swiper.css'
 
-import { XIcon } from "@/components/ui-components/material-icons";
+import { XIcon } from '@/components/ui-components/material-icons'
 
 const swiperDefaultOption = {
   slidesPerView: 1,
   spaceBetween: 0,
-  direction: "horizontal",
+  direction: 'horizontal',
   pagination: {
-    el: ".swiper-pagination",
-    type: "bullets",
+    el: '.swiper-pagination',
+    type: 'bullets',
     clickable: true,
   },
   paginationClickable: true,
   draggable: true,
   loop: false,
   navigation: {
-    nextEl: ".swiper-button-next",
-    prevEl: ".swiper-button-prev",
+    nextEl: '.swiper-button-next',
+    prevEl: '.swiper-button-prev',
   },
-};
+}
 
 export default {
-  name: "SwiperSlider",
+  name: 'SwiperSlider',
   components: {
     XIcon,
   },
@@ -38,18 +38,26 @@ export default {
     swiper: swiperDirective,
   },
   mounted() {
-    Fancybox.bind("[data-fancybox]");
+    Fancybox.bind('[data-fancybox]')
   },
-};
+}
 </script>
 
 <template>
   <!--   IMAGE SLIDER     -->
   <div class="slider-content">
-    <div ref="swiper" class="swiper swiper-container" v-swiper="swiperOption">
+    <div
+      ref="swiper"
+      v-swiper="swiperOption"
+      class="swiper swiper-container"
+    >
       <!--     MAIN CONTENT OF SLIDE       -->
       <div class="swiper-wrapper">
-        <div v-for="(item, index) in items" :key="index" class="swiper-slide">
+        <div
+          v-for="(item, index) in items"
+          :key="index"
+          class="swiper-slide"
+        >
           <div class="d-flex justify-content-center align-items-center">
             <img
               v-if="item.image"
@@ -57,25 +65,28 @@ export default {
               :data-fancybox="item.image"
               class="swiper-image"
               alt="slider image"
-            />
+            >
             <img
               v-else
               :src="require('@/assets/img/no-image.jpg')"
               alt="slider default image"
               class="swiper-image"
-            />
+            >
           </div>
         </div>
       </div>
       <!--     DOTS PAGINATION       -->
-      <div class="swiper-pagination"></div>
+      <div class="swiper-pagination" />
 
       <!--     BUTTON PREVIOUS       -->
       <div
         slot="button-prev"
         class="swiper-button-prev swiper-button d-flex justify-content-center align-items-center"
       >
-        <x-icon name="chevron_left" class="gray-600" />
+        <x-icon
+          name="chevron_left"
+          class="gray-600"
+        />
       </div>
 
       <!--     BUTTON NEXT       -->
@@ -83,7 +94,10 @@ export default {
         slot="button-next"
         class="swiper-button-next swiper-button d-flex justify-content-center align-items-center"
       >
-        <x-icon name="chevron_right" class="gray-600" />
+        <x-icon
+          name="chevron_right"
+          class="gray-600"
+        />
       </div>
     </div>
   </div>
@@ -123,7 +137,6 @@ export default {
         width: 100%
         max-height: 19rem
         object-fit: contain
-
 
   .swiper-pagination
     margin-top: 3rem

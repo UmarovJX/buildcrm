@@ -1,9 +1,10 @@
 <script>
-import "vue2-datepicker/index.css";
-import DatePicker from "vue2-datepicker";
-import DocHeader from "@/views/documentation/DocHeader";
+import 'vue2-datepicker/index.css'
+import DatePicker from 'vue2-datepicker'
+import DocHeader from '@/views/documentation/DocHeader'
+
 export default {
-  name: "Experiment",
+  name: 'Experiment',
   components: {
     DocHeader,
     DatePicker,
@@ -14,7 +15,7 @@ export default {
       default: () => true,
     },
   },
-};
+}
 </script>
 
 <template>
@@ -25,7 +26,7 @@ export default {
         class="date-picker"
         :range="false"
         :open="true"
-      ></date-picker>
+      />
     </div>
   </main>
 </template>

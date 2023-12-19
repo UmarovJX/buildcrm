@@ -1,24 +1,24 @@
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters } from 'vuex'
 
 export default {
-  name: "DateInterface",
+  name: 'DateInterface',
   data() {
     return {
       form: {
-        name_ru: "",
-        name_uz: "",
-        start_date: "",
-        end_date: "",
-        start_time: "00:00:00",
-        end_time: "00:00:00",
+        name_ru: '',
+        name_uz: '',
+        start_date: '',
+        end_date: '',
+        start_time: '00:00:00',
+        end_time: '00:00:00',
       },
       timePicker: {
         start: {
-          labelNoTimeSelected: "",
+          labelNoTimeSelected: '',
         },
         end: {
-          labelNoTimeSelected: "",
+          labelNoTimeSelected: '',
         },
       },
       error: {
@@ -28,115 +28,109 @@ export default {
             "Aksiyaning tugallanish kuni boshlanish kunidan katta bo'lishi kerak",
         },
       },
-    };
+    }
   },
   computed: {
-    ...mapGetters(["getEditHistoryContext"]),
+    ...mapGetters(['getEditHistoryContext']),
     formNameRuTextLabel() {
-      return this.$t("promo.modal_input_text_label") + " (Рус) ";
+      return `${this.$t('promo.modal_input_text_label')} (Рус) `
     },
     formNameUzTextLabel() {
-      return this.$t("promo.modal_input_text_label") + " (Uzb) ";
+      return `${this.$t('promo.modal_input_text_label')} (Uzb) `
     },
     startOfDate() {
-      return this.$t("promo.date_of_start_title");
+      return this.$t('promo.date_of_start_title')
     },
     endOfDate() {
-      return this.$t("promo.date_of_end_title");
+      return this.$t('promo.date_of_end_title')
     },
   },
   watch: {
-    "form.start_date"() {
-      this.compareMileStone();
+    'form.start_date': function () {
+      this.compareMileStone()
     },
-    "form.end_date"() {
-      this.compareMileStone();
+    'form.end_date': function () {
+      this.compareMileStone()
     },
   },
   created() {
-    this.setUpHistoryContext();
+    this.setUpHistoryContext()
   },
   methods: {
     compareMileStone() {
-      const dayInMilliseconds = 24 * 60 * 60 * 1000;
-      const { start_date, end_date } = this.form;
-      if (start_date !== "" && end_date !== "") {
-        const startDateInTime = new Date(start_date).getTime();
-        const endDateInTime = new Date(end_date).getTime();
-        const distinct = endDateInTime - startDateInTime;
+      const dayInMilliseconds = 24 * 60 * 60 * 1000
+      const { start_date, end_date } = this.form
+      if (start_date !== '' && end_date !== '') {
+        const startDateInTime = new Date(start_date).getTime()
+        const endDateInTime = new Date(end_date).getTime()
+        const distinct = endDateInTime - startDateInTime
         if (distinct >= dayInMilliseconds) {
-          this.error.smallTime.show = false;
-          return true;
-        } else {
-          this.error.smallTime.show = true;
-          return false;
+          this.error.smallTime.show = false
+          return true
         }
+        this.error.smallTime.show = true
+        return false
       }
 
-      return true;
+      return true
     },
     setUpHistoryContext() {
-      const history = Object.keys(this.getEditHistoryContext).length;
+      const history = Object.keys(this.getEditHistoryContext).length
       if (history) {
-        this.setHistoryName();
-        this.setStartDate();
-        this.setStartedTime();
-        this.setEndDate();
-        this.setEndTime();
+        this.setHistoryName()
+        this.setStartDate()
+        this.setStartedTime()
+        this.setEndDate()
+        this.setEndTime()
       }
     },
     setHistoryName() {
-      const { name } = this.getEditHistoryContext;
-      this.form.name_ru = name.ru;
-      this.form.name_uz = name.uz;
+      const { name } = this.getEditHistoryContext
+      this.form.name_ru = name.ru
+      this.form.name_uz = name.uz
     },
     setStartDate() {
-      const { start_date } = this.getEditHistoryContext;
-      const date = new Date(start_date);
-      const year = date.getFullYear();
-      const baseMonth = date.getMonth() + 1;
-      const month = baseMonth < 10 ? `0${baseMonth}` : baseMonth;
-      const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
-      this.form.start_date = `${year}-${month}-${day}`;
+      const { start_date } = this.getEditHistoryContext
+      const date = new Date(start_date)
+      const year = date.getFullYear()
+      const baseMonth = date.getMonth() + 1
+      const month = baseMonth < 10 ? `0${baseMonth}` : baseMonth
+      const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate()
+      this.form.start_date = `${year}-${month}-${day}`
     },
     setStartedTime() {
-      const { start_date } = this.getEditHistoryContext;
-      const date = new Date(start_date);
-      const seconds =
-        date.getSeconds() < 10 ? `0${date.getSeconds()}` : date.getSeconds();
-      const minutes =
-        date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes();
-      const hours =
-        date.getHours() < 10 ? `0${date.getHours()}` : date.getHours();
-      this.form.start_time = `${hours}:${minutes}:${seconds}`;
+      const { start_date } = this.getEditHistoryContext
+      const date = new Date(start_date)
+      const seconds = date.getSeconds() < 10 ? `0${date.getSeconds()}` : date.getSeconds()
+      const minutes = date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()
+      const hours = date.getHours() < 10 ? `0${date.getHours()}` : date.getHours()
+      this.form.start_time = `${hours}:${minutes}:${seconds}`
     },
     setEndDate() {
-      const { end_date } = this.getEditHistoryContext;
-      const date = new Date(end_date);
-      const year = date.getFullYear();
-      const baseMonth = date.getMonth() + 1;
-      const month = baseMonth < 10 ? `0${baseMonth}` : baseMonth;
-      const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
-      this.form.end_date = `${year}-${month}-${day}`;
+      const { end_date } = this.getEditHistoryContext
+      const date = new Date(end_date)
+      const year = date.getFullYear()
+      const baseMonth = date.getMonth() + 1
+      const month = baseMonth < 10 ? `0${baseMonth}` : baseMonth
+      const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate()
+      this.form.end_date = `${year}-${month}-${day}`
     },
     setEndTime() {
-      const { end_date } = this.getEditHistoryContext;
-      const date = new Date(end_date);
-      const seconds =
-        date.getSeconds() < 10 ? `0${date.getSeconds()}` : date.getSeconds();
-      const minutes =
-        date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes();
-      const hours =
-        date.getHours() < 10 ? `0${date.getHours()}` : date.getHours();
-      this.form.end_time = `${hours}:${minutes}:${seconds}`;
+      const { end_date } = this.getEditHistoryContext
+      const date = new Date(end_date)
+      const seconds = date.getSeconds() < 10 ? `0${date.getSeconds()}` : date.getSeconds()
+      const minutes = date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()
+      const hours = date.getHours() < 10 ? `0${date.getHours()}` : date.getHours()
+      this.form.end_time = `${hours}:${minutes}:${seconds}`
     },
     async getValidDates() {
-      const valid = await this.$refs["promo-observer"].validate();
+      const valid = await this.$refs['promo-observer'].validate()
       if (valid) {
-        const { name_ru, name_uz, start_date, end_date, start_time, end_time } =
-          this.form;
-        const start = start_date + " " + start_time;
-        const end = end_date + " " + end_time;
+        const {
+          name_ru, name_uz, start_date, end_date, start_time, end_time,
+        } = this.form
+        const start = `${start_date} ${start_time}`
+        const end = `${end_date} ${end_time}`
 
         const form = {
           start_date: start,
@@ -145,20 +139,20 @@ export default {
             uz: name_uz,
             ru: name_ru,
           },
-        };
+        }
 
         return {
           form,
           valid,
-        };
+        }
       }
 
       return {
         valid: false,
-      };
+      }
     },
   },
-};
+}
 </script>
 
 <template>
@@ -168,9 +162,9 @@ export default {
         <div class="col-12 col-lg-6 pr-2">
           <!-- PROMO NAME (RU) -->
           <ValidationProvider
+            v-slot="{ errors }"
             :name="formNameRuTextLabel"
             rules="required"
-            v-slot="{ errors }"
           >
             <b-form-group
               :label="formNameRuTextLabel"
@@ -180,10 +174,13 @@ export default {
               <b-form-input
                 id="input-promo-name-ru"
                 v-model="form.name_ru"
-              ></b-form-input>
+              />
             </b-form-group>
 
-            <span class="error__provider" v-if="errors[0]">
+            <span
+              v-if="errors[0]"
+              class="error__provider"
+            >
               {{ errors[0] }}
             </span>
           </ValidationProvider>
@@ -192,9 +189,9 @@ export default {
         <div class="col-12 col-lg-6">
           <!--  PROMO START DATE  -->
           <ValidationProvider
+            v-slot="{ errors }"
             :name="startOfDate"
             rules="required"
-            v-slot="{ errors }"
           >
             <b-form-group
               class="promo__date"
@@ -210,29 +207,31 @@ export default {
                   <span>
                     {{ $t("promo.date_of_start_title") }}
                   </span>
-                  <i class="fas fa-info-circle"></i>
+                  <i class="fas fa-info-circle" />
                 </button>
               </template>
 
               <div class="time__select">
                 <b-form-input
-                  type="date"
                   id="input-promo-name-uz"
                   v-model="form.start_date"
+                  type="date"
                   class="input__date"
-                ></b-form-input>
+                />
 
                 <b-form-timepicker
                   v-model="form.start_time"
                   v-bind="timePicker.start"
                   locale="uz"
                   :class="'form__timepicker'"
-                >
-                </b-form-timepicker>
+                />
               </div>
             </b-form-group>
 
-            <span class="error__provider" v-if="errors[0]">
+            <span
+              v-if="errors[0]"
+              class="error__provider"
+            >
               {{ errors[0] }}
             </span>
           </ValidationProvider>
@@ -243,9 +242,9 @@ export default {
         <div class="col-12 col-lg-6 pr-2">
           <!-- PROMO NAME (UZ) -->
           <ValidationProvider
+            v-slot="{ errors }"
             :name="formNameUzTextLabel"
             rules="required"
-            v-slot="{ errors }"
           >
             <b-form-group
               :label="formNameUzTextLabel"
@@ -255,10 +254,13 @@ export default {
               <b-form-input
                 id="input-promo-name-uz"
                 v-model="form.name_uz"
-              ></b-form-input>
+              />
             </b-form-group>
 
-            <span class="error__provider" v-if="errors[0]">
+            <span
+              v-if="errors[0]"
+              class="error__provider"
+            >
               {{ errors[0] }}
             </span>
           </ValidationProvider>
@@ -267,9 +269,9 @@ export default {
         <div class="col-12 col-lg-6">
           <!--  PROMO END DATE  -->
           <ValidationProvider
+            v-slot="{ errors }"
             :name="endOfDate"
             rules="required"
-            v-slot="{ errors }"
           >
             <b-form-group
               class="promo__date"
@@ -285,31 +287,36 @@ export default {
                   <span>
                     {{ $t("promo.date_of_end_title") }}
                   </span>
-                  <i class="fas fa-info-circle"></i>
+                  <i class="fas fa-info-circle" />
                 </button>
               </template>
 
               <div class="time__select">
                 <b-form-input
-                  type="date"
                   id="input-promo-name-uz"
                   v-model="form.end_date"
+                  type="date"
                   class="input__date"
-                ></b-form-input>
+                />
 
                 <b-form-timepicker
                   v-model="form.end_time"
                   v-bind="timePicker.end"
                   locale="uz"
                   :class="'form__timepicker'"
-                >
-                </b-form-timepicker>
+                />
               </div>
             </b-form-group>
-            <span class="error__provider" v-if="errors[0]">
+            <span
+              v-if="errors[0]"
+              class="error__provider"
+            >
               {{ errors[0] }}
             </span>
-            <span class="error__provider" v-else-if="error.smallTime.show">
+            <span
+              v-else-if="error.smallTime.show"
+              class="error__provider"
+            >
               {{ error.smallTime.message }}
             </span>
           </ValidationProvider>

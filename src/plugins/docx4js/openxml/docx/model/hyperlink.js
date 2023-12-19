@@ -1,14 +1,15 @@
-export default class hyperlink extends require("../model") {
+export default class hyperlink extends require('../model') {
   static get type() {
-    return "hyperlink";
+    return 'hyperlink'
   }
 
   getLink(a) {
-    return (a = this._attr("r:id"))
+    return (a = this._attr('r:id'))
       ? this._getLocalLink(a)
-      : "#" + this._attr("w:anchor");
+      : `#${this._attr('w:anchor')}`
   }
+
   _getLocalLink(id) {
-    return this.wDoc.partMain.getRel(id);
+    return this.wDoc.partMain.getRel(id)
   }
 }

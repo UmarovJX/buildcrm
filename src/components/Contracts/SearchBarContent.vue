@@ -1,36 +1,36 @@
 <script>
-import BaseSearchInput from "@/components/Reusable/BaseSearchInput";
-import BaseFilterIcon from "@/components/icons/BaseFilterIcon";
-import BaseButton from "@/components/Reusable/BaseButton";
-import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
-import BaseNumericInput from "@/components/Reusable/BaseNumericInput";
-import BaseFormTagInput from "@/components/Reusable/BaseFormTagInput";
-import BaseCheckbox from "@/components/Reusable/BaseCheckbox2";
+import BaseSearchInput from '@/components/Reusable/BaseSearchInput'
+import BaseFilterIcon from '@/components/icons/BaseFilterIcon'
+import BaseButton from '@/components/Reusable/BaseButton'
+import BaseArrowLeftIcon from '@/components/icons/BaseArrowLeftIcon'
+import BaseNumericInput from '@/components/Reusable/BaseNumericInput'
+import BaseFormTagInput from '@/components/Reusable/BaseFormTagInput'
+import BaseCheckbox from '@/components/Reusable/BaseCheckbox2'
 // import BaseMultiselect from "@/components/Reusable/BaseMultiselect";
-import { XFormSelect } from "@/components/ui-components/form-select";
-import "vue2-datepicker/index.css";
-import BaseDatePicker from "@/components/Reusable/BaseDatePicker";
+import { XFormSelect } from '@/components/ui-components/form-select'
+import 'vue2-datepicker/index.css'
+import BaseDatePicker from '@/components/Reusable/BaseDatePicker'
 import {
   debounce,
   isPrimitiveValue,
   sortInFirstRelationship,
   sortObjectValues,
-} from "@/util/reusable";
-import api from "@/services/api";
+} from '@/util/reusable'
+import api from '@/services/api'
 import {
   isArray,
   isNUNEZ,
   isString,
   isUndefinedOrNullOrEmpty,
-} from "@/util/inspect";
-import { hasOwnProperty } from "@/util/object";
-import BaseLoading from "@/components/Reusable/BaseLoading.vue";
-import ContractsPermission from "@/permission/contract";
+} from '@/util/inspect'
+import { hasOwnProperty } from '@/util/object'
+import BaseLoading from '@/components/Reusable/BaseLoading.vue'
+import ContractsPermission from '@/permission/contract'
 
 export default {
-  name: "SearchBarContent",
+  name: 'SearchBarContent',
   components: {
-    XFormSelect: XFormSelect,
+    XFormSelect,
     BaseCheckbox,
     BaseFilterIcon,
     BaseArrowLeftIcon,
@@ -42,7 +42,7 @@ export default {
     BaseButton,
     BaseSearchInput,
   },
-  emits: ["trigger-input", "search-by-filter", "replace-router"],
+  emits: ['trigger-input', 'search-by-filter', 'replace-router'],
   data() {
     return {
       isFetching: false,
@@ -77,12 +77,12 @@ export default {
       clientTypeOptions: [],
       currencyOptions: [
         {
-          value: this.$t("uzs"),
-          text: this.$t("uzs"),
+          value: this.$t('uzs'),
+          text: this.$t('uzs'),
         },
         {
-          value: this.$t("_usd"),
-          text: this.$t("_usd"),
+          value: this.$t('_usd'),
+          text: this.$t('_usd'),
         },
       ],
       searchInput: this.$route.query.search,
@@ -91,210 +91,207 @@ export default {
       selectingObject: null,
       contractDate: null,
       contractPrice: null,
-      currency: this.$t("uzs"),
+      currency: this.$t('uzs'),
       filterPermission: ContractsPermission.getContractsFilterPermission(),
-    };
+    }
   },
   computed: {
     query() {
-      return Object.assign({}, this.$route.query);
+      return { ...this.$route.query }
     },
     blocksOptions() {
-      let blocksOptionList = [];
-      this.objectsFields.forEach((fields) => {
-        fields.blocks.forEach((block) => {
+      const blocksOptionList = []
+      this.objectsFields.forEach(fields => {
+        fields.blocks.forEach(block => {
           blocksOptionList.push({
             ...block,
             name: `${fields.name} - ${block.name}`,
-          });
-        });
-      });
+          })
+        })
+      })
 
-      return blocksOptionList;
+      return blocksOptionList
     },
     availableFloors() {
-      const floorsOption = [];
-      this.objectsFields.forEach((objectFields) => {
-        objectFields.floors.forEach((floor) => {
+      const floorsOption = []
+      this.objectsFields.forEach(objectFields => {
+        objectFields.floors.forEach(floor => {
           const idx = floorsOption.findIndex(
-            (floorOption) => floorOption.value === floor
-          );
+            floorOption => floorOption.value === floor,
+          )
           if (idx === -1) {
             floorsOption.push({
               text: floor,
               value: floor,
-            });
+            })
           }
-        });
-      });
+        })
+      })
 
-      return floorsOption.sort((a, b) => a.value - b.value);
+      return floorsOption.sort((a, b) => a.value - b.value)
     },
   },
   watch: {
     searchInput: debounce(function (newValue) {
-      this.debounceInput = newValue;
+      this.debounceInput = newValue
     }, 350),
     debounceInput() {
-      this.toggleClearIcon();
-      this.triggerInputEvent();
+      this.toggleClearIcon()
+      this.triggerInputEvent()
     },
-    "filter.object_id"(newObjectId) {
+    'filter.object_id': function (newObjectId) {
       if (newObjectId?.length) {
-        this.fetchObjectFilterFields();
+        this.fetchObjectFilterFields()
       }
     },
   },
   mounted() {
     if (this.searchInput?.length) {
-      this.toggleClearIcon();
+      this.toggleClearIcon()
     }
 
-    this.filterModalOpened();
-    this.fetchObjectFilterFields();
-    this.fetchObjectsOption();
+    this.filterModalOpened()
+    this.fetchObjectFilterFields()
+    this.fetchObjectsOption()
   },
   methods: {
     startFetching() {
-      this.isFetching = true;
+      this.isFetching = true
     },
     finishFetching() {
-      this.isFetching = false;
+      this.isFetching = false
     },
     getInputValue(value) {
-      this.searchInput = value;
+      this.searchInput = value
     },
     async getObjectFields(objectCtx) {
-      const response = await api.objectsV2.fetchObjectFields(objectCtx.id);
+      const response = await api.objectsV2.fetchObjectFields(objectCtx.id)
       return {
         response,
         id: objectCtx.id,
         name: objectCtx.name,
-      };
+      }
     },
     async fetchObjectFilterFields() {
       try {
-        this.startFetching();
+        this.startFetching()
         const objectPromiseFields = this.filter.object_id
           .filter(({ id }) => {
             const idx = this.objectsFields.findIndex(
-              (objectFields) => objectFields.id === id
-            );
-            return idx === -1;
+              objectFields => objectFields.id === id,
+            )
+            return idx === -1
           })
-          .map((objectCtx) => {
-            return this.getObjectFields(objectCtx);
-          });
+          .map(objectCtx => this.getObjectFields(objectCtx))
 
-        const rspFields = await Promise.all(objectPromiseFields);
+        const rspFields = await Promise.all(objectPromiseFields)
         rspFields.forEach(({ id: objectId, name, response }) => {
           const hasInStack = this.objectsFields.findIndex(
-            (objField) => objField.id === objectId
-          );
+            objField => objField.id === objectId,
+          )
           if (hasInStack === -1) {
             this.objectsFields.push({
               id: objectId,
               name,
               ...response.data,
-            });
+            })
           }
-        });
+        })
       } finally {
-        this.finishFetching();
+        this.finishFetching()
       }
     },
     async fetchObjectsOption() {
       try {
-        this.startFetching();
+        this.startFetching()
         if (this.filterPermission) {
           await api.contractV2
             .fetchObjectsOption()
-            .then((response) => {
+            .then(response => {
               const {
                 objects,
-                "client-types": clientTypes,
+                'client-types': clientTypes,
                 date_types,
                 branches,
                 managers,
                 types,
                 statuses,
-              } = response.data;
-              this.typeOptions = types.map((el) => ({
+              } = response.data
+              this.typeOptions = types.map(el => ({
                 id: el.type,
                 name: el.name[this.$i18n.locale],
-              }));
-              this.objectOptions = objects;
-              this.statusOptions = statuses.map((el) => ({
+              }))
+              this.objectOptions = objects
+              this.statusOptions = statuses.map(el => ({
                 value: el.type,
                 name: el.name[this.$i18n.locale],
-              }));
+              }))
 
-              this.branchOption = branches;
-              this.managerOptions = managers.map((m) => {
-                let text = "";
+              this.branchOption = branches
+              this.managerOptions = managers.map(m => {
+                let text = ''
                 if (isNUNEZ(m.last_name)) {
-                  text += m.last_name;
+                  text += m.last_name
                 }
 
                 if (isNUNEZ(m.first_name)) {
-                  text += " " + m.first_name;
+                  text += ` ${m.first_name}`
                 }
 
                 if (isNUNEZ(m.second_name)) {
-                  text += " " + m.second_name;
+                  text += ` ${m.second_name}`
                 }
 
                 return {
                   id: m.id,
                   text: text.trim(),
-                };
-              });
-              for (let [, client] of Object.entries(clientTypes)) {
+                }
+              })
+              for (const [, client] of Object.entries(clientTypes)) {
                 this.clientTypeOptions.push({
                   value: client.id,
                   text: client.name,
-                });
+                })
               }
 
-              this.dateTypeOptions = date_types.map((item) => {
-                return {
-                  value: item.type,
-                  text: item.name[localStorage.locale],
-                };
-              });
+              this.dateTypeOptions = date_types.map(item => ({
+                value: item.type,
+                text: item.name[localStorage.locale],
+              }))
             })
-            .catch((error) => {
-              this.toastedWithErrorCode(error);
-            });
+            .catch(error => {
+              this.toastedWithErrorCode(error)
+            })
         }
       } finally {
-        this.finishFetching();
+        this.finishFetching()
       }
     },
     clearFilter() {
-      this.resetFilter();
-      const loopQuery = Object.assign({}, { page: 1, limit: this.query.limit });
+      this.resetFilter()
+      const loopQuery = { page: 1, limit: this.query.limit }
 
-      this.$emit("replace-router", loopQuery);
-      this.$refs["base-form-tag-input"].clear();
+      this.$emit('replace-router', loopQuery)
+      this.$refs['base-form-tag-input'].clear()
 
-      this.hideFilterModal();
+      this.hideFilterModal()
     },
     searchByFilterField() {
       const object_id = this.filter.object_id
-        ? this.filter.object_id.map((obj) => obj.id)
-        : null;
-      const sortingQuery = Object.assign({}, this.query, {
+        ? this.filter.object_id.map(obj => obj.id)
+        : null
+      const sortingQuery = {
+        ...this.query,
         ...this.filter,
         object_id,
-      });
-      sortingQuery.page = 1;
-      console.log(sortingQuery);
-      this.$emit("search-by-filter", sortInFirstRelationship(sortingQuery));
-      this.$refs["filter-modal"].hide();
+      }
+      sortingQuery.page = 1
+      console.log(sortingQuery)
+      this.$emit('search-by-filter', sortInFirstRelationship(sortingQuery))
+      this.$refs['filter-modal'].hide()
     },
     hideFilterModal() {
-      this.$refs["filter-modal"].hide();
+      this.$refs['filter-modal'].hide()
     },
     resetFilter() {
       this.filter = {
@@ -316,116 +313,113 @@ export default {
         created_by: [],
         initial_payment_date: [],
         monthly_payment_date: [],
-      };
+      }
     },
     async showFilterModal() {
-      this.filter.date = this.query.date || [];
-      this.filter.monthly_payment_date = this.query.monthly_payment_date || [];
-      this.filter.initial_payment_date = this.query.initial_payment_date || [];
-      this.$refs["filter-modal"].show();
+      this.filter.date = this.query.date || []
+      this.filter.monthly_payment_date = this.query.monthly_payment_date || []
+      this.filter.initial_payment_date = this.query.initial_payment_date || []
+      this.$refs['filter-modal'].show()
     },
     focusOnSearchInput() {
-      this.$refs["search-input"].focus();
+      this.$refs['search-input'].focus()
     },
     clearSearchInput() {
-      this.searchInput = "";
+      this.searchInput = ''
     },
     toggleClearIcon() {
-      this.showClearIcon = !!this.searchInput.length;
+      this.showClearIcon = !!this.searchInput.length
     },
     triggerInputEvent() {
-      const query = Object.assign({}, this.query);
-      const searchValue = this.debounceInput;
+      const query = { ...this.query }
+      const searchValue = this.debounceInput
       if (searchValue?.length) {
-        query.search = searchValue;
-        this.pushRouter(query);
+        query.search = searchValue
+        this.pushRouter(query)
       } else {
-        query.search = null;
-        this.pushRouter(query);
+        query.search = null
+        this.pushRouter(query)
       }
     },
     pushRouter(query) {
-      const sortQuery = sortObjectValues(query);
-      this.$router.push({ query: {} });
-      this.$router.push({ query: sortQuery });
+      const sortQuery = sortObjectValues(query)
+      this.$router.push({ query: {} })
+      this.$router.push({ query: sortQuery })
     },
     setApartments(apartments) {
-      this.filter.apartment_number = apartments;
+      this.filter.apartment_number = apartments
     },
     setContractNumbers(contractNumbers) {
-      this.filter.contract_number = contractNumbers;
+      this.filter.contract_number = contractNumbers
     },
     filterModalOpened() {
-      const haveInRouteQuery = (property) => {
-        const query = Object.assign({}, this.query);
-        const hasInQuery = hasOwnProperty(query, property);
-        if (hasInQuery) return query[property];
-        return false;
-      };
+      const haveInRouteQuery = property => {
+        const query = { ...this.query }
+        const hasInQuery = hasOwnProperty(query, property)
+        if (hasInQuery) return query[property]
+        return false
+      }
 
-      for (let property of Object.keys(this.filter)) {
-        const query = haveInRouteQuery(property);
+      for (const property of Object.keys(this.filter)) {
+        const query = haveInRouteQuery(property)
         if (
-          ["apartment_number", "contract_number"].includes(property) &&
-          typeof query === "string"
+          ['apartment_number', 'contract_number'].includes(property)
+          && typeof query === 'string'
         ) {
-          this.filter[property] = [query];
-          continue;
+          this.filter[property] = [query]
+          continue
         }
 
-        if (property === "object_id" && query) {
+        if (property === 'object_id' && query) {
           if (isPrimitiveValue(query)) {
             const cObj = this.objectOptions.find(
-              (opObj) => opObj.id === parseInt(query)
-            );
+              opObj => opObj.id === parseInt(query),
+            )
             if (cObj) {
-              this.filter[property] = [cObj];
+              this.filter[property] = [cObj]
             }
           } else {
-            this.filter[property] = query.map((value) => {
+            this.filter[property] = query.map(value => {
               const obj = this.objectOptions.find(
-                (opObj) => opObj.id === parseInt(value)
-              );
+                opObj => opObj.id === parseInt(value),
+              )
               if (obj) {
-                return obj;
+                return obj
               }
-              return value;
-            });
+              return value
+            })
           }
-          continue;
+          continue
         }
 
         const arrayProps = [
-          "blocks",
-          "floors",
-          "branch",
-          "created_by",
-          "type",
-          "statuses",
-        ];
+          'blocks',
+          'floors',
+          'branch',
+          'created_by',
+          'type',
+          'statuses',
+        ]
         if (arrayProps.includes(property)) {
           if (isArray(query)) {
-            if (property === "type" || property === "statuses")
-              this.filter[property] = query;
-            else this.filter[property] = query.map((p) => parseInt(p));
+            if (property === 'type' || property === 'statuses') this.filter[property] = query
+            else this.filter[property] = query.map(p => parseInt(p))
           } else if (isString(query)) {
-            this.filter[property] = [parseInt(query)];
+            this.filter[property] = [parseInt(query)]
           } else if (query) {
-            this.filter[property] = query;
+            this.filter[property] = query
           }
-        } else if (query && property === "client_type_id") {
+        } else if (query && property === 'client_type_id') {
           if (!isUndefinedOrNullOrEmpty(query)) {
-            this.filter[property] = parseInt(query);
+            this.filter[property] = parseInt(query)
           }
-        } else {
-          if (query) {
-            this.filter[property] = query;
-          }
+        } else if (query) {
+          this.filter[property] = query
         }
       }
     },
   },
-};
+}
 </script>
 
 <template>
@@ -436,9 +430,9 @@ export default {
       @trigger-input="getInputValue"
     />
     <base-button
-      @click="showFilterModal"
-      :text="`${$t('contracts.filter')}`"
       v-if="filterPermission"
+      :text="`${$t('contracts.filter')}`"
+      @click="showFilterModal"
     >
       <template #left-icon>
         <base-filter-icon fill="#7C3AED" />
@@ -450,19 +444,22 @@ export default {
       ref="filter-modal"
       title="Using Component Methods"
       modal-class="filter__modal"
-      @show="filterModalOpened"
-      @hidden="hideFilterModal"
       hide-header
       hide-footer
+      @show="filterModalOpened"
+      @hidden="hideFilterModal"
     >
       <div class="modal__content">
         <!--   Go Back     -->
         <span class="d-flex align-items-center">
-          <span class="go__back" @click="hideFilterModal">
+          <span
+            class="go__back"
+            @click="hideFilterModal"
+          >
             <base-arrow-left-icon
               :width="32"
               :height="32"
-            ></base-arrow-left-icon>
+            />
           </span>
           <!--    Title      -->
           <span class="title"> {{ $t("contracts.filter_title") }} </span>
@@ -472,20 +469,20 @@ export default {
           <div class="filter__inputs">
             <!-- STATUS -->
             <x-form-select
+              v-model="filter.statuses"
               class="mt-4"
               value-field="value"
               text-field="name"
-              v-model="filter.statuses"
               :multiple="true"
               :options="statusOptions"
               :placeholder="$t('contracts.table.status')"
             />
             <x-form-select
+              v-model="filter.object_id"
               value-field="id"
               class="mt-3"
               text-field="name"
               getter="full"
-              v-model="filter.object_id"
               :multiple="true"
               :options="objectOptions"
               :placeholder="$t('contracts.object_name')"
@@ -493,27 +490,27 @@ export default {
 
             <x-form-select
               v-if="filter.object_id && blocksOptions.length"
+              v-model="filter.blocks"
               class="mt-3"
               value-field="id"
               text-field="name"
-              v-model="filter.blocks"
               :multiple="true"
               :options="blocksOptions"
               :placeholder="$t('promo.blocks')"
             />
 
             <x-form-select
-              class="mt-3"
               v-model="filter.floors"
+              class="mt-3"
               :multiple="true"
               :options="availableFloors"
               :placeholder="$t('floor')"
             />
 
             <x-form-select
+              v-model="filter.branch"
               value-field="id"
               text-field="name"
-              v-model="filter.branch"
               :multiple="true"
               :options="branchOption"
               class="mt-3"
@@ -521,9 +518,9 @@ export default {
             />
 
             <x-form-select
+              v-model="filter.type"
               value-field="id"
               text-field="name"
-              v-model="filter.type"
               :multiple="true"
               :options="typeOptions"
               class="mt-3"
@@ -533,10 +530,10 @@ export default {
             <!--    Filter Apartment Number      -->
             <div class="filter__inputs-input">
               <base-form-tag-input
-                @set-tags="setApartments"
-                :default-tags="filter.apartment_number"
                 ref="base-form-tag-input"
+                :default-tags="filter.apartment_number"
                 :placeholder="`${$t('contracts.apartment_number')}`"
+                @set-tags="setApartments"
               >
                 <template #delete-content>
                   <svg
@@ -546,7 +543,12 @@ export default {
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
                   >
-                    <circle cx="10" cy="10" r="10" fill="#9CA3AF" />
+                    <circle
+                      cx="10"
+                      cy="10"
+                      r="10"
+                      fill="#9CA3AF"
+                    />
                     <path
                       d="M13.125 6.875L6.875 13.125"
                       stroke="white"
@@ -568,10 +570,10 @@ export default {
 
             <div class="filter__inputs-input">
               <base-form-tag-input
-                @set-tags="setContractNumbers"
-                :default-tags="filter.contract_number"
                 ref="base-form-tag-input"
+                :default-tags="filter.contract_number"
                 :placeholder="`${$t('contract_number')}`"
+                @set-tags="setContractNumbers"
               >
                 <template #delete-content>
                   <svg
@@ -581,7 +583,12 @@ export default {
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
                   >
-                    <circle cx="10" cy="10" r="10" fill="#9CA3AF" />
+                    <circle
+                      cx="10"
+                      cy="10"
+                      r="10"
+                      fill="#9CA3AF"
+                    />
                     <path
                       d="M13.125 6.875L6.875 13.125"
                       stroke="white"
@@ -651,7 +658,7 @@ export default {
                   separator="space"
                   placeholder="от"
                   class="filter__price"
-                ></base-numeric-input>
+                />
               </div>
               <base-numeric-input
                 v-model.number="filter.price_to"
@@ -662,7 +669,7 @@ export default {
                 separator="space"
                 placeholder="до"
                 class="filter__price"
-              ></base-numeric-input>
+              />
             </div>
 
             <x-form-select
@@ -677,8 +684,8 @@ export default {
 
             <!--   Client Type     -->
             <x-form-select
-              class="mt-4"
               v-model="filter.client_type_id"
+              class="mt-4"
               :options="clientTypeOptions"
               :placeholder="$t('contracts.client_type')"
               :multilingual="true"
@@ -688,15 +695,13 @@ export default {
               <base-checkbox
                 v-model="filter.is_expired"
                 :label="$t('contract_is_expired')"
-              >
-              </base-checkbox>
+              />
             </div>
             <div class="mt-3">
               <base-checkbox
                 v-model="filter.is_duplicate"
                 :label="$t('contract_is_duplicate')"
-              >
-              </base-checkbox>
+              />
             </div>
 
             <!--              <b-form-select-->
@@ -720,16 +725,16 @@ export default {
           <!--  Modal Footer    -->
           <div class="modal__footer">
             <base-button
-              @click="clearFilter"
               :fixed="true"
               design="release-info"
               :text="`${$t('contracts.reset_filter')}`"
+              @click="clearFilter"
             />
             <base-button
               design="violet-gradient"
               :fixed="true"
-              @click="searchByFilterField"
               :text="`${$t('contracts.apply_filter')}`"
+              @click="searchByFilterField"
             />
           </div>
         </div>

@@ -1,10 +1,10 @@
 <script>
-import BaseSearchIcon from "@/components/icons/BaseSearchIcon";
-import BaseTimesCircleIcon from "@/components/icons/BaseTimesCircleIcon";
-import { debounce, sortInFirstRelationship } from "@/util/reusable";
+import BaseSearchIcon from '@/components/icons/BaseSearchIcon'
+import BaseTimesCircleIcon from '@/components/icons/BaseTimesCircleIcon'
+import { debounce, sortInFirstRelationship } from '@/util/reusable'
 
 export default {
-  name: "BaseSearchInput",
+  name: 'BaseSearchInput',
   components: {
     BaseSearchIcon,
     BaseTimesCircleIcon,
@@ -12,33 +12,33 @@ export default {
   props: {
     placeholder: {
       type: String,
-      default: "ФИО, телефон, номер договора",
+      default: 'ФИО, телефон, номер договора',
     },
     value: {
       type: [String, Number],
       required: false,
     },
   },
-  emits: ["trigger-input", "search-by-filter", "replace-router"],
+  emits: ['trigger-input', 'search-by-filter', 'replace-router'],
   data() {
     return {
       searchInput: this.value ?? this.$route.query.search,
       debounceInput: this.$route.query.search,
       showClearIcon: false,
-    };
+    }
   },
   computed: {
     query() {
-      return Object.assign({}, this.$route.query);
+      return { ...this.$route.query }
     },
   },
   watch: {
     searchInput: debounce(function (newValue) {
-      this.debounceInput = newValue;
+      this.debounceInput = newValue
     }, 350),
     debounceInput() {
-      this.toggleClearIcon();
-      this.triggerInputEvent();
+      this.toggleClearIcon()
+      this.triggerInputEvent()
     },
   },
   // async created() {
@@ -46,46 +46,53 @@ export default {
   // },
   mounted() {
     if (this.searchInput?.length) {
-      this.toggleClearIcon();
+      this.toggleClearIcon()
     }
   },
   methods: {
     searchByFilterField() {
-      const sortingQuery = sortInFirstRelationship(this.filter);
-      this.$emit("search-by-filter", sortingQuery);
-      this.hideFilterModal();
+      const sortingQuery = sortInFirstRelationship(this.filter)
+      this.$emit('search-by-filter', sortingQuery)
+      this.hideFilterModal()
     },
     focusOnSearchInput() {
-      this.$refs["search-input"].focus();
+      this.$refs['search-input'].focus()
     },
     clearSearchInput() {
-      this.searchInput = "";
+      this.searchInput = ''
     },
     toggleClearIcon() {
-      this.showClearIcon = !!this.searchInput.length;
+      this.showClearIcon = !!this.searchInput.length
     },
     triggerInputEvent() {
-      this.$emit("trigger-input", this.debounceInput);
+      this.$emit('trigger-input', this.debounceInput)
     },
   },
-};
+}
 </script>
 
 <template>
   <div class="search__content">
     <div class="search__content-input">
-      <div @click="focusOnSearchInput" class="search__content-input-icon">
+      <div
+        class="search__content-input-icon"
+        @click="focusOnSearchInput"
+      >
         <base-search-icon />
       </div>
       <input
-        v-model="searchInput"
-        type="search"
         id="search-input"
         ref="search-input"
+        v-model="searchInput"
+        type="search"
         :placeholder="placeholder"
         @input="triggerInputEvent"
-      />
-      <span v-if="showClearIcon" class="clear__icon" @click="clearSearchInput">
+      >
+      <span
+        v-if="showClearIcon"
+        class="clear__icon"
+        @click="clearSearchInput"
+      >
         <base-times-circle-icon />
       </span>
     </div>

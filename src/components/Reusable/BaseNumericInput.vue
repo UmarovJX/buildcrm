@@ -1,9 +1,9 @@
 <script>
-import accounting from "accounting-js";
-import { isEmptyString, isNotUndefinedNullEmptyZero } from "@/util/inspect";
+import accounting from 'accounting-js'
+import { isEmptyString, isNotUndefinedNullEmptyZero } from '@/util/inspect'
 
 export default {
-  name: "VueNumeric",
+  name: 'VueNumeric',
 
   props: {
     /**
@@ -11,7 +11,7 @@ export default {
      */
     currency: {
       type: String,
-      default: "",
+      default: '',
       required: false,
     },
 
@@ -47,7 +47,7 @@ export default {
      */
     placeholder: {
       type: String,
-      default: "",
+      default: '',
       required: false,
     },
 
@@ -56,7 +56,7 @@ export default {
      */
     emptyValue: {
       type: [Number, String],
-      default: "",
+      default: '',
       required: false,
     },
 
@@ -76,7 +76,7 @@ export default {
      */
     separator: {
       type: String,
-      default: ",",
+      default: ',',
       required: false,
     },
 
@@ -107,7 +107,7 @@ export default {
     outputType: {
       required: false,
       type: String,
-      default: "Number",
+      default: 'Number',
     },
 
     /**
@@ -133,7 +133,7 @@ export default {
      */
     readOnlyClass: {
       type: String,
-      default: "",
+      default: '',
       required: false,
     },
 
@@ -149,7 +149,7 @@ export default {
      */
     currencySymbolPosition: {
       type: String,
-      default: "prefix",
+      default: 'prefix',
       required: false,
     },
 
@@ -165,20 +165,20 @@ export default {
   },
 
   data: () => ({
-    amount: "",
+    amount: '',
     startTyping: false,
   }),
 
   computed: {
     locale() {
-      return this.$i18n.locale;
+      return this.$i18n.locale
     },
     /**
      * Number type of formatted value.
      * @return {Number}
      */
     amountNumber() {
-      return this.unformat(this.amount);
+      return this.unformat(this.amount)
     },
 
     /**
@@ -186,7 +186,7 @@ export default {
      * @return {Number}
      */
     valueNumber() {
-      return this.unformat(this.value);
+      return this.unformat(this.value)
     },
 
     /**
@@ -194,10 +194,9 @@ export default {
      * @return {String} '.' or ','
      */
     decimalSeparatorSymbol() {
-      if (typeof this.decimalSeparator !== "undefined")
-        return this.decimalSeparator;
-      if (this.separator === ",") return ".";
-      return ",";
+      if (typeof this.decimalSeparator !== 'undefined') return this.decimalSeparator
+      if (this.separator === ',') return '.'
+      return ','
     },
 
     /**
@@ -205,11 +204,10 @@ export default {
      * @return {String} '.' or ','
      */
     thousandSeparatorSymbol() {
-      if (typeof this.thousandSeparator !== "undefined")
-        return this.thousandSeparator;
-      if (this.separator === ".") return ".";
-      if (this.separator === "space") return " ";
-      return ",";
+      if (typeof this.thousandSeparator !== 'undefined') return this.thousandSeparator
+      if (this.separator === '.') return '.'
+      if (this.separator === 'space') return ' '
+      return ','
     },
 
     /**
@@ -217,17 +215,17 @@ export default {
      * @return {String} format
      */
     symbolPosition() {
-      if (!this.currency) return "%v";
-      return this.currencySymbolPosition === "suffix" ? "%v %s" : "%s %v";
+      if (!this.currency) return '%v'
+      return this.currencySymbolPosition === 'suffix' ? '%v %s' : '%s %v'
     },
   },
 
   watch: {
     locale() {
-      this.amount = this.format(this.valueNumber);
+      this.amount = this.format(this.valueNumber)
     },
     amount() {
-      this.startTyping && this.formatAmount();
+      this.startTyping && this.formatAmount()
     },
     /**
      * Watch for value change from other input with same v-model.
@@ -235,9 +233,9 @@ export default {
      */
     valueNumber(newValue) {
       if (newValue === 0) {
-        this.amount = this.format(0);
+        this.amount = this.format(0)
       } else if (this.$refs.numeric !== document.activeElement) {
-        this.amount = this.format(newValue);
+        this.amount = this.format(newValue)
       }
     },
 
@@ -249,8 +247,8 @@ export default {
     readOnly(newValue, oldValue) {
       if (oldValue === false && newValue === true) {
         this.$nextTick(() => {
-          this.$refs.readOnly.className = this.readOnlyClass;
-        });
+          this.$refs.readOnly.className = this.readOnlyClass
+        })
       }
     },
 
@@ -258,35 +256,35 @@ export default {
      * Immediately reflect separator changes
      */
     separator() {
-      this.process(this.valueNumber);
-      this.amount = this.format(this.valueNumber);
+      this.process(this.valueNumber)
+      this.amount = this.format(this.valueNumber)
     },
 
     /**
      * Immediately reflect currency changes
      */
     currency() {
-      this.process(this.valueNumber);
-      this.amount = this.format(this.valueNumber);
+      this.process(this.valueNumber)
+      this.amount = this.format(this.valueNumber)
     },
 
     /**
      * Immediately reflect precision changes
      */
     precision() {
-      this.process(this.valueNumber);
-      this.amount = this.format(this.valueNumber);
+      this.process(this.valueNumber)
+      this.amount = this.format(this.valueNumber)
     },
   },
 
   mounted() {
     // Set default value props when valueNumber has some value
     if (this.valueNumber || this.isDeliberatelyZero()) {
-      this.process(this.valueNumber);
+      this.process(this.valueNumber)
       if (parseFloat(this.format(this.valueNumber))) {
-        this.amount = this.format(this.valueNumber);
+        this.amount = this.format(this.valueNumber)
       } else {
-        this.amount = this.format(0);
+        this.amount = this.format(0)
       }
 
       // In case of delayed props value.
@@ -297,65 +295,62 @@ export default {
     }
 
     // Set read-only span element's class
-    if (this.readOnly) this.$refs.readOnly.className = this.readOnlyClass;
+    if (this.readOnly) this.$refs.readOnly.className = this.readOnlyClass
   },
 
   methods: {
     formatAmount() {
-      let newValue = this.amount;
+      let newValue = this.amount
 
-      if (typeof this.amount === "string") {
-        newValue = this.amount?.replace(".", ",");
+      if (typeof this.amount === 'string') {
+        newValue = this.amount?.replace('.', ',')
       }
       // console.log(newValue, 'amount');
       // if(typeof this.amount === 'float')
-      const findDecimalSeparator = newValue?.indexOf(",");
+      const findDecimalSeparator = newValue?.indexOf(',')
       const unFormatValue = accounting.unformat(
         newValue,
-        this.decimalSeparatorSymbol
-      );
+        this.decimalSeparatorSymbol,
+      )
       let formattingValue = this.formatWithoutSeparator(unFormatValue)?.slice(
         0,
-        -1
-      );
+        -1,
+      )
       if (findDecimalSeparator !== -1 && newValue) {
-        let decimalSide = newValue?.slice(findDecimalSeparator);
-        let wholeSide = newValue?.slice(0, findDecimalSeparator);
-        const unFormatWholeSide = accounting.unformat(wholeSide);
+        let decimalSide = newValue?.slice(findDecimalSeparator)
+        const wholeSide = newValue?.slice(0, findDecimalSeparator)
+        const unFormatWholeSide = accounting.unformat(wholeSide)
         if (decimalSide.length > 1) {
           const lastValueOfDecimalSide = parseInt(
-            decimalSide[decimalSide.length - 1]
-          );
+            decimalSide[decimalSide.length - 1],
+          )
           if (
-            isNaN(lastValueOfDecimalSide) ||
-            typeof lastValueOfDecimalSide !== "number"
+            isNaN(lastValueOfDecimalSide)
+            || typeof lastValueOfDecimalSide !== 'number'
           ) {
-            decimalSide = decimalSide.slice(0, -1);
+            decimalSide = decimalSide.slice(0, -1)
           }
         }
 
-        const dotRegex = /,/gi;
-        const matchDots = decimalSide.match(dotRegex);
+        const dotRegex = /,/gi
+        const matchDots = decimalSide.match(dotRegex)
         if (matchDots.length > 1) {
-          decimalSide = decimalSide.slice(0, -1);
+          decimalSide = decimalSide.slice(0, -1)
         }
         // console.log(this.formatWithoutSeparator(unFormatWholeSide).slice(0, -1), 'his.formatWithoutSeparator(unFormatWholeSide).slice(0, -1)');
         // console.log(decimalSide, 'decimalSide');
         // formattingValue = this.formatWithoutSeparator(unFormatWholeSide).slice(0, -1) + decimalSide
-        formattingValue =
-          this.formatWithoutSeparator(unFormatWholeSide).slice(0, -1) +
-          decimalSide;
+        formattingValue = this.formatWithoutSeparator(unFormatWholeSide).slice(0, -1)
+          + decimalSide
       }
 
       if (newValue !== formattingValue) {
-        if (formattingValue === "0") {
-          this.amount = null;
+        if (formattingValue === '0') {
+          this.amount = null
+        } else if (this.unformat(this.amount) === 0) {
+          this.amount = ''
         } else {
-          if (this.unformat(this.amount) === 0) {
-            this.amount = "";
-          } else {
-            this.amount = formattingValue.replace(".", ",");
-          }
+          this.amount = formattingValue.replace('.', ',')
         }
       }
     },
@@ -365,20 +360,20 @@ export default {
      * @param {Object} e
      */
     onChangeHandler(e) {
-      this.$emit("change", e);
+      this.$emit('change', e)
     },
     /**
      * Handle blur event.
      * @param {Object} e
      */
     onBlurHandler(e) {
-      this.$emit("blur", e);
-      this.startTyping = false;
-      const unFormatAmount = this.unformat(this.amount);
+      this.$emit('blur', e)
+      this.startTyping = false
+      const unFormatAmount = this.unformat(this.amount)
       if (parseInt(this.format(unFormatAmount)) === 0) {
-        this.amount = this.format(0);
+        this.amount = this.format(0)
       } else {
-        this.amount = this.format(unFormatAmount).toString().trim();
+        this.amount = this.format(unFormatAmount).toString().trim()
       }
     },
 
@@ -387,34 +382,34 @@ export default {
      * @param {Object} e
      */
     onFocusHandler(e) {
-      this.$emit("focus", e);
-      this.startTyping = true;
-      const usd = `${this.$t("usd")}`;
-      const ye = `${this.$t("ye")}`;
-      const currency = `${this.currency}`;
+      this.$emit('focus', e)
+      this.startTyping = true
+      const usd = `${this.$t('usd')}`
+      const ye = `${this.$t('ye')}`
+      const currency = `${this.currency}`
 
-      if (!this.amount) return;
+      if (!this.amount) return
 
-      const symbolCurrencyIndex = this.amount.indexOf(currency);
+      const symbolCurrencyIndex = this.amount.indexOf(currency)
       if (
-        symbolCurrencyIndex !== -1 &&
-        !isEmptyString(this.currency.trim()) &&
-        isNotUndefinedNullEmptyZero(this.amount)
+        symbolCurrencyIndex !== -1
+        && !isEmptyString(this.currency.trim())
+        && isNotUndefinedNullEmptyZero(this.amount)
       ) {
-        this.amount = this.amount.slice(0, symbolCurrencyIndex);
+        this.amount = this.amount.slice(0, symbolCurrencyIndex)
       }
 
-      const symbolUsdIndex = this.amount.indexOf(usd);
+      const symbolUsdIndex = this.amount.indexOf(usd)
       if (symbolUsdIndex !== -1) {
-        this.amount = this.amount.slice(0, symbolUsdIndex);
+        this.amount = this.amount.slice(0, symbolUsdIndex)
       }
 
-      const symbolSumIndex = this.amount.indexOf(ye);
+      const symbolSumIndex = this.amount.indexOf(ye)
       if (symbolSumIndex !== -1) {
-        this.amount = this.amount.slice(0, symbolSumIndex);
+        this.amount = this.amount.slice(0, symbolSumIndex)
       }
 
-      this.amount = this.amount.toString().trim();
+      this.amount = this.amount.toString().trim()
     },
 
     /**
@@ -430,13 +425,13 @@ export default {
       //
       // this.$emit('input', this.unformat(this.amount))
 
-      const output = this.unformat(this.amount);
-      const beforeNext = (output - (output % 10)) / 10;
+      const output = this.unformat(this.amount)
+      const beforeNext = (output - (output % 10)) / 10
       if (output > this.max) {
-        this.amount = this.format(beforeNext);
+        this.amount = this.format(beforeNext)
       }
 
-      this.$emit("input", this.unformat(this.amount));
+      this.$emit('input', this.unformat(this.amount))
     },
 
     /**
@@ -444,11 +439,10 @@ export default {
      * @param {Number} value
      */
     process(value) {
-      if (value >= this.max) this.update(this.max);
-      if (value <= this.min) this.update(this.min);
-      if (value > this.min && value < this.max) this.update(value);
-      if (!this.minus && value < 0)
-        this.min >= 0 ? this.update(this.min) : this.update(0);
+      if (value >= this.max) this.update(this.max)
+      if (value <= this.min) this.update(this.min)
+      if (value > this.min && value < this.max) this.update(value)
+      if (!this.minus && value < 0) this.min >= 0 ? this.update(this.min) : this.update(0)
     },
 
     /**
@@ -456,12 +450,11 @@ export default {
      * @param {Number} value
      */
     update(value) {
-      const fixedValue = accounting.toFixed(value, this.precision);
-      const output =
-        this.outputType.toLowerCase() === "string"
-          ? fixedValue
-          : Number(fixedValue);
-      this.$emit("input", output);
+      const fixedValue = accounting.toFixed(value, this.precision)
+      const output = this.outputType.toLowerCase() === 'string'
+        ? fixedValue
+        : Number(fixedValue)
+      this.$emit('input', output)
     },
 
     /**
@@ -470,12 +463,12 @@ export default {
      * @return {String}
      */
     format(value) {
-      let symbol;
+      let symbol
 
       if (isEmptyString(this.currency.trim()) && this.currencySymbol) {
-        symbol = this.$t("ye");
+        symbol = this.$t('ye')
       } else {
-        symbol = this.currency;
+        symbol = this.currency
       }
       return accounting.formatMoney(value, {
         symbol,
@@ -483,17 +476,17 @@ export default {
         precision: Number(this.precision),
         decimal: this.decimalSeparatorSymbol,
         thousand: this.thousandSeparatorSymbol,
-      });
+      })
     },
 
     formatWithoutSeparator(value) {
       return accounting.formatMoney(value, {
-        symbol: "",
+        symbol: '',
         format: this.symbolPosition,
         precision: 0,
         decimal: this.decimalSeparatorSymbol,
         thousand: this.thousandSeparatorSymbol,
-      });
+      })
     },
 
     formatDecimalSide(value) {
@@ -503,7 +496,7 @@ export default {
         precision: 0,
         decimal: 0,
         thousand: 0,
-      });
+      })
     },
 
     /**
@@ -512,9 +505,8 @@ export default {
      * @return {Number}
      */
     unformat(value) {
-      const toUnformat =
-        typeof value === "string" && value === "" ? this.emptyValue : value;
-      return accounting.unformat(toUnformat, this.decimalSeparatorSymbol);
+      const toUnformat = typeof value === 'string' && value === '' ? this.emptyValue : value
+      return accounting.unformat(toUnformat, this.decimalSeparatorSymbol)
     },
 
     /**
@@ -522,23 +514,23 @@ export default {
      * @return {boolean}
      */
     isDeliberatelyZero() {
-      return this.valueNumber === 0 && this.value !== "";
+      return this.valueNumber === 0 && this.value !== ''
     },
 
     setVModalValue(value) {
-      this.amount = value;
-      this.formatAmount();
+      this.amount = value
+      this.formatAmount()
     },
   },
-};
+}
 </script>
 
 <template>
   <input
     v-if="!readOnly"
+    ref="numeric"
     v-model="amount"
     type="text"
-    ref="numeric"
     :style="fieldStyle"
     :disabled="disabled"
     :placeholder="placeholder"
@@ -546,6 +538,9 @@ export default {
     @input="onInputHandler"
     @focus="onFocusHandler"
     @change="onChangeHandler"
-  />
-  <span v-else ref="readOnly">{{ amount }}</span>
+  >
+  <span
+    v-else
+    ref="readOnly"
+  >{{ amount }}</span>
 </template>

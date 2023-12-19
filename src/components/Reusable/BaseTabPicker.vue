@@ -1,7 +1,7 @@
 <script>
 export default {
-  name: "BaseTabPicker",
-  emits: ["tab-selected"],
+  name: 'BaseTabPicker',
+  emits: ['tab-selected'],
   props: {
     options: {
       type: Array,
@@ -18,19 +18,19 @@ export default {
   data() {
     return {
       currentValue: null,
-    };
+    }
   },
   watch: {
     current(val) {
-      this.currentValue = val;
+      this.currentValue = val
     },
   },
   methods: {
     tabSelected(item) {
-      this.$emit("tab-selected", item);
+      this.$emit('tab-selected', item)
     },
   },
-};
+}
 </script>
 
 <template>
@@ -39,30 +39,30 @@ export default {
       <div class="filter__content">
         <div
           v-if="!noAll"
-          @click="tabSelected('all')"
           class="filter__content-item"
           :class="{
             'filter__content-item-active': 'all' === current,
           }"
+          @click="tabSelected('all')"
         >
           <div class="filter__content-item-inline">
             <span style="white-space: nowrap">{{ $t(`tab_status.all`) }}</span>
           </div>
-          <div class="bottom__line"></div>
+          <div class="bottom__line" />
         </div>
         <div
           v-for="(item, index) in options"
           :key="'status_' + index"
-          @click="tabSelected(item)"
           class="filter__content-item"
           :class="{
             'filter__content-item-active': item === current,
           }"
+          @click="tabSelected(item)"
         >
           <div class="filter__content-item-inline">
             <span style="white-space: nowrap">{{ $t(`${item}`) }}</span>
           </div>
-          <div class="bottom__line"></div>
+          <div class="bottom__line" />
         </div>
       </div>
     </div>

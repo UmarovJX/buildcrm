@@ -1,12 +1,12 @@
 <script>
-import BaseButton from "@/components/Reusable/BaseButton";
-import BasePriceInput from "@/components/Reusable/BasePriceInput";
-import BaseDeleteIcon from "@/components/icons/BaseDeleteIcon";
-import { formatToPrice } from "@/util/reusable";
-import { mapActions } from "vuex";
+import BaseButton from '@/components/Reusable/BaseButton'
+import BasePriceInput from '@/components/Reusable/BasePriceInput'
+import BaseDeleteIcon from '@/components/icons/BaseDeleteIcon'
+import { formatToPrice } from '@/util/reusable'
+import { mapActions } from 'vuex'
 
 export default {
-  name: "ApartmentItem",
+  name: 'ApartmentItem',
   components: {
     BasePriceInput,
     BaseDeleteIcon,
@@ -26,9 +26,9 @@ export default {
       default: false,
     },
   },
-  emits: ["remove-item"],
+  emits: ['remove-item'],
   data() {
-    const { price_m2, price, plan } = this.apartment;
+    const { price_m2, price, plan } = this.apartment
     return {
       item: {
         price: price.toFixed(2),
@@ -37,78 +37,78 @@ export default {
         total_discount: 0,
         discount_per_m2: 0,
       },
-    };
+    }
   },
   computed: {
     totalPrice() {
-      const { price, total_discount } = this.item;
-      return this.formatToPrice(price - total_discount);
+      const { price, total_discount } = this.item
+      return this.formatToPrice(price - total_discount)
     },
     pricePerSquare() {
-      const { price_m2, discount_per_m2 } = this.item;
-      return this.formatToPrice(price_m2 - discount_per_m2);
+      const { price_m2, discount_per_m2 } = this.item
+      return this.formatToPrice(price_m2 - discount_per_m2)
     },
   },
   watch: {
     item: {
       handler(lastItem) {
-        this.handleUpdate(lastItem);
+        this.handleUpdate(lastItem)
       },
       deep: true,
     },
   },
   methods: {
-    ...mapActions("checkout", {
-      removeApartment: "removeApartment",
+    ...mapActions('checkout', {
+      removeApartment: 'removeApartment',
     }),
     formatToPrice,
     momentQuarter(val) {
-      return this.$moment(val).quarter();
+      return this.$moment(val).quarter()
     },
     getFixedAmount(value, decimal = 2) {
-      return value > 0 ? value.toFixed(decimal) : 0;
+      return value > 0 ? value.toFixed(decimal) : 0
     },
     handleUpdate(item) {
-      this.$emit("update", { ...item, id: this.apartment.id });
+      this.$emit('update', { ...item, id: this.apartment.id })
     },
     deleteApartment() {
-      this.$emit("remove-item", this.apartment);
+      this.$emit('remove-item', this.apartment)
     },
     mutateOtherPrice() {
-      const { price, price_m2 } = this.apartment;
-      this.changeTotalPrice(price);
-      this.changePricePerSquare(price_m2);
+      const { price, price_m2 } = this.apartment
+      this.changeTotalPrice(price)
+      this.changePricePerSquare(price_m2)
     },
     mutateTotalPriceInput(value) {
-      const pricePerSquare = value / this.item.area;
-      this.changePricePerSquare(pricePerSquare);
+      const pricePerSquare = value / this.item.area
+      this.changePricePerSquare(pricePerSquare)
     },
     mutatePricePerSquareInput(value) {
-      const totalPrice = value * this.item.area;
-      this.changeTotalPrice(totalPrice);
+      const totalPrice = value * this.item.area
+      this.changeTotalPrice(totalPrice)
     },
     mutateDiscountPerSquareInput(discountPerSquare) {
-      const totalDiscount = discountPerSquare * this.item.area;
-      this.changeTotalDiscountAmount(totalDiscount);
+      const totalDiscount = discountPerSquare * this.item.area
+      this.changeTotalDiscountAmount(totalDiscount)
     },
     mutateTotalDiscountInput(totalDiscount) {
-      const discountPerSquare = totalDiscount / this.item.area;
-      this.changeDiscountPerSquare(discountPerSquare);
+      const discountPerSquare = totalDiscount / this.item.area
+      this.changeDiscountPerSquare(discountPerSquare)
     },
     changePricePerSquare(pricePerSquare) {
-      this.item.price_m2 = this.getFixedAmount(pricePerSquare);
+      this.item.price_m2 = this.getFixedAmount(pricePerSquare)
     },
     changeTotalPrice(totalPrice) {
-      this.item.price = this.getFixedAmount(totalPrice);
+      this.item.price = this.getFixedAmount(totalPrice)
     },
     changeDiscountPerSquare(discountPerSquare) {
-      this.item.discount_per_m2 = this.getFixedAmount(discountPerSquare);
+      this.item.discount_per_m2 = this.getFixedAmount(discountPerSquare)
     },
     changeTotalDiscountAmount(totalDiscount) {
-      this.item.total_discount = this.getFixedAmount(totalDiscount);
+      this.item.total_discount = this.getFixedAmount(totalDiscount)
     },
   },
-};
+}
 </script>
 
 <template>
@@ -128,7 +128,10 @@ export default {
             {{ apartment.number }}
           </p>
         </div>
-        <div class="apartment-item" v-if="apartment.building.build_date">
+        <div
+          v-if="apartment.building.build_date"
+          class="apartment-item"
+        >
           <p class="apartment-label">
             {{ $t("completion_date") }}
           </p>
@@ -140,7 +143,9 @@ export default {
           <p class="apartment-label">
             {{ $t("plan_area") }}
           </p>
-          <p class="apartment-value">{{ apartment.plan.area }} м²</p>
+          <p class="apartment-value">
+            {{ apartment.plan.area }} м²
+          </p>
         </div>
         <div class="apartment-item">
           <p class="apartment-label">
@@ -150,7 +155,9 @@ export default {
             <template v-if="apartment.plan.balcony">
               {{ apartment.plan.balcony_area }} м²
             </template>
-            <template v-else>-</template>
+            <template v-else>
+              -
+            </template>
           </p>
         </div>
         <div class="apartment-item">
@@ -191,54 +198,54 @@ export default {
           <p>{{ $t("other_price") }}</p>
           <base-price-input
             ref="base_price"
+            v-model="item.price"
             :label="true"
             :top-placeholder="true"
             :currency="`${$t('ye')}`"
             :permission-change="true"
             :value="item.price"
-            v-model="item.price"
-            @input="mutateTotalPriceInput"
             :placeholder="$t('starting_price')"
             class="base-price-input"
+            @input="mutateTotalPriceInput"
           />
           <base-price-input
             ref="price_per_square"
+            v-model="item.price_m2"
             :label="true"
             :top-placeholder="true"
             :currency="`${$t('ye')}`"
             :permission-change="true"
             :value="item.price_m2"
-            v-model="item.price_m2"
-            @input="mutatePricePerSquareInput"
             :placeholder="$t('price_m2')"
             class="base-price-input"
+            @input="mutatePricePerSquareInput"
           />
         </template>
         <template v-else>
           <div class="calc-inputs">
             <base-price-input
               ref="total_discount"
+              v-model="item.total_discount"
               :label="true"
               :top-placeholder="true"
               :currency="`${$t('ye')}`"
               :permission-change="true"
               :value="item.total_discount"
-              v-model="item.total_discount"
-              @input="mutateTotalDiscountInput"
               :placeholder="$t('total_discount')"
               class="base-price-input"
+              @input="mutateTotalDiscountInput"
             />
             <base-price-input
               ref="discount_per_square"
+              v-model="item.discount_per_m2"
               :label="true"
               :top-placeholder="true"
               :currency="`${$t('ye')}`"
               :permission-change="true"
               :value="item.discount_per_m2"
-              v-model="item.discount_per_m2"
-              @input="mutateDiscountPerSquareInput"
               :placeholder="$t('discount_per_m2')"
               class="base-price-input"
+              @input="mutateDiscountPerSquareInput"
             />
           </div>
           <div class="apartment-item">
@@ -261,8 +268,14 @@ export default {
       </div>
     </div>
 
-    <div v-if="removeBtn" class="apartment-card__clear">
-      <base-button @click="deleteApartment" :text="`${$t('remove_apartment')}`">
+    <div
+      v-if="removeBtn"
+      class="apartment-card__clear"
+    >
+      <base-button
+        :text="`${$t('remove_apartment')}`"
+        @click="deleteApartment"
+      >
         <template #left-icon>
           <BaseDeleteIcon fill="var(--violet-600)" />
         </template>

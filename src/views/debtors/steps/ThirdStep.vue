@@ -3,12 +3,12 @@ import {
   formatDateWithDot,
   formatToPrice,
   phonePrettier,
-} from "@/util/reusable";
+} from '@/util/reusable'
 
-import BasePagination from "@/components/Reusable/Navigation/BasePagination.vue";
+import BasePagination from '@/components/Reusable/Navigation/BasePagination.vue'
 
 export default {
-  name: "ThirdStep",
+  name: 'ThirdStep',
   components: {
     BasePagination,
   },
@@ -26,49 +26,49 @@ export default {
     return {
       fields: [
         {
-          key: "contract_number",
-          label: "contracts.name",
+          key: 'contract_number',
+          label: 'contracts.name',
         },
         {
-          key: "client",
-          label: "client",
+          key: 'client',
+          label: 'client',
         },
         {
-          key: "client.phone",
-          label: "phone",
-          formatter: (phone) => phonePrettier(phone),
+          key: 'client.phone',
+          label: 'phone',
+          formatter: phone => phonePrettier(phone),
         },
         {
-          key: "data.amount",
-          label: "contracts.view.sum",
-          formatter: (amount) => formatToPrice(amount) + " " + this.$t("ye"),
+          key: 'data.amount',
+          label: 'contracts.view.sum',
+          formatter: amount => `${formatToPrice(amount)} ${this.$t('ye')}`,
         },
         {
-          key: "payment_type",
-          label: "contracts.view.payment_type",
+          key: 'payment_type',
+          label: 'contracts.view.payment_type',
         },
         {
-          key: "type",
-          label: "contracts.view.type",
+          key: 'type',
+          label: 'contracts.view.type',
         },
         {
-          key: "date",
-          label: "contracts.view.payment_date",
+          key: 'date',
+          label: 'contracts.view.payment_date',
         },
         {
-          key: "data.comment",
-          label: "contracts.view.comments",
+          key: 'data.comment',
+          label: 'contracts.view.comments',
         },
       ],
       pagination: {
         current: 1,
         perPage: 10,
       },
-    };
+    }
   },
   computed: {
     tableDetails() {
-      const { current, perPage } = this.pagination;
+      const { current, perPage } = this.pagination
 
       if (this.list.length) {
         return {
@@ -76,7 +76,7 @@ export default {
           current,
           count: Math.ceil(this.list.length / perPage),
           items: this.list.slice((current - 1) * perPage, current * perPage),
-        };
+        }
       }
 
       return {
@@ -84,85 +84,85 @@ export default {
         current: 0,
         count: 0,
         items: [],
-      };
+      }
     },
   },
   methods: {
     paginateFoundItems(page) {
-      this.pagination.current = page;
+      this.pagination.current = page
     },
     changePerPage(perPage) {
-      this.pagination.current = 1;
-      this.pagination.perPage = perPage;
+      this.pagination.current = 1
+      this.pagination.perPage = perPage
     },
     fullName(status) {
       if (client.first_name && client.last_name && client.second_name) {
         return (
-          client.first_name.lotin +
-          " " +
-          client.last_name.lotin +
-          " " +
-          client.second_name.lotin
-        );
+          `${client.first_name.lotin
+          } ${
+            client.last_name.lotin
+          } ${
+            client.second_name.lotin}`
+        )
       }
-      return "";
+      return ''
     },
     dateFormat(date) {
-      return formatDateWithDot(date);
+      return formatDateWithDot(date)
     },
     getPaymentType(type) {
-      let msg;
+      let msg
 
       switch (type) {
-        case "payme":
-          msg = "Payme";
-          break;
-        case "click":
-          msg = "Click";
-          break;
-        case "transfer":
-          msg = "Перечисления";
-          break;
-        case "other":
-          msg = "Другое";
-          break;
-        case "cash":
-          msg = "Наличные";
-          break;
+        case 'payme':
+          msg = 'Payme'
+          break
+        case 'click':
+          msg = 'Click'
+          break
+        case 'transfer':
+          msg = 'Перечисления'
+          break
+        case 'other':
+          msg = 'Другое'
+          break
+        case 'cash':
+          msg = 'Наличные'
+          break
         default:
-          msg = type;
-          break;
+          msg = type
+          break
       }
 
-      return msg;
+      return msg
     },
     getType(type) {
-      let msg;
+      let msg
 
       switch (type) {
-        case "debt":
-        case "monthly":
-          msg = "Ежемесячно";
-          break;
-        case "manual":
-          msg = "Ручной создано";
-          break;
-        case "initial":
-          msg = "Первоначальный взнос";
-          break;
+        case 'debt':
+        case 'monthly':
+          msg = 'Ежемесячно'
+          break
+        case 'manual':
+          msg = 'Ручной создано'
+          break
+        case 'initial':
+          msg = 'Первоначальный взнос'
+          break
 
-        case "first_payment":
-          msg = "1 взнос";
-          break;
+        case 'first_payment':
+          msg = '1 взнос'
+          break
         default:
-          msg = type;
-          break;
+          msg = type
+          break
       }
 
-      return msg;
+      return msg
     },
   },
-};
+}
 </script>
 
 <template>
@@ -185,9 +185,7 @@ export default {
       </template>
 
       <template #cell(contract)="data">
-        <span
-          >{{ data.item.contract_number }} ( {{ data.item.alias.alias }} )</span
-        >
+        <span>{{ data.item.contract_number }} ( {{ data.item.alias.alias }} )</span>
       </template>
 
       <template #cell(payment_type)="data">

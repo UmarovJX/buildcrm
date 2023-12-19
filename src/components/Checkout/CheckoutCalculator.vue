@@ -1,12 +1,12 @@
 <script>
-import BaseSelect from "@/components/Reusable/BaseSelect";
-import BasePriceInput from "@/components/Reusable/BasePriceInput";
-import BaseDatePicker from "@/components/Reusable/BaseDatePicker";
-import { formatToPrice } from "@/util/reusable";
-import { mapActions, mapMutations, mapState } from "vuex";
+import BaseSelect from '@/components/Reusable/BaseSelect'
+import BasePriceInput from '@/components/Reusable/BasePriceInput'
+import BaseDatePicker from '@/components/Reusable/BaseDatePicker'
+import { formatToPrice } from '@/util/reusable'
+import { mapActions, mapMutations, mapState } from 'vuex'
 
 export default {
-  name: "CheckoutCalculator",
+  name: 'CheckoutCalculator',
   components: {
     BaseSelect,
     BasePriceInput,
@@ -30,63 +30,63 @@ export default {
       required: true,
     },
   },
-  emits: ["update"],
+  emits: ['update'],
   computed: {
-    ...mapState("checkout", {
-      calc: "calc",
-      discount: "discount",
+    ...mapState('checkout', {
+      calc: 'calc',
+      discount: 'discount',
     }),
     showMonthlyInputField() {
-      return this.calc.prepay !== 100;
+      return this.calc.prepay !== 100
     },
   },
   methods: {
-    ...mapMutations("checkout", {
-      editState: "editState",
+    ...mapMutations('checkout', {
+      editState: 'editState',
     }),
-    ...mapActions("checkout", {
-      changeDiscount: "changeDiscount",
-      changePaymentDate: "changePaymentDate",
-      changeFirstPaymentDate: "changeFirstPaymentDate",
-      changePrepay: "changePrepay",
+    ...mapActions('checkout', {
+      changeDiscount: 'changeDiscount',
+      changePaymentDate: 'changePaymentDate',
+      changeFirstPaymentDate: 'changeFirstPaymentDate',
+      changePrepay: 'changePrepay',
     }),
     prettier: formatToPrice,
     mutateInitialPrice() {
-      this.editState("initial_price");
-      this.update();
+      this.editState('initial_price')
+      this.update()
     },
     mutateMonthlyPaymentPeriod() {
-      this.editState("monthly_payment_period");
-      this.update();
+      this.editState('monthly_payment_period')
+      this.update()
     },
     mutatePrepayment() {
-      this.editState("prepayment");
-      this.changePrepay();
+      this.editState('prepayment')
+      this.changePrepay()
     },
     updateDiscount(id) {
       const currentDiscount = this.paymentOptions.find(
-        (pmOp) => pmOp.id === id
-      );
+        pmOp => pmOp.id === id,
+      )
       if (currentDiscount) {
-        this.update(this.calc, currentDiscount);
-        this.changeDiscount(currentDiscount);
+        this.update(this.calc, currentDiscount)
+        this.changeDiscount(currentDiscount)
       }
     },
     update(calc = null, discount = null) {
       if (calc && discount) {
-        this.$emit("update", {
+        this.$emit('update', {
           calc,
           discount,
-        });
+        })
       } else {
-        this.$emit("update", {
+        this.$emit('update', {
           calc: this.calc,
           discount: this.discount,
-        });
+        })
       }
     },
   },
-};
+}
 </script>
 
 <template>
@@ -96,7 +96,7 @@ export default {
       <base-select
         :value="discount"
         :label="true"
-        :noPlaceholder="true"
+        :no-placeholder="true"
         value-field="id"
         :options="paymentOptions"
         :placeholder="`${$t('enter_discount')}`"
@@ -133,12 +133,12 @@ export default {
         v-model="calc.initial_price"
         :value="calc.initial_price"
         :permission-change="true"
-        @input="mutateInitialPrice"
         :label="true"
         :top-placeholder="true"
         :currency="`${$t('ye')}`"
         :placeholder="$t('payments.initial_fee')"
         class="checkout-initial-price-input w-100"
+        @input="mutateInitialPrice"
       />
       <base-date-picker
         v-model="calc.first_payment_date"

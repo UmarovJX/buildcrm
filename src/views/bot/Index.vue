@@ -1,10 +1,10 @@
 <script>
-import AppHeader from "@/components/Header/AppHeader.vue";
-import SettingsTab from "@/views/settings/components/SettingsTab.vue";
-//import SettingsPermission from "@/permission/settings.permission";
+import AppHeader from '@/components/Header/AppHeader.vue'
+import SettingsTab from '@/views/settings/components/SettingsTab.vue'
+// import SettingsPermission from "@/permission/settings.permission";
 
 export default {
-  name: "SettingsPage",
+  name: 'SettingsPage',
   components: {
     AppHeader,
     SettingsTab,
@@ -13,23 +13,23 @@ export default {
     const tabs = [
       {
         counts: 0,
-        name: "bot.pages",
-        value: "bot",
+        name: 'bot.pages',
+        value: 'bot',
       },
       // {
       //   counts: 0,
       //   name: "bot.objects",
       //   value: "bot-objects",
       // },
-    ];
+    ]
 
     return {
       tabs,
-    };
+    }
   },
   computed: {
     currentTab() {
-      return this.$route.name;
+      return this.$route.name
     },
   },
   methods: {
@@ -37,11 +37,11 @@ export default {
       if (this.$route.name !== v) {
         this.$router.push({
           name: v,
-        });
+        })
       }
     },
   },
-};
+}
 </script>
 
 <template>
@@ -53,10 +53,10 @@ export default {
     </app-header>
 
     <settings-tab
-      @change="changeRouteView"
       :tabs="tabs"
       :current-tab="currentTab"
       class="mb-4"
+      @change="changeRouteView"
     />
 
     <router-view />

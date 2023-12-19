@@ -1,5 +1,5 @@
-export default class OLE extends require("../model") {
+export default class OLE extends require('../model') {
   static get type() {
-    return "OLE";
+    return 'OLE'
   }
 }

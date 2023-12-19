@@ -1,10 +1,10 @@
 <script>
-import BaseCameraIcon from "@/components/icons/BaseCameraIcon";
+import BaseCameraIcon from '@/components/icons/BaseCameraIcon'
 // import BaseArrowDownIcon from "@/components/icons/BaseArrowDownIcon";
 // import BaseButton from "@/components/Reusable/BaseButton";
 
 export default {
-  name: "FileUploader",
+  name: 'FileUploader',
   components: {
     BaseCameraIcon,
     // BaseArrowDownIcon,
@@ -17,47 +17,52 @@ export default {
     },
   },
   beforeRouteLeave(to, from, next) {
-    this.excelFile = null;
-    next();
+    this.excelFile = null
+    next()
   },
   data() {
     return {
       excelFile: null,
-    };
+    }
   },
   computed: {
     size() {
       if (this.excelFile) {
-        const kilobyte = this.excelFile.size / 1024;
+        const kilobyte = this.excelFile.size / 1024
         if (kilobyte > 10) {
-          return Math.round(kilobyte / 1024) + " МБ";
+          return `${Math.round(kilobyte / 1024)} МБ`
         }
 
-        return Math.round(kilobyte) + " КБ";
+        return `${Math.round(kilobyte)} КБ`
       }
-      return 0;
+      return 0
     },
   },
   methods: {
     triggerUploadEvent() {
-      this.excelFile = this.$refs["file-input"].files;
-      this.$emit("upload-image", this.excelFile);
-      this.excelFile = null;
+      this.excelFile = this.$refs['file-input'].files
+      this.$emit('upload-image', this.excelFile)
+      this.excelFile = null
     },
   },
-};
+}
 </script>
 
 <template>
   <div class="upload__content">
     <!--   FILE NOT UPLOAD YET     -->
     <div class="d-flex flex-column justify-content-center align-items-center">
-      <BaseCameraIcon :width="30" :height="27" fill="#A78BFA" />
+      <BaseCameraIcon
+        :width="30"
+        :height="27"
+        fill="#A78BFA"
+      />
       <p>{{ $t("objects.create.plan.add_image") }}</p>
       {{ excelFile }}
     </div>
     <input
       v-if="!excelFile"
+      ref="file-input"
       :value="excelFile"
       type="file"
       :multiple="multiple"
@@ -65,8 +70,7 @@ export default {
       name="upload-image"
       class="upload__content-input"
       @change="triggerUploadEvent"
-      ref="file-input"
-    />
+    >
   </div>
 </template>
 

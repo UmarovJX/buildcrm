@@ -1,12 +1,12 @@
 <script>
-import { computed } from "vue";
-import { useShowPrice } from "@/composables/useShowPrice";
-import { XIcon } from "@/components/ui-components/material-icons";
-import { XCircularBackground } from "@/components/ui-components/circular-background";
-import ApartmentsPermission from "@/permission/apartments";
+import { computed } from 'vue'
+import { useShowPrice } from '@/composables/useShowPrice'
+import { XIcon } from '@/components/ui-components/material-icons'
+import { XCircularBackground } from '@/components/ui-components/circular-background'
+import ApartmentsPermission from '@/permission/apartments'
 
 export default {
-  name: "HidePriceButton",
+  name: 'HidePriceButton',
 
   components: {
     XIcon,
@@ -16,16 +16,14 @@ export default {
     return {
       hidePricePermission:
         ApartmentsPermission.getApartmentHidePricePermission(),
-    };
+    }
   },
   setup() {
-    const { showPrice, changeHide } = useShowPrice();
-    const iconName = computed(() =>
-      showPrice.value ? "visibility" : "visibility_off"
-    );
-    return { iconName, changeHide };
+    const { showPrice, changeHide } = useShowPrice()
+    const iconName = computed(() => (showPrice.value ? 'visibility' : 'visibility_off'))
+    return { iconName, changeHide }
   },
-};
+}
 </script>
 <template>
   <div>
@@ -33,8 +31,8 @@ export default {
       v-if="hidePricePermission"
       class="bg-violet-500"
       :padding="0.5"
-      @click="changeHide"
       style="user-select: none; cursor: pointer"
+      @click="changeHide"
     >
       <x-icon
         :name="iconName"

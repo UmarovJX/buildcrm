@@ -1,13 +1,13 @@
 <script>
-import { makeProp } from "@/util/props";
-import { PROP_TYPE_BOOLEAN } from "@/constants/props";
+import { makeProp } from '@/util/props'
+import { PROP_TYPE_BOOLEAN } from '@/constants/props'
 
 export default {
-  name: "BottomClipboard",
+  name: 'BottomClipboard',
   props: {
     show: makeProp(PROP_TYPE_BOOLEAN, true),
   },
-};
+}
 </script>
 
 <template>

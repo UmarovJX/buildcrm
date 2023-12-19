@@ -1,6 +1,6 @@
 <script>
 export default {
-  name: "BaseCheckbox2",
+  name: 'BaseCheckbox2',
   components: {},
   props: {
     disabled: {
@@ -14,25 +14,25 @@ export default {
     },
     label: {
       type: String,
-      default: "",
+      default: '',
     },
   },
   computed: {
     checked: {
       get() {
-        return this.value;
+        return this.value
       },
       set(newValue) {
-        this.$emit("input", newValue);
+        this.$emit('input', newValue)
       },
     },
   },
   methods: {
     handleChange() {
-      this.checked = !this.checked;
+      this.checked = !this.checked
     },
   },
-};
+}
 </script>
 
 <template>
@@ -43,9 +43,9 @@ export default {
         type="checkbox"
         name="checkbox"
         :checked="checked"
-        @change="handleChange"
         class="mr-3"
-      />{{ label }}
+        @change="handleChange"
+      >{{ label }}
     </label>
   </div>
 </template>

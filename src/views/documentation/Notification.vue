@@ -1,10 +1,11 @@
 <script>
-import DocHeader from "@/views/documentation/DocHeader";
-import BaseNotification from "@/components/Reusable/BaseNotification";
+import DocHeader from '@/views/documentation/DocHeader'
+import BaseNotification from '@/components/Reusable/BaseNotification'
+
 export default {
-  name: "Notification",
+  name: 'Notification',
   components: { BaseNotification, DocHeader },
-};
+}
 </script>
 
 <template>

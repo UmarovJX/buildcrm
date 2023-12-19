@@ -1,65 +1,65 @@
-import { axiosV1CRM } from "@/services/core/base";
-import Core from "@/services/core/index";
+import { axiosV1CRM } from '@/services/core/base'
+import Core from '@/services/core/index'
 
 class Companies extends Core {
   constructor(axios = axiosV1CRM) {
-    super(axios);
+    super(axios)
   }
 
   getCompaniesList() {
-    return this.get("companies");
+    return this.get('companies')
   }
 
   getCompany(companyId) {
-    return this.get(`companies/${companyId}`);
+    return this.get(`companies/${companyId}`)
   }
 
   getCompanyBranch(branchId) {
-    return this.get(`companies/${branchId}`);
+    return this.get(`companies/${branchId}`)
   }
 
   getCompanyType() {
-    return this.get("companies/types");
+    return this.get('companies/types')
   }
 
   updateCompany(company) {
-    return this.put(`companies/${company.id}`, company);
+    return this.put(`companies/${company.id}`, company)
   }
 
   changeStatusCompany(company, detailId, data) {
     return this.post(
       `companies/${company}/payment-details/${detailId}/isPrimary`,
-      data
-    );
+      data,
+    )
   }
 
   getPaymentsList(companyId) {
-    return this.get(`companies/${companyId}/payment-details`);
+    return this.get(`companies/${companyId}/payment-details`)
   }
 
   addPayment(companyId, form) {
-    return this.post(`companies/${companyId}/payment-details`, form);
+    return this.post(`companies/${companyId}/payment-details`, form)
   }
 
   getPaymentId(companyId, id) {
-    return this.get(`companies/${companyId}/payment-details/${id}`);
+    return this.get(`companies/${companyId}/payment-details/${id}`)
   }
 
   deletePayment(companyId, id) {
-    return this.delete(`companies/${companyId}/payment-details/${id}`);
+    return this.delete(`companies/${companyId}/payment-details/${id}`)
   }
 
   updatePayment(companyId, id, data) {
-    return this.put(`companies/${companyId}/payment-details/${id}`, data);
+    return this.put(`companies/${companyId}/payment-details/${id}`, data)
   }
 
   deleteCompany(id) {
-    return this.delete(`companies/${id}`);
+    return this.delete(`companies/${id}`)
   }
 
   createNewCompany(newCompany) {
-    return this.post("companies", newCompany);
+    return this.post('companies', newCompany)
   }
 }
 
-export default Companies;
+export default Companies

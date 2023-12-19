@@ -1,11 +1,13 @@
-export default class symbol extends require("./text") {
+export default class symbol extends require('./text') {
   static get type() {
-    return "symbol";
+    return 'symbol'
   }
+
   getText() {
-    return String.fromCharCode(ParseInt("0x" + this._attr("w:char")));
+    return String.fromCharCode(ParseInt(`0x${this._attr('w:char')}`))
   }
+
   getFont() {
-    return this._attr("w:font");
+    return this._attr('w:font')
   }
 }

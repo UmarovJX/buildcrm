@@ -1,10 +1,11 @@
 <script>
-import DocHeader from "@/views/documentation/DocHeader";
-import BaseTooltip from "@/components/Reusable/BaseTooltip";
+import DocHeader from '@/views/documentation/DocHeader'
+import BaseTooltip from '@/components/Reusable/BaseTooltip'
+
 export default {
-  name: "Tooltip",
+  name: 'Tooltip',
   components: { BaseTooltip, DocHeader },
-};
+}
 </script>
 
 <template>
@@ -13,7 +14,10 @@ export default {
     <div class="tooltip-container-content">
       <div class="tooltip-container-content-row">
         <span id="target1">Trigger top</span>
-        <BaseTooltip target="target1" text="Tooltip on top" />
+        <BaseTooltip
+          target="target1"
+          text="Tooltip on top"
+        />
         <span id="target2">Trigger bottom</span>
         <BaseTooltip
           target="target2"

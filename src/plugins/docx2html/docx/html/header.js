@@ -1,15 +1,15 @@
-import Converter from "./converter";
+import Converter from './converter'
 
 export default class Header extends Converter {
   get wordType() {
-    return "header";
+    return 'header'
   }
 
   get tag() {
-    return "header";
+    return 'header'
   }
 
   _shouldIgnore() {
-    return this.wordModel.location != "default";
+    return this.wordModel.location != 'default'
   }
 }

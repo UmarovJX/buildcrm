@@ -1,27 +1,29 @@
 <script>
-import { XIcon } from "@/components/ui-components/material-icons";
-import BaseButton from "@/components/Reusable/BaseButton";
-import CountDown from "@/components/Reusable/CountDown";
-import AppHeader from "@/components/Header/AppHeader";
-import TabTitle from "@/views/checkoutV2/elements/TabTitle";
-import ChClientDetails from "@/views/checkoutV2/components/ClientDetails";
-import ChApartmentsOverview from "@/views/checkoutV2/components/ApartmentsOverview";
-import ChReview from "@/views/checkoutV2/components/Review";
-import AppBreadcrumb from "@/components/AppBreadcrumb";
-import { XModalCenter } from "@/components/ui-components/modal-center";
-import { XFormInput } from "@/components/ui-components/form-input";
-import { XLoadingWrapper } from "@/components/ui-components/loading";
-import { XCircularBackground } from "@/components/ui-components/circular-background";
-import { mapActions, mapGetters, mapMutations, mapState } from "vuex";
-import api from "@/services/api";
-import { checkoutV1 } from "@/services/checkout";
-import { dateProperties } from "@/util/calendar";
-import { NOTIFY } from "@/constants/names";
-import { headerItems } from "@/views/checkoutV2/helper/headerComputed";
-import Permission from "@/permission";
+import { XIcon } from '@/components/ui-components/material-icons'
+import BaseButton from '@/components/Reusable/BaseButton'
+import CountDown from '@/components/Reusable/CountDown'
+import AppHeader from '@/components/Header/AppHeader'
+import TabTitle from '@/views/checkoutV2/elements/TabTitle'
+import ChClientDetails from '@/views/checkoutV2/components/ClientDetails'
+import ChApartmentsOverview from '@/views/checkoutV2/components/ApartmentsOverview'
+import ChReview from '@/views/checkoutV2/components/Review'
+import AppBreadcrumb from '@/components/AppBreadcrumb'
+import { XModalCenter } from '@/components/ui-components/modal-center'
+import { XFormInput } from '@/components/ui-components/form-input'
+import { XLoadingWrapper } from '@/components/ui-components/loading'
+import { XCircularBackground } from '@/components/ui-components/circular-background'
+import {
+  mapActions, mapGetters, mapMutations, mapState,
+} from 'vuex'
+import api from '@/services/api'
+import { checkoutV1 } from '@/services/checkout'
+import { dateProperties } from '@/util/calendar'
+import { NOTIFY } from '@/constants/names'
+import { headerItems } from '@/views/checkoutV2/helper/headerComputed'
+import Permission from '@/permission'
 
 export default {
-  name: "Index",
+  name: 'Index',
   components: {
     AppBreadcrumb,
     XLoadingWrapper,
@@ -38,13 +40,13 @@ export default {
     XCircularBackground,
   },
   beforeRouteLeave(to, from, next) {
-    this.clearCheckoutState();
-    return next();
+    this.clearCheckoutState()
+    return next()
   },
   data() {
     return {
       userComment: {
-        vBind: "",
+        vBind: '',
         showModal: false,
         applyButtonLoading: false,
       },
@@ -66,259 +68,259 @@ export default {
         },
       },
       permission: Permission,
-    };
+    }
   },
 
   async created() {
-    this.setFunctionType(this.$route);
+    this.setFunctionType(this.$route)
 
     if (this.isUpdateMode) {
-      await this.fetchUpdateClientData();
+      await this.fetchUpdateClientData()
     } else {
-      await this.init();
+      await this.init()
     }
   },
 
   computed: {
-    ...mapState("CheckoutV2", [
-      "apartments",
-      "created_by",
-      "contract_number",
-      "uuid",
-      "order",
-      "comment",
-      "trashStorage",
-      "clientData",
-      "componentFunction",
-      "version",
+    ...mapState('CheckoutV2', [
+      'apartments',
+      'created_by',
+      'contract_number',
+      'uuid',
+      'order',
+      'comment',
+      'trashStorage',
+      'clientData',
+      'componentFunction',
+      'version',
     ]),
-    ...mapGetters("CheckoutV2", [
-      "isCreateMode",
-      "isUpdateMode",
-      "getUpdateStatus",
-      "findApmIdx",
+    ...mapGetters('CheckoutV2', [
+      'isCreateMode',
+      'isUpdateMode',
+      'getUpdateStatus',
+      'findApmIdx',
     ]),
     headerItems,
     flexCenter() {
-      return "d-flex justify-content-center align-items-center";
+      return 'd-flex justify-content-center align-items-center'
     },
   },
 
   methods: {
-    ...mapMutations("CheckoutV2", [
-      "reset",
-      "setClientData",
-      "setFunctionType",
+    ...mapMutations('CheckoutV2', [
+      'reset',
+      'setClientData',
+      'setFunctionType',
     ]),
-    ...mapActions("CheckoutV2", [
-      "setup",
-      "initEditItems",
-      "changeFirstAttempt",
-      "clearCheckoutState",
+    ...mapActions('CheckoutV2', [
+      'setup',
+      'initEditItems',
+      'changeFirstAttempt',
+      'clearCheckoutState',
     ]),
-    ...mapActions("notify", ["openNotify"]),
+    ...mapActions('notify', ['openNotify']),
     async init() {
       try {
-        this.startFetching();
-        const orderId = this.$route.params.id;
-        const { data } = await api.orders.fetchCheckoutData(orderId);
+        this.startFetching()
+        const orderId = this.$route.params.id
+        const { data } = await api.orders.fetchCheckoutData(orderId)
         if (data) {
           const context = {
             order: data,
             uuid: data.uuid,
             expiry_at: data.expiry_at,
             orders: data.orders,
-          };
-          this.expiry_at = data.expiry_at;
-          await this.setup(context);
-          this.startCounter();
-          this.turnOnValidation();
+          }
+          this.expiry_at = data.expiry_at
+          await this.setup(context)
+          this.startCounter()
+          this.turnOnValidation()
         }
       } catch (e) {
-        this.toastedWithErrorCode(e);
-        this.redirect();
+        this.toastedWithErrorCode(e)
+        this.redirect()
       } finally {
-        this.finishFetching();
+        this.finishFetching()
       }
     },
 
     redirect() {
       this.$router.push({
-        name: "apartments",
+        name: 'apartments',
         params: {
           object: this.$route.params.object,
         },
-      });
+      })
     },
 
     startCounter() {
       this.expiry_at = this.$moment(this.expiry_at)
-        .utcOffset("+0500")
-        .format("YYYY-MM-DD H:mm:ss");
+        .utcOffset('+0500')
+        .format('YYYY-MM-DD H:mm:ss')
 
       const current = this.$moment(new Date())
-        .utcOffset("+0500")
-        .format("YYYY-MM-DD H:mm:ss");
+        .utcOffset('+0500')
+        .format('YYYY-MM-DD H:mm:ss')
 
       const expired = this.$moment(this.order.expiry_at)
-        .utcOffset("+0500")
-        .format("YYYY-MM-DD H:mm:ss");
+        .utcOffset('+0500')
+        .format('YYYY-MM-DD H:mm:ss')
 
-      const time = new Date(current) - new Date(expired);
+      const time = new Date(current) - new Date(expired)
       if (time > 0) {
-        this.expiredConfirm();
+        this.expiredConfirm()
       }
     },
 
     startFetching() {
-      this.isFetching = true;
+      this.isFetching = true
     },
 
     finishFetching() {
-      this.isFetching = false;
+      this.isFetching = false
     },
 
     startSubmitting() {
-      this.isSubmitting = true;
+      this.isSubmitting = true
     },
 
     finishSubmitting() {
-      this.isSubmitting = false;
+      this.isSubmitting = false
     },
 
     async expiredConfirm() {
       if (this.isUpdateMode) {
-        this.$router.go(-1);
-        return;
+        this.$router.go(-1)
+        return
       }
 
       try {
-        this.startSubmitting();
+        this.startSubmitting()
         await api.orders
           .deleteOrderHold(this.order.uuid)
           .then(() => {
             this.$router.push({
-              name: "apartments",
+              name: 'apartments',
               params: {
                 object: this.$route.params.object,
               },
-            });
+            })
           })
-          .catch(() => this.redirect());
+          .catch(() => this.redirect())
       } catch (error) {
-        this.redirect();
-        this.toastedWithErrorCode(error);
+        this.redirect()
+        this.toastedWithErrorCode(error)
       } finally {
-        this.finishSubmitting();
+        this.finishSubmitting()
       }
     },
 
     changeStepState(idx) {
-      this.stepStateIdx = idx;
+      this.stepStateIdx = idx
     },
 
     async firstStepReadyToNext() {
-      const clientDetailsRef = this.$refs["client-details-observer"];
-      const vld = await clientDetailsRef.validateFields();
+      const clientDetailsRef = this.$refs['client-details-observer']
+      const vld = await clientDetailsRef.validateFields()
       if (vld) {
         try {
-          this.startSubmitting();
-          const clientForm = clientDetailsRef.sendForm();
-          const { data } = await api.clientsV2.createClient(clientForm);
+          this.startSubmitting()
+          const clientForm = clientDetailsRef.sendForm()
+          const { data } = await api.clientsV2.createClient(clientForm)
           if (data) {
             this.setClientData({
               ...clientForm,
               clientId: data.id,
               id: data.id,
-            });
-            return true;
+            })
+            return true
           }
-          return false;
+          return false
         } catch (e) {
           if (e.response.status === 422) {
             await this.openNotify({
-              type: "error",
+              type: 'error',
               message: Object.values(e.response.data)[0],
-            });
+            })
           } else {
             await this.openNotify({
-              type: "error",
+              type: 'error',
               message: e.message,
-            });
+            })
           }
-          return false;
+          return false
         } finally {
-          this.finishSubmitting();
+          this.finishSubmitting()
         }
       } else {
         await this.openNotify({
-          type: "error",
-          message: this.$t("fields_not_filled_out_or_incorrectly"),
-        });
-        return false;
+          type: 'error',
+          message: this.$t('fields_not_filled_out_or_incorrectly'),
+        })
+        return false
       }
     },
 
     async secondStepReadyToNext() {
-      let {
+      const {
         isTheLastStep,
         completeFields,
         checkValidation,
         isCurrentFullFilled,
         changeApmTabIndex,
-      } = this.$refs["apartments-overview"];
+      } = this.$refs['apartments-overview']
 
       const isInitialZero = this.apartments.some(
-        (a) => a.calc.initial_price < 1
-      );
+        a => a.calc.initial_price < 1,
+      )
 
       if (isInitialZero) {
         if (this.permission.hasAdminRole() || this.permission.isMainManager()) {
           await this.openNotify({
-            type: "warning",
-            message: this.$t("checkout_warning_when_initial_set_to_zero"),
+            type: 'warning',
+            message: this.$t('checkout_warning_when_initial_set_to_zero'),
             duration: 6000,
-          });
+          })
         } else {
           await this.openNotify({
-            type: "error",
+            type: 'error',
             message: this.$t(
-              "checkout_permission_error_when_initial_set_to_zero"
+              'checkout_permission_error_when_initial_set_to_zero',
             ),
             duration: 6000,
-          });
-          return false;
+          })
+          return false
         }
       }
 
-      const vR = await completeFields();
+      const vR = await completeFields()
 
       if (!vR) {
         await this.openNotify({
-          type: "error",
-          message: this.$t("fields_not_filled_out_or_incorrectly"),
-        });
+          type: 'error',
+          message: this.$t('fields_not_filled_out_or_incorrectly'),
+        })
       }
 
       if (isTheLastStep) {
-        return vR;
-      } else if ((await checkValidation()) && isCurrentFullFilled()) {
-        changeApmTabIndex();
+        return vR
+      } if ((await checkValidation()) && isCurrentFullFilled()) {
+        changeApmTabIndex()
       }
 
-      this.reset();
-      return false;
+      this.reset()
+      return false
     },
 
     async submitOnUpdate() {
       try {
         /* ? ENABLE TO EDIT IN ALL STATUS */
         this.handleActionTracker({
-          step: "second",
+          step: 'second',
           condition: true,
-        });
-        this.permissionToNavigate("second");
-        this.$nextTick(() => this.changeStepState(1));
+        })
+        this.permissionToNavigate('second')
+        this.$nextTick(() => this.changeStepState(1))
 
         /* ? PREVIOUS RULE */
         // const {order_uuid} = this.apartments[0];
@@ -351,61 +353,61 @@ export default {
         // }
       } catch (e) {
         await this.openNotify({
-          type: "error",
+          type: 'error',
           message: e.response.data.message ?? e.message,
-        });
+        })
       }
     },
 
     async moveToNextForm() {
       switch (this.stepStateIdx) {
         case 0: {
-          const isFirstStepReady = await this.firstStepReadyToNext();
+          const isFirstStepReady = await this.firstStepReadyToNext()
           if (isFirstStepReady) {
             if (this.isUpdateMode) {
-              await this.submitOnUpdate();
+              await this.submitOnUpdate()
             } else {
               this.handleActionTracker({
-                step: "second",
+                step: 'second',
                 condition: true,
-              });
-              this.permissionToNavigate("second");
-              this.$nextTick(() => this.changeStepState(1));
+              })
+              this.permissionToNavigate('second')
+              this.$nextTick(() => this.changeStepState(1))
             }
           } else {
             this.handleActionTracker({
-              step: "second",
+              step: 'second',
               condition: false,
-            });
+            })
           }
-          break;
+          break
         }
         case 1: {
-          const isSecondStepReady = await this.secondStepReadyToNext();
+          const isSecondStepReady = await this.secondStepReadyToNext()
           if (isSecondStepReady) {
             this.handleActionTracker({
-              step: "third",
+              step: 'third',
               condition: true,
-            });
-            this.permissionToNavigate("third");
-            this.$nextTick(() => this.changeStepState(2));
+            })
+            this.permissionToNavigate('third')
+            this.$nextTick(() => this.changeStepState(2))
           } else {
             this.handleActionTracker({
-              step: "third",
+              step: 'third',
               condition: false,
-            });
+            })
           }
-          break;
+          break
         }
         case 2: {
-          this.openCommentModal();
+          this.openCommentModal()
         }
       }
     },
 
     generateOrdersBody() {
       try {
-        return this.apartments.map((a) => {
+        return this.apartments.map(a => {
           const orderCtx = {
             uuid: a.order_uuid,
             discount_id: a.calc.discount.id,
@@ -415,81 +417,81 @@ export default {
             contract_date: a.calc.contract_date,
             discount_amount: a.calc.total_discount,
             comment: this.userComment.vBind,
-          };
-
-          if (a.edit.contract_number) {
-            orderCtx.contract_number = a.contract_number;
           }
 
-          const hasEditOnMonthly = a.calc.credit_months.some((crd) => crd.edit);
+          if (a.edit.contract_number) {
+            orderCtx.contract_number = a.contract_number
+          }
+
+          const hasEditOnMonthly = a.calc.credit_months.some(crd => crd.edit)
           if (a.edit.monthly && hasEditOnMonthly) {
-            orderCtx.monthly = [];
+            orderCtx.monthly = []
             for (let i = 0; i < a.calc.credit_months.length; i++) {
-              const p = a.calc.credit_months[i];
-              const { ymd } = dateProperties(p.month, "string");
+              const p = a.calc.credit_months[i]
+              const { ymd } = dateProperties(p.month, 'string')
               orderCtx.monthly.push({
                 date: ymd,
                 amount: p.amount,
                 edited: (+p.edit).toString(),
-              });
+              })
             }
           }
 
           const hasEditOnInitial = a.calc.initial_payments.some(
-            (initial) => initial.edit
-          );
+            initial => initial.edit,
+          )
 
           if (
-            a.edit.first_payment ||
-            hasEditOnInitial ||
-            a.calc.initial_payments.length > 1 ||
-            a.edit.initial_price ||
-            a.edit.prepay ||
-            a.edit.discount
+            a.edit.first_payment
+            || hasEditOnInitial
+            || a.calc.initial_payments.length > 1
+            || a.edit.initial_price
+            || a.edit.prepay
+            || a.edit.discount
           ) {
-            orderCtx.initial_payments = [];
+            orderCtx.initial_payments = []
             for (let i = 0; i < a.calc.initial_payments.length; i++) {
-              const p = a.calc.initial_payments[i];
-              const { ymd } = dateProperties(p.month, "string");
+              const p = a.calc.initial_payments[i]
+              const { ymd } = dateProperties(p.month, 'string')
               // const isEdited =
               //   p.edit || a.edit.first_payment || a.edit.initial_price;
               orderCtx.initial_payments.push({
                 date: ymd,
                 amount: p.amount,
-                edited: "1",
-              });
+                edited: '1',
+              })
             }
           }
 
           if (a.edit.prepay || a.edit.initial_price) {
-            orderCtx.prepay_edited = true;
+            orderCtx.prepay_edited = true
           }
 
           // orderCtx.prepay = a.calc.prepay;
 
-          if (a.calc.discount.id === "other") {
+          if (a.calc.discount.id === 'other') {
             orderCtx.apartments = [
               {
                 id: a.id,
                 price: a.calc.base_price,
               },
-            ];
+            ]
           }
 
           if (a.edit.contract_number) {
-            orderCtx.contract_number = a.contract_number;
+            orderCtx.contract_number = a.contract_number
           }
 
-          return orderCtx;
-        });
+          return orderCtx
+        })
       } catch (e) {
-        console.error(e);
+        console.error(e)
       }
     },
 
     async authenticateApartments() {
       try {
-        this.startSubmitting();
+        this.startSubmitting()
         if (this.isUpdateMode) {
           await api.contractV2
             .contractOrderUpdate(this.apartments[0].order_uuid, {
@@ -498,18 +500,18 @@ export default {
             })
             .then(() => {
               this.$router.push({
-                name: "contracts-view",
+                name: 'contracts-view',
                 params: {
                   id: this.$route.params.id,
                 },
-              });
+              })
 
               this.openNotify({
                 type: NOTIFY.type.success,
-                message: this.$t("changes_successfully_saved"),
+                message: this.$t('changes_successfully_saved'),
                 duration: 6000,
-              });
-            });
+              })
+            })
         } else {
           const { data } = await checkoutV1.authenticateApartments({
             uuid: this.$route.params.id,
@@ -517,127 +519,124 @@ export default {
               orders: this.generateOrdersBody(),
               client_id: this.clientData.id,
             },
-          });
+          })
 
           await this.$router.push({
-            name: "checkout-contract-review",
+            name: 'checkout-contract-review',
             params: {
               object: data[0].object.id,
-              ids: data.map((contract) => contract.contract_number).join(","),
+              ids: data.map(contract => contract.contract_number).join(','),
             },
-          });
+          })
         }
       } catch (e) {
-        this.closeCommentModal();
+        this.closeCommentModal()
         await this.openNotify({
           type: NOTIFY.type.error,
           message: e.response.data.message,
-        });
+        })
       } finally {
-        this.finishSubmitting();
+        this.finishSubmitting()
       }
     },
 
     handleActionTracker({ step, condition }) {
-      this.actionTracker.allowNavigate[step] = condition;
+      this.actionTracker.allowNavigate[step] = condition
     },
 
     navigationPmHandler(step, condition) {
-      this.actionTracker.disable[step] = condition;
+      this.actionTracker.disable[step] = condition
     },
 
     getAllowNavProperty(property) {
-      return this.actionTracker.allowNavigate[property];
+      return this.actionTracker.allowNavigate[property]
     },
 
     showReviewSection() {
-      this.changeStepState(2);
+      this.changeStepState(2)
     },
 
     permissionToNavigate(position) {
       switch (position) {
-        case "second": {
-          const isValid =
-            this.getAllowNavProperty("second") &&
-            this.$refs["client-details-observer"].getObserverFlags().valid;
-          this.navigationPmHandler("second", !isValid);
-          break;
+        case 'second': {
+          const isValid = this.getAllowNavProperty('second')
+            && this.$refs['client-details-observer'].getObserverFlags().valid
+          this.navigationPmHandler('second', !isValid)
+          break
         }
-        case "third": {
-          const isValid =
-            this.$refs["client-details-observer"].getObserverFlags().passed;
+        case 'third': {
+          const isValid = this.$refs['client-details-observer'].getObserverFlags().passed
           if (!isValid) {
-            this.navigationPmHandler("third", true);
+            this.navigationPmHandler('third', true)
           } else {
-            const thirdState =
-              this.getAllowNavProperty("second") &&
-              this.apartments.some((apm) => !apm.validate.valid);
-            this.navigationPmHandler("third", thirdState);
+            const thirdState = this.getAllowNavProperty('second')
+              && this.apartments.some(apm => !apm.validate.valid)
+            this.navigationPmHandler('third', thirdState)
           }
-          break;
+          break
         }
       }
     },
 
     closeCommentModal() {
-      this.userComment.showModal = false;
-      this.userComment.vBind = "";
+      this.userComment.showModal = false
+      this.userComment.vBind = ''
     },
 
     openCommentModal() {
-      this.userComment.showModal = true;
+      this.userComment.showModal = true
     },
 
     deactivateOrder() {
       if (this.isUpdateMode) {
-        return this.$router.go(-1);
+        return this.$router.go(-1)
       }
-      this.openWarningModal();
+      this.openWarningModal()
     },
 
     hideWarningModal() {
-      this.closeWarningModal();
+      this.closeWarningModal()
     },
 
     openWarningModal() {
-      this.showWarningModal = true;
+      this.showWarningModal = true
     },
 
     closeWarningModal() {
-      this.showWarningModal = false;
+      this.showWarningModal = false
     },
 
     async fetchUpdateClientData() {
       try {
-        this.startFetching();
+        this.startFetching()
         const { data } = await api.contractV2.getUpdateContractView(
-          this.$route.params.id
-        );
-        this.initEditItems(data);
-        this.$refs["client-details-observer"].fillFormInUpdateMode({
+          this.$route.params.id,
+        )
+        this.initEditItems(data)
+        this.$refs['client-details-observer'].fillFormInUpdateMode({
           client: data.client,
-        });
+        })
 
-        if (this.getUpdateStatus === "contract") {
-          this.turnOnValidation();
+        if (this.getUpdateStatus === 'contract') {
+          this.turnOnValidation()
         }
       } catch (e) {
-        console.error(e);
+        console.error(e)
         await this.openNotify({
-          type: "error",
+          type: 'error',
           message: e?.response?.data?.message ?? e.message,
-        });
+        })
       } finally {
-        this.finishFetching();
+        this.finishFetching()
       }
     },
 
     turnOnValidation() {
-      this.permissionToNavigate("second");
-      this.permissionToNavigate("third");
+      this.permissionToNavigate('second')
+      this.permissionToNavigate('third')
     },
   },
-};
+}
 </script>
 
 <template>
@@ -651,15 +650,18 @@ export default {
           :go-back-method="deactivateOrder"
         />
       </template>
-      <template v-if="isCreateMode && expiry_at" #header-actions>
+      <template
+        v-if="isCreateMode && expiry_at"
+        #header-actions
+      >
         <div
           :class="flexCenter"
           class="checkout-timer background-violet-gradient mr-2"
         >
           <CountDown
             :deadline="expiry_at"
-            :showDays="false"
-            :showHours="false"
+            :show-days="false"
+            :show-hours="false"
             @timeElapsed="expiredConfirm"
           />
         </div>
@@ -668,15 +670,18 @@ export default {
 
     <div class="app-checkout-main">
       <b-tabs
-        pills
         v-model="stepStateIdx"
+        pills
         content-class="app-tabs-content"
         nav-class="app-tabs-content-header"
       >
         <!--  ?FIRST TAB 1   -->
         <b-tab active>
           <template #title>
-            <tab-title :step="1" :content="$t('client_details')" />
+            <tab-title
+              :step="1"
+              :content="$t('client_details')"
+            />
           </template>
 
           <x-loading-wrapper :loading="isFetching">
@@ -688,7 +693,10 @@ export default {
         <!--   ?SECOND TAB 2  -->
         <b-tab :disabled="actionTracker.disable.second">
           <template #title>
-            <tab-title :step="2" :content="$t('apartment_detail')" />
+            <tab-title
+              :step="2"
+              :content="$t('apartment_detail')"
+            />
           </template>
 
           <ch-apartments-overview
@@ -762,9 +770,9 @@ export default {
             {{ $t("comment_required_to_complete") }}
           </div>
           <x-form-input
+            v-model="userComment.vBind"
             class="w-100"
             :label="true"
-            v-model="userComment.vBind"
             :placeholder="`${$t('commentary')}`"
           />
         </div>
@@ -791,7 +799,10 @@ export default {
           class="x-font-size-36px font-craftworksans color-gray-600 d-flex align-items-center"
         >
           <x-circular-background class="bg-red-300 mr-2">
-            <x-icon name="priority_high" class="red-500" />
+            <x-icon
+              name="priority_high"
+              class="red-500"
+            />
           </x-circular-background>
           <span class="d-block">
             {{ $t("create_agree_apartments") }}
@@ -801,8 +812,12 @@ export default {
 
       <template #body>
         <div class="warning-before-cancel-wrapper">
-          <p class="mb-0">{{ $t("checkout_warning_before_cancel") }}</p>
-          <p class="mb-0">{{ $t("this_action_cannot_be_undone") }}</p>
+          <p class="mb-0">
+            {{ $t("checkout_warning_before_cancel") }}
+          </p>
+          <p class="mb-0">
+            {{ $t("this_action_cannot_be_undone") }}
+          </p>
         </div>
       </template>
     </x-modal-center>

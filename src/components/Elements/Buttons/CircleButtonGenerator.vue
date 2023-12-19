@@ -1,10 +1,10 @@
 <script>
 export default {
-  name: "CircleButtonGenerator",
+  name: 'CircleButtonGenerator',
   props: {
     background: {
       type: String,
-      default: "gray-100",
+      default: 'gray-100',
     },
     bgByVariable: {
       type: Boolean,
@@ -16,30 +16,30 @@ export default {
     },
     lengthBy: {
       type: String,
-      default: "rem",
+      default: 'rem',
     },
   },
-  emits: ["click"],
+  emits: ['click'],
   computed: {
     circleStyle() {
-      let generateStyle = "";
+      let generateStyle = ''
       if (this.bgByVariable) {
-        generateStyle += `background-color:var(--${this.background});`;
+        generateStyle += `background-color:var(--${this.background});`
       } else {
-        generateStyle += `background-color:${this.background};`;
+        generateStyle += `background-color:${this.background};`
       }
       generateStyle += `
         width:${this.circleLength}${this.lengthBy};
-        height:${this.circleLength}${this.lengthBy};`;
-      return generateStyle;
+        height:${this.circleLength}${this.lengthBy};`
+      return generateStyle
     },
   },
   methods: {
     triggerClick() {
-      this.$emit("click");
+      this.$emit('click')
     },
   },
-};
+}
 </script>
 
 <template>
@@ -48,7 +48,7 @@ export default {
     :style="circleStyle"
     @click="triggerClick"
   >
-    <slot></slot>
+    <slot />
   </button>
 </template>
 

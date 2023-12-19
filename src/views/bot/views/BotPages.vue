@@ -1,21 +1,21 @@
 <script>
-import api from "@/services/api";
-import { v3ServiceApi } from "@/services/v3/v3.service";
+import api from '@/services/api'
+import { v3ServiceApi } from '@/services/v3/v3.service'
 
-import Permission from "@/permission";
-import { XButton } from "@/components/ui-components/button";
-import BaseLoading from "@/components/Reusable/BaseLoading.vue";
-import { XIcon } from "@/components/ui-components/material-icons";
-import { XCircularBackground } from "@/components/ui-components/circular-background";
-import CreateBotPage from "@/views/bot/components/CreateBotPage.vue";
-import BaseTabPicker from "@/components/Reusable/BaseTabPicker.vue";
-import { XFormInput } from "@/components/ui-components/form-input";
+import Permission from '@/permission'
+import { XButton } from '@/components/ui-components/button'
+import BaseLoading from '@/components/Reusable/BaseLoading.vue'
+import { XIcon } from '@/components/ui-components/material-icons'
+import { XCircularBackground } from '@/components/ui-components/circular-background'
+import CreateBotPage from '@/views/bot/components/CreateBotPage.vue'
+import BaseTabPicker from '@/components/Reusable/BaseTabPicker.vue'
+import { XFormInput } from '@/components/ui-components/form-input'
 
-import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
-import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
+import BaseArrowLeftIcon from '@/components/icons/BaseArrowLeftIcon'
+import BaseArrowRightIcon from '@/components/icons/BaseArrowRightIcon'
 
 export default {
-  name: "BotPage",
+  name: 'BotPage',
   components: {
     BaseArrowLeftIcon,
     BaseArrowRightIcon,
@@ -30,8 +30,8 @@ export default {
   data() {
     return {
       allLangs: [],
-      currentLang: "",
-      upsertType: "create",
+      currentLang: '',
+      upsertType: 'create',
       showCreateModal: false,
       editStorage: {},
       editTags: {},
@@ -49,84 +49,84 @@ export default {
         loading: false,
       },
       permission: {
-        create: Permission.getUserPermission("bot.create"),
-        update: Permission.getUserPermission("bot.update"),
-        delete: Permission.getUserPermission("bot.delete"),
+        create: Permission.getUserPermission('bot.create'),
+        update: Permission.getUserPermission('bot.update'),
+        delete: Permission.getUserPermission('bot.delete'),
       },
-    };
+    }
   },
   computed: {
     tableFields() {
       return [
         {
-          key: "title",
-          label: this.$t("bot.table_title"),
-          thStyle: "width: 25%",
+          key: 'title',
+          label: this.$t('bot.table_title'),
+          thStyle: 'width: 25%',
         },
         {
-          key: "description",
-          label: this.$t("bot.description"),
+          key: 'description',
+          label: this.$t('bot.description'),
         },
         {
-          key: "slug",
-          label: this.$t("bot.slug"),
-          thStyle: "width: 25%",
+          key: 'slug',
+          label: this.$t('bot.slug'),
+          thStyle: 'width: 25%',
         },
         {
-          key: "actions",
-          label: "",
-          thStyle: "width: 100px",
+          key: 'actions',
+          label: '',
+          thStyle: 'width: 100px',
         },
-      ];
+      ]
     },
   },
   created() {
-    api.languagesV3.getAllLanguages().then((res) => {
-      this.allLangs.push(...res.data.result);
-      this.currentLang = this.allLangs[0];
-    });
-    this.fetchItems();
+    api.languagesV3.getAllLanguages().then(res => {
+      this.allLangs.push(...res.data.result)
+      this.currentLang = this.allLangs[0]
+    })
+    this.fetchItems()
   },
   methods: {
     setTab(e) {
-      this.currentLang = e;
+      this.currentLang = e
     },
     startLoading() {
-      this.table.loading = true;
+      this.table.loading = true
     },
     finishLoading() {
-      this.table.loading = false;
+      this.table.loading = false
     },
     create() {
-      this.upsertType = "create";
-      this.openCreateModal();
+      this.upsertType = 'create'
+      this.openCreateModal()
     },
     async fetchItems() {
       try {
-        this.startLoading();
+        this.startLoading()
         const response = await v3ServiceApi.botPages.fetchPages({
           page: this.$route.query.page || 1,
           limit: 20,
-        });
-        this.table.items = response.data.result;
-        this.table.pagination = response.data.pagination;
+        })
+        this.table.items = response.data.result
+        this.table.pagination = response.data.pagination
       } catch (e) {
-        this.toastedWithErrorCode(e);
+        this.toastedWithErrorCode(e)
       } finally {
-        this.finishLoading();
+        this.finishLoading()
       }
     },
 
     openCreateModal() {
-      this.showCreateModal = true;
+      this.showCreateModal = true
     },
     closeCreateModal() {
-      this.showCreateModal = false;
+      this.showCreateModal = false
     },
 
     botPageCreated() {
-      this.closeCreateModal();
-      this.fetchItems();
+      this.closeCreateModal()
+      this.fetchItems()
     },
 
     // async deleteItem(typeId) {
@@ -154,28 +154,28 @@ export default {
     //   });
     // },
     updateTags(item) {
-      this.editTags = item;
-      this.showEditTagModal = true;
+      this.editTags = item
+      this.showEditTagModal = true
     },
     async update(item) {
-      this.editStorage = item;
-      this.upsertType = "edit";
-      this.openCreateModal();
+      this.editStorage = item
+      this.upsertType = 'edit'
+      this.openCreateModal()
     },
     async deleteItem(item) {
-      console.log(item);
+      console.log(item)
       try {
-        this.startLoading();
-        await v3ServiceApi.botPages.remove(item);
-        await this.fetchItems();
+        this.startLoading()
+        await v3ServiceApi.botPages.remove(item)
+        await this.fetchItems()
       } catch (e) {
-        this.toastedWithErrorCode(e);
+        this.toastedWithErrorCode(e)
       } finally {
-        this.finishLoading();
+        this.finishLoading()
       }
     },
   },
-};
+}
 </script>
 
 <template>
@@ -193,7 +193,7 @@ export default {
         :current="currentLang"
         @tab-selected="setTab"
       ></base-tab-picker> -->
-      <div></div>
+      <div />
       <x-button
         v-if="permission.create"
         variant="secondary"
@@ -202,7 +202,10 @@ export default {
         @click="create"
       >
         <template #left-icon>
-          <x-icon name="add" class="violet-600" />
+          <x-icon
+            name="add"
+            class="violet-600"
+          />
         </template>
       </x-button>
     </div>
@@ -234,13 +237,16 @@ export default {
       </template>
 
       <template #cell(title)="{ item }">
-        <div class="" v-html="item.title[$i18n.locale]"></div>
+        <div
+          class=""
+          v-html="item.title[$i18n.locale]"
+        />
       </template>
       <template #cell(description)="{ item }">
         <div
           class=""
           v-html="item.description[$i18n.locale].replaceAll('\n', '<br>')"
-        ></div>
+        />
       </template>
       <template #cell(slug)="{ item }">
         <div class="d-flex align-items-center">
@@ -254,18 +260,24 @@ export default {
           class="ml-1 cursor-pointer d-flex"
         >
           <x-circular-background
-            @click="update(item)"
-            class="bg-violet-600"
             v-if="permission.update"
+            class="bg-violet-600"
+            @click="update(item)"
           >
-            <x-icon name="edit" class="color-white" />
+            <x-icon
+              name="edit"
+              class="color-white"
+            />
           </x-circular-background>
           <x-circular-background
-            @click="deleteItem(item)"
-            class="bg-red-600 ml-2"
             v-if="permission.delete"
+            class="bg-red-600 ml-2"
+            @click="deleteItem(item)"
           >
-            <x-icon name="delete" class="color-white" />
+            <x-icon
+              name="delete"
+              class="color-white"
+            />
           </x-circular-background>
         </div>
       </template>
@@ -315,13 +327,13 @@ export default {
       </div> -->
     </div>
     <create-bot-page
-      :all-languages="allLangs"
       v-if="showCreateModal"
+      :all-languages="allLangs"
       :upsert-type="upsertType"
       :edit-item="editStorage"
       @bot-page-created="botPageCreated"
       @close-modal="closeCreateModal"
-    ></create-bot-page>
+    />
   </div>
 </template>
 

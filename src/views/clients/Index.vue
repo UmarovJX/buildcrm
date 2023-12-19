@@ -1,21 +1,21 @@
 <script>
-import BaseFilterTabsContent from "@/components/Reusable/BaseFilterTabsContent2";
-import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
-import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
-import BaseLoading from "@/components/Reusable/BaseLoading";
-import { XFormSelect } from "@/components/ui-components/form-select";
-import { XIcon } from "@/components/ui-components/material-icons";
-import { XSquareBackground } from "@/components/ui-components/square-background";
-import ExportDropdown from "@/views/contracts/components/ExportDropdown.vue";
-import { v3ServiceApi } from "@/services/v3/v3.service";
+import BaseFilterTabsContent from '@/components/Reusable/BaseFilterTabsContent2'
+import BaseArrowLeftIcon from '@/components/icons/BaseArrowLeftIcon'
+import BaseArrowRightIcon from '@/components/icons/BaseArrowRightIcon'
+import BaseLoading from '@/components/Reusable/BaseLoading'
+import { XFormSelect } from '@/components/ui-components/form-select'
+import { XIcon } from '@/components/ui-components/material-icons'
+import { XSquareBackground } from '@/components/ui-components/square-background'
+import ExportDropdown from '@/views/contracts/components/ExportDropdown.vue'
+import { v3ServiceApi } from '@/services/v3/v3.service'
 
-import BaseInput from "@/components/Reusable/BaseInput2";
+import BaseInput from '@/components/Reusable/BaseInput2'
 
-import { phonePrettier } from "@/util/reusable";
-import AppHeader from "@/components/Header/AppHeader";
+import { phonePrettier } from '@/util/reusable'
+import AppHeader from '@/components/Header/AppHeader'
 
 export default {
-  name: "Clients",
+  name: 'Clients',
   components: {
     BaseInput,
 
@@ -25,7 +25,7 @@ export default {
     BaseArrowLeftIcon,
     BaseArrowRightIcon,
     BaseLoading,
-    XFormSelect: XFormSelect,
+    XFormSelect,
     XIcon,
     XSquareBackground,
   },
@@ -34,244 +34,242 @@ export default {
       timeout: null,
       showLoading: false,
       counts: { active: 0, no_active: 0 },
-      search: this.$route.query.field || "",
-      currentTab: this.$route.query.is_active == 0 ? "no_active" : "active",
-      clientType: "physical",
+      search: this.$route.query.field || '',
+      currentTab: this.$route.query.is_active == 0 ? 'no_active' : 'active',
+      clientType: 'physical',
       clientOptions: [
-        { value: "physical", name: "Физическое лицо" },
-        { value: "legal", name: "Юридическое лицо" },
+        { value: 'physical', name: 'Физическое лицо' },
+        { value: 'legal', name: 'Юридическое лицо' },
       ],
       tableItems: [],
       pagination: {},
       showByValue: this.$route.query.limit || 20,
-      showByOptions: [10, 20, 30, 40, 50].map((e) => ({ value: e, text: e })),
+      showByOptions: [10, 20, 30, 40, 50].map(e => ({ value: e, text: e })),
       searchOptions: [
-        { value: "contract", text: "Договор" },
-        { value: "phone", text: "Телефон" },
+        { value: 'contract', text: 'Договор' },
+        { value: 'phone', text: 'Телефон' },
       ],
-      searchValue: this.$route.query.phone ? "phone" : "contract",
+      searchValue: this.$route.query.phone ? 'phone' : 'contract',
       searchString:
-        ((this.$route.query.phone ? "phone" : "contract") === "contract"
+        ((this.$route.query.phone ? 'phone' : 'contract') === 'contract'
           ? this.$route.query.contract_number
-          : this.$route.query.phone) || "",
-    };
+          : this.$route.query.phone) || '',
+    }
   },
   computed: {
     statuses() {
       const t = {
-        active: "Активные",
-        no_active: "Неактивные",
-      };
-      return ["active", "no_active"].map((el) => ({
+        active: 'Активные',
+        no_active: 'Неактивные',
+      }
+      return ['active', 'no_active'].map(el => ({
         name: t[el],
         status: el,
         counts: this.counts[el],
-      }));
+      }))
     },
     searchPlaceholder() {
-      return this.clientType === "physical" ? "Серия паспорта" : "ИНН";
+      return this.clientType === 'physical' ? 'Серия паспорта' : 'ИНН'
     },
     query() {
-      return Object.assign({}, this.$route.query);
+      return { ...this.$route.query }
     },
     fields() {
       return [
         {
-          key: "name",
-          label: "Ф.И.О.",
+          key: 'name',
+          label: 'Ф.И.О.',
         },
         {
-          key: "subject",
-          label: "Тип клиента",
-          formatter: (t) =>
-            t === "legal" ? "Юридическое лицо" : "Физическое лицо",
+          key: 'subject',
+          label: 'Тип клиента',
+          formatter: t => (t === 'legal' ? 'Юридическое лицо' : 'Физическое лицо'),
         },
         {
-          key: "language",
-          label: "Язык",
-          formatter: (l) => this.$t(l),
-          thStyle: "width: 100px;",
+          key: 'language',
+          label: 'Язык',
+          formatter: l => this.$t(l),
+          thStyle: 'width: 100px;',
         },
         {
-          key: "phones",
-          label: "Телефоны",
+          key: 'phones',
+          label: 'Телефоны',
         },
         {
-          key: "order_counts",
-          label: "Количество заказов",
-          thStyle: "width: 150px;",
+          key: 'order_counts',
+          label: 'Количество заказов',
+          thStyle: 'width: 150px;',
           sortable: true,
         },
         {
-          key: "telegram_account_counts",
-          label: "Телеграмм аккануты",
-          thStyle: "width: 150px;",
+          key: 'telegram_account_counts',
+          label: 'Телеграмм аккануты',
+          thStyle: 'width: 150px;',
         },
-      ];
+      ]
     },
   },
   watch: {
     search() {
       if (this.timeout) {
-        clearTimeout(this.timeout);
+        clearTimeout(this.timeout)
       }
 
       this.timeout = setTimeout(() => {
-        const query = this.createQuery();
-        this.$router.replace({ query });
-      }, 500);
+        const query = this.createQuery()
+        this.$router.replace({ query })
+      }, 500)
     },
     searchString() {
       if (this.timeout) {
-        clearTimeout(this.timeout);
+        clearTimeout(this.timeout)
       }
 
       this.timeout = setTimeout(() => {
-        const query = this.createQuery();
-        this.$router.replace({ query });
-      }, 500);
+        const query = this.createQuery()
+        this.$router.replace({ query })
+      }, 500)
     },
     searchValue(v) {
-      if (!v)
+      if (!v) {
         setTimeout(() => {
-          this.searchValue = "contract";
-        }, 0);
-      this.searchString = "";
+          this.searchValue = 'contract'
+        }, 0)
+      }
+      this.searchString = ''
     },
     clientType() {
       if (this.search) {
-        this.fetchData();
+        this.fetchData()
       }
     },
     showByValue(n, o) {
-      const isNotUpdate = n === null || n === o;
-      if (isNotUpdate) return;
+      const isNotUpdate = n === null || n === o
+      if (isNotUpdate) return
       const localQuery = {
         ...this.createQuery(),
         page: 1,
-      };
-      const limit = n;
-      this.$router.replace({ query: { ...localQuery, limit } });
+      }
+      const limit = n
+      this.$router.replace({ query: { ...localQuery, limit } })
     },
-    "$route.query": {
-      handler: function () {
-        this.fetchData();
+    '$route.query': {
+      handler() {
+        this.fetchData()
       },
       deep: true,
     },
   },
   created() {
-    this.fetchData();
-    this.fetchCounts();
+    this.fetchData()
+    this.fetchCounts()
   },
   methods: {
     handleSort(e) {
-      const query = this.createQuery();
-      query.sortBy = e.sortBy;
-      query.orderBy = e.sortDesc ? "desc" : "asc";
-      this.$router.replace({ query });
+      const query = this.createQuery()
+      query.sortBy = e.sortBy
+      query.orderBy = e.sortDesc ? 'desc' : 'asc'
+      this.$router.replace({ query })
     },
     clientName(item) {
-      const locale = this.$i18n.locale;
-      let lang = "lotin";
-      if (locale === "ru") {
-        lang = "kirill";
+      const { locale } = this.$i18n
+      let lang = 'lotin'
+      if (locale === 'ru') {
+        lang = 'kirill'
       }
-      if (item.subject === "physical") {
-        const { first_name, last_name, middle_name } = item.attributes;
-        return `${first_name[lang]} ${last_name[lang]} ${middle_name[lang]} `;
-      } else {
-        return (
-          item.attributes.company.name[locale] + " " + item.attributes.name
-        );
+      if (item.subject === 'physical') {
+        const { first_name, last_name, middle_name } = item.attributes
+        return `${first_name[lang]} ${last_name[lang]} ${middle_name[lang]} `
       }
+      return (
+        `${item.attributes.company.name[locale]} ${item.attributes.name}`
+      )
     },
-    formattingPhone: (phone) => phonePrettier(phone),
+    formattingPhone: phone => phonePrettier(phone),
     checkLocales(name) {
-      return name[this.$i18n.locale];
+      return name[this.$i18n.locale]
     },
     clientView(item) {
       this.$router.push({
-        name: "client-view",
+        name: 'client-view',
         params: {
           uuid: item.id,
         },
-      });
+      })
     },
     fetchContentByStatus(status) {
-      this.currentTab = status;
-      const query = Object.assign({}, this.query);
+      this.currentTab = status
+      const query = { ...this.query }
       // eslint-disable-next-line no-prototype-builtins
-      if (query.hasOwnProperty("page")) {
-        delete query.page;
+      if (query.hasOwnProperty('page')) {
+        delete query.page
       }
 
-      const newQuery = { limit: this.showByValue, ...query };
-      newQuery.is_active = +(status !== "no_active");
+      const newQuery = { limit: this.showByValue, ...query }
+      newQuery.is_active = +(status !== 'no_active')
 
-      this.$router.replace({ query: newQuery });
+      this.$router.replace({ query: newQuery })
     },
     togglePhones(item) {
-      item.showPhones = !item.showPhones;
+      item.showPhones = !item.showPhones
     },
     changeCurrentPage(page) {
-      const currentPage = this.query.page;
-      if (page === currentPage) return;
-      this.$router.replace({ query: { ...this.query, page } });
+      const currentPage = this.query.page
+      if (page === currentPage) return
+      this.$router.replace({ query: { ...this.query, page } })
     },
     async fetchData() {
-      this.showLoading = true;
-      this.tableItems = [];
+      this.showLoading = true
+      this.tableItems = []
       await v3ServiceApi.clients
         .findAll(this.createQuery())
-        .then((response) => {
-          this.tableItems = response.data.result.map((el) => ({
+        .then(response => {
+          this.tableItems = response.data.result.map(el => ({
             ...el,
             showPhones: false,
-          }));
-          this.pagination = response.data.pagination;
+          }))
+          this.pagination = response.data.pagination
         })
         .finally(() => {
-          this.showLoading = false;
-        });
+          this.showLoading = false
+        })
     },
     async fetchCounts() {
       await v3ServiceApi.clients
         .getCount(this.createQuery())
-        .then((response) => {
-          this.counts = response.data.result;
-        });
+        .then(response => {
+          this.counts = response.data.result
+        })
     },
     createQuery() {
-      const query = this.query;
+      const { query } = this
       if (query.is_active === undefined) {
-        query.is_active = 1;
+        query.is_active = 1
       }
       if (!query.page) {
-        query.page = 1;
+        query.page = 1
       }
       if (!query.limit) {
-        query.limit = this.showByValue;
+        query.limit = this.showByValue
       }
       if (this.search) {
-        query.field = this.search;
-        query.subject = this.clientType;
+        query.field = this.search
+        query.subject = this.clientType
       } else {
-        delete query.subject;
-        delete query.field;
+        delete query.subject
+        delete query.field
       }
-      delete query.contract_number;
-      delete query.phone;
+      delete query.contract_number
+      delete query.phone
       if (this.searchString) {
-        if (this.searchValue === "contract")
-          query.contract_number = this.searchString;
-        else query.phone = this.searchString;
+        if (this.searchValue === 'contract') query.contract_number = this.searchString
+        else query.phone = this.searchString
       }
 
-      return query;
+      return query
     },
   },
-};
+}
 </script>
 
 <template>
@@ -300,19 +298,19 @@ export default {
           <div class="col-6">
             <div class="filter__apartment__price">
               <x-form-select
+                v-model="searchValue"
                 :label="false"
                 :options="searchOptions"
-                v-model="searchValue"
               />
               <div class="middle__position flex-grow-1">
                 <base-input
+                  v-model="searchString"
                   class="w-100"
                   :placeholder="
                     searchValue === 'contract'
                       ? 'Номер договора'
                       : 'Номер телефона'
                   "
-                  v-model="searchString"
                 />
               </div>
             </div>
@@ -320,9 +318,9 @@ export default {
           <div class="col-6">
             <div class="filter__apartment__price">
               <base-input
+                v-model="search"
                 class="w-100"
                 :placeholder="searchPlaceholder"
-                v-model="search"
               />
             </div>
           </div>
@@ -332,9 +330,9 @@ export default {
       <div class="col-3">
         <div class="filter__apartment__price">
           <x-form-select
+            v-model="clientType"
             value-field="value"
             text-field="name"
-            v-model="clientType"
             :multiple="false"
             :options="clientOptions"
             :placeholder="$t('Тип клиента')"
@@ -360,7 +358,10 @@ export default {
       @sort-changed="handleSort"
     >
       <template #cell(name)="{ item }">
-        <div class="d-flex align-items-center" @click="clientView(item)">
+        <div
+          class="d-flex align-items-center"
+          @click="clientView(item)"
+        >
           <div
             v-if="item.client_type?.is_vip"
             class="d-flex align-items-center mr-1"
@@ -417,7 +418,11 @@ export default {
             </template>
           </div>
           <template v-if="item.showPhones">
-            <div v-for="el in item.phones.slice(1)" :key="el.id" class="mt-2">
+            <div
+              v-for="el in item.phones.slice(1)"
+              :key="el.id"
+              class="mt-2"
+            >
               {{ formattingPhone(el.phone) }}
             </div>
           </template>
@@ -444,12 +449,17 @@ export default {
         <div
           class="d-flex justify-content-center align-items-center flex-column not__found"
         >
-          <p class="head">{{ $t("contracts_not_found.title") }}</p>
+          <p class="head">
+            {{ $t("contracts_not_found.title") }}
+          </p>
           <p>{{ $t("contracts_not_found.description") }}</p>
         </div>
       </template>
     </b-table>
-    <div v-if="!showLoading && pagination.totalPage" class="pagination__vue">
+    <div
+      v-if="!showLoading && pagination.totalPage"
+      class="pagination__vue"
+    >
       <!--   Pagination   -->
       <vue-paginate
         :page-count="pagination.totalPage"
@@ -479,9 +489,9 @@ export default {
       <!--  Show By Select    -->
       <div class="show__by">
         <x-form-select
+          v-model="showByValue"
           :label="false"
           :options="showByOptions"
-          v-model="showByValue"
         >
           <template #output-prefix>
             <span class="show-by-description">

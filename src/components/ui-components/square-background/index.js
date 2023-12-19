@@ -1,3 +1,3 @@
-import SquareBackground from "@/components/ui-components/square-background/SquareBackground.vue";
+import SquareBackground from '@/components/ui-components/square-background/SquareBackground.vue'
 
-export { SquareBackground as XSquareBackground };
+export { SquareBackground as XSquareBackground }

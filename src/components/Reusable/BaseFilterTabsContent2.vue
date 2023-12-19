@@ -1,7 +1,7 @@
 <script>
 export default {
-  name: "BaseFilterTabsContent2",
-  emits: ["get-new-content"],
+  name: 'BaseFilterTabsContent2',
+  emits: ['get-new-content'],
   props: {
     filterTabList: {
       type: Array,
@@ -12,24 +12,24 @@ export default {
       required: true,
     },
   },
-  mounted() {
-    console.log(this.filterTabList);
-  },
   watch: {
     current: {
       handler(v) {
-        console.log(v);
+        console.log(v)
       },
       deep: true,
     },
   },
+  mounted() {
+    console.log(this.filterTabList)
+  },
   methods: {
     getFilteredContent(status) {
-      console.log(status);
-      this.$emit("get-new-content", status);
+      console.log(status)
+      this.$emit('get-new-content', status)
     },
   },
-};
+}
 </script>
 
 <template>
@@ -39,11 +39,11 @@ export default {
         <div
           v-for="(fTab, index) in filterTabList"
           :key="'status_' + index"
-          @click="getFilteredContent(fTab.status)"
           class="filter__content-item"
           :class="{
             'filter__content-item-active': fTab.status === current,
           }"
+          @click="getFilteredContent(fTab.status)"
         >
           <div class="filter__content-item-inline">
             <span style="white-space: nowrap">{{ $t(`${fTab.name}`) }}</span>
@@ -55,7 +55,7 @@ export default {
               {{ fTab.counts }}
             </span>
           </div>
-          <div class="bottom__line"></div>
+          <div class="bottom__line" />
         </div>
       </div>
     </div>

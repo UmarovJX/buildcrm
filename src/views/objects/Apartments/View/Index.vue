@@ -1,13 +1,13 @@
 <script>
-import api from "@/services/api";
-import BaseArrowLeft from "@/components/icons/BaseArrowLeftIcon";
-import BaseArrowRight from "@/components/icons/BaseArrowRightIcon";
-import AppHeader from "@/components/Header/AppHeader";
-import ApartmentsPermission from "@/permission/apartments";
-import HidePriceButton from "@/components/Reusable/HidePriceButton.vue";
+import api from '@/services/api'
+import BaseArrowLeft from '@/components/icons/BaseArrowLeftIcon'
+import BaseArrowRight from '@/components/icons/BaseArrowRightIcon'
+import AppHeader from '@/components/Header/AppHeader'
+import ApartmentsPermission from '@/permission/apartments'
+import HidePriceButton from '@/components/Reusable/HidePriceButton.vue'
 
 export default {
-  name: "Index",
+  name: 'Index',
   components: {
     HidePriceButton,
     AppHeader,
@@ -15,96 +15,95 @@ export default {
     BaseArrowRight,
   },
   data() {
-    const objectId = this.$route.params.object;
+    const objectId = this.$route.params.object
 
     return {
       objectId,
       apartment: {},
-      apartmentName: "",
+      apartmentName: '',
       appLoading: true,
       commentsData: {},
       commentLoading: false,
       commentsViewPermission:
         ApartmentsPermission.getApartmentCommentsViewPermission(),
-    };
-  },
-  async created() {
-    await this.fetchApartmentView();
-  },
-  mounted() {
-    if (this.commentsViewPermission) {
-      this.getComments();
     }
   },
   computed: {
     status() {
-      if (!this.apartment["is_sold"]) {
-        return "unavailable";
+      if (!this.apartment.is_sold) {
+        return 'unavailable'
       }
-      return this.apartment.order.status;
+      return this.apartment.order.status
     },
     tabIndex: {
       get() {
-        const { name } = this.$route;
-        if (name === "apartment-view") {
-          return 0;
-        } else {
-          return 1;
+        const { name } = this.$route
+        if (name === 'apartment-view') {
+          return 0
         }
+        return 1
       },
       set(value) {
-        return value;
+        return value
       },
     },
+  },
+  async created() {
+    await this.fetchApartmentView()
+  },
+  mounted() {
+    if (this.commentsViewPermission) {
+      this.getComments()
+    }
   },
   methods: {
     updateContent() {
-      this.fetchApartmentView();
+      this.fetchApartmentView()
       if (this.commentsViewPermission) {
-        this.getComments();
+        this.getComments()
       }
     },
     async getComments() {
-      const paramsData = this.$route.query;
-      this.commentLoading = true;
-      const apartmentUuid = this.$route.params.id;
+      const paramsData = this.$route.query
+      this.commentLoading = true
+      const apartmentUuid = this.$route.params.id
       await api.apartmentsV2
         .getApartmentComments(this.objectId, apartmentUuid, paramsData)
-        .then((res) => {
-          this.commentsData = res.data;
+        .then(res => {
+          this.commentsData = res.data
         })
-        .catch((err) => {
-          this.toasted(err.message, "error");
+        .catch(err => {
+          this.toasted(err.message, 'error')
         })
         .finally(() => {
-          this.commentLoading = false;
-        });
+          this.commentLoading = false
+        })
     },
     async fetchApartmentView() {
-      this.appLoading = true;
-      const { object, id } = this.$route.params;
+      this.appLoading = true
+      const { object, id } = this.$route.params
       await api.apartmentsV2
         .getApartmentView(object, id)
-        .then((response) => {
-          this.apartment = response.data;
-          this.apartmentName = response.data.object.name;
+        .then(response => {
+          this.apartment = response.data
+          this.apartmentName = response.data.object.name
         })
-        .catch((error) => {
-          this.toastedWithErrorCode(error);
+        .catch(error => {
+          this.toastedWithErrorCode(error)
         })
         .finally(() => {
-          this.appLoading = false;
-        });
+          this.appLoading = false
+        })
     },
     tabChange(current, prev) {
       if (current && !prev) {
-        this.$router.replace({ name: "apartment-view-comment" });
+        this.$router.replace({ name: 'apartment-view-comment' })
       } else {
-        this.$router.replace({ name: "apartment-view" });
+        this.$router.replace({ name: 'apartment-view' })
       }
     },
   },
-};
+}
 </script>
 
 <template>
@@ -112,15 +111,27 @@ export default {
     <app-header>
       <template #header-breadcrumb>
         <div class="header-navigation d-flex align-items-center">
-          <div class="go__back" @click="$router.go(-1)">
-            <base-arrow-left :width="32" :height="32"></base-arrow-left>
+          <div
+            class="go__back"
+            @click="$router.go(-1)"
+          >
+            <base-arrow-left
+              :width="32"
+              :height="32"
+            />
           </div>
           <div class="breadcrumb__content">
             <div class="d-flex align-items-center">
               <span class="mr-2">{{ $t("objects.title") }}</span>
-              <base-arrow-right :width="16" :height="16" />
+              <base-arrow-right
+                :width="16"
+                :height="16"
+              />
               <span class="ml-2">{{ apartmentName }}</span>
-              <base-arrow-right :width="16" :height="16" />
+              <base-arrow-right
+                :width="16"
+                :height="16"
+              />
               <div class="ml-2">
                 {{ $t("apartment") }} № {{ apartment.number }}
               </div>
@@ -132,7 +143,7 @@ export default {
         </div>
       </template>
       <template #header-actions>
-        <hide-price-button></hide-price-button>
+        <hide-price-button />
       </template>
       <template #header-status>
         <div
@@ -185,18 +196,21 @@ export default {
 
     <b-tabs
       v-model="tabIndex"
-      @activate-tab="tabChange"
       class="custom-tab"
       card
+      @activate-tab="tabChange"
     >
       <template #tabs-start>
-        <div class="bottom__line"></div>
+        <div class="bottom__line" />
       </template>
       <b-tab title="Оформление">
         <!--   PRICE CONTENT     -->
       </b-tab>
 
-      <b-tab v-if="commentsViewPermission" title="Примечания">
+      <b-tab
+        v-if="commentsViewPermission"
+        title="Примечания"
+      >
         <!--   PRICE CONTENT     -->
       </b-tab>
     </b-tabs>
@@ -214,12 +228,10 @@ export default {
 
 <style lang="sass" scoped>
 
-
 .header-navigation
     margin-right: 4.25rem
     //max-width: 640px
     max-width: 720px
-
 
 .apartment__status
     font-family: Inter, sans-serif
@@ -257,7 +269,6 @@ export default {
         background-color: var(--gray-500) !important
         color: var(--white) !important
 
-
 .breadcrumb__content
     display: inline-flex
     flex-direction: column
@@ -265,7 +276,6 @@ export default {
     font-weight: 600
     font-size: 14px
     color: #9CA3AF
-
 
 .go__back
     width: 56px
@@ -277,12 +287,10 @@ export default {
     align-items: center
     cursor: pointer
 
-
 .head
     font-size: 24px
     line-height: 28px
     color: #4B5563
-
 
 ::v-deep .custom-tab
     margin-top: 3rem

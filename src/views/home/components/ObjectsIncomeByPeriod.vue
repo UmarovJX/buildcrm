@@ -1,11 +1,11 @@
 <script>
-import {keys} from "@/util/object";
-import {computed, getCurrentInstance, ref} from "vue";
-import {formatToPrice} from "@/util/reusable";
+import { keys } from '@/util/object'
+import { computed, getCurrentInstance, ref } from 'vue'
+import { formatToPrice } from '@/util/reusable'
 
-import {XIcon} from "@/components/ui-components/material-icons";
-import BaseLoading from "@/components/Reusable/BaseLoading.vue";
-import {XCircularBackground} from "@/components/ui-components/circular-background";
+import { XIcon } from '@/components/ui-components/material-icons'
+import BaseLoading from '@/components/Reusable/BaseLoading.vue'
+import { XCircularBackground } from '@/components/ui-components/circular-background'
 
 export default {
   name: 'ObjectsIncomeByPeriod',
@@ -17,24 +17,24 @@ export default {
   props: {
     data: {
       type: Object,
-      required: true
+      required: true,
     },
     busy: {
       type: Boolean,
-      required: true
-    }
+      required: true,
+    },
   },
   setup(props) {
     const vm = getCurrentInstance().proxy
 
     const items = computed(() => {
       const objKeys = keys(props.data)
-      let list = []
+      const list = []
       if (objKeys.length) {
         objKeys.forEach(key => {
           list.push({
             name: key,
-            ...props.data[key]
+            ...props.data[key],
           })
         })
       }
@@ -42,61 +42,63 @@ export default {
       return list
     })
 
-    function formatter(x){
-      return formatToPrice(x,2) + " " + vm.$t('ye')
+    function formatter(x) {
+      return `${formatToPrice(x, 2)} ${vm.$t('ye')}`
     }
 
     const tableFields = computed(() => [
       {
-        key: "name",
+        key: 'name',
         label: vm.$t('objects.title'),
       },
       {
-        key: "daily",
+        key: 'daily',
         label: vm.$t('daily'),
-        formatter
+        formatter,
       },
       {
-        key: "weekly",
+        key: 'weekly',
         label: vm.$t('weekly'),
-        formatter
+        formatter,
       },
       {
-        key: "monthly",
+        key: 'monthly',
         label: vm.$t('monthly'),
-        formatter
-      }
+        formatter,
+      },
     ])
 
     return {
       items,
-      tableFields
+      tableFields,
     }
-  }
+  },
 }
 </script>
 
 <template>
   <div>
-    <h3 class="gray-600 font-craftworksans">{{ $t('common.revenue_report') }}</h3>
+    <h3 class="gray-600 font-craftworksans">
+      {{ $t('common.revenue_report') }}
+    </h3>
     <b-table
-        id="my-table"
-        ref="apartment-list-table"
-        thead-tr-class="row__head__bottom-border"
-        tbody-tr-class="row__body__bottom-border"
-        class="table__list"
-        sticky-header
-        borderless
-        show-empty
-        responsive
-        sort-icon-left
-        :items="items"
-        :fields="tableFields"
-        :busy="busy"
-        :empty-text="$t('no_data')"
+      id="my-table"
+      ref="apartment-list-table"
+      thead-tr-class="row__head__bottom-border"
+      tbody-tr-class="row__body__bottom-border"
+      class="table__list"
+      sticky-header
+      borderless
+      show-empty
+      responsive
+      sort-icon-left
+      :items="items"
+      :fields="tableFields"
+      :busy="busy"
+      :empty-text="$t('no_data')"
     >
       <template #table-busy>
-        <base-loading/>
+        <base-loading />
       </template>
 
       <template #empty="scope">

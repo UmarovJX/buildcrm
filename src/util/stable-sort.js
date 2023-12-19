@@ -15,17 +15,16 @@
  * @param {function} sort compare function
  * @return {array}
  */
-export const stableSort = (array, compareFn) => {
+export const stableSort = (array, compareFn) =>
   // Using `.bind(compareFn)` on the wrapped anonymous function improves
   // performance by avoiding the function call setup. We don't use an arrow
   // function here as it binds `this` to the `stableSort` context rather than
   // the `compareFn` context, which wouldn't give us the performance increase.
-  return array
+  array
     .map((a, index) => [index, a])
     .sort(
       function (a, b) {
-        return this(a[1], b[1]) || a[0] - b[0];
-      }.bind(compareFn)
+        return this(a[1], b[1]) || a[0] - b[0]
+      }.bind(compareFn),
     )
-    .map((e) => e[1]);
-};
+    .map(e => e[1])

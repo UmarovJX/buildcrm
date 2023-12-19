@@ -1,11 +1,12 @@
 <script>
-let id = 3;
-import draggable from "vuedraggable";
+import draggable from 'vuedraggable'
+
+let id = 3
 
 export default {
-  name: "DraggableSort",
-  display: "Handle",
-  instruction: "Drag using the handle icon",
+  name: 'DraggableSort',
+  display: 'Handle',
+  instruction: 'Drag using the handle icon',
   // order: 5,
   components: {
     draggable,
@@ -13,49 +14,61 @@ export default {
   data() {
     return {
       list: [
-        { name: "John", text: "", id: 0 },
-        { name: "Joao", text: "", id: 1 },
-        { name: "Jean", text: "", id: 2 },
+        { name: 'John', text: '', id: 0 },
+        { name: 'Joao', text: '', id: 1 },
+        { name: 'Jean', text: '', id: 2 },
       ],
       dragging: false,
-    };
+    }
   },
   computed: {
     draggingInfo() {
-      return this.dragging ? "under drag" : "";
+      return this.dragging ? 'under drag' : ''
     },
   },
   methods: {
     removeAt(idx) {
-      this.list.splice(idx, 1);
+      this.list.splice(idx, 1)
     },
-    add: function () {
-      id++;
-      this.list.push({ name: "Juan " + id, id, text: "" });
+    add() {
+      id++
+      this.list.push({ name: `Juan ${id}`, id, text: '' })
     },
     log(event) {
-      console.log(event, "event drag sort");
+      console.log(event, 'event drag sort')
     },
   },
-};
+}
 </script>
 
 <template>
   <div class="row">
     <div class="col-7">
-      <draggable tag="ul" :list="list" class="list-group" handle=".handle">
+      <draggable
+        tag="ul"
+        :list="list"
+        class="list-group"
+        handle=".handle"
+      >
         <li
-          class="list-group-item"
           v-for="(element, idx) in list"
           :key="element.name"
+          class="list-group-item"
         >
-          <i class="fa fa-align-justify handle"></i>
+          <i class="fa fa-align-justify handle" />
 
           <span class="text">{{ element.name }} </span>
 
-          <input type="text" class="form-control" v-model="element.text" />
+          <input
+            v-model="element.text"
+            type="text"
+            class="form-control"
+          >
 
-          <i class="fa fa-times close" @click="removeAt(idx)"></i>
+          <i
+            class="fa fa-times close"
+            @click="removeAt(idx)"
+          />
         </li>
       </draggable>
     </div>

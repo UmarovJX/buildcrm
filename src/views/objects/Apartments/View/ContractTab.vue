@@ -1,28 +1,28 @@
 <script>
-import api from "@/services/api";
-import BaseLoading from "@/components/Reusable/BaseLoading";
-import BaseButton from "@/components/Reusable/BaseButton";
-import BasePrintIcon from "@/components/icons/BasePrintIcon";
-import Reserve from "@/components/Dashboard/Apartment/Components/Reserve";
-import Calculator from "@/components/Objects/view/elements/Calculator";
-import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
-import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
-import { mapGetters, mapMutations } from "vuex";
-import PrimaryTabItem from "@/components/Objects/view/elements/PrimaryTabItem";
-import { directive } from "vue-awesome-swiper";
-import "swiper/css/swiper.css";
+import api from '@/services/api'
+import BaseLoading from '@/components/Reusable/BaseLoading'
+import BaseButton from '@/components/Reusable/BaseButton'
+import BasePrintIcon from '@/components/icons/BasePrintIcon'
+import Reserve from '@/components/Dashboard/Apartment/Components/Reserve'
+import Calculator from '@/components/Objects/view/elements/Calculator'
+import BaseArrowLeftIcon from '@/components/icons/BaseArrowLeftIcon'
+import BaseArrowRightIcon from '@/components/icons/BaseArrowRightIcon'
+import { mapGetters, mapMutations } from 'vuex'
+import PrimaryTabItem from '@/components/Objects/view/elements/PrimaryTabItem'
+import { directive } from 'vue-awesome-swiper'
+import 'swiper/css/swiper.css'
 
 // import PromoSection from "@/components/objects/view/elements/PromoSection";
-import { Fancybox } from "@fancyapps/ui";
-import "@fancyapps/ui/dist/fancybox.css";
-import PdfTemplate from "@/components/PdfTemplate2";
-import { formatToPrice } from "@/util/reusable";
-import CheckoutPermission from "@/permission/checkout";
+import { Fancybox } from '@fancyapps/ui'
+import '@fancyapps/ui/dist/fancybox.css'
+import PdfTemplate from '@/components/PdfTemplate2'
+import { formatToPrice } from '@/util/reusable'
+import CheckoutPermission from '@/permission/checkout'
 // import BookedBlock from "@/views/objects/Apartments/view/BookedBlock";
 // import PeculiarityBox from "@/components/objects/view/elements/PeculiarityBox";
 
 export default {
-  name: "ApartmentView",
+  name: 'ApartmentView',
   components: {
     // BookedBlock,
     Reserve,
@@ -37,6 +37,9 @@ export default {
     BaseArrowLeftIcon,
     BaseArrowRightIcon,
   },
+  directives: {
+    swiper: directive,
+  },
   props: {
     appLoading: {
       type: Boolean,
@@ -47,29 +50,26 @@ export default {
       required: true,
     },
   },
-  directives: {
-    swiper: directive,
-  },
   data() {
     return {
       isDownloading: false,
-      imgDataUrl: "",
+      imgDataUrl: '',
       /* SLIDER OPTION */
       swiperOption: {
         slidesPerView: 1,
         spaceBetween: 0,
-        direction: "horizontal",
+        direction: 'horizontal',
         pagination: {
-          el: ".swiper-pagination",
-          type: "bullets",
+          el: '.swiper-pagination',
+          type: 'bullets',
           clickable: true,
         },
         paginationClickable: true,
         draggable: true,
         loop: false,
         navigation: {
-          nextEl: ".swiper-button-next",
-          prevEl: ".swiper-button-prev",
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev',
         },
       },
       /* SLIDER END */
@@ -80,20 +80,20 @@ export default {
       showReservationModal: false,
       printCalc: {},
       pdfVisible: false,
-      bookPermission: CheckoutPermission.getCheckoutPermission("book"),
-      checkoutPermission: CheckoutPermission.getCheckoutPermission("checkout"),
-      checkoutRootPermission: CheckoutPermission.getCheckoutPermission("root"),
-    };
+      bookPermission: CheckoutPermission.getCheckoutPermission('book'),
+      checkoutPermission: CheckoutPermission.getCheckoutPermission('checkout'),
+      checkoutRootPermission: CheckoutPermission.getCheckoutPermission('root'),
+    }
   },
 
   computed: {
     ...mapGetters({
-      me: "getMe",
-      userPermission: "getPermission",
-      reserveClient: "getReserveClient",
+      me: 'getMe',
+      userPermission: 'getPermission',
+      reserveClient: 'getReserveClient',
     }),
     hasApartment() {
-      return Object.keys(this.apartment).length > 0;
+      return Object.keys(this.apartment).length > 0
     },
 
     permission() {
@@ -103,85 +103,76 @@ export default {
         continueOrder: false,
         order: false,
         contract: false,
-      };
+      }
 
-      if (!this.hasApartment) return context;
+      if (!this.hasApartment) return context
 
-      const { apartment, me } = this;
-      const { order } = apartment;
+      const { apartment, me } = this
+      const { order } = apartment
       // const {checkout} = userPermission
-      const forSale = apartment["is_sold"];
-      const authorityUser = order?.user?.id === me?.user?.id;
+      const forSale = apartment.is_sold
+      const authorityUser = order?.user?.id === me?.user?.id
       // const rootContract = userPermission?.checkout?.root
       // const isMainRole = me?.role?.id === 1
-      const isStatusBooked = order.status === "booked";
-      const isStatusAvailable = order.status === "available";
-      const isStatusHold = order.status === "hold";
-      const isStatusSold = order.status === "sold";
-      const isStatusClosed = order.status === "closed";
-      const isStatusContract = order.status === "contract";
+      const isStatusBooked = order.status === 'booked'
+      const isStatusAvailable = order.status === 'available'
+      const isStatusHold = order.status === 'hold'
+      const isStatusSold = order.status === 'sold'
+      const isStatusClosed = order.status === 'closed'
+      const isStatusContract = order.status === 'contract'
 
-      const permissionCancelReserve =
-        isStatusBooked && (authorityUser || this.checkoutRootPermission);
-      const permissionReserve =
-        forSale && isStatusAvailable && this.bookPermission;
+      const permissionCancelReserve = isStatusBooked && (authorityUser || this.checkoutRootPermission)
+      const permissionReserve = forSale && isStatusAvailable && this.bookPermission
 
       const permissionContract = () => {
-        const permissionOne = this.checkoutPermission && authorityUser;
+        const permissionOne = this.checkoutPermission && authorityUser
         return (
-          (isStatusSold || isStatusContract || isStatusClosed) &&
-          (permissionOne || this.checkoutRootPermission)
-        );
-      };
+          (isStatusSold || isStatusContract || isStatusClosed)
+          && (permissionOne || this.checkoutRootPermission)
+        )
+      }
 
       const permissionOrder = () => {
-        const permissionOne =
-          isStatusAvailable &&
-          (authorityUser ||
-            this.checkoutPermission ||
-            this.checkoutRootPermission);
-        return forSale && permissionOne;
-      };
+        const permissionOne = isStatusAvailable
+          && (authorityUser
+            || this.checkoutPermission
+            || this.checkoutRootPermission)
+        return forSale && permissionOne
+      }
       const permissionContinueOrder = () => {
-        const permissionOne =
-          isStatusHold &&
-          (authorityUser ||
-            this.checkoutRootPermission ||
-            this.checkoutPermission);
-        const permissionTwo =
-          isStatusBooked && authorityUser && this.checkoutPermission;
-        return permissionOne || permissionTwo;
-      };
+        const permissionOne = isStatusHold
+          && (authorityUser
+            || this.checkoutRootPermission
+            || this.checkoutPermission)
+        const permissionTwo = isStatusBooked && authorityUser && this.checkoutPermission
+        return permissionOne || permissionTwo
+      }
 
-      const effectContext = (property) => {
-        context[property] = true;
-      };
+      const effectContext = property => {
+        context[property] = true
+      }
 
-      permissionCancelReserve && effectContext("cancelReserve");
-      permissionReserve && effectContext("reserve");
-      permissionOrder() && effectContext("order");
-      permissionContinueOrder() && effectContext("continueOrder");
-      permissionContract() && effectContext("contract");
+      permissionCancelReserve && effectContext('cancelReserve')
+      permissionReserve && effectContext('reserve')
+      permissionOrder() && effectContext('order')
+      permissionContinueOrder() && effectContext('continueOrder')
+      permissionContract() && effectContext('contract')
 
-      return context;
+      return context
     },
     price() {
       return (
-        formatToPrice(this.apartment.prices.price, 2) + " " + this.$t("ye")
-      );
+        `${formatToPrice(this.apartment.prices.price, 2)} ${this.$t('ye')}`
+      )
     },
     squareMetrePrice() {
       return (
-        formatToPrice(this.apartment.prices.price_m2, 2) + " " + this.$t("ye")
-      );
+        `${formatToPrice(this.apartment.prices.price_m2, 2)} ${this.$t('ye')}`
+      )
     },
     statusSold() {
-      return this.apartment.order.status === "sold";
+      return this.apartment.order.status === 'sold'
     },
-  },
-
-  mounted() {
-    Fancybox.bind("[data-fancybox]");
   },
 
   // async created() {
@@ -189,51 +180,56 @@ export default {
   // },
   watch: {
     apartment() {
-      if (this.apartment?.plan?.images)
+      if (this.apartment?.plan?.images) {
         this.toDataUrl(this.apartment.plan.images[0])
-          .then((url) => this.toDataUrl(url))
-          .then((d) => (this.imgDataUrl = d))
-          .catch((er) => console.log("error", er));
+          .then(url => this.toDataUrl(url))
+          .then(d => (this.imgDataUrl = d))
+          .catch(er => console.log('error', er))
+      }
     },
+  },
+
+  mounted() {
+    Fancybox.bind('[data-fancybox]')
   },
   methods: {
     async toDataUrl(url) {
-      //Convert to base64
+      // Convert to base64
       return new Promise((resolve, reject) => {
-        var xhr = new XMLHttpRequest();
+        const xhr = new XMLHttpRequest()
         xhr.onload = function () {
-          var reader = new FileReader();
+          const reader = new FileReader()
           reader.onloadend = function () {
-            resolve(reader.result);
-          };
-          reader.readAsDataURL(xhr.response);
-        };
+            resolve(reader.result)
+          }
+          reader.readAsDataURL(xhr.response)
+        }
         xhr.onerror = () => {
           reject({
             status: this.status,
             statusText: xhr.statusText,
-          });
-        };
-        xhr.open("GET", url);
-        xhr.responseType = "blob";
-        xhr.send();
-      });
+          })
+        }
+        xhr.open('GET', url)
+        xhr.responseType = 'blob'
+        xhr.send()
+      })
     },
-    ...mapMutations(["setCalculationProperties"]),
+    ...mapMutations(['setCalculationProperties']),
     getCalc(value) {
-      this.printCalc = value;
-      this.setCalculationProperties(Object.assign({}, value));
+      this.printCalc = value
+      this.setCalculationProperties({ ...value })
     },
     printPdf() {
-      this.pdfVisible = true;
-      this.isDownloading = true;
+      this.pdfVisible = true
+      this.isDownloading = true
       setTimeout(() => {
-        this.$refs.html2Pdf.generatePdf();
-      }, 10);
+        this.$refs.html2Pdf.generatePdf()
+      }, 10)
     },
     completePrintingProcess() {
-      this.pdfVisible = false;
-      this.isDownloading = false;
+      this.pdfVisible = false
+      this.isDownloading = false
     },
     // async fetchApartmentView() {
     //     this.appLoading = true
@@ -248,23 +244,23 @@ export default {
     //         })
     // },
     printApartmentInformation() {
-      window.print();
+      window.print()
     },
     async orderApartment() {
       // eslint-disable-next-line vue/no-mutating-props
-      this.appLoading = true;
+      this.appLoading = true
       try {
-        const apartments = [this.apartment.id];
-        const { data } = await api.orders.holdOrder(apartments, "apartment");
+        const apartments = [this.apartment.id]
+        const { data } = await api.orders.holdOrder(apartments, 'apartment')
         if (data) {
-          const objectId = data.orders[0].apartment.object.id;
+          const objectId = data.orders[0].apartment.object.id
           await this.$router.push({
-            name: "checkout-v2",
+            name: 'checkout-v2',
             params: {
               id: data.uuid,
               object: objectId,
             },
-          });
+          })
           // await this.$router.push({
           //   name: "checkout",
           //   params: {
@@ -273,10 +269,10 @@ export default {
           // })
         }
       } catch (e) {
-        this.toastedWithErrorCode(e);
+        this.toastedWithErrorCode(e)
       } finally {
         // eslint-disable-next-line vue/no-mutating-props
-        this.appLoading = false;
+        this.appLoading = false
       }
     },
     async continueApartmentOrder() {
@@ -286,70 +282,70 @@ export default {
       //     id: this.apartment.order.id
       //   },
       // })
-      const { object } = this.$route.params;
+      const { object } = this.$route.params
       await this.$router.push({
-        name: "checkout-v2",
+        name: 'checkout-v2',
         params: {
           object,
           id: this.apartment.order.id,
         },
-      });
+      })
     },
     updateContent() {
-      this.$emit("update-content");
+      this.$emit('update-content')
     },
     async cancelReservation() {
-      this.appLoading = true;
+      this.appLoading = true
       await api.orders
         .fetchOrderClient(this.apartment.order.id)
-        .then((response) => {
-          const status = response.data;
+        .then(response => {
+          const status = response.data
           this.$swal({
-            title: this.$t("sweetAlert.title"),
-            text: this.$t("sweetAlert.text_cancel_reserve"),
-            icon: "warning",
+            title: this.$t('sweetAlert.title'),
+            text: this.$t('sweetAlert.text_cancel_reserve'),
+            icon: 'warning',
             showCancelButton: true,
-            cancelButtonText: this.$t("cancel"),
-            confirmButtonText: this.$t("sweetAlert.yes_cancel_reserve"),
-          }).then((result) => {
+            cancelButtonText: this.$t('cancel'),
+            confirmButtonText: this.$t('sweetAlert.yes_cancel_reserve'),
+          }).then(result => {
             if (result.value) {
-              this.appLoading = true;
+              this.appLoading = true
               api.orders
                 .deactivateReserveOrders(client.id)
-                .then((response) => {
-                  this.toasted(response.data.message, "success");
+                .then(response => {
+                  this.toasted(response.data.message, 'success')
 
                   this.$nextTick(() => {
-                    this.$bvModal.hide("modal-view-reserved-client");
-                  });
+                    this.$bvModal.hide('modal-view-reserved-client')
+                  })
 
-                  this.hideApartmentSidebar();
-                  this.updateContent();
+                  this.hideApartmentSidebar()
+                  this.updateContent()
 
                   this.$swal(
-                    this.$t("sweetAlert.canceled_reserve"),
-                    "",
-                    "success"
-                  );
+                    this.$t('sweetAlert.canceled_reserve'),
+                    '',
+                    'success',
+                  )
                 })
-                .catch((error) => {
-                  this.toastedWithErrorCode(error);
+                .catch(error => {
+                  this.toastedWithErrorCode(error)
                 })
                 .finally(() => {
-                  this.appLoading = false;
-                });
+                  this.appLoading = false
+                })
             }
-          });
+          })
         })
-        .catch((error) => {
-          this.toastedWithErrorCode(error);
+        .catch(error => {
+          this.toastedWithErrorCode(error)
         })
         .finally(() => {
-          this.appLoading = false;
-        });
+          this.appLoading = false
+        })
     },
   },
-};
+}
 </script>
 
 <template>
@@ -359,7 +355,10 @@ export default {
       <div class="content-view">
         <div class="main__content">
           <div class="slider-content">
-            <div class="swiper" v-swiper="swiperOption">
+            <div
+              v-swiper="swiperOption"
+              class="swiper"
+            >
               <!--     MAIN CONTENT OF SLIDE       -->
               <div class="swiper-wrapper">
                 <div
@@ -374,19 +373,19 @@ export default {
                       :data-fancybox="image"
                       :src="image"
                       alt="img"
-                    />
+                    >
                     <img
                       v-else
                       class="swiper-image"
                       :src="require('@/assets/img/no-image.jpg')"
                       alt="img"
-                    />
+                    >
                   </div>
                 </div>
               </div>
 
               <!--     DOTS PAGINATION       -->
-              <div class="swiper-pagination"></div>
+              <div class="swiper-pagination" />
 
               <!--     BUTTON PREVIOUS       -->
               <div
@@ -416,7 +415,10 @@ export default {
           <!--            </div>-->
           <!--          </div>-->
           <!--        <div class="col-12 col-lg-5">-->
-          <PrimaryTabItem class="primary__information" :apartment="apartment" />
+          <PrimaryTabItem
+            class="primary__information"
+            :apartment="apartment"
+          />
           <!--          <div class="peculiarities">-->
           <!--            <h1 class="mb-4">{{ $t("peculiarities") }}</h1>-->
           <!--            <div class="d-flex flex-wrap list-boxes">-->
@@ -444,9 +446,9 @@ export default {
               {{ $t("type_payment") }}
             </h4>
             <calculator
-              @for-print="getCalc"
               :apartment="apartment"
               :has-apartment="hasApartment"
+              @for-print="getCalc"
             />
           </div>
 
@@ -457,17 +459,17 @@ export default {
               <!--              v-if="permission.order"-->
               <base-button
                 v-if="permission.order"
-                @click="orderApartment"
                 :text="`${$t('apartments.list.confirm')}`"
                 class="checkout__button violet-gradient"
+                @click="orderApartment"
               />
 
               <!--      CONTINUE CHECKOUT        -->
               <base-button
                 v-if="permission.continueOrder"
-                @click="continueApartmentOrder"
                 :text="`${$t('continue_registration')}`"
                 class="checkout__button violet-gradient"
+                @click="continueApartmentOrder"
               />
 
               <!--       MAKE A RESERVATION       -->
@@ -504,11 +506,18 @@ export default {
               <button
                 id="print"
                 :disabled="isDownloading"
-                @click="printPdf"
                 class="print__button bg-gray-100 d-flex justify-content-center align-items-center"
+                @click="printPdf"
               >
-                <base-loading v-if="isDownloading" :height="40" />
-                <base-print-icon v-else :square="20" fill="#4B5563" />
+                <base-loading
+                  v-if="isDownloading"
+                  :height="40"
+                />
+                <base-print-icon
+                  v-else
+                  :square="20"
+                  fill="#4B5563"
+                />
               </button>
             </div>
           </div>
@@ -531,9 +540,9 @@ export default {
     <!--  LOADING    -->
     <base-loading v-if="appLoading" />
     <PdfTemplate
-      ref="html2Pdf"
       v-if="pdfVisible"
-      :imgData="imgDataUrl"
+      ref="html2Pdf"
+      :img-data="imgDataUrl"
       :apartment="apartment"
       :print-calc="printCalc"
       :me="me"
@@ -624,7 +633,6 @@ export default {
       &-active
         background-color: var(--violet-400)
 
-
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button
@@ -640,17 +648,14 @@ input[type="number"]
   padding-right: 1rem
   min-width: 30rem
 
-
 .main__class
   background-color: white
   padding: 3rem
   min-height: 100vh
   color: var(--gray-600)
 
-
 .primary__information
   max-width: 42rem
-
 
 .calculator
   margin-top: 3.5rem
@@ -741,7 +746,6 @@ input[type="number"]
   .checkout__button
     padding: 12.75px
 
-
 .print__button,
 .cancel__button,
 .view__button
@@ -764,7 +768,6 @@ input[type="number"]
   &-row
     .property
         text-transform: none
-
 
 .peculiarities
   margin-top: 48px

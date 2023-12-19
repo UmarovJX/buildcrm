@@ -1,163 +1,164 @@
 <script>
-import { mapGetters } from "vuex";
-import api from "@/services/api";
-import PromosPermission from "@/permission/promos";
+import { mapGetters } from 'vuex'
+import api from '@/services/api'
+import PromosPermission from '@/permission/promos'
 
 export default {
-  name: "ListContent",
+  name: 'ListContent',
   props: {
     promos: {
       type: Array,
       required: true,
     },
   },
-  emits: ["update-content", "edit-promo-item"],
+  emits: ['update-content', 'edit-promo-item'],
   data() {
     return {
-      sortBy: "index",
+      sortBy: 'index',
       sortDesc: false,
       loading: false,
       editPromoPermission: PromosPermission.getPromosEditPermission(),
       deletePromoPermission: PromosPermission.getPromosDeletePermission(),
-    };
+    }
   },
   computed: {
     ...mapGetters({
-      permission: "getPermission",
+      permission: 'getPermission',
     }),
     hasPermission() {
-      return this.editPromoPermission || this.deletePromoPermission;
+      return this.editPromoPermission || this.deletePromoPermission
     },
     fields() {
       return [
         {
-          key: "index",
-          label: "#",
+          key: 'index',
+          label: '#',
         },
         {
-          key: "name",
-          label: this.$t("promo.name"),
-          formatter: (name) => {
-            const locale = localStorage.locale ? localStorage.locale : "ru";
-            return name[locale];
+          key: 'name',
+          label: this.$t('promo.name'),
+          formatter: name => {
+            const locale = localStorage.locale ? localStorage.locale : 'ru'
+            return name[locale]
           },
         },
         {
-          key: "blocks",
-          label: this.$t("promo.blocks"),
-          formatter: (blocks) => {
-            let names = "";
+          key: 'blocks',
+          label: this.$t('promo.blocks'),
+          formatter: blocks => {
+            let names = ''
             blocks.forEach((current, index, arr) => {
-              const arraysBeforeIndex = arr.slice(0, index);
+              const arraysBeforeIndex = arr.slice(0, index)
               const hasBefore = arraysBeforeIndex.findIndex(
-                (arr) => arr.block.id === current.block.id
-              );
+                arr => arr.block.id === current.block.id,
+              )
               if (hasBefore === -1) {
-                names += current.block.name;
+                names += current.block.name
                 if (index < arr.length - 1) {
-                  names += " , ";
+                  names += ' , '
                 }
               }
-            });
-            return names;
+            })
+            return names
           },
         },
-        /*{
+        /* {
           key: "floors",
           label: this.$t("promo.floors")
-        },*/
+        }, */
         {
-          key: "actions",
-          label: "",
+          key: 'actions',
+          label: '',
         },
-      ];
+      ]
     },
   },
   methods: {
-    sumFloorsCount: (blocks) =>
-      blocks.reduce((acc, current) => acc + current.block.floors, 0),
+    sumFloorsCount: blocks => blocks.reduce((acc, current) => acc + current.block.floors, 0),
     editPromoItem(item) {
-      this.$emit("edit-promo-item", item);
+      this.$emit('edit-promo-item', item)
     },
     async activatePromo(item) {
-      this.toggleLoading();
-      const promoId = item.uuid;
-      const { id: objectId } = this.$route.params;
+      this.toggleLoading()
+      const promoId = item.uuid
+      const { id: objectId } = this.$route.params
       await api.promoV2
         .promoActivate(objectId, promoId)
         .then(() => {
-          this.$emit("update-content");
+          this.$emit('update-content')
         })
-        .catch((error) => {
-          this.toastedWithErrorCode(error);
+        .catch(error => {
+          this.toastedWithErrorCode(error)
         })
         .finally(() => {
-          this.toggleLoading();
-        });
+          this.toggleLoading()
+        })
     },
     async deactivatePromo(item) {
-      this.toggleLoading();
-      const promoId = item.uuid;
-      const { id: objectId } = this.$route.params;
+      this.toggleLoading()
+      const promoId = item.uuid
+      const { id: objectId } = this.$route.params
       await api.promoV2
         .promoDeactivate(objectId, promoId)
         .then(() => {
-          this.$emit("update-content");
+          this.$emit('update-content')
         })
-        .catch((error) => {
-          this.toastedWithErrorCode(error);
+        .catch(error => {
+          this.toastedWithErrorCode(error)
         })
         .finally(() => {
-          this.toggleLoading();
-        });
+          this.toggleLoading()
+        })
     },
     async deletePromoItem(item) {
-      const result = await this.showWarnBeforeDelete();
+      const result = await this.showWarnBeforeDelete()
       if (result.isConfirmed) {
-        const { id: objectId } = this.$route.params;
-        const uuId = item.uuid;
+        const { id: objectId } = this.$route.params
+        const uuId = item.uuid
         await api.promoV2
           .promoDelete(objectId, uuId)
           .then(() => {
-            this.showSuccessResponse();
-            this.$emit("update-content");
+            this.showSuccessResponse()
+            this.$emit('update-content')
           })
-          .catch((error) => {
-            this.toastedWithErrorCode(error);
-          });
+          .catch(error => {
+            this.toastedWithErrorCode(error)
+          })
       }
     },
     showWarnBeforeDelete() {
       return this.$swal({
-        text: "",
-        icon: "warning",
+        text: '',
+        icon: 'warning',
         showCancelButton: true,
-        cancelButtonText: this.$t("cancel"),
-        title: this.$t("promo.warn_before_delete"),
-        confirmButtonText: this.$t("sweetAlert.yes_agree"),
-      });
+        cancelButtonText: this.$t('cancel'),
+        title: this.$t('promo.warn_before_delete'),
+        confirmButtonText: this.$t('sweetAlert.yes_agree'),
+      })
     },
     showSuccessResponse() {
       this.$swal({
-        icon: "success",
+        icon: 'success',
         showCancelButton: false,
-        title: this.$t("promo.successfully_deleted"),
-      });
+        title: this.$t('promo.successfully_deleted'),
+      })
     },
     toggleLoading() {
-      this.loading = !this.loading;
+      this.loading = !this.loading
     },
     getCircleClassByStatus(status) {
-      if (status === 1) return "active__dot-class";
-      else return "not__active__dot-class";
+      if (status === 1) return 'active__dot-class'
+      return 'not__active__dot-class'
     },
   },
-};
+}
 </script>
 
 <template>
   <div class="mt-2">
     <b-table
+      v-model:sort-by="sortBy"
+      v-model:sort-desc="sortDesc"
       sticky-header
       responsive
       show-empty
@@ -165,16 +166,17 @@ export default {
       sort-icon-left
       :items="promos"
       :fields="fields"
-      v-model:sort-by="sortBy"
-      v-model:sort-desc="sortDesc"
       :empty-text="$t('no_data')"
       :busy="loading"
       class="custom-table"
     >
       <!-- INDEX COLUMN -->
       <template #cell(index)="data">
-        <span class="mr-2" :class="getCircleClassByStatus(data.item.status)">
-          <i class="fas fa-circle"></i>
+        <span
+          class="mr-2"
+          :class="getCircleClassByStatus(data.item.status)"
+        >
+          <i class="fas fa-circle" />
         </span>
 
         <span>
@@ -185,13 +187,16 @@ export default {
       <!--   ACTION   -->
       <template #cell(actions)="data">
         <div class="float-right">
-          <div class="dropdown my-dropdown dropleft" v-if="hasPermission">
+          <div
+            v-if="hasPermission"
+            class="dropdown my-dropdown dropleft"
+          >
             <button
               type="button"
               class="dropdown-toggle"
               data-toggle="dropdown"
             >
-              <i class="far fa-ellipsis-h"></i>
+              <i class="far fa-ellipsis-h" />
             </button>
 
             <div class="dropdown-menu">
@@ -200,7 +205,7 @@ export default {
                 class="dropdown-item dropdown-item--inside"
                 @click="activatePromo(data.item)"
               >
-                <i class="fas fa-check"></i>
+                <i class="fas fa-check" />
                 {{ $t("activate") }}
               </b-button>
 
@@ -209,16 +214,16 @@ export default {
                 class="dropdown-item dropdown-item--inside"
                 @click="deactivatePromo(data.item)"
               >
-                <i class="fas fa-times"></i>
+                <i class="fas fa-times" />
                 {{ $t("deactivate") }}
               </b-button>
 
               <b-button
                 v-if="editPromoPermission"
-                @click="editPromoItem(data.item)"
                 class="dropdown-item dropdown-item--inside"
+                @click="editPromoItem(data.item)"
               >
-                <i class="fas fa-edit"></i>
+                <i class="fas fa-edit" />
                 {{ $t("edit") }}
               </b-button>
 
@@ -227,7 +232,7 @@ export default {
                 class="dropdown-item dropdown-item--inside"
                 @click="deletePromoItem(data.item)"
               >
-                <i class="fas fa-trash"></i>
+                <i class="fas fa-trash" />
                 {{ $t("delete") }}
               </b-button>
             </div>

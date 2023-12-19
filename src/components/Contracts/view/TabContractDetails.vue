@@ -1,12 +1,12 @@
 <script>
-import { formatDateWithDot, formatToPrice } from "@/util/reusable";
-import api from "@/services/api";
-import { mapGetters } from "vuex";
-import ContractsPermission from "@/permission/contract";
-import ContractComments from "@/components/Contracts/view/ContractComments";
+import { formatDateWithDot, formatToPrice } from '@/util/reusable'
+import api from '@/services/api'
+import { mapGetters } from 'vuex'
+import ContractsPermission from '@/permission/contract'
+import ContractComments from '@/components/Contracts/view/ContractComments'
 
 export default {
-  name: "TabContractDetails",
+  name: 'TabContractDetails',
   components: {
     ContractComments,
   },
@@ -36,105 +36,105 @@ export default {
       compareDetails: {},
       viewCommentPermission:
         ContractsPermission.getContractsViewCommentPermission(),
-    };
+    }
   },
-  emits: ["start-loading", "finish-loading"],
+  emits: ['start-loading', 'finish-loading'],
 
   async created() {
-    await this.fetchContractDetails();
+    await this.fetchContractDetails()
     if (this.uniformityPermission) {
-      await this.fetchCompareDetails();
+      await this.fetchCompareDetails()
     }
   },
   computed: {
     ...mapGetters({
-      permission: "getPermission",
+      permission: 'getPermission',
     }),
     uniformityPermission() {
-      return ContractsPermission.getContractsUniformityPermission();
+      return ContractsPermission.getContractsUniformityPermission()
     },
   },
   methods: {
-    datePrettier: (time) => formatDateWithDot(time),
+    datePrettier: time => formatDateWithDot(time),
     async fetchCompareDetails() {
-      this.startLoading();
-      const { id } = this.$route.params;
+      this.startLoading()
+      const { id } = this.$route.params
       await api.contractV2
         .fetchCompareDetails(id)
-        .then((response) => {
-          this.compareDetails = response.data[0];
+        .then(response => {
+          this.compareDetails = response.data[0]
         })
-        .catch((error) => {
-          this.toastedWithErrorCode(error);
+        .catch(error => {
+          this.toastedWithErrorCode(error)
         })
         .finally(() => {
-          this.finishLoading();
-        });
+          this.finishLoading()
+        })
     },
     async fetchContractDetails() {
-      this.startLoading();
-      const { id } = this.$route.params;
+      this.startLoading()
+      const { id } = this.$route.params
       await api.contractV2
         .fetchContractDetails(id)
-        .then((response) => {
-          this.companyDetails = response.data["company_details"];
-          this.otherDetails = response.data.other_details;
+        .then(response => {
+          this.companyDetails = response.data.company_details
+          this.otherDetails = response.data.other_details
         })
-        .catch((error) => {
-          this.toastedWithErrorCode(error);
+        .catch(error => {
+          this.toastedWithErrorCode(error)
         })
         .finally(() => {
-          this.finishLoading();
-        });
+          this.finishLoading()
+        })
     },
     startLoading() {
-      this.$emit("start-loading");
+      this.$emit('start-loading')
     },
     finishLoading() {
-      this.$emit("finish-loading");
+      this.$emit('finish-loading')
     },
     pricePrettier(price) {
-      return formatToPrice(price) + " " + this.$t("ye");
+      return `${formatToPrice(price)} ${this.$t('ye')}`
     },
     prepayPrettier(value) {
-      if (value && value.prepay)
-        return this.$t("apartments.first_payment") + " " + value.prepay + "%";
-      return this.$t("contracts.individual");
+      if (value && value.prepay) return `${this.$t('apartments.first_payment')} ${value.prepay}%`
+      return this.$t('contracts.individual')
     },
     getStatus(status) {
-      return this.$t(`contracts.status.${status}`);
+      return this.$t(`contracts.status.${status}`)
     },
     getClientName(status) {
-      let language = "kirill";
-      if (this.$i18n.locale === "uz") {
-        language = "lotin";
+      let language = 'kirill'
+      if (this.$i18n.locale === 'uz') {
+        language = 'lotin'
       }
-      const { last_name, first_name } = client;
+      const { last_name, first_name } = client
       return (
-        this.clientName(last_name, language) +
-        " " +
-        this.clientName(first_name, language)
-      );
+        `${this.clientName(last_name, language)
+        } ${
+          this.clientName(first_name, language)}`
+      )
     },
     clientName(multiName, language) {
-      const lastNameByLang = multiName[language];
+      const lastNameByLang = multiName[language]
       if (lastNameByLang) {
-        return lastNameByLang;
-      } else {
-        const lastNameOtherLang =
-          language === "kirill" ? multiName["lotin"] : multiName["kirill"];
-        if (lastNameOtherLang) return lastNameOtherLang;
+        return lastNameByLang
       }
+      const lastNameOtherLang = language === 'kirill' ? multiName.lotin : multiName.kirill
+      if (lastNameOtherLang) return lastNameOtherLang
 
-      return "";
+      return ''
     },
   },
-};
+}
 </script>
 
 <template>
   <div>
-    <div v-if="uniformityPermission && compareDetails" class="compare__details">
+    <div
+      v-if="uniformityPermission && compareDetails"
+      class="compare__details"
+    >
       <h3 class="compare__details-title">
         {{ $t("contract_compare.compare_title") }}
       </h3>
@@ -256,25 +256,38 @@ export default {
     <div class="client__details col-12 px-0">
       <b-form class="client__details_info">
         <div class="d-flex">
-          <h3 class="client__details__title mr-5">{{ $t("builder") }}</h3>
-          <h3 class="client__details__title">{{ $t("other_details") }}</h3>
+          <h3 class="client__details__title mr-5">
+            {{ $t("builder") }}
+          </h3>
+          <h3 class="client__details__title">
+            {{ $t("other_details") }}
+          </h3>
         </div>
 
         <div class="d-flex">
           <div class="client__details_info_card mr-5">
             <label>{{ $t("company") }}</label>
-            <b-form-input disabled :value="companyDetails['company_name']" />
+            <b-form-input
+              disabled
+              :value="companyDetails['company_name']"
+            />
           </div>
           <div class="client__details_info_card">
             <label>{{ $t("contract_number") }}</label>
-            <b-form-input disabled :value="otherDetails.contract" />
+            <b-form-input
+              disabled
+              :value="otherDetails.contract"
+            />
           </div>
         </div>
 
         <div class="d-flex">
           <div class="client__details_info_card mr-5">
             <label>{{ $t("agent") }}</label>
-            <b-form-input disabled :value="companyDetails.full_name" />
+            <b-form-input
+              disabled
+              :value="companyDetails.full_name"
+            />
           </div>
           <div class="client__details_info_card">
             <label>{{ $t("contract_price") }}</label>
@@ -288,7 +301,10 @@ export default {
         <div class="d-flex">
           <div class="client__details_info_card mr-5">
             <label>{{ $t("pc") }}</label>
-            <b-form-input disabled :value="companyDetails.payment_account" />
+            <b-form-input
+              disabled
+              :value="companyDetails.payment_account"
+            />
           </div>
           <div class="client__details_info_card">
             <label>{{ $t("date") }}</label>
@@ -302,14 +318,17 @@ export default {
         <div class="d-flex">
           <div class="client__details_info_card mr-5">
             <label>{{ $t("inn") }}</label>
-            <b-form-input disabled :value="companyDetails.inn" />
+            <b-form-input
+              disabled
+              :value="companyDetails.inn"
+            />
           </div>
           <div class="client__details_info_card">
             <label>{{ $t("formed") }}</label>
             <b-form-input
+              id="firstname"
               disabled
               :value="otherDetails.created_by"
-              id="firstname"
             />
           </div>
         </div>
@@ -317,53 +336,79 @@ export default {
         <div class="d-flex">
           <div class="client__details_info_card mr-5">
             <label>{{ $t("mfo") }}</label>
-            <b-form-input disabled :value="companyDetails.mfo" id="firstname" />
+            <b-form-input
+              id="firstname"
+              disabled
+              :value="companyDetails.mfo"
+            />
           </div>
           <div class="client__details_info_card">
             <label>{{ $t("status") }}</label>
             <b-form-input
+              id="firstname"
               disabled
               :value="getStatus(otherDetails.status)"
-              id="firstname"
             />
           </div>
         </div>
-        <div class="d-flex" v-if="otherDetails.alias">
-          <div class="client__details_info_card mr-5" style="opacity: 0"></div>
+        <div
+          v-if="otherDetails.alias"
+          class="d-flex"
+        >
+          <div
+            class="client__details_info_card mr-5"
+            style="opacity: 0"
+          />
           <div class="client__details_info_card">
             <label>{{ "Псевдоним" }}</label>
-            <b-form-input disabled :value="otherDetails.alias" id="firstname" />
+            <b-form-input
+              id="firstname"
+              disabled
+              :value="otherDetails.alias"
+            />
           </div>
         </div>
-        <div class="d-flex" v-if="otherDetails.updated_by">
-          <div class="client__details_info_card mr-5" style="opacity: 0"></div>
+        <div
+          v-if="otherDetails.updated_by"
+          class="d-flex"
+        >
+          <div
+            class="client__details_info_card mr-5"
+            style="opacity: 0"
+          />
           <div class="client__details_info_card">
             <label>{{ "Изменен" }}</label>
             <b-form-input
+              id="firstname"
               disabled
               :value="
                 `${otherDetails.updated_by.first_name} ${otherDetails.updated_by.last_name}` +
-                (otherDetails.updated_at
-                  ? ',' + datePrettier(otherDetails.updated_at)
-                  : '')
+                  (otherDetails.updated_at
+                    ? ',' + datePrettier(otherDetails.updated_at)
+                    : '')
               "
-              id="firstname"
             />
           </div>
         </div>
-        <div class="d-flex" v-if="otherDetails.deleted_by">
-          <div class="client__details_info_card mr-5" style="opacity: 0"></div>
+        <div
+          v-if="otherDetails.deleted_by"
+          class="d-flex"
+        >
+          <div
+            class="client__details_info_card mr-5"
+            style="opacity: 0"
+          />
           <div class="client__details_info_card">
             <label>{{ "Удален" }}</label>
             <b-form-input
+              id="firstname"
               disabled
               :value="
                 `${otherDetails.deleted_by.first_name} ${otherDetails.deleted_by.last_name}` +
-                (otherDetails.deleted_at
-                  ? ',' + datePrettier(otherDetails.deleted_at)
-                  : '')
+                  (otherDetails.deleted_at
+                    ? ',' + datePrettier(otherDetails.deleted_at)
+                    : '')
               "
-              id="firstname"
             />
           </div>
         </div>

@@ -1,11 +1,11 @@
 <script>
 // import Discount from './Discount'
-import BaseBreadCrumb from "@/components/BaseBreadCrumb";
-import { mapGetters } from "vuex";
-import api from "@/services/api";
+import BaseBreadCrumb from '@/components/BaseBreadCrumb'
+import { mapGetters } from 'vuex'
+import api from '@/services/api'
 
 export default {
-  name: "ContractsView",
+  name: 'ContractsView',
 
   components: {
     BaseBreadCrumb,
@@ -30,11 +30,11 @@ export default {
     order: {
       id: null,
       contract: null,
-      friends: "unknown",
+      friends: 'unknown',
       contract_path: null,
       initial_payment: null,
       payment_status: null,
-      status: "contract",
+      status: 'contract',
       transaction_price: null,
       contract_date: null,
       payments: [],
@@ -92,14 +92,14 @@ export default {
 
       client: {
         id: null,
-        first_name: "",
-        last_name: "",
-        second_name: "",
-        passport_series: "",
-        issued_by_whom: "",
+        first_name: '',
+        last_name: '',
+        second_name: '',
+        passport_series: '',
+        issued_by_whom: '',
         birth_day: null,
-        language: "uz",
-        phone: "",
+        language: 'uz',
+        phone: '',
         other_phone: null,
         date_of_issue: null,
         discount: { id: null },
@@ -117,566 +117,552 @@ export default {
     },
 
     comment_store: false,
-    comment: "",
+    comment: '',
 
     header: {
       headers: {
-        Authorization: "Bearer " + localStorage.token,
+        Authorization: `Bearer ${localStorage.token}`,
       },
     },
   }),
 
   mounted() {
-    this.fetchOrder();
+    this.fetchOrder()
   },
 
   computed: {
-    ...mapGetters(["getMe", "getPermission"]),
+    ...mapGetters(['getMe', 'getPermission']),
     breadCrumbs() {
       return [
         {
-          routeName: "contracts",
-          textContent: this.$t("contracts.title"),
+          routeName: 'contracts',
+          textContent: this.$t('contracts.title'),
         },
-      ];
+      ]
     },
     activeContent() {
-      return this.$t("view");
+      return this.$t('view')
     },
   },
 
   methods: {
     async saveComment() {
-      this.getLoading = true;
+      this.getLoading = true
       try {
         const { data, status } = await api.orders.ordersComment(
           this.$route.params.id,
-          this.comment
-        );
+          this.comment,
+        )
         if (status === 201) {
-          this.comment = "";
-          this.order.comments.push(data);
-          this.comment_store = false;
+          this.comment = ''
+          this.order.comments.push(data)
+          this.comment_store = false
         }
-        this.getLoading = false;
+        this.getLoading = false
       } catch (error) {
-        this.getLoading = false;
-        this.toastedWithErrorCode(error);
+        this.getLoading = false
+        this.toastedWithErrorCode(error)
       }
     },
 
     async CreatePayment() {
-      this.getLoading = true;
+      this.getLoading = true
       try {
         const body = {
           date: this.payment.data.date,
           amount: this.payment.data.amount,
-        };
+        }
 
-        await api.debtors.createPayment(this.$route.params.id, body);
+        await api.debtors.createPayment(this.$route.params.id, body)
 
         this.payment.data = {
           date: null,
           amount: null,
-        };
+        }
 
-        this.payment.view = false;
-        this.fetchOrder();
-        this.getLoading = false;
-        this.$swal(this.$t("sweetAlert.payment_success_added"), "", "success");
+        this.payment.view = false
+        this.fetchOrder()
+        this.getLoading = false
+        this.$swal(this.$t('sweetAlert.payment_success_added'), '', 'success')
       } catch (error) {
-        this.getLoading = false;
-        this.toastedWithErrorCode(error);
+        this.getLoading = false
+        this.toastedWithErrorCode(error)
       }
     },
 
     async fetchOrder() {
-      this.getLoading = true;
+      this.getLoading = true
       try {
-        const { data } = await api.orders.fetchOrder(this.$route.params.id);
-        this.step = 1;
+        const { data } = await api.orders.fetchOrder(this.$route.params.id)
+        this.step = 1
 
-        this.order = data;
-        this.getLoading = false;
+        this.order = data
+        this.getLoading = false
       } catch (error) {
-        this.getLoading = false;
-        this.toastedWithErrorCode(error);
+        this.getLoading = false
+        this.toastedWithErrorCode(error)
       }
     },
 
     async ChangeTypeClient() {
-      this.getLoading = true;
+      this.getLoading = true
       try {
         const body = {
           friends: this.order.friends,
-        };
+        }
         const { data } = await api.orders.changeClientType(
           this.$route.params.id,
-          body
-        );
-        this.edit.type_client = false;
-        this.getLoading = false;
-        this.toasted(data.message, "success");
+          body,
+        )
+        this.edit.type_client = false
+        this.getLoading = false
+        this.toasted(data.message, 'success')
       } catch (error) {
-        this.getLoading = false;
-        this.toastedWithErrorCode(error);
+        this.getLoading = false
+        this.toastedWithErrorCode(error)
       }
     },
 
     async deleteMonthly(index) {
-      let id = this.order.payments[index].id;
+      const { id } = this.order.payments[index]
 
       this.$swal({
-        title: this.$t("sweetAlert.title"),
-        text: this.$t("sweetAlert.debtors.payment_delete"),
+        title: this.$t('sweetAlert.title'),
+        text: this.$t('sweetAlert.debtors.payment_delete'),
         // title: this.$t('sweetAlert.debtors.payment_delete'),
-        icon: "question",
+        icon: 'question',
         showCancelButton: true,
-        cancelButtonText: this.$t("cancel"),
-        confirmButtonText: this.$t("sweetAlert.yes"),
-      }).then((result) => {
-        if (result.value || result.value == "") {
-          this.getLoading = true;
+        cancelButtonText: this.$t('cancel'),
+        confirmButtonText: this.$t('sweetAlert.yes'),
+      }).then(result => {
+        if (result.value || result.value == '') {
+          this.getLoading = true
           api.debtors
             .deleteMonthlyDebt(id)
             .then(() => {
-              this.fetchOrder();
-              this.getLoading = false;
-              this.$swal(this.$t("sweetAlert.payment_success"), "", "success");
+              this.fetchOrder()
+              this.getLoading = false
+              this.$swal(this.$t('sweetAlert.payment_success'), '', 'success')
             })
-            .catch((error) => {
-              this.getLoading = false;
-              this.toastedWithErrorCode(error);
+            .catch(error => {
+              this.getLoading = false
+              this.toastedWithErrorCode(error)
 
               if (error.response.status === 422) {
                 if (
-                  error.response.data.date_payment &&
-                  error.response.data.date_payment.length > 0
-                )
-                  this.toasted(error.response.data.date_payment[0], "error");
+                  error.response.data.date_payment
+                  && error.response.data.date_payment.length > 0
+                ) this.toasted(error.response.data.date_payment[0], 'error')
                 if (
-                  error.response.data.pay_amount &&
-                  error.response.data.pay_amount.length > 0
-                )
-                  this.toasted(error.response.data.pay_amount[0], "error");
+                  error.response.data.pay_amount
+                  && error.response.data.pay_amount.length > 0
+                ) this.toasted(error.response.data.pay_amount[0], 'error')
               }
-            });
+            })
         }
-      });
+      })
     },
 
     async editMonthly(index) {
-      let id = this.order.payments[index].id;
+      const { id } = this.order.payments[index]
 
       const { value: formValues } = await this.$swal({
-        title: this.$t("sweetAlert.payment_edit"),
-        icon: "question",
+        title: this.$t('sweetAlert.payment_edit'),
+        icon: 'question',
         showCancelButton: true,
         html:
-          '<input id="deb-payment" type="number" placeholder="10000" value="' +
-          this.order.payments[index].amount_paid +
-          '" max="' +
-          this.order.payments[index].amount +
-          '" step="100" class="form-control">' +
-          '<label for="date-payment" class="float-left mt-3">Дата оплаты</label>' +
-          '<input id="date-payment" type="date" placeholder="Дата оплаты" value="' +
-          this.order.payments[index].date_paid +
-          '" required class="form-control mt-2">' +
-          '<label for="type_payment" class="float-left mt-3">Тип оплаты</label>' +
-          '<select id="type_payment" class="form-control" ruqired><option value="' +
-          this.order.payments[index].type_payments +
-          '">' +
-          this.order.payments[index].type_payments +
-          '</option><option value="cash">Наличный</option><option value="transfer">Перечисления</option><option value="payme">Payme</option><option value="click">Click</option><option value="other">Другое</option></select>',
-        confirmButtonText: this.$t("sweetAlert.debtors.next"),
-        preConfirm: () => {
-          return {
-            date_payment: document.getElementById("date-payment").value,
-            pay_amount: document.getElementById("deb-payment").value,
-            type_payment: document.getElementById("type_payment").value,
-          };
-        },
-      });
+          `<input id="deb-payment" type="number" placeholder="10000" value="${
+            this.order.payments[index].amount_paid
+          }" max="${
+            this.order.payments[index].amount
+          }" step="100" class="form-control">`
+          + '<label for="date-payment" class="float-left mt-3">Дата оплаты</label>'
+          + `<input id="date-payment" type="date" placeholder="Дата оплаты" value="${
+            this.order.payments[index].date_paid
+          }" required class="form-control mt-2">`
+          + '<label for="type_payment" class="float-left mt-3">Тип оплаты</label>'
+          + `<select id="type_payment" class="form-control" ruqired><option value="${
+            this.order.payments[index].type_payments
+          }">${
+            this.order.payments[index].type_payments
+          }</option><option value="cash">Наличный</option><option value="transfer">Перечисления</option><option value="payme">Payme</option><option value="click">Click</option><option value="other">Другое</option></select>`,
+        confirmButtonText: this.$t('sweetAlert.debtors.next'),
+        preConfirm: () => ({
+          date_payment: document.getElementById('date-payment').value,
+          pay_amount: document.getElementById('deb-payment').value,
+          type_payment: document.getElementById('type_payment').value,
+        }),
+      })
 
       if (formValues) {
         this.$swal({
-          title: this.$t("sweetAlert.title"),
-          text: this.$t("sweetAlert.debtors.are_you_sure"),
-          icon: "warning",
+          title: this.$t('sweetAlert.title'),
+          text: this.$t('sweetAlert.debtors.are_you_sure'),
+          icon: 'warning',
           showCancelButton: true,
-          input: "textarea",
-          inputLabel: "Message",
-          inputPlaceholder: this.$t("sweetAlert.debtors.placeholder"),
+          input: 'textarea',
+          inputLabel: 'Message',
+          inputPlaceholder: this.$t('sweetAlert.debtors.placeholder'),
           inputAttributes: {
-            "aria-label": this.$t("sweetAlert.debtors.placeholder"),
+            'aria-label': this.$t('sweetAlert.debtors.placeholder'),
           },
-          confirmButtonText: this.$t("sweetAlert.debtors.yes"),
-        }).then((result) => {
-          if (result.value || result.value == "") {
-            this.getLoading = true;
+          confirmButtonText: this.$t('sweetAlert.debtors.yes'),
+        }).then(result => {
+          if (result.value || result.value == '') {
+            this.getLoading = true
             const body = {
               date_paid: formValues.date_payment,
               amount_paid: formValues.pay_amount,
               type_payment: formValues.type_payment,
               comment: result.value,
-            };
+            }
             api.debtors
               .updateMonthlyDebt(id, body)
               .then(() => {
-                this.fetchOrder();
-                this.getLoading = false;
+                this.fetchOrder()
+                this.getLoading = false
                 this.$swal(
-                  this.$t("sweetAlert.payment_success"),
-                  "",
-                  "success"
-                );
+                  this.$t('sweetAlert.payment_success'),
+                  '',
+                  'success',
+                )
               })
-              .catch((error) => {
-                this.getLoading = false;
-                this.toastedWithErrorCode(error);
+              .catch(error => {
+                this.getLoading = false
+                this.toastedWithErrorCode(error)
 
                 if (error.response.status === 422) {
                   if (
-                    error.response.data.date_payment &&
-                    error.response.data.date_payment.length > 0
-                  )
-                    this.toasted(error.response.data.date_payment[0], "error");
+                    error.response.data.date_payment
+                    && error.response.data.date_payment.length > 0
+                  ) this.toasted(error.response.data.date_payment[0], 'error')
                   if (
-                    error.response.data.pay_amount &&
-                    error.response.data.pay_amount.length > 0
-                  )
-                    this.toasted(error.response.data.pay_amount[0], "error");
+                    error.response.data.pay_amount
+                    && error.response.data.pay_amount.length > 0
+                  ) this.toasted(error.response.data.pay_amount[0], 'error')
                 }
-              });
+              })
           }
-        });
+        })
       }
     },
 
     async paymentMonthly(index) {
-      let id = this.order.payments[index].id;
+      const { id } = this.order.payments[index]
 
       const { value: formValues } = await this.$swal({
-        title: this.$t("sweetAlert.debtors.payment_info"),
-        icon: "question",
+        title: this.$t('sweetAlert.debtors.payment_info'),
+        icon: 'question',
         buttons: {
-          cancel: this.$t("contracts.view.cancel_btn"),
+          cancel: this.$t('contracts.view.cancel_btn'),
         },
         showCancelButton: true,
         html:
-          '<input id="deb-payment" type="number" placeholder="10000" value="' +
-          this.order.payments[index].amount +
-          '" max="' +
-          this.order.payments[index].amount +
-          '" step="100" class="form-control">' +
-          `<label for="date-payment" class="float-left mt-3">${this.$t(
-            "contracts.view.payment_date"
-          )}</label>` +
-          '<input id="date-payment" type="date" placeholder="Дата оплаты" value="" required class="form-control mt-2">' +
-          `<label for="type_payment" class="float-left mt-3">${this.$t(
-            "contracts.view.payment_date"
-          )}</label>` +
-          `<select id="type_payment" class="form-control"><option value="cash">${this.$t(
-            "contracts.view.payment_by_cash"
+          `<input id="deb-payment" type="number" placeholder="10000" value="${
+            this.order.payments[index].amount
+          }" max="${
+            this.order.payments[index].amount
+          }" step="100" class="form-control">`
+          + `<label for="date-payment" class="float-left mt-3">${this.$t(
+            'contracts.view.payment_date',
+          )}</label>`
+          + '<input id="date-payment" type="date" placeholder="Дата оплаты" value="" required class="form-control mt-2">'
+          + `<label for="type_payment" class="float-left mt-3">${this.$t(
+            'contracts.view.payment_date',
+          )}</label>`
+          + `<select id="type_payment" class="form-control"><option value="cash">${this.$t(
+            'contracts.view.payment_by_cash',
           )}</option><option value="transfer">${this.$t(
-            "contracts.view.payment_transaction"
+            'contracts.view.payment_transaction',
           )}</option><option value="payme">Payme</option><option value="click">Click</option><option value="other">${this.$t(
-            "contracts.view.payment_other"
+            'contracts.view.payment_other',
           )}</option></select>`,
-        confirmButtonText: this.$t("sweetAlert.debtors.next"),
-        preConfirm: () => {
-          return {
-            date_payment: document.getElementById("date-payment").value,
-            pay_amount: document.getElementById("deb-payment").value,
-            type_payment: document.getElementById("type_payment").value,
-          };
-        },
-      });
+        confirmButtonText: this.$t('sweetAlert.debtors.next'),
+        preConfirm: () => ({
+          date_payment: document.getElementById('date-payment').value,
+          pay_amount: document.getElementById('deb-payment').value,
+          type_payment: document.getElementById('type_payment').value,
+        }),
+      })
 
-      let type = this.order.payments[index].type;
-      let pay_amount = parseFloat(formValues.pay_amount);
-      let amount = this.order.payments[index].amount;
+      const { type } = this.order.payments[index]
+      const pay_amount = parseFloat(formValues.pay_amount)
+      const { amount } = this.order.payments[index]
 
       if (
-        (type === "monthly" || type === "debt" || type === "initial_payment") &&
-        pay_amount < amount
+        (type === 'monthly' || type === 'debt' || type === 'initial_payment')
+        && pay_amount < amount
       ) {
         if (formValues) {
           const { value: initialValue } = await this.$swal({
-            title: this.$t("sweetAlert.title"),
-            text: this.$t("sweetAlert.debtors.are_you_sure"),
-            icon: "warning",
+            title: this.$t('sweetAlert.title'),
+            text: this.$t('sweetAlert.debtors.are_you_sure'),
+            icon: 'warning',
             showCancelButton: true,
             html:
-              '<label for="date-payment" class="float-left mt-3">Дата следующей оплаты</label>' +
-              '<input id="date-payment" type="date" placeholder="Дата оплаты" value="" required class="form-control mt-2">' +
-              '<label for="userComment" class="float-left mt-3">Комментария</label>' +
-              '<textarea id="userComment" class="form-control" rows="3"></textarea>',
+              '<label for="date-payment" class="float-left mt-3">Дата следующей оплаты</label>'
+              + '<input id="date-payment" type="date" placeholder="Дата оплаты" value="" required class="form-control mt-2">'
+              + '<label for="userComment" class="float-left mt-3">Комментария</label>'
+              + '<textarea id="userComment" class="form-control" rows="3"></textarea>',
 
-            confirmButtonText: this.$t("sweetAlert.debtors.yes"),
+            confirmButtonText: this.$t('sweetAlert.debtors.yes'),
 
-            preConfirm: () => {
-              return {
-                next_payment_date:
-                  document.getElementById("date-payment").value,
-                comment: document.getElementById("comment").value,
-              };
-            },
-          });
+            preConfirm: () => ({
+              next_payment_date:
+                  document.getElementById('date-payment').value,
+              comment: document.getElementById('comment').value,
+            }),
+          })
 
-          this.getLoading = true;
+          this.getLoading = true
           const body = {
             date_paid: formValues.date_payment,
             amount_paid: formValues.pay_amount,
             type_payment: formValues.type_payment,
             comment: initialValue.comment,
             next_payment_date: initialValue.next_payment_date,
-          };
+          }
           api.debtors
             .createMonthlyPayment(id, body)
             .then(() => {
-              this.fetchOrder();
-              this.getLoading = false;
-              this.$swal(this.$t("sweetAlert.payment_success"), "", "success");
+              this.fetchOrder()
+              this.getLoading = false
+              this.$swal(this.$t('sweetAlert.payment_success'), '', 'success')
             })
-            .catch((error) => {
-              this.getLoading = false;
-              this.toastedWithErrorCode(error);
+            .catch(error => {
+              this.getLoading = false
+              this.toastedWithErrorCode(error)
 
               if (error.response.status === 422) {
                 if (
-                  error.response.data.date_payment &&
-                  error.response.data.date_payment.length > 0
-                )
-                  this.toasted(error.response.data.date_payment[0], "error");
+                  error.response.data.date_payment
+                  && error.response.data.date_payment.length > 0
+                ) this.toasted(error.response.data.date_payment[0], 'error')
                 if (
-                  error.response.data.pay_amount &&
-                  error.response.data.pay_amount.length > 0
-                )
-                  this.toasted(error.response.data.pay_amount[0], "error");
+                  error.response.data.pay_amount
+                  && error.response.data.pay_amount.length > 0
+                ) this.toasted(error.response.data.pay_amount[0], 'error')
               }
-            });
+            })
         }
 
-        return;
+        return
       }
 
       if (formValues) {
         this.$swal({
-          title: this.$t("sweetAlert.title"),
-          text: this.$t("sweetAlert.debtors.are_you_sure"),
-          icon: "warning",
+          title: this.$t('sweetAlert.title'),
+          text: this.$t('sweetAlert.debtors.are_you_sure'),
+          icon: 'warning',
           showCancelButton: true,
-          input: "textarea",
-          inputLabel: "Message",
-          inputPlaceholder: this.$t("sweetAlert.debtors.placeholder"),
+          input: 'textarea',
+          inputLabel: 'Message',
+          inputPlaceholder: this.$t('sweetAlert.debtors.placeholder'),
           inputAttributes: {
-            "aria-label": this.$t("sweetAlert.debtors.placeholder"),
+            'aria-label': this.$t('sweetAlert.debtors.placeholder'),
           },
-          confirmButtonText: this.$t("sweetAlert.debtors.yes"),
-        }).then((result) => {
-          if (result.value || result.value == "") {
-            this.getLoading = true;
+          confirmButtonText: this.$t('sweetAlert.debtors.yes'),
+        }).then(result => {
+          if (result.value || result.value == '') {
+            this.getLoading = true
             const body = {
               date_paid: formValues.date_payment,
               amount_paid: formValues.pay_amount,
               type_payment: formValues.type_payment,
               comment: result.value,
-            };
+            }
             api.debtors
               .createMonthlyPayment(id, body)
               .then(() => {
-                this.fetchOrder();
-                this.getLoading = false;
+                this.fetchOrder()
+                this.getLoading = false
 
                 this.$swal(
-                  this.$t("sweetAlert.payment_success"),
-                  "",
-                  "success"
-                );
+                  this.$t('sweetAlert.payment_success'),
+                  '',
+                  'success',
+                )
               })
-              .catch((error) => {
-                this.getLoading = false;
-                this.toastedWithErrorCode(error);
+              .catch(error => {
+                this.getLoading = false
+                this.toastedWithErrorCode(error)
 
                 if (error.response.status === 422) {
                   if (
-                    error.response.data.date_payment &&
-                    error.response.data.date_payment.length > 0
-                  )
-                    this.toasted(error.response.data.date_payment[0], "error");
+                    error.response.data.date_payment
+                    && error.response.data.date_payment.length > 0
+                  ) this.toasted(error.response.data.date_payment[0], 'error')
                   if (
-                    error.response.data.pay_amount &&
-                    error.response.data.pay_amount.length > 0
-                  )
-                    this.toasted(error.response.data.pay_amount[0], "error");
+                    error.response.data.pay_amount
+                    && error.response.data.pay_amount.length > 0
+                  ) this.toasted(error.response.data.pay_amount[0], 'error')
                 }
-              });
+              })
           }
-        });
+        })
       }
     },
 
     cancelOrder() {
       this.$swal({
-        title: this.$t("sweetAlert.title"),
-        text: this.$t("sweetAlert.text_cancel_contract"),
-        icon: "warning",
+        title: this.$t('sweetAlert.title'),
+        text: this.$t('sweetAlert.text_cancel_contract'),
+        icon: 'warning',
         showCancelButton: true,
-        input: "textarea",
-        inputLabel: "Message",
-        inputPlaceholder: "Напишите причину расторгнуть договор",
+        input: 'textarea',
+        inputLabel: 'Message',
+        inputPlaceholder: 'Напишите причину расторгнуть договор',
         inputAttributes: {
-          "aria-label": "Напишите причину расторгнуть договор",
+          'aria-label': 'Напишите причину расторгнуть договор',
         },
-        confirmButtonText: this.$t("sweetAlert.yes_cancel_reserve"),
-      }).then((result) => {
+        confirmButtonText: this.$t('sweetAlert.yes_cancel_reserve'),
+      }).then(result => {
         if (result.value) {
-          this.getLoading = true;
+          this.getLoading = true
           const body = {
             comment: result.value,
-          };
+          }
           api.contract
             .cancelContract(this.order.id, body)
             .then(() => {
-              this.$router.back(-1);
-              this.getLoading = false;
+              this.$router.back(-1)
+              this.getLoading = false
               this.$swal(
-                this.$t("sweetAlert.canceled_contract"),
-                "",
-                "success"
-              );
+                this.$t('sweetAlert.canceled_contract'),
+                '',
+                'success',
+              )
             })
-            .catch((error) => {
-              this.getLoading = false;
-              this.toastedWithErrorCode(error);
-            });
+            .catch(error => {
+              this.getLoading = false
+              this.toastedWithErrorCode(error)
+            })
         } else {
-          this.toasted("Напишите причину расторгнуть договор", "error");
+          this.toasted('Напишите причину расторгнуть договор', 'error')
         }
-      });
+      })
     },
 
     removeBlock() {
-      this.$bvModal.hide("modal-contract-info");
+      this.$bvModal.hide('modal-contract-info')
     },
 
     getPrepay() {
-      let total_discount = this.getDiscount();
+      const total_discount = this.getDiscount()
 
-      let total = this.apartment.price - total_discount;
+      const total = this.apartment.price - total_discount
 
-      return (this.client.discount.prepay_to * total) / 100;
+      return (this.client.discount.prepay_to * total) / 100
     },
 
     getDiscount() {
-      return (this.client.discount.discount * this.apartment.price) / 100;
+      return (this.client.discount.discount * this.apartment.price) / 100
     },
 
     getMonth() {
-      return (this.getTotal() - this.getPrepay()) / this.month;
+      return (this.getTotal() - this.getPrepay()) / this.month
     },
 
     getDebt() {
-      return this.getTotal() - this.getPrepay();
+      return this.getTotal() - this.getPrepay()
     },
 
     getStatusPayment(payment) {
       switch (payment.status) {
-        case "waiting":
-          return "Ожидает оплату";
-        case "paid":
-          return "Оплачено";
+        case 'waiting':
+          return 'Ожидает оплату'
+        case 'paid':
+          return 'Оплачено'
         default:
-          return "Отказано";
+          return 'Отказано'
       }
     },
 
     getTotal() {
-      let total_discount = this.getDiscount();
+      const total_discount = this.getDiscount()
 
       // let total = price * area;
-      let total = this.apartment.price - total_discount;
+      const total = this.apartment.price - total_discount
 
-      return total;
+      return total
     },
 
     funcGetPaymentType(type) {
-      let msg;
+      let msg
 
       switch (type) {
-        case "payme":
-          msg = "Payme";
-          break;
-        case "click":
-          msg = "Click";
-          break;
-        case "transfer":
-          msg = "Перечисления";
-          break;
-        case "other":
-          msg = "Другое";
-          break;
-        case "cash":
-          msg = "Наличные";
-          break;
+        case 'payme':
+          msg = 'Payme'
+          break
+        case 'click':
+          msg = 'Click'
+          break
+        case 'transfer':
+          msg = 'Перечисления'
+          break
+        case 'other':
+          msg = 'Другое'
+          break
+        case 'cash':
+          msg = 'Наличные'
+          break
         default:
-          msg = "";
-          break;
+          msg = ''
+          break
       }
 
-      return msg;
+      return msg
     },
   },
 
   filters: {
     getType(type) {
-      let msg;
+      let msg
 
       switch (type) {
-        case "debt":
-        case "monthly":
-          msg = "Ежемесячно";
-          break;
-        case "manual":
-          msg = "Ручной создано";
-          break;
+        case 'debt':
+        case 'monthly':
+          msg = 'Ежемесячно'
+          break
+        case 'manual':
+          msg = 'Ручной создано'
+          break
         default:
-          msg = "Первоначальный взнос";
-          break;
+          msg = 'Первоначальный взнос'
+          break
       }
 
-      return msg;
+      return msg
     },
 
     getPaymentType(type) {
-      let msg;
+      let msg
 
       switch (type) {
-        case "payme":
-          msg = "Payme";
-          break;
-        case "click":
-          msg = "Click";
-          break;
-        case "transfer":
-          msg = "Перечисления";
-          break;
-        case "other":
-          msg = "Другое";
-          break;
-        case "cash":
-          msg = "Наличные";
-          break;
+        case 'payme':
+          msg = 'Payme'
+          break
+        case 'click':
+          msg = 'Click'
+          break
+        case 'transfer':
+          msg = 'Перечисления'
+          break
+        case 'other':
+          msg = 'Другое'
+          break
+        case 'cash':
+          msg = 'Наличные'
+          break
         default:
-          msg = "";
-          break;
+          msg = ''
+          break
       }
 
-      return msg;
+      return msg
     },
   },
-};
+}
 </script>
 
 <template>
@@ -706,33 +692,35 @@ export default {
                   ? order.company.type.name.kr
                   : ""
               }}
-              "{{ order.company ? order.company.name : "" }}"<br />
+              "{{ order.company ? order.company.name : "" }}"<br>
               {{ order.company.first_name }} {{ order.company.last_name }}
-              {{ order.company.second_name }} <br />
-              р/с: {{ order.company.payment_account }} <br />
+              {{ order.company.second_name }} <br>
+              р/с: {{ order.company.payment_account }} <br>
               ИНН: {{ order.company.inn }}, МФО: {{ order.company.mfo }}
-              <br />
+              <br>
             </div>
 
             <div class="col-md-6 text-right">
               {{ order.client.first_name.kirill }}
               {{ order.client.last_name.kirill }}
-              {{ order.client.second_name.kirill }}<br />
-              {{ order.client.passport_series }}<br />
-              {{ order.client.issued_by_whom }}<br />
+              {{ order.client.second_name.kirill }}<br>
+              {{ order.client.passport_series }}<br>
+              {{ order.client.issued_by_whom }}<br>
               {{ order.client.date_of_issue | moment("DD.MM.YYYY") }}
-              берилган<br />
+              берилган<br>
               {{ order.client.birth_day | moment("DD.MM.YYYY") }}
-              тугилган<br />
-              +{{ order.client.phone }}<br />
-              +{{ order.client.other_phone }}<br />
+              тугилган<br>
+              +{{ order.client.phone }}<br>
+              +{{ order.client.other_phone }}<br>
 
               <div
                 class="mb-3 ml-auto col-md-5 d-flex justify-content-end flex-column"
               >
-                <label class="d-block" for="type_client">
-                  {{ $t("apartments.agree.type_client") }}</label
+                <label
+                  class="d-block"
+                  for="type_client"
                 >
+                  {{ $t("apartments.agree.type_client") }}</label>
                 <select
                   id="type_client"
                   v-model="order.friends"
@@ -750,9 +738,9 @@ export default {
                 <button
                   v-if="
                     !edit.type_client &&
-                    ((getMe.role && getMe.role.id === 1) ||
-                      (getPermission.contracts &&
-                        getPermission.contracts.friends))
+                      ((getMe.role && getMe.role.id === 1) ||
+                        (getPermission.contracts &&
+                          getPermission.contracts.friends))
                   "
                   class="btn btn-primary mt-3 mr-0"
                   @click="edit.type_client = true"
@@ -763,9 +751,9 @@ export default {
                 <button
                   v-if="
                     edit.type_client &&
-                    ((getMe.role && getMe.role.id === 1) ||
-                      (getPermission.contracts &&
-                        getPermission.contracts.friends))
+                      ((getMe.role && getMe.role.id === 1) ||
+                        (getPermission.contracts &&
+                          getPermission.contracts.friends))
                   "
                   class="btn btn-success mt-3"
                   @click="ChangeTypeClient"
@@ -780,7 +768,10 @@ export default {
                 <table class="table table-striped">
                   <thead class="table-dark">
                     <tr>
-                      <th scope="col" width="50">
+                      <th
+                        scope="col"
+                        width="50"
+                      >
                         {{ $t("apartments.list.number") }}
                       </th>
                       <th scope="col">
@@ -792,19 +783,34 @@ export default {
                       <th scope="col">
                         {{ $t("apartments.list.block") }}
                       </th>
-                      <th scope="col" class="text-center">
+                      <th
+                        scope="col"
+                        class="text-center"
+                      >
                         {{ $t("apartments.list.rooms") }}
                       </th>
-                      <th scope="col" class="text-center">
+                      <th
+                        scope="col"
+                        class="text-center"
+                      >
                         {{ $t("apartments.list.floor") }}
                       </th>
-                      <th scope="col" class="text-center">
+                      <th
+                        scope="col"
+                        class="text-center"
+                      >
                         {{ $t("apartments.list.entrance") }}
                       </th>
-                      <th scope="col" class="text-center">
+                      <th
+                        scope="col"
+                        class="text-center"
+                      >
                         {{ $t("apartments.list.area") }}
                       </th>
-                      <th scope="col" class="text-center">
+                      <th
+                        scope="col"
+                        class="text-center"
+                      >
                         {{ $t("apartments.list.balcony") }}
                       </th>
                       <th scope="col">
@@ -849,7 +855,9 @@ export default {
                         {{ apartment.entrance }}
                       </td>
 
-                      <td class="text-center">{{ apartment.plan.area }} м²</td>
+                      <td class="text-center">
+                        {{ apartment.plan.area }} м²
+                      </td>
 
                       <td class="text-center">
                         <span v-if="apartment.plan.balcony">
@@ -1022,7 +1030,10 @@ export default {
                   <form @submit.prevent="CreatePayment">
                     <div class="card-body">
                       <div class="mb-3">
-                        <label for="date" class="form-label">{{
+                        <label
+                          for="date"
+                          class="form-label"
+                        >{{
                           $t("contracts.view.schedule")
                         }}</label>
                         <input
@@ -1032,11 +1043,14 @@ export default {
                           class="form-control"
                           placeholder=""
                           required
-                        />
+                        >
                       </div>
 
                       <div class="mb-3">
-                        <label for="amount" class="form-label">{{
+                        <label
+                          for="amount"
+                          class="form-label"
+                        >{{
                           $t("contracts.view.sum")
                         }}</label>
                         <input
@@ -1047,12 +1061,15 @@ export default {
                           min="1"
                           required
                           placeholder=""
-                        />
+                        >
                       </div>
                     </div>
 
                     <div class="card-footer d-flex">
-                      <button type="submit" class="btn btn-success">
+                      <button
+                        type="submit"
+                        class="btn btn-success"
+                      >
                         <i class="fa fa-save" />
                         {{ $t("contracts.view.save_btn") }}
                       </button>
@@ -1110,7 +1127,10 @@ export default {
                 </thead>
 
                 <tbody>
-                  <tr v-for="(month, index) in order.payments" :key="index">
+                  <tr
+                    v-for="(month, index) in order.payments"
+                    :key="index"
+                  >
                     <td>
                       {{ month.date_payment | moment("DD.MM.YYYY") }}
                     </td>
@@ -1161,9 +1181,9 @@ export default {
                       <button
                         v-if="
                           month.type === 'initial_payment' &&
-                          ((getMe.role && getMe.role.id === 1) ||
-                            getPermission.debtors.first_payment.accept) &&
-                          month.status === 'waiting'
+                            ((getMe.role && getMe.role.id === 1) ||
+                              getPermission.debtors.first_payment.accept) &&
+                            month.status === 'waiting'
                         "
                         class="btn badge-danger btn-sm float-right"
                         @click="paymentMonthly(index)"
@@ -1174,9 +1194,9 @@ export default {
                       <button
                         v-if="
                           month.type === 'initial_payment' &&
-                          ((getMe.role && getMe.role.id === 1) ||
-                            getPermission.debtors.first_payment.edit) &&
-                          month.status === 'paid'
+                            ((getMe.role && getMe.role.id === 1) ||
+                              getPermission.debtors.first_payment.edit) &&
+                            month.status === 'paid'
                         "
                         class="btn btn-primary btn-sm float-right"
                         @click="editMonthly(index)"
@@ -1189,9 +1209,9 @@ export default {
                           (month.type === 'monthly' ||
                             month.type === 'manual' ||
                             month.type === 'debt') &&
-                          ((getMe.role && getMe.role.id === 1) ||
-                            getPermission.debtors.monthly.accept) &&
-                          month.status === 'waiting'
+                            ((getMe.role && getMe.role.id === 1) ||
+                              getPermission.debtors.monthly.accept) &&
+                            month.status === 'waiting'
                         "
                         class="btn badge-danger btn-sm float-right ml-2"
                         @click="paymentMonthly(index)"
@@ -1204,9 +1224,9 @@ export default {
                           (month.type === 'monthly' ||
                             month.type === 'manual' ||
                             month.type === 'debt') &&
-                          ((getMe.role && getMe.role.id === 1) ||
-                            getPermission.debtors.monthly.edit) &&
-                          month.status === 'paid'
+                            ((getMe.role && getMe.role.id === 1) ||
+                              getPermission.debtors.monthly.edit) &&
+                            month.status === 'paid'
                         "
                         class="btn btn-primary btn-sm float-right"
                         @click="editMonthly(index)"
@@ -1217,9 +1237,9 @@ export default {
                       <button
                         v-if="
                           month.type === 'manual' &&
-                          ((getMe.role && getMe.role.id === 1) ||
-                            getPermission.debtors.monthly.edit) &&
-                          month.status === 'waiting'
+                            ((getMe.role && getMe.role.id === 1) ||
+                              getPermission.debtors.monthly.edit) &&
+                            month.status === 'waiting'
                         "
                         class="btn btn-sm float-right"
                         @click="deleteMonthly(index)"
@@ -1277,7 +1297,10 @@ export default {
                   <i class="fa fa-info-circle" />
                   {{ $t("contracts.view.no_comment") }}
                 </div>
-                <ul v-if="order.comments.length > 0" class="timeline">
+                <ul
+                  v-if="order.comments.length > 0"
+                  class="timeline"
+                >
                   <li
                     v-for="(userComment, index) in order.comments"
                     :key="index"
@@ -1306,15 +1329,16 @@ export default {
                       />
                     </div>
                     <div class="timeline-panel">
-                      <div class="timeline-body" v-html="comment.comment" />
+                      <div
+                        class="timeline-body"
+                        v-html="comment.comment"
+                      />
 
-                      <small
-                        >Пользователь: {{ userComment.user.first_name }}
+                      <small>Пользователь: {{ userComment.user.first_name }}
                         {{ userComment.user.last_name }} | Дата:
                         {{
                           userComment.created_at | moment("HH:mm, DD.MM.YYYY")
-                        }}</small
-                      >
+                        }}</small>
                     </div>
                   </li>
                 </ul>
@@ -1385,7 +1409,12 @@ export default {
         </div>
       </div>
     </div>
-    <b-overlay :show="getLoading" no-wrap opacity="0.5" style="z-index: 9999">
+    <b-overlay
+      :show="getLoading"
+      no-wrap
+      opacity="0.5"
+      style="z-index: 9999"
+    >
       <template #overlay>
         <div class="d-flex justify-content-center w-100">
           <div class="lds-ellipsis">

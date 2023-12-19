@@ -1,23 +1,23 @@
 <script>
 export default {
-  name: "BaseButton",
+  name: 'BaseButton',
   components: {},
   props: {
     text: {
       type: String,
-      default: () => "Button",
+      default: () => 'Button',
     },
     design: {
       type: String,
-      default: () => "",
+      default: () => '',
     },
     size: {
       type: String,
-      default: () => "lg",
+      default: () => 'lg',
     },
     type: {
       type: String,
-      default: () => "button",
+      default: () => 'button',
     },
     disabled: {
       type: Boolean,
@@ -36,57 +36,56 @@ export default {
       default: () => false,
     },
   },
-  emits: ["click"],
+  emits: ['click'],
   data() {
     return {
       loadingColor: {
-        fill: "",
-        stroke: "",
+        fill: '',
+        stroke: '',
       },
-    };
+    }
   },
   computed: {
     hasLeftSlot() {
-      return this.$slots.hasOwnProperty("left-icon");
+      return this.$slots.hasOwnProperty('left-icon')
     },
     hasRightSlot() {
-      return this.$slots.hasOwnProperty("right-icon");
+      return this.$slots.hasOwnProperty('right-icon')
     },
     hasNotDefaultSlot() {
-      return !this.$slots.hasOwnProperty("default");
+      return !this.$slots.hasOwnProperty('default')
     },
   },
   mounted() {
-    this.loadingColorRender();
+    this.loadingColorRender()
   },
   methods: {
     loadingColorRender() {
       switch (this.design) {
-        case "violet-gradient":
+        case 'violet-gradient':
           this.loadingColor = {
-            fill: "var(--violet-700)",
-            stroke: "var(--white)",
-          };
-          break;
+            fill: 'var(--violet-700)',
+            stroke: 'var(--white)',
+          }
+          break
         default:
           this.loadingColor = {
-            fill: "var(--gray-200)",
-            stroke: "var(--violet-600)",
-          };
+            fill: 'var(--gray-200)',
+            stroke: 'var(--violet-600)',
+          }
       }
     },
     triggerEvent() {
       if (!this.loading) {
-        this.$emit("click");
+        this.$emit('click')
       }
     },
   },
-};
+}
 </script>
 
 <template>
   <button
-    @click="triggerEvent"
     :type="type"
     :disabled="disabled"
     class="base__button"
@@ -96,8 +95,12 @@ export default {
       { loading: loading },
       { fixed: fixed },
     ]"
+    @click="triggerEvent"
   >
-    <span v-if="loading" class="loading-item">
+    <span
+      v-if="loading"
+      class="loading-item"
+    >
       <div class="loading__content">
         <span class="loading__content-main">
           <svg
@@ -119,15 +122,24 @@ export default {
         </span>
       </div>
     </span>
-    <span v-if="hasLeftSlot" class="left__icon">
+    <span
+      v-if="hasLeftSlot"
+      class="left__icon"
+    >
       <slot name="left-icon" />
     </span>
-    <slot name="default"></slot>
-    <span v-if="hasNotDefaultSlot && text" class="text">
+    <slot name="default" />
+    <span
+      v-if="hasNotDefaultSlot && text"
+      class="text"
+    >
       <span v-if="bilingual">{{ $t(text) }}</span>
       <span v-else>{{ text }}</span>
     </span>
-    <span v-if="hasRightSlot" class="right__icon">
+    <span
+      v-if="hasRightSlot"
+      class="right__icon"
+    >
       <slot name="right-icon" />
     </span>
   </button>
@@ -154,7 +166,6 @@ export default {
   background: var(--gray-100)
   transition: all .3s linear
 
-
   &.fixed
     width: 100%
 
@@ -178,7 +189,6 @@ export default {
     background: var(--gray-100)
     color: var(--gray-400)
 
-
 //.disabled
 //    background: var(--gray-500)
 //    color: var(--white) !important
@@ -193,7 +203,6 @@ export default {
   &.disabled
     background: transparent !important
     color: var(--gray-400)
-
 
 .violet
   background: var(--violet-700)
@@ -214,7 +223,6 @@ export default {
   background: var(--teal-600)
   color: var(--white) !important
 
-
 .violet-gradient
   background: linear-gradient(88.25deg, #7C3AED 0%, #818CF8 100%)
   color: var(--white) !important
@@ -225,7 +233,6 @@ export default {
   &.disabled
     background: var(--gray-100)
     color: var(--gray-400) !important
-
 
 .loading
   user-select: none
@@ -252,7 +259,6 @@ export default {
   &.violet-gradient:hover
     background: linear-gradient(88.25deg, #7C3AED 0%, #818CF8 100%)
 
-
 .loading__content
   display: flex
   justify-content: center
@@ -261,7 +267,6 @@ export default {
 
   &-main
     animation: 1.5s spin infinite linear
-
 
 @keyframes spin
   to

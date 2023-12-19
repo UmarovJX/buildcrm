@@ -1,20 +1,22 @@
 <script>
-import BaseButton from "@/components/Reusable/BaseButton.vue";
-import { XIcon } from "@/components/ui-components/material-icons";
-import BaseArrowDownIcon from "@/components/icons/BaseArrowDownIcon.vue";
-import { computed, getCurrentInstance, onMounted, ref, watch } from "vue";
-import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon.vue";
-import BaseModal from "@/components/Reusable/BaseModal.vue";
-import { v3ServiceApi } from "@/services/v3/v3.service";
-import { hasOwnProperty } from "@/util/object";
-import { isArray } from "@/util/inspect";
-import BaseLoading from "@/components/Reusable/BaseLoading.vue";
-import { XCircularBackground } from "@/components/ui-components/circular-background";
-import { useToastError } from "@/composables/useToastError";
-import { onBeforeRouteLeave } from "vue-router/composables";
+import BaseButton from '@/components/Reusable/BaseButton.vue'
+import { XIcon } from '@/components/ui-components/material-icons'
+import BaseArrowDownIcon from '@/components/icons/BaseArrowDownIcon.vue'
+import {
+  computed, getCurrentInstance, onMounted, ref, watch,
+} from 'vue'
+import BaseArrowLeftIcon from '@/components/icons/BaseArrowLeftIcon.vue'
+import BaseModal from '@/components/Reusable/BaseModal.vue'
+import { v3ServiceApi } from '@/services/v3/v3.service'
+import { hasOwnProperty } from '@/util/object'
+import { isArray } from '@/util/inspect'
+import BaseLoading from '@/components/Reusable/BaseLoading.vue'
+import { XCircularBackground } from '@/components/ui-components/circular-background'
+import { useToastError } from '@/composables/useToastError'
+import { onBeforeRouteLeave } from 'vue-router/composables'
 
 export default {
-  name: "ExportDropdown",
+  name: 'ExportDropdown',
   components: {
     XCircularBackground,
     BaseLoading,
@@ -25,49 +27,47 @@ export default {
     BaseArrowDownIcon,
   },
   setup() {
-    const vm = getCurrentInstance();
+    const vm = getCurrentInstance()
 
     function formatDate(dm) {
-      return dm.split("-").reverse().join(".");
+      return dm.split('-').reverse().join('.')
     }
 
-    const tableFields = computed(() => {
-      return [
-        {
-          key: "id",
-          label: "#",
-        },
-        {
-          key: "date_from",
-          label: vm.proxy.$t("from_the_date_of"),
-          formatter: formatDate,
-        },
-        {
-          key: "date_to",
-          label: vm.proxy.$t("to_the_date_of"),
-          formatter: formatDate,
-        },
-        {
-          key: "status",
-          label: vm.proxy.$t("report.status"),
-        },
-        {
-          key: "actions",
-          label: "",
-        },
-      ];
-    });
+    const tableFields = computed(() => [
+      {
+        key: 'id',
+        label: '#',
+      },
+      {
+        key: 'date_from',
+        label: vm.proxy.$t('from_the_date_of'),
+        formatter: formatDate,
+      },
+      {
+        key: 'date_to',
+        label: vm.proxy.$t('to_the_date_of'),
+        formatter: formatDate,
+      },
+      {
+        key: 'status',
+        label: vm.proxy.$t('report.status'),
+      },
+      {
+        key: 'actions',
+        label: '',
+      },
+    ])
 
     const reportForm = ref({
       dateFrom: null,
       dateTo: null,
-    });
-    const isSubmitting = ref(false);
-    const exportButtonBusy = ref(false);
-    const retryingFileId = ref(false);
-    const loadingFileId = ref(false);
-    const list = ref([]);
-    const timer = ref(null);
+    })
+    const isSubmitting = ref(false)
+    const exportButtonBusy = ref(false)
+    const retryingFileId = ref(false)
+    const loadingFileId = ref(false)
+    const list = ref([])
+    const timer = ref(null)
     const pagination = ref({
       current: 1,
       previous: 0,
@@ -75,8 +75,8 @@ export default {
       perPage: 10,
       totalPage: 0,
       totalItem: 0,
-    });
-    const { toastError } = useToastError();
+    })
+    const { toastError } = useToastError()
 
     /*
     * filter: {
@@ -98,116 +98,112 @@ export default {
           },
           * */
 
-    const vObserverRef = ref(null);
-    const downloadModalRef = ref(null);
-    const exportDropdownRef = ref(null);
+    const vObserverRef = ref(null)
+    const downloadModalRef = ref(null)
+    const exportDropdownRef = ref(null)
 
-    const hasUnfinishedReport = computed(() => {
-      return list.value.some(({ status }) =>
-        ["created", "processing"].includes(status)
-      );
-    });
+    const hasUnfinishedReport = computed(() => list.value.some(({ status }) => ['created', 'processing'].includes(status)))
 
-    watch(hasUnfinishedReport, (hUnReport) => {
+    watch(hasUnfinishedReport, hUnReport => {
       if (hUnReport) {
         const unfinishedIds = list.value
-          .filter(({ status }) => ["created", "processing"].includes(status))
-          .map(({ id }) => id);
+          .filter(({ status }) => ['created', 'processing'].includes(status))
+          .map(({ id }) => id)
         checking({
           ids: unfinishedIds,
-        });
+        })
       }
-    });
+    })
 
     function openDropdown() {
-      exportDropdownRef.value.show();
+      exportDropdownRef.value.show()
     }
 
     function openModal() {
-      downloadModalRef.value.openModal();
+      downloadModalRef.value.openModal()
     }
 
     function closeModal() {
-      downloadModalRef.value.closeModal();
-      vObserverRef.value.reset();
+      downloadModalRef.value.closeModal()
+      vObserverRef.value.reset()
       reportForm.value = {
         dateFrom: null,
         dateTo: null,
-      };
+      }
 
-      openDropdown();
+      openDropdown()
     }
 
     async function findAllByUser() {
       const rsp = await v3ServiceApi.reports.findAllByUser({
         page: 1,
         limit: 200,
-        type: "orders",
-      });
+        type: 'orders',
+      })
 
-      list.value = rsp.data.result;
-      pagination.value = rsp.data.pagination;
+      list.value = rsp.data.result
+      pagination.value = rsp.data.pagination
     }
 
     function joinQueries() {
-      const form = {};
-      const arrayTypes = ["object_id", "blocks", "floors", "branch", "manager"];
-      const numberTypes = ["client_type_id"];
-      console.log();
-      const query = vm.proxy.$route.query;
-      for (let property of Object.keys(query)) {
-        if (["page", "limit"].includes(property)) {
-          continue;
+      const form = {}
+      const arrayTypes = ['object_id', 'blocks', 'floors', 'branch', 'manager']
+      const numberTypes = ['client_type_id']
+      console.log()
+      const { query } = vm.proxy.$route
+      for (const property of Object.keys(query)) {
+        if (['page', 'limit'].includes(property)) {
+          continue
         }
 
-        const value = query[property];
+        const value = query[property]
 
         if (arrayTypes.includes(property)) {
-          if (typeof value === "string") {
+          if (typeof value === 'string') {
             if (parseInt(value)) {
-              form[property] = [parseInt(value)];
+              form[property] = [parseInt(value)]
             }
           } else if (isArray(value)) {
             if (!hasOwnProperty(form, property)) {
-              form[property] = [];
+              form[property] = []
             }
 
-            value.map((id) => {
+            value.map(id => {
               if (parseInt(id)) {
-                form[property].push(parseInt(id));
+                form[property].push(parseInt(id))
               }
-            });
+            })
           }
         } else if (numberTypes.includes(property)) {
-          if (typeof value === "string") {
+          if (typeof value === 'string') {
             if (parseInt(value)) {
-              form[property] = parseInt(value);
+              form[property] = parseInt(value)
             }
           }
         } else {
-          form[property] = value;
+          form[property] = value
         }
       }
 
-      return form;
+      return form
     }
 
     async function downloadFile(id, $event) {
-      $event.stopPropagation();
+      $event.stopPropagation()
       try {
-        exportButtonBusy.value = true;
-        loadingFileId.value = id;
-        const filePathRsp = await v3ServiceApi.reports.getFilePath({ id });
-        const fileLink = document.createElement("a");
-        fileLink.href = filePathRsp.data.result["file_path"];
+        exportButtonBusy.value = true
+        loadingFileId.value = id
+        const filePathRsp = await v3ServiceApi.reports.getFilePath({ id })
+        const fileLink = document.createElement('a')
+        fileLink.href = filePathRsp.data.result.file_path
         const createDropdownItem = document.getElementById(
-          "create-dropdown-item"
-        );
-        createDropdownItem.appendChild(fileLink);
-        fileLink.click();
+          'create-dropdown-item',
+        )
+        createDropdownItem.appendChild(fileLink)
+        fileLink.click()
       } finally {
-        exportButtonBusy.value = false;
-        loadingFileId.value = null;
+        exportButtonBusy.value = false
+        loadingFileId.value = null
       }
     }
 
@@ -215,61 +211,59 @@ export default {
       timer.value = setInterval(async () => {
         const checkRsp = await v3ServiceApi.reports.checkStatus({
           report_ids: ids,
-        });
+        })
 
         const isAnyFinished = checkRsp.data.result.some(
-          ({ status }) => status === "successful"
-        );
+          ({ status }) => status === 'successful',
+        )
 
         if (isAnyFinished) {
-          clearInterval(timer.value);
-          timer.value = null;
+          clearInterval(timer.value)
+          timer.value = null
 
           const reportsIds = checkRsp.data.result
-            .filter(({ status }) => status === "successful")
-            .map(({ id }) => id);
+            .filter(({ status }) => status === 'successful')
+            .map(({ id }) => id)
 
           await Promise.allSettled(
-            reportsIds.map((id) => downloadFile(id))
+            reportsIds.map(id => downloadFile(id)),
           ).then(async () => {
-            await findAllByUser();
-          });
+            await findAllByUser()
+          })
         } else {
           const isAnyFailed = checkRsp.data.result.some(
-            ({ status }) => status === "failed"
-          );
+            ({ status }) => status === 'failed',
+          )
 
           if (isAnyFailed) {
-            const isCurrentFailed = checkRsp.data.result.findIndex((item) => {
-              return (
-                item.id === retryingFileId.value && item.status === "failed"
-              );
-            });
+            const isCurrentFailed = checkRsp.data.result.findIndex(item => (
+              item.id === retryingFileId.value && item.status === 'failed'
+            ))
 
             if (isCurrentFailed !== -1) {
-              retryingFileId.value = false;
-              clearInterval(timer.value);
-              timer.value = null;
+              retryingFileId.value = false
+              clearInterval(timer.value)
+              timer.value = null
             }
 
-            await findAllByUser();
+            await findAllByUser()
           }
         }
-      }, 3000);
+      }, 3000)
     }
 
     async function retryToDownloadFile(item, $event) {
-      $event.stopPropagation();
+      $event.stopPropagation()
       try {
-        retryingFileId.value = item.id;
+        retryingFileId.value = item.id
         await v3ServiceApi.reports.retryFailedReport({
           id: item.id,
-        });
-        await findAllByUser();
+        })
+        await findAllByUser()
       } catch (e) {
-        retryingFileId.value = false;
+        retryingFileId.value = false
       } finally {
-        retryingFileId.value = item.id;
+        retryingFileId.value = item.id
       }
     }
 
@@ -277,35 +271,34 @@ export default {
       // const hasFormCompleted = await vObserverRef.value.validate();
       // if (hasFormCompleted) {
       try {
-        isSubmitting.value = true;
-        const query = vm.proxy.$route.query;
-        let date_from = null;
-        let date_to = null;
+        isSubmitting.value = true
+        const { query } = vm.proxy.$route
+        let date_from = null
+        let date_to = null
         // const hasDataTypeQuery =
         //   hasOwnProperty(query, "date_type") &&
         //   query.date_type === "created_at";
-        const hasDateQuery =
-          hasOwnProperty(query, "date") && isArray(query.date);
+        const hasDateQuery = hasOwnProperty(query, 'date') && isArray(query.date)
         if (hasDateQuery) {
-          date_from = query.date[0];
-          date_to = query.date[1] || query.date[0];
+          date_from = query.date[0]
+          date_to = query.date[1] || query.date[0]
         }
 
         await v3ServiceApi.reports.create({
           date_to,
           date_from,
-          type: "orders",
+          type: 'orders',
           filter_params: joinQueries(),
-        });
+        })
 
         // closeModal();
-        openDropdown();
-        await findAllByUser();
+        openDropdown()
+        await findAllByUser()
       } catch (e) {
-        toastError(e);
-        console.error(e);
+        toastError(e)
+        console.error(e)
       } finally {
-        isSubmitting.value = false;
+        isSubmitting.value = false
       }
       // }
     }
@@ -313,14 +306,14 @@ export default {
     function beforeHideDropdown() {}
 
     onMounted(async () => {
-      await findAllByUser();
-    });
+      await findAllByUser()
+    })
 
     onBeforeRouteLeave((to, from, next) => {
-      clearInterval(timer.value);
-      timer.value = null;
-      next();
-    });
+      clearInterval(timer.value)
+      timer.value = null
+      next()
+    })
 
     return {
       list,
@@ -342,27 +335,37 @@ export default {
       retryToDownloadFile,
       createReportFile,
       beforeHideDropdown,
-    };
+    }
   },
-};
+}
 </script>
 
 <template>
   <div>
-    <b-overlay :show="false" rounded="sm" variant="transparent">
+    <b-overlay
+      :show="false"
+      rounded="sm"
+      variant="transparent"
+    >
       <b-dropdown
-        @hide="beforeHideDropdown"
+        ref="exportDropdownRef"
         right
         variant="link"
         toggle-class="text-decoration-none m-0 p-0"
-        ref="exportDropdownRef"
         no-caret
+        @hide="beforeHideDropdown"
       >
         <template #button-content>
           <base-button :text="`${$t('export')}`">
             <template #left-icon>
-              <span class="arrow__down-violet" v-if="exportButtonBusy">
-                <b-spinner variant="light" small></b-spinner>
+              <span
+                v-if="exportButtonBusy"
+                class="arrow__down-violet"
+              >
+                <b-spinner
+                  variant="light"
+                  small
+                />
               </span>
               <x-icon
                 v-else
@@ -378,15 +381,21 @@ export default {
         <b-dropdown-text id="create-dropdown-item">
           <span class="d-flex justify-content-end">
             <span
-              @click="createReportFile"
               class="d-flex align-items-center x-gap-1 bg-gray-200 px-4 py-2 border-radius-1 cursor-pointer"
+              @click="createReportFile"
             >
               <span class="d-flex align-items-center color-gray-700">
                 {{ $t("download_report") }}
               </span>
               <span class="arrow__down-violet download-csv-icon">
-                <span class="arrow__down-violet" v-if="isSubmitting">
-                  <b-spinner variant="light" small></b-spinner>
+                <span
+                  v-if="isSubmitting"
+                  class="arrow__down-violet"
+                >
+                  <b-spinner
+                    variant="light"
+                    small
+                  />
                 </span>
                 <x-icon
                   v-else
@@ -402,7 +411,10 @@ export default {
 
         <b-dropdown-divider />
 
-        <b-dropdown-text id="b-table-container" class="export-form">
+        <b-dropdown-text
+          id="b-table-container"
+          class="export-form"
+        >
           <b-table
             sticky-header
             borderless
@@ -434,8 +446,8 @@ export default {
             <!--  Actions    -->
             <template #cell(actions)="data">
               <span
-                id="action-download"
                 v-if="data.item.status === 'successful'"
+                id="action-download"
                 class="arrow__down-violet"
                 @click="downloadFile(data.item.id, $event)"
               >
@@ -443,7 +455,7 @@ export default {
                   v-if="data.item.id === loadingFileId"
                   variant="light"
                   small
-                ></b-spinner>
+                />
 
                 <base-arrow-down-icon
                   v-else
@@ -457,16 +469,16 @@ export default {
               <b-spinner
                 v-if="
                   ['created', 'processing'].includes(data.item.status) ||
-                  data.item.id === retryingFileId
+                    data.item.id === retryingFileId
                 "
                 :variant="
                   data.item.id === retryingFileId
                     ? 'danger'
                     : data.item.status === 'processing'
-                    ? 'warning'
-                    : 'primary'
+                      ? 'warning'
+                      : 'primary'
                 "
-              ></b-spinner>
+              />
 
               <x-circular-background
                 v-else-if="['cancelled', 'failed'].includes(data.item.status)"
@@ -474,7 +486,11 @@ export default {
                 size="2rem"
                 @click="retryToDownloadFile(data.item, $event)"
               >
-                <x-icon name="refresh" color="var(--white)" class="red-600" />
+                <x-icon
+                  name="refresh"
+                  color="var(--white)"
+                  class="red-600"
+                />
               </x-circular-background>
             </template>
 
@@ -487,7 +503,9 @@ export default {
               <div
                 class="d-flex justify-content-center align-items-center flex-column not__found"
               >
-                <p class="head">{{ $t("reports.not_found") }}</p>
+                <p class="head">
+                  {{ $t("reports.not_found") }}
+                </p>
                 <p>{{ $t("contracts_not_found.description") }}</p>
               </div>
             </template>
@@ -497,18 +515,21 @@ export default {
     </b-overlay>
 
     <base-modal
-      design="payment-modal"
       ref="downloadModalRef"
+      design="payment-modal"
       wrapper-style="width:30rem"
     >
       <template #header>
         <!--   GO BACK     -->
         <span class="d-flex align-items-center">
-          <span class="go__back" @click="closeModal">
+          <span
+            class="go__back"
+            @click="closeModal"
+          >
             <base-arrow-left-icon
               :width="32"
               :height="32"
-            ></base-arrow-left-icon>
+            />
           </span>
           <!--    TITLE      -->
           <span class="title ml-3">{{ $t("download_report") }}</span>
@@ -516,16 +537,22 @@ export default {
       </template>
 
       <template #main>
-        <ValidationObserver ref="vObserverRef" style="overflow-y: auto">
+        <ValidationObserver
+          ref="vObserverRef"
+          style="overflow-y: auto"
+        >
           <div class="payment-addition-fields">
             <ValidationProvider
-              :name="`${$t('from_the_date_of')}`"
-              rules="required"
               id="selectFromDate"
               v-slot="{ errors }"
+              :name="`${$t('from_the_date_of')}`"
+              rules="required"
               tag="div"
             >
-              <label for="selectFromDate" class="gray-600 mt-4">
+              <label
+                for="selectFromDate"
+                class="gray-600 mt-4"
+              >
                 {{ $t("from_the_date_of") }}:
               </label>
 
@@ -534,23 +561,30 @@ export default {
                   v-model="reportForm.dateFrom"
                   type="date"
                   class="w-100"
-                />
+                >
               </div>
               <span class="error__provider">{{ errors[0] }}</span>
             </ValidationProvider>
 
             <ValidationProvider
+              id="selectToDate"
+              v-slot="{ errors }"
               :name="`${$t('to_the_date_of')}`"
               tag="div"
               rules="required"
-              id="selectToDate"
-              v-slot="{ errors }"
             >
-              <label for="selectToDate" class="gray-600 mt-4 d-block">
+              <label
+                for="selectToDate"
+                class="gray-600 mt-4 d-block"
+              >
                 {{ $t("to_the_date_of") }}:
               </label>
               <div class="content__form__select">
-                <input v-model="reportForm.dateTo" type="date" class="w-100" />
+                <input
+                  v-model="reportForm.dateTo"
+                  type="date"
+                  class="w-100"
+                >
               </div>
               <span class="error__provider">{{ errors[0] }}</span>
             </ValidationProvider>

@@ -1,25 +1,25 @@
 <script>
-import ParkingInformation from "@/components/Objects/view/elements/ParkingInformation";
-import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
-import BasePrintIcon from "@/components/icons/BasePrintIcon";
-import BaseButton from "@/components/Reusable/BaseButton";
-import BaseMinusCircleIcon from "@/components/icons/BaseMinusCircleIcon";
-import BaseLoading from "@/components/Reusable/BaseLoading";
-import Reserve from "@/components/Dashboard/Apartment/Components/Reserve";
-import BaseEyeIcon from "@/components/icons/BaseEyeIcon";
-import { formatToPrice } from "@/util/reusable";
-import { mapGetters, mapMutations } from "vuex";
-import api from "@/services/api";
-import PdfTemplate from "@/components/PdfTemplate";
-import CheckoutPermission from "@/permission/checkout";
-import ApartmentComments from "@/components/Objects/view/elements/ApartmentComments";
-import { XIcon } from "@/components/ui-components/material-icons";
-import ApartmentsPermission from "@/permission/apartments";
-import { isNUNEZ } from "@/util/inspect";
-import SettingsPermission from "@/permission/settings.permission";
+import ParkingInformation from '@/components/Objects/view/elements/ParkingInformation'
+import BaseArrowLeftIcon from '@/components/icons/BaseArrowLeftIcon'
+import BasePrintIcon from '@/components/icons/BasePrintIcon'
+import BaseButton from '@/components/Reusable/BaseButton'
+import BaseMinusCircleIcon from '@/components/icons/BaseMinusCircleIcon'
+import BaseLoading from '@/components/Reusable/BaseLoading'
+import Reserve from '@/components/Dashboard/Apartment/Components/Reserve'
+import BaseEyeIcon from '@/components/icons/BaseEyeIcon'
+import { formatToPrice } from '@/util/reusable'
+import { mapGetters, mapMutations } from 'vuex'
+import api from '@/services/api'
+import PdfTemplate from '@/components/PdfTemplate'
+import CheckoutPermission from '@/permission/checkout'
+import ApartmentComments from '@/components/Objects/view/elements/ApartmentComments'
+import { XIcon } from '@/components/ui-components/material-icons'
+import ApartmentsPermission from '@/permission/apartments'
+import { isNUNEZ } from '@/util/inspect'
+import SettingsPermission from '@/permission/settings.permission'
 
 export default {
-  name: "ParkingExpressView",
+  name: 'ParkingExpressView',
 
   /* COMPONENTS */
   components: {
@@ -48,16 +48,16 @@ export default {
     },
     apartmentUuid: {
       type: String,
-      default: "",
+      default: '',
     },
     objectName: {
       type: String,
-      default: "",
+      default: '',
     },
   },
 
   /* EMITS */
-  emits: ["hide-parking-details", "update-content"],
+  emits: ['hide-parking-details', 'update-content'],
 
   /* DATA */
   data() {
@@ -66,30 +66,30 @@ export default {
       create: ApartmentsPermission.getApartmentCommentsCreatePermission(),
       edit: ApartmentsPermission.getApartmentCommentsEditPermission(),
       delete: ApartmentsPermission.getApartmentCommentsDeletePermission(),
-    };
+    }
     return {
       apartmentCommentsPermission,
       htmlToPdfOptions: {
         margin: 6,
-        filename: "",
+        filename: '',
       },
       tabList() {
         return [
           {
-            name: "Успешные",
-            status: "success",
+            name: 'Успешные',
+            status: 'success',
             counts: 2,
           },
           {
-            name: "Ошибка загрузки",
-            status: "failed",
+            name: 'Ошибка загрузки',
+            status: 'failed',
             counts: 3,
           },
-        ];
+        ]
       },
       sidebarApartment: {},
       appLoading: true,
-      variant: "none",
+      variant: 'none',
       visibleModal: true,
       showReservationModal: false,
       printCalc: {},
@@ -99,53 +99,53 @@ export default {
       bookPermission: CheckoutPermission.getBookPermission(),
       checkoutPermission: CheckoutPermission.getCheckoutCheckPermission(),
       checkoutRootPermission: CheckoutPermission.getRootPermission(),
-      statusViewPms: SettingsPermission.getPermission("apartments.status.view"),
-      holderViewPms: SettingsPermission.getPermission("apartments.holder.view"),
-    };
+      statusViewPms: SettingsPermission.getPermission('apartments.status.view'),
+      holderViewPms: SettingsPermission.getPermission('apartments.holder.view'),
+    }
   },
 
   /* COMPUTED */
   computed: {
     ...mapGetters({
-      me: "getMe",
-      reserveClient: "getReserveClient",
+      me: 'getMe',
+      reserveClient: 'getReserveClient',
     }),
     visibleComp: {
       get() {
-        return this.visible;
+        return this.visible
       },
       set(value) {
         if (value) {
-          this.fetchSidebarItem();
+          this.fetchSidebarItem()
           if (
-            this.apartmentCommentsPermission &&
-            this.apartmentCommentsPermission.view
+            this.apartmentCommentsPermission
+            && this.apartmentCommentsPermission.view
           ) {
             // this.getComments();
           }
         } else {
-          this.$emit("hide-parking-details");
+          this.$emit('hide-parking-details')
         }
       },
     },
     hasApartment() {
-      return Object.keys(this.sidebarApartment).length > 0;
+      return Object.keys(this.sidebarApartment).length > 0
     },
     price() {
       return (
-        formatToPrice(this.sidebarApartment.price, 2) + " " + this.$t("ye")
-      );
+        `${formatToPrice(this.sidebarApartment.price, 2)} ${this.$t('ye')}`
+      )
     },
     squareMetrePrice() {
       return (
-        formatToPrice(this.sidebarApartment.price_m2) + " " + this.$t("ye")
-      );
+        `${formatToPrice(this.sidebarApartment.price_m2)} ${this.$t('ye')}`
+      )
     },
     status() {
-      if (!this.sidebarApartment["is_sold"]) {
-        return "unavailable";
+      if (!this.sidebarApartment.is_sold) {
+        return 'unavailable'
       }
-      return this.sidebarApartment.order.status;
+      return this.sidebarApartment.order.status
     },
 
     permission() {
@@ -155,74 +155,69 @@ export default {
         continueOrder: false,
         order: false,
         contract: false,
-      };
+      }
 
-      if (!this.hasApartment) return context;
+      if (!this.hasApartment) return context
 
-      const { sidebarApartment, me } = this;
-      const { order } = sidebarApartment;
+      const { sidebarApartment, me } = this
+      const { order } = sidebarApartment
       // const {checkout} = userPermission
-      const forSale = sidebarApartment["is_sold"];
-      const authorityUser = order?.user?.id === me?.user?.id;
+      const forSale = sidebarApartment.is_sold
+      const authorityUser = order?.user?.id === me?.user?.id
       // const rootContract = userPermission?.checkout?.root
       // const isMainRole = me?.role?.id === 1
-      const isStatusBooked = order.status === "booked";
-      const isStatusAvailable = order.status === "available";
-      const isStatusHold = order.status === "hold";
-      const isStatusSold = order.status === "sold";
-      const isStatusClosed = order.status === "closed";
-      const isStatusContract = order.status === "contract";
+      const isStatusBooked = order.status === 'booked'
+      const isStatusAvailable = order.status === 'available'
+      const isStatusHold = order.status === 'hold'
+      const isStatusSold = order.status === 'sold'
+      const isStatusClosed = order.status === 'closed'
+      const isStatusContract = order.status === 'contract'
 
-      const permissionCancelReserve =
-        isStatusBooked && (authorityUser || this.checkoutRootPermission);
-      const permissionReserve =
-        forSale && isStatusAvailable && this.bookPermission;
+      const permissionCancelReserve = isStatusBooked && (authorityUser || this.checkoutRootPermission)
+      const permissionReserve = forSale && isStatusAvailable && this.bookPermission
 
       const permissionContract = () => {
-        const permissionOne = this.checkoutPermission && authorityUser;
+        const permissionOne = this.checkoutPermission && authorityUser
         return (
-          (isStatusSold || isStatusContract || isStatusClosed) &&
-          (permissionOne || this.checkoutRootPermission)
-        );
-      };
+          (isStatusSold || isStatusContract || isStatusClosed)
+          && (permissionOne || this.checkoutRootPermission)
+        )
+      }
 
       const permissionOrder = () => {
-        const permissionOne =
-          isStatusAvailable &&
-          (authorityUser ||
-            this.checkoutPermission ||
-            this.checkoutRootPermission);
-        return forSale && permissionOne;
-      };
+        const permissionOne = isStatusAvailable
+          && (authorityUser
+            || this.checkoutPermission
+            || this.checkoutRootPermission)
+        return forSale && permissionOne
+      }
       const permissionContinueOrder = () => {
-        const permissionOne =
-          isStatusHold &&
-          (authorityUser ||
-            this.checkoutRootPermission ||
-            this.checkoutPermission);
-        const permissionTwo =
-          isStatusBooked && authorityUser && this.checkoutPermission;
-        return permissionOne || permissionTwo;
-      };
+        const permissionOne = isStatusHold
+          && (authorityUser
+            || this.checkoutRootPermission
+            || this.checkoutPermission)
+        const permissionTwo = isStatusBooked && authorityUser && this.checkoutPermission
+        return permissionOne || permissionTwo
+      }
 
-      const effectContext = (property) => {
-        context[property] = true;
-      };
+      const effectContext = property => {
+        context[property] = true
+      }
 
-      permissionCancelReserve && effectContext("cancelReserve");
-      permissionReserve && effectContext("reserve");
-      permissionOrder() && effectContext("order");
-      permissionContinueOrder() && effectContext("continueOrder");
-      permissionContract() && effectContext("contract");
+      permissionCancelReserve && effectContext('cancelReserve')
+      permissionReserve && effectContext('reserve')
+      permissionOrder() && effectContext('order')
+      permissionContinueOrder() && effectContext('continueOrder')
+      permissionContract() && effectContext('contract')
 
-      return context;
+      return context
     },
   },
 
   /* METHODS */
   methods: {
     isNUNEZ,
-    ...mapMutations(["setCalculationProperties"]),
+    ...mapMutations(['setCalculationProperties']),
     // async getComments() {
     //   const { object } = this.$route.params;
     //   this.commentLoading = true;
@@ -239,179 +234,181 @@ export default {
     //     });
     // },
     printPdf() {
-      this.pdfVisible = true;
-      this.$refs.html2Pdf.generatePdf();
+      this.pdfVisible = true
+      this.$refs.html2Pdf.generatePdf()
     },
     getCalc(value) {
-      this.printCalc = value;
-      this.setCalculationProperties(value);
+      this.printCalc = value
+      this.setCalculationProperties(value)
     },
     changeTabOfUploadList(status) {
-      const { status: queryStatus } = this.$route.query;
+      const { status: queryStatus } = this.$route.query
       if (queryStatus !== status) {
         this.$router.replace({
           query: {
             ...this.$route.query,
             status,
           },
-        });
+        })
       }
     },
     viewMore() {
       this.$router.push({
-        name: "apartment-view",
+        name: 'apartment-view',
         params: {
           object: this.sidebarApartment.object.id,
           id: this.apartment.uuid,
         },
-      });
+      })
     },
     async fetchSidebarItem() {
-      this.appLoading = true;
-      const { object } = this.$route.params;
+      this.appLoading = true
+      const { object } = this.$route.params
       await api.objectsV2
         .fetchParkingView(object, this.apartmentUuid)
-        .then((response) => {
-          const result = response.data.result;
+        .then(response => {
+          const { result } = response.data
           result.plan = {
             images: [
-              "https://xny-dev.s3.eu-central-1.amazonaws.com/noimage.jpeg?X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAYMIYEECJQTMLFHO7%2F20230929%2Feu-central-1%2Fs3%2Faws4_request&X-Amz-Date=20230929T155102Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Signature=6005ea8c7fb5c995339025e4f24d3add432501a56104d122e7db1333fc95ca78",
+              'https://xny-dev.s3.eu-central-1.amazonaws.com/noimage.jpeg?X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAYMIYEECJQTMLFHO7%2F20230929%2Feu-central-1%2Fs3%2Faws4_request&X-Amz-Date=20230929T155102Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Signature=6005ea8c7fb5c995339025e4f24d3add432501a56104d122e7db1333fc95ca78',
             ],
-          };
-          this.sidebarApartment = result;
+          }
+          this.sidebarApartment = result
         })
-        .catch((error) => {
-          this.toastedWithErrorCode(error);
+        .catch(error => {
+          this.toastedWithErrorCode(error)
         })
         .finally(() => {
-          this.appLoading = false;
-        });
+          this.appLoading = false
+        })
     },
     hideApartmentSidebar() {
-      this.$emit("hide-apartment-sidebar-view");
+      this.$emit('hide-apartment-sidebar-view')
     },
     printApartmentInformation() {
-      const { object, block, entrance, number } = this.sidebarApartment;
+      const {
+        object, block, entrance, number,
+      } = this.sidebarApartment
       // this.htmlToPdfOptions.filename =
       //   object.name + " , " + block.name + " , " + entrance + "/" + number;
-      this.$refs.html2Pdf.generatePdf();
+      this.$refs.html2Pdf.generatePdf()
     },
     async orderApartment() {
-      this.appLoading = true;
+      this.appLoading = true
       try {
-        const apartments = [this.sidebarApartment.id];
-        const { data } = await api.orders.holdOrder(apartments, "parking");
+        const apartments = [this.sidebarApartment.id]
+        const { data } = await api.orders.holdOrder(apartments, 'parking')
         if (data) {
-          const objectId = this.$route.params.object;
+          const objectId = this.$route.params.object
           await this.$router.push({
-            name: "parking-checkout",
+            name: 'parking-checkout',
             params: {
               id: data.uuid,
               object: objectId,
             },
-          });
+          })
         }
       } catch (e) {
-        this.toastedWithErrorCode(e);
+        this.toastedWithErrorCode(e)
       } finally {
-        this.appLoading = false;
+        this.appLoading = false
       }
     },
     continueApartmentOrder() {
       this.$router.push({
-        name: "parking-checkout",
+        name: 'parking-checkout',
         params: {
           id: this.sidebarApartment.order.id,
           object: this.$route.params.object,
         },
-      });
+      })
     },
     updateContent() {
-      this.$emit("update-content");
-      this.fetchSidebarItem();
+      this.$emit('update-content')
+      this.fetchSidebarItem()
       // this.getComments();
     },
     holderTooltipTitle(holder) {
-      let title = "";
-      if (holder?.last_name && holder.last_name.trim() !== "") {
-        title += holder.last_name;
+      let title = ''
+      if (holder?.last_name && holder.last_name.trim() !== '') {
+        title += holder.last_name
       }
 
-      if (holder?.first_name && holder.first_name.trim() !== "") {
-        title += " " + holder.first_name;
+      if (holder?.first_name && holder.first_name.trim() !== '') {
+        title += ` ${holder.first_name}`
       }
 
-      if (holder?.middle_name && holder.middle_name.trim() !== "") {
-        title += " " + holder.middle_name;
+      if (holder?.middle_name && holder.middle_name.trim() !== '') {
+        title += ` ${holder.middle_name}`
       }
 
-      return title.trim();
+      return title.trim()
     },
     async cancelReservation() {
-      this.appLoading = true;
+      this.appLoading = true
       await api.orders
         .fetchOrderClient(this.sidebarApartment.order.id)
-        .then((response) => {
-          const status = response.data;
+        .then(response => {
+          const status = response.data
           this.$swal({
-            title: this.$t("sweetAlert.title"),
-            text: this.$t("sweetAlert.text_cancel_reserve"),
-            icon: "warning",
+            title: this.$t('sweetAlert.title'),
+            text: this.$t('sweetAlert.text_cancel_reserve'),
+            icon: 'warning',
             showCancelButton: true,
-            cancelButtonText: this.$t("cancel"),
-            confirmButtonText: this.$t("sweetAlert.yes_cancel_reserve"),
-          }).then((result) => {
+            cancelButtonText: this.$t('cancel'),
+            confirmButtonText: this.$t('sweetAlert.yes_cancel_reserve'),
+          }).then(result => {
             if (result.value) {
-              this.appLoading = true;
+              this.appLoading = true
               api.orders
                 .deactivateReserveOrders(client.id)
-                .then((response) => {
-                  this.toasted(response.data.message, "success");
+                .then(response => {
+                  this.toasted(response.data.message, 'success')
 
                   this.$nextTick(() => {
-                    this.$bvModal.hide("modal-view-reserved-client");
-                  });
+                    this.$bvModal.hide('modal-view-reserved-client')
+                  })
 
-                  this.hideApartmentSidebar();
-                  this.updateContent();
+                  this.hideApartmentSidebar()
+                  this.updateContent()
 
                   this.$swal(
-                    this.$t("sweetAlert.canceled_reserve"),
-                    "",
-                    "success"
-                  );
+                    this.$t('sweetAlert.canceled_reserve'),
+                    '',
+                    'success',
+                  )
                 })
-                .catch((error) => {
-                  this.toastedWithErrorCode(error);
+                .catch(error => {
+                  this.toastedWithErrorCode(error)
                 })
                 .finally(() => {
-                  this.appLoading = false;
-                });
+                  this.appLoading = false
+                })
             }
-          });
+          })
         })
-        .catch((error) => {
-          this.toastedWithErrorCode(error);
+        .catch(error => {
+          this.toastedWithErrorCode(error)
         })
         .finally(() => {
-          this.appLoading = false;
-        });
+          this.appLoading = false
+        })
     },
   },
-};
+}
 </script>
 
 <template>
   <b-sidebar
+    id="apartment-express-view"
+    v-model="visibleComp"
     right
     shadow
     backdrop
     no-header
-    v-model="visibleComp"
     sidebar-class="sidebar__apartment"
     body-class="sidebar__apartment-body"
     aria-labelledby="sidebar-no-header-title"
-    id="apartment-express-view"
     :backdrop-variant="variant"
   >
     <template #default="{}">
@@ -422,10 +419,13 @@ export default {
         >
           <span class="d-flex justify-content-center align-items-center">
             <span
-              @click="hideApartmentSidebar"
               class="close__button d-flex justify-content-center align-items-center"
+              @click="hideApartmentSidebar"
             >
-              <base-arrow-left-icon :width="32" :height="32" />
+              <base-arrow-left-icon
+                :width="32"
+                :height="32"
+              />
             </span>
             <span class="section__title">
               {{ objectName }},
@@ -435,7 +435,10 @@ export default {
         </div>
 
         <div class="d-flex w-100 justify-content-end">
-          <div class="d-flex" style="font-size: 12px">
+          <div
+            class="d-flex"
+            style="font-size: 12px"
+          >
             <span
               v-if="statusViewPms && isNUNEZ(sidebarApartment.status)"
               style="
@@ -530,7 +533,10 @@ export default {
             </base-button>
           </router-link> -->
 
-          <b-tooltip target="learnMore" triggers="hover">
+          <b-tooltip
+            target="learnMore"
+            triggers="hover"
+          >
             <p class="tooltip-text">
               {{ $t("more_info") }}
             </p>
@@ -539,17 +545,17 @@ export default {
           <!--      CHECKOUT        -->
           <base-button
             v-if="permission.order"
-            @click="orderApartment"
             :text="`${$t('apartments.list.confirm')}`"
             design="violet-gradient"
+            @click="orderApartment"
           />
 
           <!--      CONTINUE CHECKOUT        -->
           <base-button
             v-if="permission.continueOrder"
-            @click="continueApartmentOrder"
             :text="`${$t('continue_registration')}`"
             class="checkout__button violet-gradient"
+            @click="continueApartmentOrder"
           />
 
           <!--       MAKE A RESERVATION       -->
@@ -617,7 +623,10 @@ export default {
       /> -->
 
       <!--  LOADING    -->
-      <base-loading class="h-100" v-if="appLoading" />
+      <base-loading
+        v-if="appLoading"
+        class="h-100"
+      />
     </template>
   </b-sidebar>
 </template>
@@ -646,7 +655,6 @@ export default {
     &::-webkit-scrollbar
       display: none
 
-
     .head
       line-height: 1.75rem
 
@@ -667,14 +675,12 @@ export default {
         color: var(--gray-600)
         font-size: 1.5rem
 
-
       .apartment__status
         font-family: Inter, sans-serif
         background-color: var(--gray-100)
         border-radius: 2rem
         min-width: max-content
         padding: 0.5rem 2rem
-
 
     .vue-html2pdf
       .layout-container
@@ -695,7 +701,6 @@ export default {
   margin-top: 1rem
   margin-bottom: .5rem
   gap: .5rem
-
 
 .print__button,
 .cancel__button,
@@ -740,7 +745,6 @@ export default {
   &-unavailable
     background-color: var(--gray-500) !important
     color: var(--white) !important
-
 
 ::v-deep .b-tooltip
   .tooltip-text

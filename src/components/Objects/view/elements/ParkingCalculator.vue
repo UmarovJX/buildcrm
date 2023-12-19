@@ -1,16 +1,16 @@
 <script>
-import { formatToPrice } from "@/util/reusable";
+import { formatToPrice } from '@/util/reusable'
 // import BaseSelect from "@/components/Reusable/BaseSelect";
-import BasePriceInput from "@/components/Reusable/BasePriceInput";
-import { XFormSelect } from "@/components/ui-components/form-select";
-import { mapGetters } from "vuex";
-import CheckoutPermission from "@/permission/checkout";
+import BasePriceInput from '@/components/Reusable/BasePriceInput'
+import { XFormSelect } from '@/components/ui-components/form-select'
+import { mapGetters } from 'vuex'
+import CheckoutPermission from '@/permission/checkout'
 
 export default {
-  name: "ParkingCalculator",
+  name: 'ParkingCalculator',
   components: {
     // BaseSelect,
-    XFormSelect: XFormSelect,
+    XFormSelect,
     BasePriceInput,
   },
   props: {
@@ -23,7 +23,7 @@ export default {
       default: true,
     },
   },
-  emits: ["for-print"],
+  emits: ['for-print'],
   data() {
     return {
       monthly_price: 0,
@@ -48,81 +48,80 @@ export default {
       },
       monthlyPaymentDuration: 0,
       monthlyPermission: CheckoutPermission.getMonthlyPaymentPermission(),
-    };
-  },
-  mounted() {
-    this.calc.month = +this.discount.installment_month || 1; // this.apartment?.object?.credit_month;
-    this.upHillForPrint();
+    }
   },
   watch: {
     discount() {
-      this.calc.month = +this.discount.installment_month || 1; // this.apartment?.object?.credit_month;
-      this.upHillForPrint();
+      this.calc.month = +this.discount.installment_month || 1 // this.apartment?.object?.credit_month;
+      this.upHillForPrint()
     },
+  },
+  mounted() {
+    this.calc.month = +this.discount.installment_month || 1 // this.apartment?.object?.credit_month;
+    this.upHillForPrint()
   },
   computed: {
     ...mapGetters({
-      permission: "getPermission",
+      permission: 'getPermission',
     }),
     paymentOption() {
-      const discounts = [...this.apartment.discounts];
-      if (!this.hasApartment) return;
+      const discounts = [...this.apartment.discounts]
+      if (!this.hasApartment) return
       return discounts
         .sort((a, b) => a.prepay - b.prepay)
         .map((discount, index) => {
-          let text = this.$t("apartments.view.variant");
-          if (discount.type === "promo")
-            text += " " + `( ${this.$t("promo.by_promo")} )`;
-          text += " " + (index + 1) + " - " + discount.prepay + "%";
+          let text = this.$t('apartments.view.variant')
+          if (discount.type === 'promo') text += ' ' + `( ${this.$t('promo.by_promo')} )`
+          text += ` ${index + 1} - ${discount.prepay}%`
           return {
             text,
             value: discount,
             id: discount.id,
-          };
-        });
+          }
+        })
     },
     prepay() {
-      return (this.discount.amount / 100) * this.discount.prepay;
+      return (this.discount.amount / 100) * this.discount.prepay
     },
     restAmount() {
-      return this.discount.amount - this.prepay - this.discountSumSquare.value; //
+      return this.discount.amount - this.prepay - this.discountSumSquare.value //
     },
     monthlyPayment() {
-      return this.restAmount / this.calc.month;
+      return this.restAmount / this.calc.month
     },
     totalDiscount() {
       return (
-        this.apartment.price -
-        this.discount.amount +
-        this.discountSumSquare.value
-      );
+        this.apartment.price
+        - this.discount.amount
+        + this.discountSumSquare.value
+      )
     },
     totalPrice() {
-      return this.discount.amount - this.discountSumSquare.value;
+      return this.discount.amount - this.discountSumSquare.value
     },
 
     showMonthlyCalculation() {
-      return this.discount.prepay !== 100;
+      return this.discount.prepay !== 100
     },
   },
   methods: {
     pricePrettier: (price, decimalCount) => formatToPrice(price, decimalCount),
     changeDiscount(optSelect) {
       this.discount = this.paymentOption.find(
-        (option) => option.value.id === optSelect.id
-      ).value;
-      this.upHillForPrint();
+        option => option.value.id === optSelect.id,
+      ).value
+      this.upHillForPrint()
     },
     setTotalDiscountPrice(value) {
-      this.discountSumSquare.value = value;
-      this.upHillForPrint();
+      this.discountSumSquare.value = value
+      this.upHillForPrint()
     },
     changeDiscount_month() {
-      this.upHillForPrint();
+      this.upHillForPrint()
     },
     upHillForPrint() {
       if (this.monthlyPaymentDuration === 0) {
-        this.monthlyPaymentDuration = this.calc.month;
+        this.monthlyPaymentDuration = this.calc.month
       }
       const calc = {
         amount: 0,
@@ -133,17 +132,17 @@ export default {
         prepay_percente: this.discount.prepay,
         base_price: this.apartment.price,
         month: this.calc.month,
-      };
+      }
 
-      this.$emit("for-print", {
+      this.$emit('for-print', {
         ...calc,
         monthly_price: this.monthlyPayment,
         discount: this.discount,
         month: this.calc.month,
-      });
+      })
     },
   },
-};
+}
 </script>
 
 <template>
@@ -162,7 +161,10 @@ export default {
         />
       </div>
       <!--     INPUT MONTHLY PAYMENT       -->
-      <div class="calc_monthly" v-show="showMonthlyCalculation">
+      <div
+        v-show="showMonthlyCalculation"
+        class="calc_monthly"
+      >
         <div class="placeholder font-weight-600">
           {{ $t("monthly_payment") }}
         </div>
@@ -170,13 +172,16 @@ export default {
           <input
             v-if="discount.amount > 0"
             v-model="calc.month"
-            @input="changeDiscount_month"
             type="number"
             class="input-monthly-payment color-gray-600 w-100"
             :placeholder="$t('monthly_payment')"
             min="1"
-          />
-          <span v-else class="d-block">{{ $t("monthly_payment") }}</span>
+            @input="changeDiscount_month"
+          >
+          <span
+            v-else
+            class="d-block"
+          >{{ $t("monthly_payment") }}</span>
           <div class="font-inter color-gray-600 font-weight-600">
             {{ $t("month") }}
           </div>
@@ -226,7 +231,10 @@ export default {
         >
           {{ pricePrettier(discount.amount, 2) }} {{ $t("ye") }}
         </span>
-        <span v-else class="price d-block color-gray-600">
+        <span
+          v-else
+          class="price d-block color-gray-600"
+        >
           {{ pricePrettier(prepay, 2) }} {{ $t("ye") }}
         </span>
       </div>
@@ -300,7 +308,6 @@ export default {
 
     sup
       color: var(--gray-400)
-
 
 .calc_monthly
   background-color: var(--gray-100)

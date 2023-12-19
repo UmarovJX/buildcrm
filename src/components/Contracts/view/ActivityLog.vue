@@ -1,21 +1,21 @@
 <script>
-import BaseButton from "@/components/Reusable/BaseButton";
-import FilterContent from "@/components/Contracts/FilterContent";
-import BaseDocumentIcon from "@/components/icons/BaseDocumentIcon";
-import api from "@/services/api";
-import moment from "moment";
-import BaseEditIcon from "@/components/icons/BaseEditIcon";
-import BasePaperFailIcon from "@/components/icons/BasePaperFailIcon";
-import BasePagination from "@/components/Reusable/Navigation/BasePagination";
-import OutputInformation from "@/components/Elements/Outputs/OutputInformation";
-import BaseRightIcon from "@/components/icons/BaseRightIcon";
-import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
-import BaseDownIcon from "@/components/icons/BaseDownIcon";
-import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
-import { sortObjectValues } from "@/util/reusable";
+import BaseButton from '@/components/Reusable/BaseButton'
+import FilterContent from '@/components/Contracts/FilterContent'
+import BaseDocumentIcon from '@/components/icons/BaseDocumentIcon'
+import api from '@/services/api'
+import moment from 'moment'
+import BaseEditIcon from '@/components/icons/BaseEditIcon'
+import BasePaperFailIcon from '@/components/icons/BasePaperFailIcon'
+import BasePagination from '@/components/Reusable/Navigation/BasePagination'
+import OutputInformation from '@/components/Elements/Outputs/OutputInformation'
+import BaseRightIcon from '@/components/icons/BaseRightIcon'
+import BaseArrowLeftIcon from '@/components/icons/BaseArrowLeftIcon'
+import BaseDownIcon from '@/components/icons/BaseDownIcon'
+import BaseArrowRightIcon from '@/components/icons/BaseArrowRightIcon'
+import { sortObjectValues } from '@/util/reusable'
 
 export default {
-  name: "ActivityLog",
+  name: 'ActivityLog',
   components: {
     BaseArrowLeftIcon,
     BaseDownIcon,
@@ -30,43 +30,43 @@ export default {
     BasePaperFailIcon,
   },
   data() {
-    let { limit: showByValue } = this.$route.query;
+    let { limit: showByValue } = this.$route.query
     if (!showByValue) {
-      showByValue = 20;
+      showByValue = 20
     }
-    const showByOptions = [];
+    const showByOptions = []
     for (let number = 10; number <= 50; number += 10) {
       showByOptions.push({
         value: number,
         text: number,
-      });
+      })
     }
     return {
       activityLog: [],
       activityStatus: {
-        reissue: "contracts.activity_log.reissue",
-        payments_histories: "contracts.activity_log.payments_histories",
-        comments: "contracts.activity_log.comments",
-        orders: "contracts.activity_log.orders",
+        reissue: 'contracts.activity_log.reissue',
+        payments_histories: 'contracts.activity_log.payments_histories',
+        comments: 'contracts.activity_log.comments',
+        orders: 'contracts.activity_log.orders',
       },
       activityActionType: {
-        deleted: "contracts.activity_log.actions.deleted",
-        updated: "contracts.activity_log.actions.edited",
-        created: "contracts.activity_log.actions.created",
-        reissue: "contracts.activity_log.actions.reissue",
+        deleted: 'contracts.activity_log.actions.deleted',
+        updated: 'contracts.activity_log.actions.edited',
+        created: 'contracts.activity_log.actions.created',
+        reissue: 'contracts.activity_log.actions.reissue',
       },
       activityTypes: {
         created: {
           component: BaseEditIcon,
-          class: "header-status created",
+          class: 'header-status created',
         },
         updated: {
           component: BaseEditIcon,
-          class: "header-status updated",
+          class: 'header-status updated',
         },
         deleted: {
           component: BasePaperFailIcon,
-          class: "header-status warning",
+          class: 'header-status warning',
         },
       },
       daysList: [],
@@ -76,135 +76,134 @@ export default {
       currentPage: 1,
       activityLogPagination: {},
       users: [],
-    };
+    }
+  },
+  computed: {
+    query() {
+      return { ...this.$route.query }
+    },
+    countOfItems() {
+      return this.daysList.length
+    },
+  },
+  watch: {
+    query() {
+      this.fetchActivityLog()
+    },
   },
   async created() {
-    await this.fetchActivityLog();
+    await this.fetchActivityLog()
   },
   methods: {
     checkTitleType(item) {
-      if (item.properties.old || item.properties.attributes)
+      if (item.properties.old || item.properties.attributes) {
         return !!(
-          !Array.isArray(item.properties.old) ||
-          !Array.isArray(item.properties.attributes)
-        );
-      return true;
+          !Array.isArray(item.properties.old)
+          || !Array.isArray(item.properties.attributes)
+        )
+      }
+      return true
     },
     activityType(type) {
-      return this.activityTypes[type];
+      return this.activityTypes[type]
     },
     dateFormatter(date) {
-      const d = moment(date).format("LL");
-      return d.slice(0, -6);
+      const d = moment(date).format('LL')
+      return d.slice(0, -6)
     },
     timeFormatter(date) {
-      const t = moment(date).format("LT");
-      return t.slice(0, -3);
+      const t = moment(date).format('LT')
+      return t.slice(0, -3)
     },
     hasComment(properties) {
-      return properties.attributes && properties.attributes.comment;
+      return properties.attributes && properties.attributes.comment
     },
     activityDefiner(action, type) {
       return `${this.$t(this.activityActionType[type])} ${this.$t(
-        this.activityStatus[action]
-      )}`;
+        this.activityStatus[action],
+      )}`
     },
     async fetchActivityLog() {
-      this.daysList = [];
-      const { id } = this.$route.params;
-      const query = sortObjectValues(this.query);
+      this.daysList = []
+      const { id } = this.$route.params
+      const query = sortObjectValues(this.query)
       await api.contractV2
         .fetchActivityLog(id, query)
-        .then((response) => {
-          this.activityLogPagination = response.data.pagination;
-          response.data.items.forEach((item) => {
+        .then(response => {
+          this.activityLogPagination = response.data.pagination
+          response.data.items.forEach(item => {
             const index = this.daysList.findIndex(
-              (day) => day.date.slice(0, 10) === item.created_at.slice(0, 10)
-            );
+              day => day.date.slice(0, 10) === item.created_at.slice(0, 10),
+            )
             if (index !== -1) {
-              this.daysList[index].activities.push(item);
+              this.daysList[index].activities.push(item)
             } else {
               // const dateFormat = new Date(item.created_at);
               this.daysList.push({
                 date: item.created_at.slice(0, 10),
                 activities: [item],
-              });
+              })
             }
-          });
+          })
           // this.daysList = this.getDateListByDescending(this.daysList)
         })
-        .catch((error) => {
-          this.toastedWithErrorCode(error);
+        .catch(error => {
+          this.toastedWithErrorCode(error)
         })
         .finally(() => {
-          this.showLoading = false;
-        });
+          this.showLoading = false
+        })
     },
     changeCurrentPage(page) {
-      const currentPage = this.query.page;
-      if (page === currentPage) return;
-      this.replaceRouter({ ...this.query, page });
-      this.fetchActivityLog();
+      const currentPage = this.query.page
+      if (page === currentPage) return
+      this.replaceRouter({ ...this.query, page })
+      this.fetchActivityLog()
     },
     limitChanged() {
-      this.changeFetchLimit();
+      this.changeFetchLimit()
     },
     replaceRouter(query) {
-      const sortQuery = sortObjectValues(query);
-      this.$router.replace({ query: sortQuery });
+      const sortQuery = sortObjectValues(query)
+      this.$router.replace({ query: sortQuery })
     },
     changeFetchLimit() {
       const query = {
         ...this.query,
         page: 1,
-      };
-      const limit = this.showByValue;
-      this.replaceRouter({ ...query, limit });
-      this.fetchActivityLog();
+      }
+      const limit = this.showByValue
+      this.replaceRouter({ ...query, limit })
+      this.fetchActivityLog()
     },
     getClientRole(status) {
-      let language = "kirill";
-      if (this.$i18n.locale === "uz") {
-        language = "lotin";
+      let language = 'kirill'
+      if (this.$i18n.locale === 'uz') {
+        language = 'lotin'
       }
-      return this.clientRole(client, language);
+      return this.clientRole(client, language)
     },
     clientRole(multiRole, language) {
-      const roleByLang = multiRole[language];
+      const roleByLang = multiRole[language]
       if (roleByLang) {
-        return roleByLang;
-      } else {
-        const roleOtherLang =
-          language === "kirill" ? multiRole["ru"] : multiRole["uz"];
-        if (roleOtherLang) return roleOtherLang;
+        return roleByLang
       }
+      const roleOtherLang = language === 'kirill' ? multiRole.ru : multiRole.uz
+      if (roleOtherLang) return roleOtherLang
 
-      return "";
+      return ''
     },
     SearchInput(event) {
       const query = {
         ...this.query,
         page: 1,
-      };
-      const search = event;
-      this.replaceRouter({ ...query, search });
-      this.fetchActivityLog();
+      }
+      const search = event
+      this.replaceRouter({ ...query, search })
+      this.fetchActivityLog()
     },
   },
-  computed: {
-    query() {
-      return Object.assign({}, this.$route.query);
-    },
-    countOfItems() {
-      return this.daysList.length;
-    },
-  },
-  watch: {
-    query() {
-      this.fetchActivityLog();
-    },
-  },
-};
+}
 </script>
 
 <template>
@@ -223,20 +222,25 @@ export default {
         class="accordion"
         role="tablist"
       >
-        <p class="date date-day">{{ dateFormatter(activity.date) }}</p>
+        <p class="date date-day">
+          {{ dateFormatter(activity.date) }}
+        </p>
         <b-card
-          class="accordion-item"
           v-for="item in activity.activities"
           :key="item.id"
+          class="accordion-item"
         >
           <b-card-header
+            v-b-toggle="'accordion-' + item.id"
             header-tag="header"
             class="accordion-item__header"
-            v-b-toggle="'accordion-' + item.id"
             role="tab"
           >
             <div :class="activityType(item.type).class">
-              <component :is="activityType(item.type).component" fill="white" />
+              <component
+                :is="activityType(item.type).component"
+                fill="white"
+              />
             </div>
 
             <div class="header-nav">
@@ -247,7 +251,10 @@ export default {
               </div>
               <div class="header-nav__item">
                 <div class="collapse-button">
-                  <img :src="require('@/assets/icons/icon-down.svg')" alt="" />
+                  <img
+                    :src="require('@/assets/icons/icon-down.svg')"
+                    alt=""
+                  >
                 </div>
               </div>
             </div>
@@ -260,7 +267,10 @@ export default {
             <div class="header-nav">
               <div class="header-nav__item">
                 <div class="avatar">
-                  <img :src="item.user.avatar" alt="avatar" />
+                  <img
+                    :src="item.user.avatar"
+                    alt="avatar"
+                  >
                 </div>
                 <h5 class="name">
                   {{ item.user.first_name }} {{ item.user.last_name }}
@@ -273,13 +283,16 @@ export default {
             </div>
           </b-card-header>
           <b-collapse
-            class="accordion-item__body"
             :id="`accordion-${item.id}`"
+            class="accordion-item__body"
             :accordion="`accordion-${item.id}`"
             role="tabpanel"
           >
             <b-card-body>
-              <div v-if="hasComment(item.properties)" class="header-comment">
+              <div
+                v-if="hasComment(item.properties)"
+                class="header-comment"
+              >
                 <p>
                   {{ item.properties.attributes.comment }}
                 </p>
@@ -287,7 +300,7 @@ export default {
               <div
                 v-if="
                   item.action === 'orders' ||
-                  item.action === 'payment_histories'
+                    item.action === 'payment_histories'
                 "
                 class="body-content"
               >
@@ -317,7 +330,10 @@ export default {
                 </a>
               </div>
 
-              <h5 class="body-title" v-if="checkTitleType(item) && item.type">
+              <h5
+                v-if="checkTitleType(item) && item.type"
+                class="body-title"
+              >
                 {{ $t(`contracts.activity_log.actions.${item.type}`) }}:
               </h5>
 
@@ -326,12 +342,12 @@ export default {
                 class="header-data"
               >
                 <div
+                  v-if="item.properties.old"
                   :class="
                     !item.properties.attributes
                       ? 'header-data-row w-100'
                       : 'header-data-row'
                   "
-                  v-if="item.properties.old"
                 >
                   <output-information
                     v-if="item.properties.old.amount"
@@ -360,8 +376,8 @@ export default {
                   />
                 </div>
                 <div
-                  class="header-data-row row-icons"
                   v-if="item.properties.attributes && item.properties.old"
+                  class="header-data-row row-icons"
                 >
                   <template v-if="item.properties.attributes.amount">
                     <BaseRightIcon height="56" />
@@ -380,12 +396,12 @@ export default {
                   </template>
                 </div>
                 <div
+                  v-if="item.properties.attributes"
                   :class="
                     !item.properties.old
                       ? 'header-data-row w-100'
                       : 'header-data-row'
                   "
-                  v-if="item.properties.attributes"
                 >
                   <output-information
                     v-if="item.properties.attributes.amount"
@@ -421,7 +437,10 @@ export default {
     </div>
 
     <!-- PAGINATION   -->
-    <div v-if="countOfItems" class="pagination__vue">
+    <div
+      v-if="countOfItems"
+      class="pagination__vue"
+    >
       <!--   Pagination   -->
       <vue-paginate
         :page-count="activityLogPagination.total"
@@ -453,10 +472,10 @@ export default {
         <span class="show__by__content">
           <span class="description">{{ $t("contracts.show_by") }}:</span>
           <b-form-select
-            @input="limitChanged"
             v-model="showByValue"
             :options="showByOptions"
-          ></b-form-select>
+            @input="limitChanged"
+          />
           <span class="arrow__down">
             <base-down-icon />
           </span>

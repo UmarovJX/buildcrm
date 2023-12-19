@@ -1,39 +1,48 @@
 <script>
-import BaseButton from "@/components/Reusable/BaseButton";
-import BaseModal from "@/components/Reusable/BaseModal";
-import BaseCloseIcon from "@/components/icons/BaseCloseIcon";
+import BaseButton from '@/components/Reusable/BaseButton'
+import BaseModal from '@/components/Reusable/BaseModal'
+import BaseCloseIcon from '@/components/icons/BaseCloseIcon'
+
 export default {
-  name: "ReleaseNote",
+  name: 'ReleaseNote',
   components: { BaseCloseIcon, BaseButton, BaseModal },
   data() {
     return {
       modalProperties: {
-        type: "",
-        title: "",
+        type: '',
+        title: '',
       },
-    };
+    }
   },
   methods: {
     openCommentsModal() {
       this.modalProperties = {
-        type: "comments",
-        title: "contracts.add_note",
-        btnText: "add",
-      };
-      this.$refs["comments-add"].openModal();
+        type: 'comments',
+        title: 'contracts.add_note',
+        btnText: 'add',
+      }
+      this.$refs['comments-add'].openModal()
     },
     closeCommentsModal() {
-      console.log("close");
-      this.$refs["comments-add"].closeModal();
+      console.log('close')
+      this.$refs['comments-add'].closeModal()
     },
   },
-};
+}
 </script>
 
 <template>
   <main>
-    <base-button @click="openCommentsModal" class="mt-5">Comments</base-button>
-    <base-modal ref="comments-add" id="comments-adder">
+    <base-button
+      class="mt-5"
+      @click="openCommentsModal"
+    >
+      Comments
+    </base-button>
+    <base-modal
+      id="comments-adder"
+      ref="comments-add"
+    >
       <template #header>
         <p>hello header</p>
         <span @click="closeCommentsModal"><BaseCloseIcon /></span>

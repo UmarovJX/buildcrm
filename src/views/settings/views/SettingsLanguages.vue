@@ -1,14 +1,14 @@
 <script>
-import api from "@/services/api";
-import SettingsPermission from "@/permission/settings.permission";
-import { XButton } from "@/components/ui-components/button";
-import BaseLoading from "@/components/Reusable/BaseLoading.vue";
-import { XIcon } from "@/components/ui-components/material-icons";
-import { XCircularBackground } from "@/components/ui-components/circular-background";
-import SettingsCreateLanguage from "@/views/settings/components/SettingsCreateLanguage.vue";
+import api from '@/services/api'
+import SettingsPermission from '@/permission/settings.permission'
+import { XButton } from '@/components/ui-components/button'
+import BaseLoading from '@/components/Reusable/BaseLoading.vue'
+import { XIcon } from '@/components/ui-components/material-icons'
+import { XCircularBackground } from '@/components/ui-components/circular-background'
+import SettingsCreateLanguage from '@/views/settings/components/SettingsCreateLanguage.vue'
 
 export default {
-  name: "SettingsLanguages",
+  name: 'SettingsLanguages',
   components: {
     BaseLoading,
     XButton,
@@ -18,7 +18,7 @@ export default {
   },
   data() {
     return {
-      upsertType: "create",
+      upsertType: 'create',
       showCreateModal: false,
       editStorage: {},
       table: {
@@ -34,119 +34,119 @@ export default {
         loading: false,
       },
       permission: {
-        view: SettingsPermission.getPermission("languages.view"),
-        create: SettingsPermission.getPermission("languages.create"),
-        edit: SettingsPermission.getPermission("languages.edit"),
-        delete: SettingsPermission.getPermission("languages.delete"),
+        view: SettingsPermission.getPermission('languages.view'),
+        create: SettingsPermission.getPermission('languages.create'),
+        edit: SettingsPermission.getPermission('languages.edit'),
+        delete: SettingsPermission.getPermission('languages.delete'),
       },
-    };
+    }
   },
   computed: {
     tableFields() {
       const fields = [
         {
-          key: "name",
-          label: this.$t("title"),
+          key: 'name',
+          label: this.$t('title'),
         },
         {
-          key: "is_default",
-          label: this.$t("is_default"),
-          formatter: (type) => type,
+          key: 'is_default',
+          label: this.$t('is_default'),
+          formatter: type => type,
         },
         {
-          key: "is_published",
-          label: this.$t("is_published"),
+          key: 'is_published',
+          label: this.$t('is_published'),
         },
-      ];
+      ]
       if (this.permission.edit) {
         fields.push({
-          key: "actions",
-          label: this.$t("actions"),
-          class: "float-right",
-        });
+          key: 'actions',
+          label: this.$t('actions'),
+          class: 'float-right',
+        })
       }
-      return fields;
+      return fields
     },
   },
   created() {
-    this.fetchItems();
+    this.fetchItems()
   },
   methods: {
     startLoading() {
-      this.table.loading = true;
+      this.table.loading = true
     },
     finishLoading() {
-      this.table.loading = false;
+      this.table.loading = false
     },
     createClientType() {
-      this.setUpsertType("create");
-      this.openCreatingClientTypeModal();
+      this.setUpsertType('create')
+      this.openCreatingClientTypeModal()
     },
     async fetchItems() {
       try {
-        this.startLoading();
+        this.startLoading()
         const response = await api.languagesV3.getLanguages({
           page: 1,
           limit: 100,
-        });
-        this.table.items = response.data.result;
-        this.table.pagination = response.data.pagination;
+        })
+        this.table.items = response.data.result
+        this.table.pagination = response.data.pagination
       } catch (e) {
-        this.toastedWithErrorCode(e);
+        this.toastedWithErrorCode(e)
       } finally {
-        this.finishLoading();
+        this.finishLoading()
       }
     },
     setUpsertType(eType) {
-      if (["create", "edit"].includes(eType)) {
-        this.upsertType = eType;
+      if (['create', 'edit'].includes(eType)) {
+        this.upsertType = eType
       }
     },
     openCreatingClientTypeModal() {
-      this.showCreateModal = true;
+      this.showCreateModal = true
     },
     closeCreatingClientTypeModal() {
-      this.showCreateModal = false;
+      this.showCreateModal = false
     },
     clientTypeCreated() {
-      this.closeCreatingClientTypeModal();
-      this.fetchItems();
+      this.closeCreatingClientTypeModal()
+      this.fetchItems()
     },
     async deleteClientType(typeId) {
       this.$swal({
-        title: this.$t("sweetAlert.title"),
-        text: this.$t("sweetAlert.text"),
-        icon: "warning",
+        title: this.$t('sweetAlert.title'),
+        text: this.$t('sweetAlert.text'),
+        icon: 'warning',
         showCancelButton: true,
-        cancelButtonText: this.$t("cancel"),
-        confirmButtonText: this.$t("sweetAlert.yes"),
-      }).then(async (result) => {
+        cancelButtonText: this.$t('cancel'),
+        confirmButtonText: this.$t('sweetAlert.yes'),
+      }).then(async result => {
         if (result.value) {
           try {
-            this.startLoading();
+            this.startLoading()
             await api.languagesV3.removeLanguage({
               id: typeId,
-            });
-            await this.fetchItems();
+            })
+            await this.fetchItems()
           } catch (e) {
-            this.toastedWithErrorCode(e);
+            this.toastedWithErrorCode(e)
           } finally {
-            this.finishLoading();
+            this.finishLoading()
           }
         }
-      });
+      })
     },
     async editLanguage(item) {
       try {
-        this.editStorage = item;
-        this.setUpsertType("edit");
-        this.openCreatingClientTypeModal();
+        this.editStorage = item
+        this.setUpsertType('edit')
+        this.openCreatingClientTypeModal()
       } catch (e) {
-        this.toastedWithErrorCode(e);
+        this.toastedWithErrorCode(e)
       }
     },
   },
-};
+}
 </script>
 
 <template>
@@ -166,7 +166,10 @@ export default {
         @click="createClientType"
       >
         <template #left-icon>
-          <x-icon name="add" class="violet-600" />
+          <x-icon
+            name="add"
+            class="violet-600"
+          />
         </template>
       </x-button>
     </div>
@@ -197,16 +200,28 @@ export default {
         </span>
       </template>
       <template #cell(is_default)="{ item }">
-        <div v-if="item.is_default" class="d-flex x-gap-1 cursor-pointer">
+        <div
+          v-if="item.is_default"
+          class="d-flex x-gap-1 cursor-pointer"
+        >
           <x-circular-background class="bg-violet-600">
-            <x-icon name="check" class="color-white" />
+            <x-icon
+              name="check"
+              class="color-white"
+            />
           </x-circular-background>
         </div>
       </template>
       <template #cell(is_published)="{ item }">
-        <div v-if="item.is_published" class="d-flex x-gap-1 cursor-pointer">
+        <div
+          v-if="item.is_published"
+          class="d-flex x-gap-1 cursor-pointer"
+        >
           <x-circular-background class="bg-violet-600">
-            <x-icon name="check" class="color-white" />
+            <x-icon
+              name="check"
+              class="color-white"
+            />
           </x-circular-background>
         </div>
       </template>
@@ -215,18 +230,24 @@ export default {
         <div class="float-right d-flex x-gap-1 cursor-pointer">
           <x-circular-background
             v-if="permission.edit"
-            @click="editLanguage(item)"
             class="bg-violet-600"
+            @click="editLanguage(item)"
           >
-            <x-icon name="edit" class="color-white" />
+            <x-icon
+              name="edit"
+              class="color-white"
+            />
           </x-circular-background>
 
           <x-circular-background
             v-if="permission.delete"
-            @click="deleteClientType(item.id)"
             class="bg-red-600"
+            @click="deleteClientType(item.id)"
           >
-            <x-icon name="delete" class="color-white" />
+            <x-icon
+              name="delete"
+              class="color-white"
+            />
           </x-circular-background>
         </div>
       </template>

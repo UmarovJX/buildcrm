@@ -1,78 +1,78 @@
-import {axiosApiV2, axiosV1CRM} from "@/services/core/base";
-import Core from "@/services/core/index";
+import { axiosApiV2, axiosV1CRM } from '@/services/core/base'
+import Core from '@/services/core/index'
 
 class Clients extends Core {
   constructor(axios = axiosV1CRM) {
-    super(axios);
+    super(axios)
   }
 
   fetchClientData(contextField) {
-    return this.get(`clients/search?field=${contextField}`);
+    return this.get(`clients/search?field=${contextField}`)
   }
 
   fetchClients(page) {
-    return this.get(`api/clients?page=${page}`);
+    return this.get(`api/clients?page=${page}`)
   }
 
   searchClient(search, page) {
-    return this.get(`api/clients/search?page=${page}&search=${search}`);
+    return this.get(`api/clients/search?page=${page}&search=${search}`)
   }
 
   fetchReserveClient(orderId) {
-    return this.get(`clients/${orderId}`);
+    return this.get(`clients/${orderId}`)
   }
 
   createClient(body) {
-    return this.post("clients", body);
+    return this.post('clients', body)
   }
 
   cancelContract(clientId, body) {
-    return this.post(`api/clients/terminate/${clientId}`, body);
+    return this.post(`api/clients/terminate/${clientId}`, body)
   }
 
   deleteClientFromDB(client) {
-    return this.get(`api/clients/destroy/${client}`);
+    return this.get(`api/clients/destroy/${client}`)
   }
 }
 
 class ClientsV2 extends Core {
   constructor(axios = axiosApiV2) {
-    super(axios);
+    super(axios)
   }
 
   fetchClientData(contextField) {
-    return this.get(`clients?field=${contextField}`);
+    return this.get(`clients?field=${contextField}`)
   }
 
   getClientBySearch({ params } = { params: {} }) {
-    return this.get(`clients`, {
+    return this.get('clients', {
       params,
-    });
+    })
   }
 
   fetchClients(page) {
-    return this.get(`clients?page=${page}`);
+    return this.get(`clients?page=${page}`)
   }
 
   searchClient(search, page) {
-    return this.get(`clients/search?page=${page}&search=${search}`);
+    return this.get(`clients/search?page=${page}&search=${search}`)
   }
 
   fetchReserveClient(orderId) {
-    return this.get(`clients/${orderId}`);
+    return this.get(`clients/${orderId}`)
   }
 
   createClient(body) {
-    return this.post("clients", body);
+    return this.post('clients', body)
   }
 
   cancelContract(clientId, body) {
-    return this.post(`clients/terminate/${clientId}`, body);
+    return this.post(`clients/terminate/${clientId}`, body)
   }
 
   deleteClientFromDB(client) {
-    return this.get(`clients/destroy/${client}`);
+    return this.get(`clients/destroy/${client}`)
   }
 }
 
-export default { Clients, ClientsV2 };
+export default { Clients, ClientsV2 }

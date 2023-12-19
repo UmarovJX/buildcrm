@@ -1,52 +1,52 @@
 <script>
-import { makeProp } from "@/util/props";
+import { makeProp } from '@/util/props'
 import {
   PROP_TYPE_ARRAY_OBJECT_STRING,
   PROP_TYPE_BOOLEAN,
   PROP_TYPE_STRING,
-} from "@/constants/props";
-import { XIcon } from "@/components/ui-components/material-icons";
-import { XButton } from "@/components/ui-components/button";
-import { XCircularBackground } from "@/components/ui-components/circular-background";
+} from '@/constants/props'
+import { XIcon } from '@/components/ui-components/material-icons'
+import { XButton } from '@/components/ui-components/button'
+import { XCircularBackground } from '@/components/ui-components/circular-background'
 
 export default {
-  name: "XModalCenter",
+  name: 'XModalCenter',
   components: {
     XIcon,
     XButton,
     XCircularBackground,
   },
   props: {
-    headerTitle: makeProp(PROP_TYPE_STRING, "header_default_title_prop"),
-    body: makeProp(PROP_TYPE_STRING, "body_default_content_prop"),
-    applyButtonText: makeProp(PROP_TYPE_STRING, "apply_button_text"),
-    applyButtonTheme: makeProp(PROP_TYPE_STRING, "primary"),
+    headerTitle: makeProp(PROP_TYPE_STRING, 'header_default_title_prop'),
+    body: makeProp(PROP_TYPE_STRING, 'body_default_content_prop'),
+    applyButtonText: makeProp(PROP_TYPE_STRING, 'apply_button_text'),
+    applyButtonTheme: makeProp(PROP_TYPE_STRING, 'primary'),
     applyButtonLoading: makeProp(PROP_TYPE_BOOLEAN, false),
-    cancelButtonText: makeProp(PROP_TYPE_STRING, "cancel_button_text"),
-    cancelButtonTheme: makeProp(PROP_TYPE_STRING, "secondary"),
+    cancelButtonText: makeProp(PROP_TYPE_STRING, 'cancel_button_text'),
+    cancelButtonTheme: makeProp(PROP_TYPE_STRING, 'secondary'),
     cancelButtonLoading: makeProp(PROP_TYPE_BOOLEAN, false),
     bilingual: makeProp(PROP_TYPE_BOOLEAN, false),
     showCloseButton: makeProp(PROP_TYPE_BOOLEAN, true),
-    footerClass: makeProp(PROP_TYPE_ARRAY_OBJECT_STRING, ""),
-    applyButtonClass: makeProp(PROP_TYPE_ARRAY_OBJECT_STRING, ""),
-    modalContainerClass: makeProp(PROP_TYPE_ARRAY_OBJECT_STRING, ""),
-    modalContainerStyle: makeProp(PROP_TYPE_ARRAY_OBJECT_STRING, ""),
-    modalBodyStyle: makeProp(PROP_TYPE_ARRAY_OBJECT_STRING, ""),
-    modalBodyClass: makeProp(PROP_TYPE_ARRAY_OBJECT_STRING, ""),
-    cancelButtonClass: makeProp(PROP_TYPE_ARRAY_OBJECT_STRING, ""),
+    footerClass: makeProp(PROP_TYPE_ARRAY_OBJECT_STRING, ''),
+    applyButtonClass: makeProp(PROP_TYPE_ARRAY_OBJECT_STRING, ''),
+    modalContainerClass: makeProp(PROP_TYPE_ARRAY_OBJECT_STRING, ''),
+    modalContainerStyle: makeProp(PROP_TYPE_ARRAY_OBJECT_STRING, ''),
+    modalBodyStyle: makeProp(PROP_TYPE_ARRAY_OBJECT_STRING, ''),
+    modalBodyClass: makeProp(PROP_TYPE_ARRAY_OBJECT_STRING, ''),
+    cancelButtonClass: makeProp(PROP_TYPE_ARRAY_OBJECT_STRING, ''),
     showExitButton: makeProp(PROP_TYPE_BOOLEAN, true),
   },
-  emits: ["apply", "cancel", "close"],
+  emits: ['apply', 'cancel', 'close'],
   computed: {
     hasSlot() {
       return {
-        header: this.$slots.hasOwnProperty("header"),
-        headerRight: this.$slots.hasOwnProperty("header-right"),
-        body: this.$slots.hasOwnProperty("body"),
-        footer: this.$slots.hasOwnProperty("footer"),
-        buttonCancel: this.$slots.hasOwnProperty("button-cancel"),
-        buttonApply: this.$slots.hasOwnProperty("button-apply"),
-      };
+        header: this.$slots.hasOwnProperty('header'),
+        headerRight: this.$slots.hasOwnProperty('header-right'),
+        body: this.$slots.hasOwnProperty('body'),
+        footer: this.$slots.hasOwnProperty('footer'),
+        buttonCancel: this.$slots.hasOwnProperty('button-cancel'),
+        buttonApply: this.$slots.hasOwnProperty('button-apply'),
+      }
     },
     bd() {
       if (this.bilingual) {
@@ -55,7 +55,7 @@ export default {
           body: this.$t(`${this.body}`),
           applyButtonText: this.$t(`${this.applyButtonText}`),
           cancelButtonText: this.$t(`${this.cancelButtonText}`),
-        };
+        }
       }
 
       return {
@@ -63,10 +63,10 @@ export default {
         body: this.body,
         applyButtonText: this.applyButtonText,
         cancelButtonText: this.cancelButtonText,
-      };
+      }
     },
   },
-};
+}
 </script>
 
 <template>
@@ -98,7 +98,11 @@ export default {
               bg-color="var(--gray-100)"
               @click="$emit('close')"
             >
-              <x-icon name="close" size="32" class="gray-400" />
+              <x-icon
+                name="close"
+                size="32"
+                class="gray-400"
+              />
             </x-circular-background>
           </div>
 
@@ -108,12 +112,17 @@ export default {
             :class="modalBodyClass"
           >
             <!--?      BODY SLOT        -->
-            <slot name="body"></slot>
+            <slot name="body" />
 
-            <p v-if="!hasSlot.body">{{ bd.body }}</p>
+            <p v-if="!hasSlot.body">
+              {{ bd.body }}
+            </p>
           </div>
 
-          <div class="x-modal-footer" :class="footerClass">
+          <div
+            class="x-modal-footer"
+            :class="footerClass"
+          >
             <!--?      FOOTER SLOT        -->
             <slot name="footer" />
 

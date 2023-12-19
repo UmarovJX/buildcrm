@@ -1,16 +1,16 @@
 <script>
 // import BaseDownIcon from "@/components/icons/BaseDownIcon";
-import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
-import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
-import { XFormSelect } from "@/components/ui-components/form-select";
+import BaseArrowLeftIcon from '@/components/icons/BaseArrowLeftIcon'
+import BaseArrowRightIcon from '@/components/icons/BaseArrowRightIcon'
+import { XFormSelect } from '@/components/ui-components/form-select'
 
 export default {
-  name: "BasePagination",
+  name: 'BasePagination',
   components: {
     // BaseDownIcon,
     BaseArrowLeftIcon,
     BaseArrowRightIcon,
-    XFormSelect: XFormSelect,
+    XFormSelect,
   },
   props: {
     defaultCountView: {
@@ -38,19 +38,16 @@ export default {
       required: true,
     },
   },
-  emits: ["change-page", "change-view"],
+  emits: ['change-page', 'change-view'],
   data() {
     return {
       showByValue: this.defaultCountView || null,
-    };
-  },
-  mounted() {
-    this.initDefaultShowByValue();
+    }
   },
   computed: {
     showByOptions() {
-      const { maxCountView, minCountView, stepView } = this;
-      const options = [];
+      const { maxCountView, minCountView, stepView } = this
+      const options = []
 
       for (
         let number = minCountView;
@@ -60,24 +57,27 @@ export default {
         options.push({
           value: number,
           text: number,
-        });
+        })
       }
 
-      return options;
+      return options
     },
+  },
+  mounted() {
+    this.initDefaultShowByValue()
   },
   methods: {
     initDefaultShowByValue() {
-      this.showByValue = this.defaultCountView ?? this.showByOptions[0].value;
+      this.showByValue = this.defaultCountView ?? this.showByOptions[0].value
     },
     changeCurrentPage(page) {
-      this.$emit("change-page", page);
+      this.$emit('change-page', page)
     },
     changeCountView(value) {
-      this.$emit("change-view", value);
+      this.$emit('change-view', value)
     },
   },
-};
+}
 </script>
 
 <template>
@@ -127,9 +127,9 @@ export default {
       <!--  Show By Select    -->
       <div class="show__by">
         <x-form-select
+          v-model="showByValue"
           :label="false"
           :options="showByOptions"
-          v-model="showByValue"
           @change="changeCountView"
         >
           <template #output-prefix>

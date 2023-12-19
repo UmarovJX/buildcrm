@@ -1,8 +1,8 @@
 <script>
-import AccordionContent from "@/components/Dashboard/Objects/Promo/components/AccordionContent";
+import AccordionContent from '@/components/Dashboard/Objects/Promo/components/AccordionContent'
 
 export default {
-  name: "TariffContent",
+  name: 'TariffContent',
   components: {
     AccordionContent,
   },
@@ -21,14 +21,14 @@ export default {
     },
   },
   emits: [
-    "delete-tariff-content",
-    "set-prepay-properties",
-    "clone-promo-field",
+    'delete-tariff-content',
+    'set-prepay-properties',
+    'clone-promo-field',
   ],
   data() {
     return {
       building: {
-        name: this.$t("promo.select_block"),
+        name: this.$t('promo.select_block'),
       },
       selectedBlocks: [],
       form: {
@@ -39,38 +39,38 @@ export default {
           installment_month: null,
         },
       },
-    };
+    }
   },
   computed: {
     hasBlocks() {
-      return this.selectedBlocks.length > 0;
+      return this.selectedBlocks.length > 0
     },
   },
   watch: {
     selectedBlocks() {
-      this.setFormBlocks();
+      this.setFormBlocks()
     },
-    "form.discount.prepay"() {
-      this.setPrepayProperties();
+    'form.discount.prepay': function () {
+      this.setPrepayProperties()
     },
   },
   created() {
-    this.setUpHistory();
-    this.setUpCloning();
+    this.setUpHistory()
+    this.setUpCloning()
   },
   methods: {
     setFormBlocks() {
-      this.form.blocks = this.selectedBlocks.map((list) => {
+      this.form.blocks = this.selectedBlocks.map(list => {
         if (this.form.blocks.length) {
           const hasInPackage = this.form.blocks.findIndex(
-            (block) => block.id === list.id
-          );
+            block => block.id === list.id,
+          )
           if (hasInPackage !== -1) {
-            const currentList = this.form.blocks[hasInPackage];
+            const currentList = this.form.blocks[hasInPackage]
             if (currentList?.types.length) {
               return {
                 ...currentList,
-              };
+              }
             }
           }
         }
@@ -78,104 +78,104 @@ export default {
         return {
           id: list.id,
           types: [],
-        };
-      });
+        }
+      })
     },
     blockSelectionError(error) {
-      const id = this.uniqueId;
-      return error.replace(id, this.building.name);
+      const id = this.uniqueId
+      return error.replace(id, this.building.name)
     },
     deletePrepayContent() {
-      this.$emit("delete-tariff-content");
+      this.$emit('delete-tariff-content')
     },
     deleteInputVariable(inputVariable) {
       const blockIndex = this.form.blocks.findIndex(
-        (block) => block.id === inputVariable.blockId
-      );
+        block => block.id === inputVariable.blockId,
+      )
       const deletingIndex = this.form.blocks[blockIndex].types.findIndex(
-        (type) => type.id === inputVariable.id
-      );
+        type => type.id === inputVariable.id,
+      )
       if (deletingIndex !== -1) {
-        this.form.blocks[blockIndex].types.splice(deletingIndex, 1);
+        this.form.blocks[blockIndex].types.splice(deletingIndex, 1)
       }
     },
     saveInputsVariable(inputVariables) {
       for (let i = 0; i < this.selectedBlocks.length; i++) {
-        const currentBlockID = this.selectedBlocks[i].id;
+        const currentBlockID = this.selectedBlocks[i].id
         const types = inputVariables.filter(
-          (inputVar) => inputVar.blockId === currentBlockID
-        );
+          inputVar => inputVar.blockId === currentBlockID,
+        )
         const blockIndex = this.form.blocks.findIndex(
-          (block) => block.id === currentBlockID
-        );
+          block => block.id === currentBlockID,
+        )
         if (types.length) {
           if (this.form.blocks[blockIndex].types.length) {
             for (let i = 0; i < types.length; i++) {
               const findCurrentType = this.form.blocks[
                 blockIndex
-              ].types.findIndex((type) => type.id === types[i].id);
+              ].types.findIndex(type => type.id === types[i].id)
               if (findCurrentType !== -1) {
-                this.form.blocks[blockIndex].types[findCurrentType] = types[i];
+                this.form.blocks[blockIndex].types[findCurrentType] = types[i]
               } else {
-                this.form.blocks[blockIndex].types.push(types[i]);
+                this.form.blocks[blockIndex].types.push(types[i])
               }
             }
           } else {
-            this.form.blocks[blockIndex].types = types;
+            this.form.blocks[blockIndex].types = types
           }
         }
       }
-      this.setPrepayProperties();
+      this.setPrepayProperties()
     },
     setPrepayProperties() {
-      this.$emit("set-prepay-properties", {
+      this.$emit('set-prepay-properties', {
         ...this.form,
         uniqueId: this.uniqueId,
-      });
+      })
     },
     setUpHistory() {
       if (this.traffic.history) {
-        this.form.discount = this.traffic.discount;
-        this.initializer();
+        this.form.discount = this.traffic.discount
+        this.initializer()
       }
     },
     setUpCloning() {
       if (this.traffic.clone) {
-        this.initializer();
+        this.initializer()
       }
     },
     initializer() {
       this.selectedBlocks = this.blockOptions
-        .filter((loopBlock) => {
+        .filter(loopBlock => {
           const historyBlock = this.traffic.blocks.findIndex(
-            (block) => block.id === loopBlock.id
-          );
-          return historyBlock !== -1;
+            block => block.id === loopBlock.id,
+          )
+          return historyBlock !== -1
         })
-        .map((currentLoop) => {
+        .map(currentLoop => {
           const index = this.traffic.blocks.findIndex(
-            (block) => block.id === currentLoop.id
-          );
-          const types = this.traffic.blocks[index].types;
+            block => block.id === currentLoop.id,
+          )
+          const { types } = this.traffic.blocks[index]
           const context = {
             ...currentLoop,
             types,
-          };
-
-          if (this.traffic.history) {
-            context.history = true;
-          } else {
-            context.clone = true;
           }
 
-          return context;
-        });
+          if (this.traffic.history) {
+            context.history = true
+          } else {
+            context.clone = true
+          }
+
+          return context
+        })
     },
     clonePromoField() {
-      this.$emit("clone-promo-field", this.uniqueId);
+      this.$emit('clone-promo-field', this.uniqueId)
     },
   },
-};
+}
 </script>
 
 <template>
@@ -183,19 +183,19 @@ export default {
     <!--  Block Selection  -->
     <div class="d-flex">
       <ValidationProvider
+        :id="uniqueId"
+        v-slot="{ errors }"
         :name="uniqueId"
         tag="div"
         class="p-0 pr-2 my-4 w-100"
         rules="required"
-        :id="uniqueId"
-        v-slot="{ errors }"
       >
         <label for="selection-block">
           {{ building.name }}
         </label>
         <multiselect
-          v-model="selectedBlocks"
           id="selection-block"
+          v-model="selectedBlocks"
           tag-placeholder="Add this as new tag"
           class="mb-2 promo__multiselect__tag"
           label="name"
@@ -206,17 +206,20 @@ export default {
           :taggable="true"
           :searchable="false"
           :hide-selected="true"
-        ></multiselect>
+        />
 
-        <span class="error__provider" v-if="errors[0]">
+        <span
+          v-if="errors[0]"
+          class="error__provider"
+        >
           {{ blockSelectionError(errors[0]) }}
         </span>
       </ValidationProvider>
 
       <ValidationProvider
+        v-slot="{ errors }"
         :name="`${$t('promo.promo_rate')}`"
         rules="required|max_value:100|min_value:0"
-        v-slot="{ errors }"
         class="mt-4 mr-2 w-100"
         tag="div"
       >
@@ -225,26 +228,28 @@ export default {
         </label>
         <div class="pl-0">
           <b-form-input
+            id="prepay-input-percent"
             v-model="form.discount.prepay"
             type="number"
-            id="prepay-input-percent"
             :placeholder="$t('promo.promo_rate')"
             :max="100"
             :min="0"
             class="prepay__input__percent mb-2"
+          />
+          <span
+            v-if="errors[0]"
+            class="error__provider"
           >
-          </b-form-input>
-          <span class="error__provider" v-if="errors[0]">
             {{ errors[0] }}
           </span>
         </div>
       </ValidationProvider>
 
       <ValidationProvider
+        v-slot="{ errors }"
         :name="`${$t('promo.promo_rate')}`"
         rules="required|min_value:0"
         type="number"
-        v-slot="{ errors }"
         class="mt-4 w-100"
         tag="div"
       >
@@ -253,16 +258,18 @@ export default {
         </label>
         <div class="pl-0">
           <b-form-input
+            id="objects.credit_month"
             v-model="form.discount.installment_month"
             type="number"
-            id="objects.credit_month"
             :placeholder="$t('objects.credit_month')"
             :max="100"
             :min="0"
             class="prepay__input__percent mb-2"
+          />
+          <span
+            v-if="errors[0]"
+            class="error__provider"
           >
-          </b-form-input>
-          <span class="error__provider" v-if="errors[0]">
             {{ errors[0] }}
           </span>
         </div>
@@ -270,7 +277,9 @@ export default {
     </div>
 
     <!--     Dropdown Plan   -->
-    <p v-if="hasBlocks">{{ $t("promo.select_floor_plan") }}</p>
+    <p v-if="hasBlocks">
+      {{ $t("promo.select_floor_plan") }}
+    </p>
     <accordion-content
       v-for="(block, index) in selectedBlocks"
       :key="block.name"
@@ -279,7 +288,10 @@ export default {
       @delete-input-variable="deleteInputVariable"
     />
     <div class="action__buttons">
-      <button class="button action__buttons-addition" @click="clonePromoField">
+      <button
+        class="button action__buttons-addition"
+        @click="clonePromoField"
+      >
         {{ $t("apartments.clone_tariff") }}
       </button>
       <button

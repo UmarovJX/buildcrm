@@ -1,13 +1,13 @@
 <script>
 export default {
-  name: "Bars",
+  name: 'Bars',
   props: {
     fill: {
       type: String,
-      default: "#7C3AED",
+      default: '#7C3AED',
     },
   },
-};
+}
 </script>
 
 <template>
@@ -18,7 +18,12 @@ export default {
     viewBox="0 0 135 140"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <rect y="10" width="15" height="120" rx="6">
+    <rect
+      y="10"
+      width="15"
+      height="120"
+      rx="6"
+    >
       <animate
         attributeName="height"
         begin="0.5s"
@@ -36,7 +41,13 @@ export default {
         repeatCount="indefinite"
       />
     </rect>
-    <rect x="30" y="10" width="15" height="120" rx="6">
+    <rect
+      x="30"
+      y="10"
+      width="15"
+      height="120"
+      rx="6"
+    >
       <animate
         attributeName="height"
         begin="0.25s"
@@ -54,7 +65,12 @@ export default {
         repeatCount="indefinite"
       />
     </rect>
-    <rect x="60" width="15" height="140" rx="6">
+    <rect
+      x="60"
+      width="15"
+      height="140"
+      rx="6"
+    >
       <animate
         attributeName="height"
         begin="0s"
@@ -72,7 +88,13 @@ export default {
         repeatCount="indefinite"
       />
     </rect>
-    <rect x="90" y="10" width="15" height="120" rx="6">
+    <rect
+      x="90"
+      y="10"
+      width="15"
+      height="120"
+      rx="6"
+    >
       <animate
         attributeName="height"
         begin="0.25s"
@@ -90,7 +112,13 @@ export default {
         repeatCount="indefinite"
       />
     </rect>
-    <rect x="120" y="10" width="15" height="120" rx="6">
+    <rect
+      x="120"
+      y="10"
+      width="15"
+      height="120"
+      rx="6"
+    >
       <animate
         attributeName="height"
         begin="0.5s"

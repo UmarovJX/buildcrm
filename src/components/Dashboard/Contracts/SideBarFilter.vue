@@ -1,23 +1,12 @@
 <script>
-import { mapActions, mapGetters } from "vuex";
-import DatePicker from "vue2-datepicker";
-import "vue2-datepicker/index.css";
+import { mapActions, mapGetters } from 'vuex'
+import DatePicker from 'vue2-datepicker'
+import 'vue2-datepicker/index.css'
 
 export default {
-  data() {
-    return {
-      filter: {
-        contract_number: "",
-        object_id: [],
-        apartment_number: [],
-        // status: [],
-        full_name: "",
-        phone: "",
-        date: [],
-      },
-      client_phone: "",
-      client_fullname: "",
-    };
+
+  components: {
+    DatePicker,
   },
 
   props: {
@@ -25,108 +14,120 @@ export default {
       type: Object,
     },
   },
-
-  components: {
-    DatePicker,
+  data() {
+    return {
+      filter: {
+        contract_number: '',
+        object_id: [],
+        apartment_number: [],
+        // status: [],
+        full_name: '',
+        phone: '',
+        date: [],
+      },
+      client_phone: '',
+      client_fullname: '',
+    }
   },
 
-  computed: mapGetters(["getObjects"]),
+  computed: mapGetters(['getObjects']),
   mounted() {
     if (this.filtered.date) {
-      if (typeof this.filtered.date === "string") {
-        const newArr = [];
-        const newArrItem = parseInt(this.filtered.date);
-        newArr.push(newArrItem);
-        this.filtered.date = newArr;
+      if (typeof this.filtered.date === 'string') {
+        const newArr = []
+        const newArrItem = parseInt(this.filtered.date)
+        newArr.push(newArrItem)
+        this.filtered.date = newArr
       }
     }
     if (this.filtered.object_id) {
-      if (typeof this.filtered.object_id === "string") {
-        const newArr = [];
-        const newArrItem = parseInt(this.filtered.object_id);
-        newArr.push(newArrItem);
-        this.filtered.object_id = newArr;
+      if (typeof this.filtered.object_id === 'string') {
+        const newArr = []
+        const newArrItem = parseInt(this.filtered.object_id)
+        newArr.push(newArrItem)
+        this.filtered.object_id = newArr
       }
     }
 
     if (this.filtered.apartment_number) {
-      if (typeof this.filtered.apartment_number === "string") {
-        const newArr = [];
-        const newArrItem = parseInt(this.filtered.apartment_number);
-        newArr.push(newArrItem);
-        this.filtered.apartment_number = newArr;
+      if (typeof this.filtered.apartment_number === 'string') {
+        const newArr = []
+        const newArrItem = parseInt(this.filtered.apartment_number)
+        newArr.push(newArrItem)
+        this.filtered.apartment_number = newArr
       }
     }
 
     this.filter.contract_number = this.filtered.contract_number
       ? this.filtered.contract_number
-      : this.filter.contract_number;
+      : this.filter.contract_number
     this.filter.full_name = this.filtered.full_name
       ? this.filtered.full_name
-      : this.filter.full_name;
+      : this.filter.full_name
     this.filter.phone = this.filtered.phone
       ? this.filtered.phone
-      : this.filter.phone;
+      : this.filter.phone
     this.filter.sort_by = this.filtered.sort_by
       ? this.filtered.sort_by
-      : this.filter.sort_by;
+      : this.filter.sort_by
     this.filter.order_by = this.filtered.order_by
       ? this.filtered.order_by
-      : this.filter.order_by;
+      : this.filter.order_by
     this.filter.page = this.filtered.page
       ? this.filtered.page
-      : this.filter.page;
-    this.fetchObjects(this);
+      : this.filter.page
+    this.fetchObjects(this)
   },
 
   methods: {
-    ...mapActions(["fetchObjects"]),
+    ...mapActions(['fetchObjects']),
 
     contractsFilter() {
-      this.$emit("contractsFiltered", this.filter);
-      this.$refs.mySidebarFilter.hide();
+      this.$emit('contractsFiltered', this.filter)
+      this.$refs.mySidebarFilter.hide()
     },
 
     async filterContractsClear() {
       this.filter = {
-        contract_number: "",
+        contract_number: '',
         object_id: [],
         apartment_number: [],
         // status: [],
-        phone: "",
-        full_name: "",
+        phone: '',
+        full_name: '',
         date: [],
         page: 1,
-      };
+      }
     },
   },
-};
+}
 </script>
 
 <template>
   <b-sidebar
     id="contracts-list-filter"
+    ref="mySidebarFilter"
     right
     shadow
     width="420px"
     backdrop
     :title="$t('apartments.list.filter')"
-    ref="mySidebarFilter"
     :no-close-on-route-change="true"
   >
     <div class="container">
       <!-- Номер контракта -->
-      <label for="contract-number"
-        >{{ $t("apartments.filter.contract_number") }}:
+      <label
+        for="contract-number"
+      >{{ $t("apartments.filter.contract_number") }}:
       </label>
       <div class="mb-3">
         <input
           id="contract-number"
+          v-model="filter.contract_number"
           class="my-form__input"
           type="text"
-          v-model="filter.contract_number"
           :placeholder="$t('apartments.filter.contract_number')"
-        />
+        >
       </div>
 
       <!-- Объект -->
@@ -135,15 +136,15 @@ export default {
         <!-- fetchObjects -->
         <select
           id="status"
-          class="form-control"
           v-model="filter.object_id"
+          class="form-control"
           multiple
           style="height: 100px !important"
         >
           <option
-            :value="obj.id"
             v-for="obj in getObjects"
             :key="'obj' + obj.id"
+            :value="obj.id"
           >
             {{ obj.name }}
           </option>
@@ -152,35 +153,45 @@ export default {
 
       <!-- Номер квартиры -->
       <div class="mb-3">
-        <label for="apartment-number"
-          >{{ $t("apartments.filter.apartment_number") }}:
+        <label
+          for="apartment-number"
+        >{{ $t("apartments.filter.apartment_number") }}:
         </label>
         <b-form-tags
-          input-id="apartment-number"
           v-model="filter.apartment_number"
+          input-id="apartment-number"
           separator=" "
           remove-on-delete
           tag-pills
-          inputType="tel"
-          addButtonVariant="primary"
-          addButtonText="+"
+          input-type="tel"
+          add-button-variant="primary"
+          add-button-text="+"
           :placeholder="$t('apartments.filter.apartment_number')"
-        ></b-form-tags>
+        />
       </div>
 
       <!-- Status -->
-      <div class="mb-3" v-if="false">
+      <div
+        v-if="false"
+        class="mb-3"
+      >
         <label for="status">Статус: </label>
         <select
           id="status"
-          class="form-control"
           v-model="filter.status"
+          class="form-control"
           multiple
           style="height: 100px !important"
         >
-          <option value="sold">Проданные</option>
-          <option value="contract">Неоплаченные</option>
-          <option value="booked">Забронированные</option>
+          <option value="sold">
+            Проданные
+          </option>
+          <option value="contract">
+            Неоплаченные
+          </option>
+          <option value="booked">
+            Забронированные
+          </option>
         </select>
       </div>
 
@@ -189,11 +200,11 @@ export default {
         <label for="phone-number">{{ $t("apartments.agree.phone") }}: </label>
         <input
           id="phone-number"
+          v-model="filter.phone"
           class="my-form__input"
           type="tel"
-          v-model="filter.phone"
           :placeholder="$t('apartments.agree.phone')"
-        />
+        >
       </div>
 
       <!-- Ф.И.О -->
@@ -201,17 +212,18 @@ export default {
         <label for="full_name">{{ $t("contracts.f_i_o") }}: </label>
         <input
           id="full_name"
+          v-model="filter.full_name"
           class="my-form__input"
           type="tel"
-          v-model="filter.full_name"
           :placeholder="$t('contracts.f_i_o')"
-        />
+        >
       </div>
 
       <!-- Фильтр по дате -->
       <div class="mb-3">
-        <label for="filter-by-date"
-          >{{ $t("contracts.filter_with_date") }}:
+        <label
+          for="filter-by-date"
+        >{{ $t("contracts.filter_with_date") }}:
         </label>
         <date-picker
           id="filter-by-date"
@@ -222,7 +234,7 @@ export default {
           format="YYYY-MM-DD"
           placeholder="Select date range"
           class="w-100"
-        ></date-picker>
+        />
       </div>
     </div>
     <template #footer>
@@ -232,7 +244,7 @@ export default {
           type="reset"
           @click="filterContractsClear"
         >
-          <i class="far fa-times"></i> {{ $t("apartments.filter.clear") }}
+          <i class="far fa-times" /> {{ $t("apartments.filter.clear") }}
         </button>
 
         <b-button
@@ -242,7 +254,7 @@ export default {
           type="button"
           @click="contractsFilter"
         >
-          <i class="far fa-sliders-h mr-2"></i>
+          <i class="far fa-sliders-h mr-2" />
           {{ $t("apartments.filter.filter_btn") }}
         </b-button>
       </div>

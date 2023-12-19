@@ -1,82 +1,82 @@
 export function headerItems() {
-  const { apartments } = this;
+  const { apartments } = this
 
   const h = {
     pageInfo: {
-      title: "",
-      titleHighlight: "",
+      title: '',
+      titleHighlight: '',
     },
     page: {
-      type: "string",
-      path: this.$t("checkout_booking"),
+      type: 'string',
+      path: this.$t('checkout_booking'),
     },
     breadcrumbs: [
       {
         content: {
-          type: "multi_language",
-          path: "objects.title",
+          type: 'multi_language',
+          path: 'objects.title',
         },
         route: {
-          name: "objects",
-          path: "/objects",
+          name: 'objects',
+          path: '/objects',
         },
       },
     ],
-  };
+  }
 
   if (!apartments.length) {
-    return h;
+    return h
   }
 
   const apmTitles = apartments.reduce((acc, apm, idx, arr) => {
-    let str = apm.number;
+    let str = apm.number
     if (arr.length - 1 !== idx) {
-      str += ", ";
+      str += ', '
     }
-    return acc + str;
-  }, "");
+    return acc + str
+  }, '')
 
-  const { object } = apartments[0];
+  const { object } = apartments[0]
 
   if (object) {
     h.breadcrumbs.push({
       content: {
-        type: "string",
+        type: 'string',
         path: object.name,
       },
       route: {
-        name: "apartments",
+        name: 'apartments',
         params: {
           object: object.id,
         },
       },
-    });
+    })
 
     h.breadcrumbs.push({
       content: {
-        type: "string",
-        path: this.$t("parking") + " " + apmTitles,
+        type: 'string',
+        path: `${this.$t('parking')} ${apmTitles}`,
       },
       route: {
-        name: "apartments",
+        name: 'apartments',
         params: {
           object: object.id,
         },
       },
-    });
+    })
   }
 
   if (this.isCreateMode) {
     h.pageInfo = {
-      title: this.$t("parking_make_contract"),
+      title: this.$t('parking_make_contract'),
       titleHighlight: apmTitles,
-    };
+    }
   } else {
     h.pageInfo = {
-      title: this.$t("edit_parking"),
+      title: this.$t('edit_parking'),
       titleHighlight: apmTitles,
-    };
+    }
   }
 
-  return h;
+  return h
 }

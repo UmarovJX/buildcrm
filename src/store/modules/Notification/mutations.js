@@ -1,35 +1,35 @@
 export default {
   setNotify(state, xNotify) {
     if (xNotify && Object.keys(xNotify).length) {
-      let defaultProperty = {};
-      if (xNotify && xNotify.type === "success") {
+      let defaultProperty = {}
+      if (xNotify && xNotify.type === 'success') {
         defaultProperty = {
           visible: true,
-          type: "success",
-          message: "successfully",
+          type: 'success',
+          message: 'successfully',
           duration: 2000,
-        };
-      } else if (xNotify && xNotify.type === "warning") {
+        }
+      } else if (xNotify && xNotify.type === 'warning') {
         defaultProperty = {
           visible: true,
-          type: "warning",
-          message: "warning",
+          type: 'warning',
+          message: 'warning',
           duration: 2000,
-        };
+        }
       } else {
         defaultProperty = {
           visible: true,
-          type: "error",
-          message: "error",
+          type: 'error',
+          message: 'error',
           duration: 2000,
-        };
+        }
       }
-      state.xNotify = Object.assign({}, defaultProperty, xNotify);
+      state.xNotify = { ...defaultProperty, ...xNotify }
     } else {
-      state.xNotify = xNotify;
+      state.xNotify = xNotify
     }
   },
   finishNotify(state, visible) {
-    state.xNotify.visible = visible;
+    state.xNotify.visible = visible
   },
-};
+}

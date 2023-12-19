@@ -1,25 +1,25 @@
-import Apartments from "@/services/apartments";
-import Branches from "@/services/branches";
-import Objects from "@/services/objects";
-import User from "@/services/user";
-import Companies from "@/services/companies";
-import Contract from "@/services/contract";
-import Plans from "@/services/plans";
-import Auth from "@/services/auth";
-import Settings from "@/services/settings";
-import Debtors from "@/services/debtors";
-import Home from "@/services/home";
-import Orders from "@/services/orders";
-import Clients from "@/services/clients";
-import Roles from "@/services/roles";
-import Accountants from "@/services/accountants";
-import Promo from "@/services/promo";
-import Uploads from "@/services/uploads";
-import Parkings from "@/services/parkings";
-import Languages from "@/services/languages";
-import Translations from "@/services/translations";
+import Apartments from '@/services/apartments'
+import Branches from '@/services/branches'
+import Objects from '@/services/objects'
+import User from '@/services/user'
+import Companies from '@/services/companies'
+import Contract from '@/services/contract'
+import Plans from '@/services/plans'
+import Auth from '@/services/auth'
+import Settings from '@/services/settings'
+import Debtors from '@/services/debtors'
+import Home from '@/services/home'
+import Orders from '@/services/orders'
+import Clients from '@/services/clients'
+import Roles from '@/services/roles'
+import Accountants from '@/services/accountants'
+import Promo from '@/services/promo'
+import Uploads from '@/services/uploads'
+import Parkings from '@/services/parkings'
+import Languages from '@/services/languages'
+import Translations from '@/services/translations'
 
-export const debtorsV2 = new Debtors.DebtorsV2();
+export const debtorsV2 = new Debtors.DebtorsV2()
 
 export default {
   home: new Home(),
@@ -55,4 +55,4 @@ export default {
   parkingsV3: new Parkings.ParkingsV3(),
   languagesV3: new Languages.LanguagesV3(),
   translationsV3: new Translations.TranslationsV3(),
-};
+}

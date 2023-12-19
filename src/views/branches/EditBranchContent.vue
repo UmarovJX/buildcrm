@@ -1,12 +1,12 @@
 <script>
-import api from "@/services/api";
-import { mapGetters } from "vuex";
-import CreateBranchBreadCrumb from "@/components/Branches/CreateBranchBreadCrumb";
-import BranchFormContent from "@/components/Branches/BranchFormContent";
-import AppHeader from "@/components/Header/AppHeader";
+import api from '@/services/api'
+import { mapGetters } from 'vuex'
+import CreateBranchBreadCrumb from '@/components/Branches/CreateBranchBreadCrumb'
+import BranchFormContent from '@/components/Branches/BranchFormContent'
+import AppHeader from '@/components/Header/AppHeader'
 
 export default {
-  name: "TabChangePassword",
+  name: 'TabChangePassword',
   components: {
     CreateBranchBreadCrumb,
     BranchFormContent,
@@ -15,71 +15,71 @@ export default {
   data() {
     return {
       loading: false,
-      submitButtonText: this.$t("edit"),
+      submitButtonText: this.$t('edit'),
       responseAlert: {
-        variant: "success",
+        variant: 'success',
         dismissSecs: 10,
         dismissCountDown: 0,
-        message: "Ваш пароль был обновлен",
+        message: 'Ваш пароль был обновлен',
       },
-    };
+    }
   },
   computed: {
     hiddenArea() {
-      return this.loading ? "true" : null;
+      return this.loading ? 'true' : null
     },
     ...mapGetters({
-      me: "getMe",
+      me: 'getMe',
     }),
   },
   methods: {
     async submitNewBranch(data) {
-      this.loading = true;
+      this.loading = true
       await api.branches
         .editBranch(this.$route.params.id, data)
         .then(() => {
-          this.$router.push({ name: "branches" });
+          this.$router.push({ name: 'branches' })
         })
-        .catch((error) => {
+        .catch(error => {
           if (error?.response?.status) {
-            const { status, data } = error.response;
+            const { status, data } = error.response
             if (status === 403) {
-              this.responseAlert.variant = "danger";
-              this.responseAlert.message = data.message;
-              this.showResponseAlert();
-              return;
+              this.responseAlert.variant = 'danger'
+              this.responseAlert.message = data.message
+              this.showResponseAlert()
+              return
             }
 
             if (status === 422) {
-              const values = Object.values(data);
-              this.responseAlert.variant = "danger";
-              this.responseAlert.message = values[0][0];
-              this.showResponseAlert();
+              const values = Object.values(data)
+              this.responseAlert.variant = 'danger'
+              this.responseAlert.message = values[0][0]
+              this.showResponseAlert()
             }
           } else {
-            this.toastedWithErrorCode(error);
+            this.toastedWithErrorCode(error)
           }
         })
         .finally(() => {
-          this.loading = false;
-        });
+          this.loading = false
+        })
     },
     dismissedAlert() {
-      this.responseAlert.dismissCountDown = 0;
+      this.responseAlert.dismissCountDown = 0
     },
     makeFormDefault() {
       for (const [key] of Object.entries(this.form)) {
-        this.form[key] = "";
+        this.form[key] = ''
       }
     },
     countDownChanged(dismissCountDown) {
-      this.responseAlert.dismissCountDown = dismissCountDown;
+      this.responseAlert.dismissCountDown = dismissCountDown
     },
     showResponseAlert() {
-      this.responseAlert.dismissCountDown = this.responseAlert.dismissSecs;
+      this.responseAlert.dismissCountDown = this.responseAlert.dismissSecs
     },
   },
-};
+}
 </script>
 
 <template>

@@ -1,3 +1,3 @@
-import CircularBackground from "@/components/ui-components/circular-background/CircularBackground";
+import CircularBackground from '@/components/ui-components/circular-background/CircularBackground'
 
-export { CircularBackground as XCircularBackground };
+export { CircularBackground as XCircularBackground }

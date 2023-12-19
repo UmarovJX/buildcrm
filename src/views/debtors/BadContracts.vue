@@ -1,22 +1,23 @@
 <script>
-import "@fancyapps/ui/dist/fancybox.css";
-import { mapGetters, mapMutations } from "vuex";
-import clickOutside from "@/directives/click-outside";
+import '@fancyapps/ui/dist/fancybox.css'
+import { mapGetters, mapMutations } from 'vuex'
+import clickOutside from '@/directives/click-outside'
 
-import AppHeader from "@/components/Header/AppHeader";
-import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
-import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
-import BaseArrowLeft from "@/components/icons/BaseArrowLeftIcon";
-import BaseButton from "@/components/Reusable/BaseButton";
+import AppHeader from '@/components/Header/AppHeader'
+import BaseArrowLeftIcon from '@/components/icons/BaseArrowLeftIcon'
+import BaseArrowRightIcon from '@/components/icons/BaseArrowRightIcon'
+import BaseArrowLeft from '@/components/icons/BaseArrowLeftIcon'
+import BaseButton from '@/components/Reusable/BaseButton'
 
-import { XFormSelect } from "@/components/ui-components/form-select";
-import { XFormInput } from "@/components/ui-components/form-input";
+import { XFormSelect } from '@/components/ui-components/form-select'
+import { XFormInput } from '@/components/ui-components/form-input'
 
-import { v3ServiceApi } from "@/services/v3/v3.service";
-import { XIcon } from "@/components/ui-components/material-icons";
-import { XCircularBackground } from "@/components/ui-components/circular-background";
+import { v3ServiceApi } from '@/services/v3/v3.service'
+import { XIcon } from '@/components/ui-components/material-icons'
+import { XCircularBackground } from '@/components/ui-components/circular-background'
+
 export default {
-  name: "BadContracts",
+  name: 'BadContracts',
   components: {
     BaseButton,
     XIcon,
@@ -52,200 +53,208 @@ export default {
 
       totalPage: 0,
       showByValue: +this.$route.query.limit || 20,
-      showByOptions: [10, 20, 30, 40, 50].map((el) => ({
+      showByOptions: [10, 20, 30, 40, 50].map(el => ({
         value: el,
         text: el,
       })),
 
       fields: [
         {
-          key: "contract",
-          label: this.$t("Договор"),
-          thStyle: "width: 20%",
+          key: 'contract',
+          label: this.$t('Договор'),
+          thStyle: 'width: 20%',
         },
         {
-          key: "count",
-          label: this.$t("Кол-во оплат"),
-          thStyle: "width: 20%",
+          key: 'count',
+          label: this.$t('Кол-во оплат'),
+          thStyle: 'width: 20%',
         },
         {
-          key: "total_amount",
-          label: this.$t("Общая сумма"),
-          thStyle: "width: 20%",
+          key: 'total_amount',
+          label: this.$t('Общая сумма'),
+          thStyle: 'width: 20%',
         },
         {
-          key: "actions",
-          label: "",
+          key: 'actions',
+          label: '',
         },
       ],
 
       statisticsFields: [
         {
-          key: "name",
-          label: "",
+          key: 'name',
+          label: '',
         },
         {
-          key: "count",
-          label: "Количество",
-          thStyle: "text-align: right;",
+          key: 'count',
+          label: 'Количество',
+          thStyle: 'text-align: right;',
         },
         {
-          key: "sum",
-          label: "Общая сумма",
-          thStyle: "text-align: right;",
+          key: 'sum',
+          label: 'Общая сумма',
+          thStyle: 'text-align: right;',
         },
       ],
       loading: false,
-    };
+    }
   },
   computed: {
-    ...mapGetters(["getLoading", "getPermission"]),
+    ...mapGetters(['getLoading', 'getPermission']),
     query() {
-      return Object.assign({}, this.$route.query);
+      return { ...this.$route.query }
     },
   },
   watch: {
-    "$route.query": {
+    '$route.query': {
       handler(value) {
         if (value) {
-          this.fetchItems();
+          this.fetchItems()
         }
       },
       deep: true,
     },
     showByValue() {
-      const l = this.query.limit;
-      if (l === this.showByValue) return;
+      const l = this.query.limit
+      if (l === this.showByValue) return
       this.$router.replace({
         query: { ...this.query, page: 1, limit: this.showByValue },
-      });
+      })
     },
     currentValue(val) {
-      this.showOptions = false;
-      if (this.timer) clearTimeout(this.timer);
-      if (this.iSet) return (this.iSet = false);
-      this.currentId = null;
+      this.showOptions = false
+      if (this.timer) clearTimeout(this.timer)
+      if (this.iSet) return (this.iSet = false)
+      this.currentId = null
       this.timer = setTimeout(() => {
         v3ServiceApi.orders
           .contractFilterList({ contract: val })
-          .then((res) => {
-            this.contractOptions = res.data.result;
-            this.showOptions = true;
-          });
-      }, 500);
+          .then(res => {
+            this.contractOptions = res.data.result
+            this.showOptions = true
+          })
+      }, 500)
     },
   },
   mounted() {
-    this.fetchItems();
-    this.fetchStatistics();
+    this.fetchItems()
+    this.fetchStatistics()
   },
   methods: {
     closeDropdown() {
-      this.showOptions = false;
+      this.showOptions = false
     },
     fetchStatistics() {
       const l = {
-        total: "Всего",
-        success: "Успешные",
-        failed: "Неуспешные",
-      };
+        total: 'Всего',
+        success: 'Успешные',
+        failed: 'Неуспешные',
+      }
       v3ServiceApi.orders.statisticsTotal().then(
-        (res) =>
-          (this.statistics = ["total", "success", "failed"].map((el) => ({
-            name: l[el],
-            count: res.data.result.count[el],
-            sum: res.data.result.sum[el],
-          })))
-      );
+        res => (this.statistics = ['total', 'success', 'failed'].map(el => ({
+          name: l[el],
+          count: res.data.result.count[el],
+          sum: res.data.result.sum[el],
+        }))),
+      )
     },
     fixContract() {
-      this.isUpdatingContract = true;
+      this.isUpdatingContract = true
       v3ServiceApi.orders
         .bulkUpdate(this.currentRow.contract, this.currentId)
         .then(() => {
-          this.toasted(`${this.$t("success")}`, "success");
-          this.currentRow = null;
-          this.nullify();
-          this.fetchItems();
+          this.toasted(`${this.$t('success')}`, 'success')
+          this.currentRow = null
+          this.nullify()
+          this.fetchItems()
         })
-        .catch((e) => this.toastedWithErrorCode(e))
+        .catch(e => this.toastedWithErrorCode(e))
         .finally(() => {
-          this.isUpdatingContract = false;
-        });
+          this.isUpdatingContract = false
+        })
     },
     chooseContract(c) {
-      this.currentValue = c.contract_number;
-      this.currentId = c.id;
-      this.showOptions = false;
-      this.iSet = true;
+      this.currentValue = c.contract_number
+      this.currentId = c.id
+      this.showOptions = false
+      this.iSet = true
     },
     startEdit(i) {
-      this.currentRow = i;
-      this.nullify();
+      this.currentRow = i
+      this.nullify()
     },
     nullify() {
-      this.currentValue = undefined;
-      this.currentId = null;
-      this.contractOptions = [];
-      this.showOptions = false;
+      this.currentValue = undefined
+      this.currentId = null
+      this.contractOptions = []
+      this.showOptions = false
     },
     handleRowClick(item) {
       this.$router.push({
-        name: "bad-contract-details",
+        name: 'bad-contract-details',
         params: { contract: item.contract },
-      });
+      })
     },
     changeFetchLimit() {
       const query = {
         ...this.query,
         page: this.query.page || 1,
-      };
-      const limit = this.showByValue;
-      this.$router.replace({ query: { ...query, limit } });
+      }
+      const limit = this.showByValue
+      this.$router.replace({ query: { ...query, limit } })
     },
     changeCurrentPage(page) {
-      const currentPage = this.query.page;
-      if (+page === +currentPage) return;
+      const currentPage = this.query.page
+      if (+page === +currentPage) return
       const query = {
         ...this.query,
         page,
-      };
-      const limit = this.query.limit || 20;
-      this.$router.replace({ query: { ...query, page, limit } });
+      }
+      const limit = this.query.limit || 20
+      this.$router.replace({ query: { ...query, page, limit } })
     },
-    ...mapMutations(["updateLoading"]),
+    ...mapMutations(['updateLoading']),
     async fetchItems() {
-      this.showLoading = true;
+      this.showLoading = true
       v3ServiceApi.orders
         .findAll({
           page: this.$route.query.page || 1,
           limit: this.$route.query.limit || 20,
         })
-        .then((res) => {
-          this.items = res.data.result;
-          this.pagination = res.data.pagination;
+        .then(res => {
+          this.items = res.data.result
+          this.pagination = res.data.pagination
         })
-        .catch((e) => {
-          this.toastedWithErrorCode(e);
+        .catch(e => {
+          this.toastedWithErrorCode(e)
         })
-        .finally(() => (this.showLoading = false));
+        .finally(() => (this.showLoading = false))
     },
   },
-};
+}
 </script>
 
 <template>
   <div>
     <app-header>
       <template #header-title>
-        <div class="go__back" @click="$router.go(-1)">
-          <BaseArrowLeft :width="32" :height="32"></BaseArrowLeft>
+        <div
+          class="go__back"
+          @click="$router.go(-1)"
+        >
+          <BaseArrowLeft
+            :width="32"
+            :height="32"
+          />
         </div>
         {{ $t("Проблемные Оплаты") }}
       </template>
       <template #header-actions>
         <div class="statistics position-relative">
-          <base-button text="Статистика" id="statistics"> </base-button>
+          <base-button
+            id="statistics"
+            text="Статистика"
+          />
           <div
             class="statistics-detail position-absolute options-container"
             style="
@@ -306,7 +315,10 @@ export default {
           :fields="fields"
           :busy="showLoading"
         >
-          <template #empty="scope" class="text-center">
+          <template
+            #empty="scope"
+            class="text-center"
+          >
             <div class="d-flex justify-content-center align-items-center">
               {{ scope.emptyText }}
             </div>
@@ -314,25 +326,34 @@ export default {
           <template #table-busy>
             <div class="d-flex justify-content-center w-100">
               <div class="lds-ellipsis">
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
+                <div />
+                <div />
+                <div />
+                <div />
               </div>
             </div>
           </template>
           <template #cell(contract)="{ item }">
-            <div class="cursor-pointer" @click="handleRowClick(item)">
+            <div
+              class="cursor-pointer"
+              @click="handleRowClick(item)"
+            >
               {{ item.contract }}
             </div>
           </template>
           <template #cell(count)="{ item }">
-            <div class="cursor-pointer" @click="handleRowClick(item)">
+            <div
+              class="cursor-pointer"
+              @click="handleRowClick(item)"
+            >
               {{ item.count.toLocaleString("en-GB") }}
             </div>
           </template>
           <template #cell(total_amount)="{ item }">
-            <div class="cursor-pointer" @click="handleRowClick(item)">
+            <div
+              class="cursor-pointer"
+              @click="handleRowClick(item)"
+            >
               {{ item.total_amount.toLocaleString("en-GB") }} {{ $t("ye") }}
             </div>
           </template>
@@ -344,23 +365,22 @@ export default {
             >
               <template v-if="item === currentRow">
                 <div
-                  class="position-relative w-100"
                   v-click-outside="closeDropdown"
+                  class="position-relative w-100"
                 >
                   <x-form-input
-                    class="mr-2"
                     v-model="currentValue"
+                    class="mr-2"
                     :disabled="isUpdatingContract"
-                  >
-                  </x-form-input>
+                  />
                   <div
-                    class="w-75 position-absolute options-container"
                     v-if="showOptions && contractOptions.length > 0"
+                    class="w-75 position-absolute options-container"
                   >
                     <div
-                      class="contract-option"
                       v-for="c of contractOptions"
                       :key="c.id"
+                      class="contract-option"
                       @click="chooseContract(c)"
                     >
                       {{ c.contract_number }}
@@ -370,10 +390,13 @@ export default {
                 <div class="">
                   <x-circular-background
                     class="cursor-pointer"
-                    @click="fixContract()"
                     :class="currentId ? 'bg-violet-600' : 'bg-violet-400'"
+                    @click="fixContract()"
                   >
-                    <span class="animation" v-if="isUpdatingContract">
+                    <span
+                      v-if="isUpdatingContract"
+                      class="animation"
+                    >
                       <svg
                         :width="30"
                         :height="30"
@@ -391,7 +414,12 @@ export default {
                         />
                       </svg>
                     </span>
-                    <x-icon v-else name="save" class="color-white" size="28" />
+                    <x-icon
+                      v-else
+                      name="save"
+                      class="color-white"
+                      size="28"
+                    />
                   </x-circular-background>
                 </div>
               </template>
@@ -399,10 +427,14 @@ export default {
               <template v-else>
                 <div title="save">
                   <x-circular-background
-                    @click="startEdit(item)"
                     class="bg-violet-600 cursor-pointer"
+                    @click="startEdit(item)"
                   >
-                    <x-icon name="attach_file" class="color-white" size="28" />
+                    <x-icon
+                      name="attach_file"
+                      class="color-white"
+                      size="28"
+                    />
                   </x-circular-background>
                 </div>
               </template>
@@ -410,8 +442,8 @@ export default {
           </template>
         </b-table>
         <div
-          class="pagination__vue"
           v-if="!showLoading && pagination.totalPage"
+          class="pagination__vue"
         >
           <vue-paginate
             :page-count="pagination.totalPage"
@@ -440,9 +472,9 @@ export default {
 
           <div class="show__by">
             <x-form-select
+              v-model="showByValue"
               :label="false"
               :options="showByOptions"
-              v-model="showByValue"
             >
               <template #output-prefix>
                 <span class="show-by-description">

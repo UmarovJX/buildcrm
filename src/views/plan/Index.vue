@@ -1,22 +1,22 @@
 <script>
-import {computed, getCurrentInstance, ref} from "vue";
-import {formatToPrice} from "@/util/reusable";
-import {v3ServiceApi} from "@/services/v3/v3.service";
-import {dateFormatWithDot} from "@/util/date/calendar.util";
-import {useToastError} from "@/composables/useToastError";
-import SettingsPermission from "@/permission/settings.permission";
+import { computed, getCurrentInstance, ref } from 'vue'
+import { formatToPrice } from '@/util/reusable'
+import { v3ServiceApi } from '@/services/v3/v3.service'
+import { dateFormatWithDot } from '@/util/date/calendar.util'
+import { useToastError } from '@/composables/useToastError'
+import SettingsPermission from '@/permission/settings.permission'
 
-import {XButton} from "@/components/ui-components/button";
-import {XIcon} from "@/components/ui-components/material-icons";
-import {XCircularBackground} from "@/components/ui-components/circular-background";
-import AppHeader from "@/components/Header/AppHeader.vue";
-import BaseLoading from "@/components/Reusable/BaseLoading.vue";
-import PlanUpsert from "@/views/plan/components/PlanUpsert.vue";
-import PlanFilter from "@/views/plan/components/PlanFilter.vue";
-import XPagination from "@/components/ui-components/pagination/XPagination.vue";
+import { XButton } from '@/components/ui-components/button'
+import { XIcon } from '@/components/ui-components/material-icons'
+import { XCircularBackground } from '@/components/ui-components/circular-background'
+import AppHeader from '@/components/Header/AppHeader.vue'
+import BaseLoading from '@/components/Reusable/BaseLoading.vue'
+import PlanUpsert from '@/views/plan/components/PlanUpsert.vue'
+import PlanFilter from '@/views/plan/components/PlanFilter.vue'
+import XPagination from '@/components/ui-components/pagination/XPagination.vue'
 
 export default {
-  name: "AppPlan",
+  name: 'AppPlan',
   components: {
     XIcon,
     XButton,
@@ -25,11 +25,11 @@ export default {
     XCircularBackground,
     PlanUpsert,
     PlanFilter,
-    XPagination
+    XPagination,
   },
   setup() {
     const vm = getCurrentInstance().proxy
-    const {toastError} = useToastError()
+    const { toastError } = useToastError()
     const upsertType = ref('create')
     const editStorage = ref(false)
     const showCreateModal = ref(false)
@@ -47,139 +47,135 @@ export default {
     })
     const planTypes = ref([])
     const permission = {
-      view: SettingsPermission.getPermission("plan.view"),
-      create: SettingsPermission.getPermission("plan.create"),
-      edit: SettingsPermission.getPermission("plan.edit"),
-      delete: SettingsPermission.getPermission("plan.delete"),
+      view: SettingsPermission.getPermission('plan.view'),
+      create: SettingsPermission.getPermission('plan.create'),
+      edit: SettingsPermission.getPermission('plan.edit'),
+      delete: SettingsPermission.getPermission('plan.delete'),
     }
     const filterParamsList = ref([])
 
-    const tableFields = computed(() => {
-      return [
-        {
-          key: "index",
-          label: "#",
-        },
-        {
-          key: "date_from",
-          label: vm.$t("from_the_date_of"),
-          formatter: dateFormatter
-        },
-        {
-          key: "date_to",
-          label: vm.$t("to_the_date_of"),
-          formatter: dateFormatter
-        },
-        {
-          key: "amount",
-          label: vm.$t("plan_amount"),
-          formatter: (price) => formatToPrice(price) + " " + vm.$t("ye"),
-        },
-        {
-          key: "type",
-          label: vm.$t("plan_type"),
-          formatter: (type) => type.name[vm.$i18n.locale],
-        },
-        {
-          key: "actions",
-          label: "",
-        },
-      ]
-    })
+    const tableFields = computed(() => [
+      {
+        key: 'index',
+        label: '#',
+      },
+      {
+        key: 'date_from',
+        label: vm.$t('from_the_date_of'),
+        formatter: dateFormatter,
+      },
+      {
+        key: 'date_to',
+        label: vm.$t('to_the_date_of'),
+        formatter: dateFormatter,
+      },
+      {
+        key: 'amount',
+        label: vm.$t('plan_amount'),
+        formatter: price => `${formatToPrice(price)} ${vm.$t('ye')}`,
+      },
+      {
+        key: 'type',
+        label: vm.$t('plan_type'),
+        formatter: type => type.name[vm.$i18n.locale],
+      },
+      {
+        key: 'actions',
+        label: '',
+      },
+    ])
 
-    const showPagination = computed(() => {
-      return !tableData.value.loading && pagination.value.totalItem
-    })
+    const showPagination = computed(() => !tableData.value.loading && pagination.value.totalItem)
 
     function dateFormatter(date) {
-      return dateFormatWithDot(date, {reverse: false, monthIndex: 1})
+      return dateFormatWithDot(date, { reverse: false, monthIndex: 1 })
     }
 
     function startLoading() {
-      tableData.value.loading = true;
+      tableData.value.loading = true
     }
 
     function finishLoading() {
-      tableData.value.loading = false;
+      tableData.value.loading = false
     }
 
-    async function findAll({page = null, perPage = null, filter = {}}) {
+    async function findAll({ page = null, perPage = null, filter = {} }) {
       try {
-        startLoading();
+        startLoading()
         const response = await v3ServiceApi.plan.findAll({
           ...filter,
           page: page ?? pagination.value.current,
-          limit: perPage ?? pagination.value.perPage
-        });
-        tableData.value.items = response.data.result;
-        pagination.value = response.data.pagination;
+          limit: perPage ?? pagination.value.perPage,
+        })
+        tableData.value.items = response.data.result
+        pagination.value = response.data.pagination
       } catch (e) {
         toastError(e)
       } finally {
-        finishLoading();
+        finishLoading()
       }
     }
 
     function createClientType() {
-      setUpsertType("create");
-      openCreatingClientTypeModal();
+      setUpsertType('create')
+      openCreatingClientTypeModal()
     }
 
     function setUpsertType(eType) {
-      if (["create", "edit"].includes(eType)) {
-        upsertType.value = eType;
+      if (['create', 'edit'].includes(eType)) {
+        upsertType.value = eType
       }
     }
 
     function openCreatingClientTypeModal() {
-      showCreateModal.value = true;
+      showCreateModal.value = true
     }
 
     function closeCreatingClientTypeModal() {
-      showCreateModal.value = false;
+      showCreateModal.value = false
     }
 
     function clientTypeCreated() {
-      closeCreatingClientTypeModal();
-      findAll({});
+      closeCreatingClientTypeModal()
+      findAll({})
     }
 
     async function deleteTrigger(id) {
       vm.$swal({
-        title: vm.$t("sweetAlert.title"),
-        text: vm.$t("sweetAlert.text"),
-        icon: "warning",
+        title: vm.$t('sweetAlert.title'),
+        text: vm.$t('sweetAlert.text'),
+        icon: 'warning',
         showCancelButton: true,
-        cancelButtonText: vm.$t("cancel"),
-        confirmButtonText: vm.$t("sweetAlert.yes"),
-      }).then(async (result) => {
+        cancelButtonText: vm.$t('cancel'),
+        confirmButtonText: vm.$t('sweetAlert.yes'),
+      }).then(async result => {
         if (result.value) {
           try {
-            startLoading();
-            await v3ServiceApi.plan.remove({id});
+            startLoading()
+            await v3ServiceApi.plan.remove({ id })
             await findAll({})
           } catch (e) {
             toastError(e)
           } finally {
-            finishLoading();
+            finishLoading()
           }
         }
-      });
+      })
     }
 
     async function editTrigger(id) {
       try {
-        startLoading();
+        startLoading()
         const {
-          data: {result},
-        } = await v3ServiceApi.plan.findOne({id});
-        editStorage.value = result;
-        this.setUpsertType("edit");
-        this.openCreatingClientTypeModal();
+          data: { result },
+        } = await v3ServiceApi.plan.findOne({ id })
+        editStorage.value = result
+        this.setUpsertType('edit')
+        this.openCreatingClientTypeModal()
       } catch (e) {
         toastError(e)
       } finally {
-        finishLoading();
+        finishLoading()
       }
     }
 
@@ -187,10 +183,10 @@ export default {
       try {
         const response = await v3ServiceApi.plan.types()
         const resultEntries = Object.entries(response.data.result)
-        for (let [key, value] of resultEntries) {
+        for (const [key, value] of resultEntries) {
           planTypes.value.push({
             value: value.type,
-            text: value.name
+            text: value.name,
           })
         }
       } catch (e) {
@@ -198,18 +194,18 @@ export default {
       }
     }
 
-    function paginationChange({page, perPage}) {
+    function paginationChange({ page, perPage }) {
       findAll({
         page,
-        perPage
+        perPage,
       })
     }
 
     async function fetchFilterParams() {
       try {
-        const {data: {result}} = await v3ServiceApi.plan.filterParams({
+        const { data: { result } } = await v3ServiceApi.plan.filterParams({
           page: 1,
-          limit: 150
+          limit: 150,
         })
 
         filterParamsList.value = result
@@ -256,7 +252,7 @@ export default {
       await Promise.allSettled([
         fetchFilterParams(),
         findAll({}),
-        fetchPlanTypeList()
+        fetchPlanTypeList(),
       ])
     }
 
@@ -286,7 +282,7 @@ export default {
       closeCreatingClientTypeModal,
     }
   },
-};
+}
 </script>
 
 <template>
@@ -298,43 +294,46 @@ export default {
 
       <template #header-actions>
         <x-button
-            v-if="permission.create"
-            variant="secondary"
-            text="add"
-            :bilingual="true"
-            @click="createClientType"
+          v-if="permission.create"
+          variant="secondary"
+          text="add"
+          :bilingual="true"
+          @click="createClientType"
         >
           <template #left-icon>
-            <x-icon name="add" class="violet-600"/>
+            <x-icon
+              name="add"
+              class="violet-600"
+            />
           </template>
         </x-button>
       </template>
     </app-header>
 
     <plan-filter
-        :plan-types="planTypes"
-        :params-list="filterParamsList"
-        @filter="filterTable"
+      :plan-types="planTypes"
+      :params-list="filterParamsList"
+      @filter="filterTable"
     />
 
     <b-table
-        id="my-table"
-        ref="apartment-list-table"
-        thead-tr-class="row__head__bottom-border"
-        tbody-tr-class="row__body__bottom-border"
-        class="table__list"
-        sticky-header
-        borderless
-        show-empty
-        responsive
-        sort-icon-left
-        :items="tableData.items"
-        :fields="tableFields"
-        :busy="tableData.loading"
-        :empty-text="$t('no_data')"
+      id="my-table"
+      ref="apartment-list-table"
+      thead-tr-class="row__head__bottom-border"
+      tbody-tr-class="row__body__bottom-border"
+      class="table__list"
+      sticky-header
+      borderless
+      show-empty
+      responsive
+      sort-icon-left
+      :items="tableData.items"
+      :fields="tableFields"
+      :busy="tableData.loading"
+      :empty-text="$t('no_data')"
     >
       <template #table-busy>
-        <base-loading/>
+        <base-loading />
       </template>
 
       <template #empty="scope">
@@ -350,39 +349,45 @@ export default {
       <template #cell(actions)="{ item }">
         <div class="float-right d-flex x-gap-1 cursor-pointer">
           <x-circular-background
-              v-if="permission.edit"
-              @click="editTrigger(item.id)"
-              class="bg-violet-600"
+            v-if="permission.edit"
+            class="bg-violet-600"
+            @click="editTrigger(item.id)"
           >
-            <x-icon name="edit" class="color-white"/>
+            <x-icon
+              name="edit"
+              class="color-white"
+            />
           </x-circular-background>
 
           <x-circular-background
-              v-if="permission.delete"
-              @click="deleteTrigger(item.id)"
-              class="bg-red-600"
+            v-if="permission.delete"
+            class="bg-red-600"
+            @click="deleteTrigger(item.id)"
           >
-            <x-icon name="delete" class="color-white"/>
+            <x-icon
+              name="delete"
+              class="color-white"
+            />
           </x-circular-background>
         </div>
       </template>
     </b-table>
 
     <x-pagination
-        v-if="showPagination"
-        :current="pagination.current"
-        :total="pagination.totalPage"
-        :per-page="pagination.perPage"
-        @change="paginationChange"
+      v-if="showPagination"
+      :current="pagination.current"
+      :total="pagination.totalPage"
+      :per-page="pagination.perPage"
+      @change="paginationChange"
     />
 
     <plan-upsert
-        v-if="showCreateModal"
-        :upsert-type="upsertType"
-        :edit-item="editStorage"
-        :plan-types="planTypes"
-        @created="clientTypeCreated"
-        @close-creating-modal="closeCreatingClientTypeModal"
+      v-if="showCreateModal"
+      :upsert-type="upsertType"
+      :edit-item="editStorage"
+      :plan-types="planTypes"
+      @created="clientTypeCreated"
+      @close-creating-modal="closeCreatingClientTypeModal"
     />
   </div>
 </template>

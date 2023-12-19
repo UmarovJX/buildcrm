@@ -1,9 +1,9 @@
 <script>
-import { XIcon } from "@/components/ui-components/material-icons";
-import { XButton } from "@/components/ui-components/button";
+import { XIcon } from '@/components/ui-components/material-icons'
+import { XButton } from '@/components/ui-components/button'
 
 export default {
-  name: "BookedItem",
+  name: 'BookedItem',
   components: {
     XIcon,
     XButton,
@@ -15,27 +15,34 @@ export default {
     },
   },
   data() {
-    return {};
+    return {}
   },
   methods: {
     downloadContract() {
-      //download
+      // download
     },
     cancelBooked() {
-      //cancel
+      // cancel
     },
     concludeContract() {
-      //concludeContract
+      // concludeContract
     },
   },
-};
+}
 </script>
 
 <template>
   <div class="b-item">
-    <h4 class="b-item__header" :class="{ active: false }">
-      <template v-if="false"> Текущее бронирование </template>
-      <template v-else> Следующее бронирование в очереди </template>
+    <h4
+      class="b-item__header"
+      :class="{ active: false }"
+    >
+      <template v-if="false">
+        Текущее бронирование
+      </template>
+      <template v-else>
+        Следующее бронирование в очереди
+      </template>
     </h4>
     <div class="b-item__body">
       <div class="b-item__info">
@@ -57,7 +64,11 @@ export default {
     </div>
     <div class="b-item__footer">
       <div class="b-noAccess">
-        <x-icon name="info" size="24" color="var(--gray-400)" />
+        <x-icon
+          name="info"
+          size="24"
+          color="var(--gray-400)"
+        />
         <p>
           Отменить бронь или продолжить оформление может только менежер, который
           забранировал или главный менежер.
@@ -71,7 +82,10 @@ export default {
           @click="cancelBooked"
         />
       </div>
-      <div v-if="footer" class="b-access__all">
+      <div
+        v-if="footer"
+        class="b-access__all"
+      >
         <x-button
           variant="secondary"
           left-icon="download"
@@ -87,7 +101,11 @@ export default {
             :fixed="true"
             @click="cancelBooked"
           />
-          <x-button text="Оформить" :fixed="true" @click="concludeContract" />
+          <x-button
+            text="Оформить"
+            :fixed="true"
+            @click="concludeContract"
+          />
         </div>
       </div>
     </div>

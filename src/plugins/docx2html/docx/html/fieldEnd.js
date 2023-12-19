@@ -1,11 +1,11 @@
-import Converter from "./converter";
+import Converter from './converter'
 
 export default class FieldBegin extends Converter {
   get wordType() {
-    return "fieldEnd";
+    return 'fieldEnd'
   }
 
   get tag() {
-    return "span";
+    return 'span'
   }
 }

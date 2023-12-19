@@ -1,6 +1,6 @@
-import { dateProperties } from "@/util/calendar";
+import { dateProperties } from '@/util/calendar'
 
-const { ymd, nextMonthYmd } = dateProperties("", "string");
+const { ymd, nextMonthYmd } = dateProperties('', 'string')
 
 export const schema = {
   calc: {
@@ -40,11 +40,11 @@ export const schema = {
     first_payment: false,
   },
   otherDiscount: {
-    value: "other",
-    type: "percent",
+    value: 'other',
+    type: 'percent',
     currency: null,
     amount: 0,
-    id: "other",
+    id: 'other',
     prepay: 30,
   },
   client: { legal_entity: {} },
@@ -62,7 +62,7 @@ export const schema = {
     valid: true,
     validated: false,
   },
-};
+}
 
 export default {
   schema,
@@ -75,12 +75,12 @@ export default {
   uuid: null,
   version: 2,
   order: {},
-  comment: "",
+  comment: '',
   trashStorage: [],
   clientData: {},
-  componentFunction: "create",
+  componentFunction: 'create',
   functionTypesList: {
-    0: "create",
-    1: "update",
+    0: 'create',
+    1: 'update',
   },
-};
+}

@@ -1,75 +1,73 @@
 <script>
-import {ref} from "vue";
-import {makeProp} from "@/util/props";
-import {isEmptyObject, isNull} from "@/util/inspect";
-import {v3ServiceApi} from "@/services/v3/v3.service";
-import {useToastError} from "@/composables/useToastError";
-import {PROP_TYPE_OBJECT, PROP_TYPE_STRING} from "@/constants/props";
+import { ref } from 'vue'
+import { makeProp } from '@/util/props'
+import { isEmptyObject, isNull } from '@/util/inspect'
+import { v3ServiceApi } from '@/services/v3/v3.service'
+import { useToastError } from '@/composables/useToastError'
+import { PROP_TYPE_OBJECT, PROP_TYPE_STRING } from '@/constants/props'
 
-import {XFormInput} from "@/components/ui-components/form-input";
-import {XModalCenter} from "@/components/ui-components/modal-center";
-import GroupParentSelect from "@/views/settings/views/permission-group/components/GroupParentSelect.vue";
+import { XFormInput } from '@/components/ui-components/form-input'
+import { XModalCenter } from '@/components/ui-components/modal-center'
+import GroupParentSelect from '@/views/settings/views/permission-group/components/GroupParentSelect.vue'
 
 export default {
-  name: "GroupUpsert",
+  name: 'GroupUpsert',
   components: {
     XFormInput,
     XModalCenter,
     GroupParentSelect,
   },
   props: {
-    upsertType: makeProp(PROP_TYPE_STRING, "create", (type) => {
-      return ["create", "edit"].includes(type);
-    }),
+    upsertType: makeProp(PROP_TYPE_STRING, 'create', type => ['create', 'edit'].includes(type)),
     editItem: makeProp(PROP_TYPE_OBJECT),
     planTypes: {
       type: Array,
-      default: () => ([])
-    }
+      default: () => ([]),
+    },
   },
-  emits: ["created", "close-creating-modal"],
-  setup(props, {emit}) {
-    const {toastError} = useToastError()
+  emits: ['created', 'close-creating-modal'],
+  setup(props, { emit }) {
+    const { toastError } = useToastError()
     const formObserverRef = ref(null)
     const applyButtonLoading = ref(false)
     const form = ref({
       uz: null,
       ru: null,
       en: null,
-      parent_id: null
+      parent_id: null,
     })
 
     function setEditData() {
       if (isEmptyObject(props.editItem)) {
-        return;
+        return
       }
 
-      form.value.uz = props.editItem.name.uz;
-      form.value.ru = props.editItem.name.ru;
-      form.value.en = props.editItem.name.en;
-      form.value.parent_id = props.editItem.parent_id;
+      form.value.uz = props.editItem.name.uz
+      form.value.ru = props.editItem.name.ru
+      form.value.en = props.editItem.name.en
+      form.value.parent_id = props.editItem.parent_id
     }
 
     function closeCreatingModal() {
-      clearForm();
-      emit("close-creating-modal");
+      clearForm()
+      emit('close-creating-modal')
     }
 
     function startLoading() {
-      applyButtonLoading.value = true;
+      applyButtonLoading.value = true
     }
 
     function finishLoading() {
-      applyButtonLoading.value = false;
+      applyButtonLoading.value = false
     }
 
     async function submit() {
-      const isSatisfied = await formObserverRef.value.validate();
+      const isSatisfied = await formObserverRef.value.validate()
       if (isSatisfied) {
-        if (props.upsertType === "edit") {
-          await edit();
+        if (props.upsertType === 'edit') {
+          await edit()
         } else {
-          await create();
+          await create()
         }
       }
     }
@@ -80,7 +78,7 @@ export default {
           uz: form.value.uz,
           ru: form.value.ru,
           en: form.value.en,
-        }
+        },
       }
 
       if (!isNull(form.value.parent_id)) {
@@ -91,33 +89,33 @@ export default {
     }
 
     async function create() {
-      startLoading();
+      startLoading()
       try {
         await v3ServiceApi.permission.group.create(
-            makeBody()
-        );
-        clearForm();
-        await emit("created");
+          makeBody(),
+        )
+        clearForm()
+        await emit('created')
       } catch (e) {
         toastError(e)
       } finally {
-        finishLoading();
+        finishLoading()
       }
     }
 
     async function edit() {
-      startLoading();
+      startLoading()
       try {
         const response = await v3ServiceApi.permission.group.update({
           id: props.editItem.id,
           ...makeBody(),
-        });
-        clearForm();
-        response && emit("created");
+        })
+        clearForm()
+        response && emit('created')
       } catch (e) {
         toastError(e)
       } finally {
-        finishLoading();
+        finishLoading()
       }
     }
 
@@ -128,8 +126,8 @@ export default {
       form.value.parent_id = null
     }
 
-    if (props.upsertType === "edit") {
-      setEditData();
+    if (props.upsertType === 'edit') {
+      setEditData()
     }
 
     return {
@@ -138,30 +136,30 @@ export default {
       applyButtonLoading,
 
       closeCreatingModal,
-      submit
+      submit,
     }
-  }
-};
+  },
+}
 </script>
 
 <template>
   <x-modal-center
-      :bilingual="true"
-      apply-button-text="save"
-      cancel-button-text="cancel"
-      footer-class="d-flex justify-content-between x-gap-1"
-      apply-button-class="w-100"
-      cancel-button-class="w-100"
-      :apply-button-loading="applyButtonLoading"
-      :modal-container-style="{
+    :bilingual="true"
+    apply-button-text="save"
+    cancel-button-text="cancel"
+    footer-class="d-flex justify-content-between x-gap-1"
+    apply-button-class="w-100"
+    cancel-button-class="w-100"
+    :apply-button-loading="applyButtonLoading"
+    :modal-container-style="{
       'max-width': '960px',
       width: '75%',
       height: 'auto',
       overflowY: 'scroll',
     }"
-      @close="closeCreatingModal"
-      @cancel="closeCreatingModal"
-      @apply="submit"
+    @close="closeCreatingModal"
+    @cancel="closeCreatingModal"
+    @apply="submit"
   >
     <template #header>
       <h3 class="x-font-size-36px font-craftworksans color-gray-600">
@@ -171,69 +169,77 @@ export default {
 
     <template #body>
       <validation-observer
-          ref="formObserverRef"
-          class="client-type-creating-body"
+        ref="formObserverRef"
+        class="client-type-creating-body"
       >
         <!--   ? NAME UZ     -->
         <validation-provider
-            ref="clientTypeNameVProvider"
-            name="name-uz-provider"
-            rules="required|min:3"
-            v-slot="{ errors }"
-            class="name-provider"
+          ref="clientTypeNameVProvider"
+          v-slot="{ errors }"
+          name="name-uz-provider"
+          rules="required|min:3"
+          class="name-provider"
         >
           <x-form-input
-              type="text"
-              :placeholder="`${$t('name')} (${$t('placeholder_uz')})`"
-              class="w-100"
-              v-model="form.uz"
+            v-model="form.uz"
+            type="text"
+            :placeholder="`${$t('name')} (${$t('placeholder_uz')})`"
+            class="w-100"
           />
-          <span class="error__provider" v-if="errors[0]">
+          <span
+            v-if="errors[0]"
+            class="error__provider"
+          >
             {{ errors[0].replace("name-uz-provider", $t("name")) }}
           </span>
         </validation-provider>
 
         <!--   ? NAME RU     -->
         <validation-provider
-            ref="clientTypeNameVProvider"
-            name="name-ru-provider"
-            rules="required|min:3"
-            v-slot="{ errors }"
-            class="name-provider"
+          ref="clientTypeNameVProvider"
+          v-slot="{ errors }"
+          name="name-ru-provider"
+          rules="required|min:3"
+          class="name-provider"
         >
           <x-form-input
-              type="text"
-              :placeholder="`${$t('name')} (${$t('placeholder_ru')})`"
-              class="w-100"
-              v-model="form.ru"
+            v-model="form.ru"
+            type="text"
+            :placeholder="`${$t('name')} (${$t('placeholder_ru')})`"
+            class="w-100"
           />
-          <span class="error__provider" v-if="errors[0]">
+          <span
+            v-if="errors[0]"
+            class="error__provider"
+          >
             {{ errors[0].replace("name-ru-provider", $t("name")) }}
           </span>
         </validation-provider>
 
         <!--   ? NAME EN     -->
         <validation-provider
-            ref="clientTypeNameVProvider"
-            name="name-en-provider"
-            rules="required|min:3"
-            v-slot="{ errors }"
-            class="name-provider"
+          ref="clientTypeNameVProvider"
+          v-slot="{ errors }"
+          name="name-en-provider"
+          rules="required|min:3"
+          class="name-provider"
         >
           <x-form-input
-              type="text"
-              :placeholder="`${$t('name')} (${$t('placeholder_eng')})`"
-              class="w-100"
-              v-model="form.en"
+            v-model="form.en"
+            type="text"
+            :placeholder="`${$t('name')} (${$t('placeholder_eng')})`"
+            class="w-100"
           />
-          <span class="error__provider" v-if="errors[0]">
+          <span
+            v-if="errors[0]"
+            class="error__provider"
+          >
             {{ errors[0].replace("name-en-provider", $t("name")) }}
           </span>
         </validation-provider>
 
-
         <!--   ? PARENT     -->
-        <group-parent-select v-model="form.parent_id"/>
+        <group-parent-select v-model="form.parent_id" />
 
       </validation-observer>
     </template>

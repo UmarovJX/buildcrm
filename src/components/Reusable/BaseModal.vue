@@ -1,44 +1,44 @@
 <script>
-import { PROP_TYPE_ARRAY_OBJECT_STRING } from "@/constants/props";
-import { makeProp as p } from "@/util/props";
+import { PROP_TYPE_ARRAY_OBJECT_STRING } from '@/constants/props'
+import { makeProp as p } from '@/util/props'
 
 export default {
-  name: "BaseModal",
-  emits: ["show", "hide"],
+  name: 'BaseModal',
+  emits: ['show', 'hide'],
   props: {
     design: {
       type: String,
-      default: () => "",
+      default: () => '',
     },
-    wrapperClass: p(PROP_TYPE_ARRAY_OBJECT_STRING, ""),
-    wrapperStyle: p(PROP_TYPE_ARRAY_OBJECT_STRING, ""),
-    mainClass: p(PROP_TYPE_ARRAY_OBJECT_STRING, ""),
+    wrapperClass: p(PROP_TYPE_ARRAY_OBJECT_STRING, ''),
+    wrapperStyle: p(PROP_TYPE_ARRAY_OBJECT_STRING, ''),
+    mainClass: p(PROP_TYPE_ARRAY_OBJECT_STRING, ''),
   },
   data() {
     return {
       show: false,
-    };
+    }
   },
   computed: {
     modalClass() {
-      return `base__modal ${this.design}`;
+      return `base__modal ${this.design}`
     },
   },
   methods: {
     openModal() {
-      this.$refs["base-modal"].show();
+      this.$refs['base-modal'].show()
     },
     closeModal() {
-      this.$refs["base-modal"].hide();
+      this.$refs['base-modal'].hide()
     },
     showModal() {
-      this.$emit("show");
+      this.$emit('show')
     },
     hideModal() {
-      this.$emit("hide");
+      this.$emit('hide')
     },
   },
-};
+}
 </script>
 
 <template>
@@ -46,18 +46,24 @@ export default {
     ref="base-modal"
     title="Using Component Methods"
     :modal-class="modalClass"
-    @show="showModal"
-    @hide="hideModal"
     hide-header
     hide-footer
     no-close-on-esc
     no-close-on-backdrop
+    @show="showModal"
+    @hide="hideModal"
   >
-    <div :class="wrapperClass" :style="wrapperStyle">
+    <div
+      :class="wrapperClass"
+      :style="wrapperStyle"
+    >
       <div>
         <slot name="header" />
       </div>
-      <div class="main" :class="mainClass">
+      <div
+        class="main"
+        :class="mainClass"
+      >
         <slot name="main" />
       </div>
       <div>
@@ -74,13 +80,11 @@ export default {
             width: 41rem !important
             height: 30rem !important
 
-
 ::v-deep .auto-height
     .modal-dialog
         //height: 100%
         .modal-content
             width: 41rem !important
-
 
 ::v-deep .base__modal
     overflow-y: auto !important
@@ -110,7 +114,6 @@ export default {
             height: auto
             border-radius: 3.5rem
             padding: 2.5rem
-
 
             .main
                 display: block
@@ -147,7 +150,6 @@ export default {
         .modal-content
             max-width: 77rem !important
 
-
 ::v-deep .payment-modal
     .modal-dialog
         .modal-content
@@ -155,13 +157,11 @@ export default {
                 input
                     border-radius: 2rem
 
-
 @media screen and (max-width: 1200px)
     ::v-deep .large-modal
         .modal-dialog
             .modal-content
                 max-width: 90vw !important
-
 
 @media screen and (min-width: 500px)
     ::v-deep .modal-dialog

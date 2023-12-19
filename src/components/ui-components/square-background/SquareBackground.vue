@@ -1,13 +1,13 @@
 <script>
-import { makeProp as p } from "@/util/props";
-import { PROP_TYPE_NUMBER_STRING, PROP_TYPE_STRING } from "@/constants/props";
+import { makeProp as p } from '@/util/props'
+import { PROP_TYPE_NUMBER_STRING, PROP_TYPE_STRING } from '@/constants/props'
 
 export default {
-  name: "SquareBackground",
-  emits: ["click"],
+  name: 'SquareBackground',
+  emits: ['click'],
   props: {
-    padding: p(PROP_TYPE_NUMBER_STRING, "auto"),
-    unit: p(PROP_TYPE_STRING, "rem"),
+    padding: p(PROP_TYPE_NUMBER_STRING, 'auto'),
+    unit: p(PROP_TYPE_STRING, 'rem'),
     bgColor: p(PROP_TYPE_STRING, undefined),
   },
   computed: {
@@ -15,19 +15,19 @@ export default {
       return {
         padding: `${this.padding}${this.unit}`,
         backgroundColor: this.bgColor,
-      };
+      }
     },
   },
-};
+}
 </script>
 
 <template>
   <div
     class="square-wrapper"
-    @click="$emit('click', $event)"
     :style="squareBgStyle"
+    @click="$emit('click', $event)"
   >
-    <slot></slot>
+    <slot />
   </div>
 </template>
 

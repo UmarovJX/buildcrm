@@ -1,6 +1,6 @@
 <script>
 export default {
-  name: "BaseBreadCrumb",
+  name: 'BaseBreadCrumb',
   props: {
     breadCrumbs: {
       type: Array,
@@ -13,10 +13,10 @@ export default {
   },
   methods: {
     hasSlotContent(slotName) {
-      return this.$slots[slotName];
+      return this.$slots[slotName]
     },
   },
-};
+}
 </script>
 
 <template>
@@ -29,7 +29,7 @@ export default {
       <ul class="breadcrumb mb-0 mb-md-0">
         <li class="breadcrumb-item">
           <router-link :to="{ name: 'home' }">
-            <i class="far fa-home"></i>
+            <i class="far fa-home" />
           </router-link>
         </li>
 
@@ -40,7 +40,10 @@ export default {
             class="breadcrumb-item"
           >
             <router-link :to="{ name: routeName, params }">
-              <slot :name="routeName" v-if="hasSlotContent(routeName)" />
+              <slot
+                v-if="hasSlotContent(routeName)"
+                :name="routeName"
+              />
               <span v-else>
                 {{ textContent }}
               </span>
@@ -48,7 +51,10 @@ export default {
           </li>
         </template>
 
-        <li v-if="activeContent" class="breadcrumb-item active">
+        <li
+          v-if="activeContent"
+          class="breadcrumb-item active"
+        >
           {{ activeContent }}
         </li>
       </ul>

@@ -1,19 +1,19 @@
 <script>
-import { hasOwnProperty } from "@/util/object";
-import { mapGetters, mapMutations } from "vuex";
-import ChContractDetails from "@/views/checkoutV2/components/ContractDetails";
-import ChApartmentCharacters from "@/views/checkoutV2/components/ApartmentCharacters";
-import ChPaymentSchedule from "@/views/checkoutV2/components/PaymentSchedule";
-import SectionTitle from "@/views/checkoutV2/elements/SectionTitle";
-import ChCalculator from "@/views/checkoutV2/components/Calculator";
-import ChPaymentResult from "@/views/checkoutV2/components/PaymentResult";
-import { XIcon } from "@/components/ui-components/material-icons";
-import { XCircularBackground } from "@/components/ui-components/circular-background";
-import { isObject } from "@/util/inspect";
-import { XButton } from "@/components/ui-components/button";
+import { hasOwnProperty } from '@/util/object'
+import { mapGetters, mapMutations } from 'vuex'
+import ChContractDetails from '@/views/checkoutV2/components/ContractDetails'
+import ChApartmentCharacters from '@/views/checkoutV2/components/ApartmentCharacters'
+import ChPaymentSchedule from '@/views/checkoutV2/components/PaymentSchedule'
+import SectionTitle from '@/views/checkoutV2/elements/SectionTitle'
+import ChCalculator from '@/views/checkoutV2/components/Calculator'
+import ChPaymentResult from '@/views/checkoutV2/components/PaymentResult'
+import { XIcon } from '@/components/ui-components/material-icons'
+import { XCircularBackground } from '@/components/ui-components/circular-background'
+import { isObject } from '@/util/inspect'
+import { XButton } from '@/components/ui-components/button'
 
 export default {
-  name: "ChApartmentsOverview",
+  name: 'ChApartmentsOverview',
   components: {
     ChContractDetails,
     ChApartmentCharacters,
@@ -25,104 +25,102 @@ export default {
     XCircularBackground,
     XButton,
   },
-  emits: ["go-review"],
+  emits: ['go-review'],
   data() {
     return {
       upEvent: false,
       overviewApmTabIndex: 0,
       showNavigateToNextBtn: false,
-    };
+    }
   },
   computed: {
-    ...mapGetters("CheckoutV2", {
-      apartments: "gtsApartments",
-      findApmIdx: "findApmIdx",
+    ...mapGetters('CheckoutV2', {
+      apartments: 'gtsApartments',
+      findApmIdx: 'findApmIdx',
     }),
     navItemActiveClass() {
       if (
-        this.apartments.length &&
-        isObject(this.apartments[this.overviewApmTabIndex]) &&
-        hasOwnProperty(this.apartments[this.overviewApmTabIndex], "validate")
+        this.apartments.length
+        && isObject(this.apartments[this.overviewApmTabIndex])
+        && hasOwnProperty(this.apartments[this.overviewApmTabIndex], 'validate')
       ) {
         if (this.apartments[this.overviewApmTabIndex]?.validate) {
-          const { changed, touched, valid, dirty } =
-            this.apartments[this.overviewApmTabIndex].validate;
+          const {
+            changed, touched, valid, dirty,
+          } = this.apartments[this.overviewApmTabIndex].validate
           return {
-            "nav-active-state-error": (changed || (dirty && touched)) && !valid,
-          };
+            'nav-active-state-error': (changed || (dirty && touched)) && !valid,
+          }
         }
       }
-      return {};
+      return {}
     },
     isTheLastStep() {
-      return this.overviewApmTabIndex === this.apartments.length - 1;
+      return this.overviewApmTabIndex === this.apartments.length - 1
     },
   },
   mounted() {
-    window.onwheel = (e) => {
-      this.upEvent = e.deltaY < 0;
-    };
-    this.showNavigateToNextBtn =
-      this.apartments[this.overviewApmTabIndex]?.validate?.valid;
+    window.onwheel = e => {
+      this.upEvent = e.deltaY < 0
+    }
+    this.showNavigateToNextBtn = this.apartments[this.overviewApmTabIndex]?.validate?.valid
   },
   methods: {
-    ...mapMutations("CheckoutV2", ["updateApartment", "reset"]),
+    ...mapMutations('CheckoutV2', ['updateApartment', 'reset']),
     apnName(number) {
-      return this.$t("apartment") + " №" + number;
+      return `${this.$t('apartment')} №${number}`
     },
     async completeFields() {
-      const collection = [];
+      const collection = []
       for (let i = 0; i < this.apartments.length; i++) {
-        const ref = `ch-calculator-` + this.apartments[i].id;
-        let validate;
+        const ref = `ch-calculator-${this.apartments[i].id}`
+        let validate
         if (this.apartments.length > 1) {
-          validate = this.$refs[ref][0].getValidationFlags();
+          validate = this.$refs[ref][0].getValidationFlags()
         } else {
-          validate = this.$refs[ref].getValidationFlags();
+          validate = this.$refs[ref].getValidationFlags()
         }
         this.updateApartment({
           idx: this.findApmIdx(this.apartments[i].id),
           validate: { ...validate },
-        });
-        collection.push(await this.checkValidation(i));
+        })
+        collection.push(await this.checkValidation(i))
       }
-      this.reset();
-      return collection.every((c) => c);
+      this.reset()
+      return collection.every(c => c)
     },
     async checkValidation(idx) {
-      const ref =
-        `ch-calculator-` + this.apartments[idx ?? this.overviewApmTabIndex].id;
+      const ref = `ch-calculator-${this.apartments[idx ?? this.overviewApmTabIndex].id}`
       if (this.apartments.length === 1) {
-        return await this.$refs[ref].validate();
+        return await this.$refs[ref].validate()
       }
-      return await this.$refs[ref][0].validate();
+      return await this.$refs[ref][0].validate()
     },
     changeApmTabIndex(count = 1) {
-      this.overviewApmTabIndex += count;
+      this.overviewApmTabIndex += count
     },
     isCurrentFullFilled() {
-      return this.apartments[this.overviewApmTabIndex].validate.valid;
+      return this.apartments[this.overviewApmTabIndex].validate.valid
     },
     navigateToNext() {
       if (this.showNavigateToNextBtn) {
         if (this.isTheLastStep) {
-          this.$emit("go-review");
+          this.$emit('go-review')
         } else {
-          this.changeApmTabIndex();
+          this.changeApmTabIndex()
         }
       }
     },
     changeVFlags(apmId, flags) {
-      const isCurrentApm =
-        this.apartments[this.overviewApmTabIndex].id === apmId;
+      const isCurrentApm = this.apartments[this.overviewApmTabIndex].id === apmId
       if (isCurrentApm) {
-        this.showNavigateToNextBtn = flags.valid;
+        this.showNavigateToNextBtn = flags.valid
       }
     },
-    showVStatus: (v) => v.changed && (v.dirty || v.touched),
-    makeRedTitle: (v) => (v.changed || (v.dirty && v.touched)) && !v.valid,
+    showVStatus: v => v.changed && (v.dirty || v.touched),
+    makeRedTitle: v => (v.changed || (v.dirty && v.touched)) && !v.valid,
   },
-};
+}
 </script>
 
 <template>
@@ -134,8 +132,11 @@ export default {
       :nav-wrapper-class="[{ 'fixed-top': !upEvent }, 'sticky-top']"
       :active-nav-item-class="navItemActiveClass"
     >
-      <div class="ch-bottom__line"></div>
-      <b-tab v-for="apartment in apartments" :key="apartment.id">
+      <div class="ch-bottom__line" />
+      <b-tab
+        v-for="apartment in apartments"
+        :key="apartment.id"
+      >
         <template #title>
           <span
             class="ch-v-status-wrapper"
@@ -145,12 +146,18 @@ export default {
             <template v-if="showVStatus(apartment.validate)">
               <span v-if="apartment.validate.valid">
                 <x-circular-background>
-                  <x-icon name="check_circle" class="violet-600" />
+                  <x-icon
+                    name="check_circle"
+                    class="violet-600"
+                  />
                 </x-circular-background>
               </span>
               <span v-else>
                 <x-circular-background bg-color="var(--red-100)">
-                  <x-icon name="error" class="red-600" />
+                  <x-icon
+                    name="error"
+                    class="red-600"
+                  />
                 </x-circular-background>
               </span>
             </template>
@@ -172,7 +179,10 @@ export default {
                 class="pd-calculator"
                 @set-v-flags="changeVFlags(apartment.id, $event)"
               />
-              <ch-payment-result :apm="apartment" class="pd-payment-result" />
+              <ch-payment-result
+                :apm="apartment"
+                class="pd-payment-result"
+              />
             </div>
             <ch-payment-schedule :apartment="apartment" />
           </div>
@@ -181,8 +191,8 @@ export default {
     </b-tabs>
 
     <div
-      class="ch-apartment-overview ch-single-apartment-overview"
       v-else-if="apartments.length === 1"
+      class="ch-apartment-overview ch-single-apartment-overview"
     >
       <ch-apartment-characters :apartment="apartments[0]" />
       <ch-contract-details :apartment="apartments[0]" />
@@ -198,19 +208,25 @@ export default {
           class="pd-calculator"
           @set-v-flags="changeVFlags(apartments[0].id, $event)"
         />
-        <ch-payment-result :apm="apartments[0]" class="pd-payment-result" />
+        <ch-payment-result
+          :apm="apartments[0]"
+          class="pd-payment-result"
+        />
       </div>
       <ch-payment-schedule :apartment="apartments[0]" />
     </div>
 
-    <div v-if="!isTheLastStep" class="next-button">
+    <div
+      v-if="!isTheLastStep"
+      class="next-button"
+    >
       <x-button
-        @click="navigateToNext"
         class="b-shadow-3"
         right-icon="arrow_forward"
         :variant="showNavigateToNextBtn ? 'primary' : 'secondary'"
         :text="$t('next_apartment')"
         :color-icon="showNavigateToNextBtn ? 'white' : 'var(--gray-400)'"
+        @click="navigateToNext"
       />
     </div>
   </div>

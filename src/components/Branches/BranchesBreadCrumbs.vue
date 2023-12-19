@@ -1,14 +1,14 @@
 <script>
-import BranchesPermission from "@/permission/branches";
+import BranchesPermission from '@/permission/branches'
 
 export default {
-  name: "BranchesBreadCrumbs",
+  name: 'BranchesBreadCrumbs',
   data() {
     return {
       createPermission: BranchesPermission.getBranchesCreatePermission(),
-    };
+    }
   },
-};
+}
 </script>
 
 <template>
@@ -19,7 +19,7 @@ export default {
       <ul class="breadcrumb ml-md-4 ml-md-3 mb-0 mb-md-0">
         <li class="breadcrumb-item">
           <router-link :to="{ name: 'home' }">
-            <i class="far fa-home"></i>
+            <i class="far fa-home" />
           </router-link>
         </li>
 
@@ -38,7 +38,7 @@ export default {
       :to="{ name: 'create-branch' }"
       :class="'btn btn-primary mr-0 mt-md-0'"
     >
-      <i class="fal fa-plus mr-2"></i>
+      <i class="fal fa-plus mr-2" />
       {{ $t("add") }}
     </router-link>
   </div>

@@ -1,17 +1,18 @@
-import Converter from "./converter";
-import Style from "./style/inline";
+import Converter from './converter'
+import Style from './style/inline'
 
 export default class Span extends Converter {
   get tag() {
-    return "span";
+    return 'span'
   }
 
   convertStyle(el) {
-    super.convertStyle(...arguments);
-    var style = this.wordModel.getDirectStyle();
-    style && style.parse([new Style.Properties(el.style)]);
+    super.convertStyle(...arguments)
+    const style = this.wordModel.getDirectStyle()
+    style && style.parse([new Style.Properties(el.style)])
   }
+
   _shouldIgnore() {
-    return this.wordModel.isWebHidden() || this.wordModel.isHidden();
+    return this.wordModel.isWebHidden() || this.wordModel.isHidden()
   }
 }

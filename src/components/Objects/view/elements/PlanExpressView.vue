@@ -1,15 +1,15 @@
 <script>
-import PlanInformation from "@/components/Objects/view/elements/PlanInformation";
-import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
+import PlanInformation from '@/components/Objects/view/elements/PlanInformation'
+import BaseArrowLeftIcon from '@/components/icons/BaseArrowLeftIcon'
 // import BaseButton from "@/components/Reusable/BaseButton";
 // import BaseLoading from "@/components/Reusable/BaseLoading";
-import VueHtml2pdf from "vue-html2pdf";
-import { mapGetters } from "vuex";
-import ApartmentExpressView from "@/components/Objects/view/elements/ApartmentExpressView";
-import api from "@/services/api";
+import VueHtml2pdf from 'vue-html2pdf'
+import { mapGetters } from 'vuex'
+import ApartmentExpressView from '@/components/Objects/view/elements/ApartmentExpressView'
+import api from '@/services/api'
 
 export default {
-  name: "PlanExpressView",
+  name: 'PlanExpressView',
 
   /* COMPONENTS */
   components: {
@@ -37,18 +37,18 @@ export default {
   },
 
   /* EMITS */
-  emits: ["hide-plan-sidebar-view", "update-content"],
+  emits: ['hide-plan-sidebar-view', 'update-content'],
 
   /* DATA */
   data() {
     return {
       htmlToPdfOptions: {
         margin: 6,
-        filename: "",
+        filename: '',
       },
       sidebarApartment: {},
       // appLoading: true,
-      variant: "none",
+      variant: 'none',
       // visibleModal: true,
       showReservationModal: false,
       expressView: {
@@ -56,23 +56,23 @@ export default {
         item: {},
       },
       plan: {},
-    };
+    }
   },
 
   /* COMPUTED */
   computed: {
     ...mapGetters({
-      me: "getMe",
-      userPermission: "getPermission",
-      reserveClient: "getReserveClient",
+      me: 'getMe',
+      userPermission: 'getPermission',
+      reserveClient: 'getReserveClient',
     }),
     visibleComp: {
       get() {
-        return this.visible;
+        return this.visible
       },
       set(value) {
         if (!value) {
-          this.$emit("hide-plan-sidebar-view");
+          this.$emit('hide-plan-sidebar-view')
           // return value
           // } else {
           //   this.$emit('hide-plan-sidebar-view')
@@ -80,13 +80,13 @@ export default {
       },
     },
     hasApartment() {
-      return Object.keys(this.plan).length > 0;
+      return Object.keys(this.plan).length > 0
     },
   },
   watch: {
     planId(value) {
       if (value) {
-        this.getPlan();
+        this.getPlan()
       }
     },
   },
@@ -94,46 +94,45 @@ export default {
   /* METHODS */
   methods: {
     async getPlan() {
-      const { object } = this.$route.params;
+      const { object } = this.$route.params
       await api.objectsV2
         .getPlanItem(object, this.planId)
-        .then((response) => {
-          this.plan = response.data;
+        .then(response => {
+          this.plan = response.data
         })
-        .catch((err) => {
-          return err;
-        });
+        .catch(err => err)
     },
     hideApartmentSidebarView() {
-      this.expressView.toggle = false;
+      this.expressView.toggle = false
     },
     apartmentExpressReview(item) {
-      this.expressView.item = item;
-      this.expressView.toggle = true;
+      this.expressView.item = item
+      this.expressView.toggle = true
     },
     hidePlanSidebar() {
-      this.$emit("hide-plan-sidebar-view");
+      this.$emit('hide-plan-sidebar-view')
     },
     printApartmentInformation() {
-      const { object, block, entrance, number } = this.sidebarApartment;
-      this.htmlToPdfOptions.filename =
-        object.name + " , " + block.name + " , " + entrance + "/" + number;
-      this.$refs.html2Pdf.generatePdf();
+      const {
+        object, block, entrance, number,
+      } = this.sidebarApartment
+      this.htmlToPdfOptions.filename = `${object.name} , ${block.name} , ${entrance}/${number}`
+      this.$refs.html2Pdf.generatePdf()
     },
     updateContent() {
-      this.$emit("update-content");
+      this.$emit('update-content')
     },
   },
-};
+}
 </script>
 <template>
   <div>
     <b-sidebar
+      id="apartment-express-view"
       v-model="visibleComp"
       sidebar-class="sidebar__apartment"
       body-class="sidebar__apartment-body"
       aria-labelledby="sidebar-no-header-title"
-      id="apartment-express-view"
       :backdrop-variant="variant"
       backdrop
       right
@@ -143,6 +142,7 @@ export default {
       <template #default="{ hide }">
         <vue-html2pdf
           v-if="hasApartment"
+          ref="html2Pdf"
           :show-layout="false"
           :float-layout="true"
           :enable-download="true"
@@ -154,7 +154,6 @@ export default {
           pdf-orientation="portrait"
           pdf-content-width="560px"
           :html-to-pdf-options="htmlToPdfOptions"
-          ref="html2Pdf"
         >
           <section slot="pdf-content">
             <!--  HEAD    -->
@@ -164,10 +163,13 @@ export default {
             >
               <div class="d-flex justify-content-center align-items-center">
                 <div
-                  @click="hidePlanSidebar"
                   class="close__button d-flex justify-content-center align-items-center"
+                  @click="hidePlanSidebar"
                 >
-                  <base-arrow-left-icon :width="32" :height="32" />
+                  <base-arrow-left-icon
+                    :width="32"
+                    :height="32"
+                  />
                 </div>
                 <span class="section__title">
                   {{ plan.name }}
@@ -196,7 +198,7 @@ export default {
     <apartment-express-view
       :visible="expressView.toggle"
       :apartment="expressView.item"
-      :apartmentUuid="expressView.item.uuid"
+      :apartment-uuid="expressView.item.uuid"
       @update-content="updateContent"
       @hide-apartment-sidebar-view="hideApartmentSidebarView"
     />
@@ -214,7 +216,6 @@ export default {
     & > .b-sidebar-body
         border-radius: 1rem
 
-
 ::v-deep .sidebar__apartment
     width: 42rem
     font-family: CraftworkSans, serif
@@ -228,7 +229,6 @@ export default {
 
         &::-webkit-scrollbar
             display: none
-
 
         .head
             line-height: 1.75rem
@@ -249,14 +249,12 @@ export default {
                 color: var(--gray-600)
                 font-size: 1.5rem
 
-
             .apartment__status
                 font-family: Inter, sans-serif
                 background-color: var(--gray-100)
                 border-radius: 2rem
                 min-width: max-content
                 padding: 0.5rem 2rem
-
 
         .vue-html2pdf
             .layout-container
@@ -277,7 +275,6 @@ export default {
     margin-top: 1rem
     margin-bottom: .5rem
     gap: .5rem
-
 
 .print__button,
 .cancel__button,

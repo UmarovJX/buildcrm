@@ -1,10 +1,10 @@
 <script>
 export default {
-  name: "BaseEyeIcon",
+  name: 'BaseEyeIcon',
   props: {
     fill: {
       type: String,
-      default: "#9CA3AF",
+      default: '#9CA3AF',
     },
     square: {
       type: Number,
@@ -15,7 +15,7 @@ export default {
       default: 2,
     },
   },
-};
+}
 </script>
 
 <template>

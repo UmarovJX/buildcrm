@@ -1,44 +1,45 @@
 <script>
 // import BaseInput from "@/components/Reusable/BaseInput";
 // import XFormSelect from "@/components/ui-components/form-select/FormSelect";
-import api from "@/services/api";
-import { mapGetters, mapMutations } from "vuex";
-import "vue-select/dist/vue-select.css";
-import FoundContracts from "@/views/debtors/elements/FoundContracts.vue";
-import NotFoundContracts from "@/views/debtors/elements/NotFoundContracts.vue";
+import api from '@/services/api'
+import { mapGetters, mapMutations } from 'vuex'
+import 'vue-select/dist/vue-select.css'
+import FoundContracts from '@/views/debtors/elements/FoundContracts.vue'
+import NotFoundContracts from '@/views/debtors/elements/NotFoundContracts.vue'
+
 export default {
-  name: "SecondStep",
+  name: 'SecondStep',
   components: {
     // BaseInput,
     // XFormSelect,
     FoundContracts,
     NotFoundContracts,
   },
-  emits: ["validate"],
+  emits: ['validate'],
   data() {
     return {
       foundItems: [],
       notFoundItems: [],
       foundFields: [
         {
-          key: "key",
-          label: "debtors.contract_system",
-          thClass: "theadKey",
-          tdClass: "tbodyKey",
+          key: 'key',
+          label: 'debtors.contract_system',
+          thClass: 'theadKey',
+          tdClass: 'tbodyKey',
         },
         {
-          key: "value",
-          label: "debtors.alias_system",
-          thClass: "theadValue",
-          tdClass: "tbodyValue",
+          key: 'value',
+          label: 'debtors.alias_system',
+          thClass: 'theadValue',
+          tdClass: 'tbodyValue',
         },
       ],
       notFoundFields: [
         {
-          key: "key",
-          label: "debtors.contract_file",
-          thClass: "theadKey",
-          tdClass: "tbodyKey",
+          key: 'key',
+          label: 'debtors.contract_file',
+          thClass: 'theadKey',
+          tdClass: 'tbodyKey',
         },
         // {
         //   key: "value",
@@ -53,23 +54,23 @@ export default {
       selected: null,
       listForCreate: [],
       allList: [],
-    };
+    }
   },
   computed: {
     ...mapGetters([
-      "getDebtorsSheets",
-      "getNotFoundContracts",
-      "getFoundContracts",
+      'getDebtorsSheets',
+      'getNotFoundContracts',
+      'getFoundContracts',
     ]),
     debtorsSheet() {
       if (this.getDebtorsSheets.rows) {
-        return this.getDebtorsSheets.rows.slice(1);
+        return this.getDebtorsSheets.rows.slice(1)
       }
-      return [];
+      return []
     },
   },
   methods: {
-    ...mapMutations(["updateNotFoundOption", "updateNotFoundAlias"]),
+    ...mapMutations(['updateNotFoundOption', 'updateNotFoundAlias']),
     selectOptionSystem(itemKey, option) {
       this.notFoundItems.forEach((item, index) => {
         if (item.key === itemKey) {
@@ -81,41 +82,48 @@ export default {
               uuid: option.uuid,
               contract: option.contract,
             },
-          };
+          }
         }
-      });
-      this.openListId = null;
+      })
+      this.openListId = null
     },
     getContractNumbers() {
-      const contractFieldName = this.foundItems[0].type;
-      let contractsList = [];
+      const contractFieldName = this.foundItems[0].type
+      let contractsList = []
       if (this.debtorsSheet.length) {
-        this.debtorsSheet.rows.map((item) => {
+        this.debtorsSheet.rows.map(item => {
           for (const [key, value] of Object.entries(item)) {
             if (key === contractFieldName) {
-              contractsList = [...contractsList, value];
+              contractsList = [...contractsList, value]
             }
           }
-        });
+        })
       }
-      return contractsList;
+      return contractsList
     },
     async validateSecondStep() {
-      await this.$emit("validate");
+      await this.$emit('validate')
     },
     iTranslate(text) {
-      return this.$t(`${text}`);
+      return this.$t(`${text}`)
     },
   },
-};
+}
 </script>
 
 <template>
   <div>
-    <ValidationObserver ref="contract-validation" class="main__row">
-      <b-tabs v-model="tabIndex" card class="custom-tab">
+    <ValidationObserver
+      ref="contract-validation"
+      class="main__row"
+    >
+      <b-tabs
+        v-model="tabIndex"
+        card
+        class="custom-tab"
+      >
         <template #tabs-start>
-          <div class="bottom__line"></div>
+          <div class="bottom__line" />
         </template>
 
         <b-tab>
@@ -154,7 +162,6 @@ export default {
     color: red
     font-size: 12px
 
-
 ::v-deep
     .vs__selected
         margin: 0
@@ -167,7 +174,6 @@ export default {
         width: 100%
         border-radius: 24px
         padding: .5rem
-
 
     .vs__dropdown-option--selected,
     .vs__dropdown-option--highlight
@@ -194,7 +200,6 @@ export default {
         border-radius: 2rem
         background-color: var(--gray-100)
 
-
 .select-list
     position: absolute
     display: flex
@@ -205,16 +210,13 @@ export default {
     overflow-y: auto
     z-index: 3
 
-
     &__item
         display: flex
         padding: 4px 8px
         height: 40px
 
-
 ::v-deep .custom-tab
     margin-top: 3rem
-
 
     .bottom__line
         display: flex
@@ -233,7 +235,6 @@ export default {
         margin: 0
         border-bottom: none
         margin-bottom: 2rem
-
 
     .tab-content
         position: relative
@@ -291,7 +292,6 @@ export default {
                         background-color: var(--violet-100)
                         color: var(--violet-600)
 
-
         .nav-link
             display: flex
             justify-content: center
@@ -306,7 +306,6 @@ export default {
             &.active
                 position: relative
                 color: var(--violet-600)
-
 
                 &:after
                     content: ''

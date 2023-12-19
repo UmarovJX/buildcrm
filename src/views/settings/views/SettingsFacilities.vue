@@ -1,18 +1,18 @@
 <script>
-import { v3ServiceApi } from "@/services/v3/v3.service";
-import api from "@/services/api";
-import SettingsPermission from "@/permission/settings.permission";
-import { XButton } from "@/components/ui-components/button";
-import BaseLoading from "@/components/Reusable/BaseLoading.vue";
-import { XIcon } from "@/components/ui-components/material-icons";
-import { XCircularBackground } from "@/components/ui-components/circular-background";
-import SettingsCreateFacility from "@/views/settings/components/SettingsCreateFacility.vue";
+import { v3ServiceApi } from '@/services/v3/v3.service'
+import api from '@/services/api'
+import SettingsPermission from '@/permission/settings.permission'
+import { XButton } from '@/components/ui-components/button'
+import BaseLoading from '@/components/Reusable/BaseLoading.vue'
+import { XIcon } from '@/components/ui-components/material-icons'
+import { XCircularBackground } from '@/components/ui-components/circular-background'
+import SettingsCreateFacility from '@/views/settings/components/SettingsCreateFacility.vue'
 
-import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
-import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
+import BaseArrowLeftIcon from '@/components/icons/BaseArrowLeftIcon'
+import BaseArrowRightIcon from '@/components/icons/BaseArrowRightIcon'
 
 export default {
-  name: "SettingsFacilities",
+  name: 'SettingsFacilities',
   components: {
     BaseArrowLeftIcon,
     BaseArrowRightIcon,
@@ -28,8 +28,8 @@ export default {
       showByValue: 10,
       allLangs: [],
       pagination: {},
-      currentLang: "",
-      upsertType: "create",
+      currentLang: '',
+      upsertType: 'create',
       showCreateModal: false,
       showEditTagModal: false,
       editStorage: {},
@@ -47,27 +47,27 @@ export default {
         loading: false,
       },
       permission: {
-        view: SettingsPermission.getPermission("facilities.view"),
-        create: SettingsPermission.getPermission("facilities.create"),
-        edit: SettingsPermission.getPermission("facilities.edit"),
-        delete: SettingsPermission.getPermission("facilities.delete"),
+        view: SettingsPermission.getPermission('facilities.view'),
+        create: SettingsPermission.getPermission('facilities.create'),
+        edit: SettingsPermission.getPermission('facilities.edit'),
+        delete: SettingsPermission.getPermission('facilities.delete'),
       },
-    };
+    }
   },
   computed: {
     query() {
-      return this.$route.query;
+      return this.$route.query
     },
     tableFields() {
       const fields = [
         {
-          key: "name",
-          label: this.$t("name"),
-          formatter: (name) => name[this.$i18n.locale],
+          key: 'name',
+          label: this.$t('name'),
+          formatter: name => name[this.$i18n.locale],
         },
         {
-          key: "upload",
-          label: this.$t("image"),
+          key: 'upload',
+          label: this.$t('image'),
         },
 
         // {
@@ -75,112 +75,112 @@ export default {
         //   label: "tags",
         //   thStyle: "width: 200px",
         // },
-      ];
+      ]
       if (this.permission.edit) {
         fields.push({
-          key: "actions",
-          label: "",
-          thStyle: "width: 100px",
-        });
+          key: 'actions',
+          label: '',
+          thStyle: 'width: 100px',
+        })
       }
-      return fields;
+      return fields
     },
   },
   watch: {
     query() {
-      this.fetchItems();
+      this.fetchItems()
     },
   },
   created() {
-    api.languagesV3.getAllLanguages().then((res) => {
-      this.allLangs.push(...res.data.result);
-      this.currentLang = this.allLangs[0];
-    });
-    this.fetchItems();
+    api.languagesV3.getAllLanguages().then(res => {
+      this.allLangs.push(...res.data.result)
+      this.currentLang = this.allLangs[0]
+    })
+    this.fetchItems()
   },
   methods: {
     changeFetchLimit() {
       const query = {
         ...this.query,
         page: this.query.page || 1,
-      };
-      const limit = this.showByValue;
-      this.$router.replace({ query: { ...query, limit } });
+      }
+      const limit = this.showByValue
+      this.$router.replace({ query: { ...query, limit } })
     },
 
     changeCurrentPage(page) {
-      const currentPage = this.query.page;
-      if (page === currentPage) return;
-      this.$router.replace({ query: { ...this.query, page } });
+      const currentPage = this.query.page
+      if (page === currentPage) return
+      this.$router.replace({ query: { ...this.query, page } })
     },
     setTab(e) {
-      this.currentLang = e;
+      this.currentLang = e
     },
     startLoading() {
-      this.table.loading = true;
+      this.table.loading = true
     },
     finishLoading() {
-      this.table.loading = false;
+      this.table.loading = false
     },
     createVersion() {
-      this.setUpsertType("create");
-      this.openVersionCreationModal();
+      this.setUpsertType('create')
+      this.openVersionCreationModal()
     },
     async fetchItems() {
       try {
-        this.startLoading();
+        this.startLoading()
         const response = await v3ServiceApi.facility.fetch({
           page: this.query.page || 1,
           limit: this.query.limit || this.showByValue,
-        });
-        this.table.items = response.data.result.map((el) => ({
+        })
+        this.table.items = response.data.result.map(el => ({
           ...el,
-        }));
-        this.table.pagination = response.data.pagination;
+        }))
+        this.table.pagination = response.data.pagination
       } catch (e) {
-        this.toastedWithErrorCode(e);
+        this.toastedWithErrorCode(e)
       } finally {
-        this.finishLoading();
+        this.finishLoading()
       }
     },
     setUpsertType(eType) {
-      if (["create", "edit"].includes(eType)) {
-        this.upsertType = eType;
+      if (['create', 'edit'].includes(eType)) {
+        this.upsertType = eType
       }
     },
     openVersionCreationModal() {
-      this.showCreateModal = true;
+      this.showCreateModal = true
     },
     closeVersionCreationModal() {
-      this.showCreateModal = false;
+      this.showCreateModal = false
     },
 
     translationCreated() {
-      this.closeVersionCreationModal();
-      this.fetchItems();
+      this.closeVersionCreationModal()
+      this.fetchItems()
     },
 
     async deleteItem(typeId) {
       this.$swal({
-        title: this.$t("sweetAlert.title"),
-        text: this.$t("sweetAlert.text"),
-        icon: "warning",
+        title: this.$t('sweetAlert.title'),
+        text: this.$t('sweetAlert.text'),
+        icon: 'warning',
         showCancelButton: true,
-        cancelButtonText: this.$t("cancel"),
-        confirmButtonText: this.$t("sweetAlert.yes"),
-      }).then(async (result) => {
+        cancelButtonText: this.$t('cancel'),
+        confirmButtonText: this.$t('sweetAlert.yes'),
+      }).then(async result => {
         if (result.value) {
           try {
-            this.startLoading();
-            await v3ServiceApi.facility.remove({ id: typeId });
-            await this.fetchItems();
+            this.startLoading()
+            await v3ServiceApi.facility.remove({ id: typeId })
+            await this.fetchItems()
           } catch (e) {
-            this.toastedWithErrorCode(e);
+            this.toastedWithErrorCode(e)
           } finally {
-            this.finishLoading();
+            this.finishLoading()
           }
         }
-      });
+      })
     },
 
     async editItem(item) {
@@ -190,15 +190,15 @@ export default {
           name: item.name,
           upload_id: item.upload.id,
           img: item.upload.path,
-        };
-        this.setUpsertType("edit");
-        this.openVersionCreationModal();
+        }
+        this.setUpsertType('edit')
+        this.openVersionCreationModal()
       } catch (e) {
-        this.toastedWithErrorCode(e);
+        this.toastedWithErrorCode(e)
       }
     },
   },
-};
+}
 </script>
 
 <template>
@@ -219,7 +219,10 @@ export default {
         @click="createVersion"
       >
         <template #left-icon>
-          <x-icon name="add" class="violet-600" />
+          <x-icon
+            name="add"
+            class="violet-600"
+          />
         </template>
       </x-button>
     </div>
@@ -258,27 +261,39 @@ export default {
           height="60"
           alt="plan_image"
           fluid
-        />
+        >
       </template>
 
       <template #cell(actions)="{ item }">
         <div class="float-right d-flex x-gap-1 cursor-pointer">
-          <div :style="item.loading ? 'opacity: 0.5' : ''" title="save">
+          <div
+            :style="item.loading ? 'opacity: 0.5' : ''"
+            title="save"
+          >
             <x-circular-background
               v-if="permission.delete"
-              @click="deleteItem(item.id)"
               class="bg-red-600"
+              @click="deleteItem(item.id)"
             >
-              <x-icon name="delete" class="color-white" />
+              <x-icon
+                name="delete"
+                class="color-white"
+              />
             </x-circular-background>
           </div>
-          <div :style="item.loading ? 'opacity: 0.5' : ''" title="save">
+          <div
+            :style="item.loading ? 'opacity: 0.5' : ''"
+            title="save"
+          >
             <x-circular-background
               v-if="permission.edit"
-              @click="editItem(item)"
               class="bg-violet-600"
+              @click="editItem(item)"
             >
-              <x-icon name="edit" class="color-white" />
+              <x-icon
+                name="edit"
+                class="color-white"
+              />
             </x-circular-background>
           </div>
         </div>
@@ -330,8 +345,8 @@ export default {
     </div>
 
     <settings-create-facility
-      :all-langs="allLangs"
       v-if="showCreateModal"
+      :all-langs="allLangs"
       :upsert-type="upsertType"
       :edit-item="editStorage"
       @close-creating-modal="closeVersionCreationModal"

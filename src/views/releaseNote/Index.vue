@@ -1,23 +1,23 @@
 <script>
-import BaseButton from "@/components/Reusable/BaseButton";
-import BaseModal from "@/components/Reusable/BaseModal";
-import BaseCloseIcon from "@/components/icons/BaseCloseIcon";
-import BaseInput from "@/components/Reusable/BaseInput";
-import BaseQuestionsIcon from "@/components/icons/BaseQuestionsIcon";
-import AppHeader from "@/components/Header/AppHeader";
-import { VueEditor } from "vue2-editor";
-import api from "@/services/api";
-import BaseLoading from "@/components/Reusable/BaseLoading";
-import BaseEditIcon from "@/components/icons/BaseEditIcon";
-import { sortObjectValues } from "@/util/reusable";
-import BaseDeleteIcon from "@/components/icons/BaseDeleteIcon";
-import BasePlusIcon from "@/components/icons/BasePlusIcon";
-import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
-import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
-import BaseEyeIcon from "@/components/icons/BaseEyeIcon";
+import BaseButton from '@/components/Reusable/BaseButton'
+import BaseModal from '@/components/Reusable/BaseModal'
+import BaseCloseIcon from '@/components/icons/BaseCloseIcon'
+import BaseInput from '@/components/Reusable/BaseInput'
+import BaseQuestionsIcon from '@/components/icons/BaseQuestionsIcon'
+import AppHeader from '@/components/Header/AppHeader'
+import { VueEditor } from 'vue2-editor'
+import api from '@/services/api'
+import BaseLoading from '@/components/Reusable/BaseLoading'
+import BaseEditIcon from '@/components/icons/BaseEditIcon'
+import { sortObjectValues } from '@/util/reusable'
+import BaseDeleteIcon from '@/components/icons/BaseDeleteIcon'
+import BasePlusIcon from '@/components/icons/BasePlusIcon'
+import BaseArrowRightIcon from '@/components/icons/BaseArrowRightIcon'
+import BaseArrowLeftIcon from '@/components/icons/BaseArrowLeftIcon'
+import BaseEyeIcon from '@/components/icons/BaseEyeIcon'
 
 export default {
-  name: "ReleaseNote",
+  name: 'ReleaseNote',
   components: {
     BaseEyeIcon,
     BaseArrowLeftIcon,
@@ -35,19 +35,19 @@ export default {
     VueEditor,
   },
   data() {
-    const showByOptions = [];
+    const showByOptions = []
 
     for (let number = 10; number <= 50; number += 10) {
       showByOptions.push({
         value: number,
         text: number,
-      });
+      })
     }
 
-    let { limit: showByValue } = this.$route.query;
+    let { limit: showByValue } = this.$route.query
 
     if (!showByValue) {
-      showByValue = 10;
+      showByValue = 10
     }
 
     return {
@@ -58,28 +58,26 @@ export default {
       pagination: {},
       fields: [
         {
-          key: "id",
-          label: "id",
+          key: 'id',
+          label: 'id',
         },
         {
-          key: "version",
-          label: "release_note.version_number",
+          key: 'version',
+          label: 'release_note.version_number',
         },
         {
-          key: "created_at",
-          label: "created_at",
+          key: 'created_at',
+          label: 'created_at',
           sortable: true,
         },
         {
-          key: "published",
-          label: "release_note.published",
-          formatter: (item) => {
-            return item ? this.$t("yes") : this.$t("no");
-          },
+          key: 'published',
+          label: 'release_note.published',
+          formatter: item => (item ? this.$t('yes') : this.$t('no')),
         },
         {
-          key: "actions",
-          label: "",
+          key: 'actions',
+          label: '',
         },
       ],
       form: {
@@ -95,160 +93,156 @@ export default {
         published: true,
       },
       version: {},
-      modalPosition: "create",
+      modalPosition: 'create',
       selectVersion: null,
-    };
+    }
   },
   computed: {
     hasPagination() {
-      return this.versions.length;
+      return this.versions.length
     },
     query() {
-      return Object.assign({}, this.$route.query);
+      return { ...this.$route.query }
     },
   },
   watch: {
-    "$route.query": {
-      handler: function () {
-        this.fetchUsers();
+    '$route.query': {
+      handler() {
+        this.fetchUsers()
       },
       deep: true,
     },
   },
   async mounted() {
-    await this.getReleaseModal();
-    await this.getReleaseNotes();
+    await this.getReleaseModal()
+    await this.getReleaseNotes()
   },
   methods: {
     dateFormat(rawDate) {
       const monthNames = [
-        "january",
-        "february",
-        "march",
-        "april",
-        "may",
-        "june",
-        "july",
-        "august",
-        "september",
-        "october",
-        "november",
-        "december",
-      ];
-      const date = new Date(rawDate);
-      const day = date.getDate();
-      const month = this.$t(monthNames[date.getMonth()]).toLocaleLowerCase();
-      const year = date.getFullYear();
-      return `${day} ${month}, ${year}`;
+        'january',
+        'february',
+        'march',
+        'april',
+        'may',
+        'june',
+        'july',
+        'august',
+        'september',
+        'october',
+        'november',
+        'december',
+      ]
+      const date = new Date(rawDate)
+      const day = date.getDate()
+      const month = this.$t(monthNames[date.getMonth()]).toLocaleLowerCase()
+      const year = date.getFullYear()
+      return `${day} ${month}, ${year}`
     },
     async getReleaseNotes() {
-      const query = sortObjectValues(this.query);
-      this.loading = true;
+      const query = sortObjectValues(this.query)
+      this.loading = true
       await api.settings
         .getVersionList(query)
-        .then((res) => {
-          this.versions = res.data;
+        .then(res => {
+          this.versions = res.data
         })
-        .catch((error) => {
-          console.error(error, "error");
+        .catch(error => {
+          console.error(error, 'error')
         })
         .finally(() => {
-          this.loading = false;
-        });
+          this.loading = false
+        })
     },
     async createReleaseNote() {
-      let body = { ...this.form };
+      const body = { ...this.form }
       if (!(body.latest && body.latest.uz && body.latest.ru)) {
-        delete body.latest;
+        delete body.latest
       }
       if (!(body.fixed && body.fixed.uz && body.fixed.ru)) {
-        delete body.fixed;
+        delete body.fixed
       }
       if (body.version) {
-        if (this.modalPosition === "create") {
+        if (this.modalPosition === 'create') {
           await api.settings
             .createVersion(body)
             .then(() => {
-              this.toasted("created", "success");
+              this.toasted('created', 'success')
             })
             .catch(() => {
               // return this.toastedWithErrorCode(err);
             })
             .finally(() => {
-              this.$refs["create-modal"].closeModal();
-              this.getReleaseNotes();
-            });
+              this.$refs['create-modal'].closeModal()
+              this.getReleaseNotes()
+            })
         } else {
           await api.settings
             .updateVersion(this.selectVersion, body)
             .then(() => {
-              this.toasted("updated", "success");
+              this.toasted('updated', 'success')
             })
             .catch(() => {
               // return this.toastedWithErrorCode(err);
             })
             .finally(() => {
-              this.$refs["create-modal"].closeModal();
-              this.getReleaseNotes();
-            });
+              this.$refs['create-modal'].closeModal()
+              this.getReleaseNotes()
+            })
         }
       }
     },
     async getReleaseModal() {
       await api.settings
         .getLastVersion()
-        .then((res) => {
-          this.version = res.data;
+        .then(res => {
+          this.version = res.data
         })
         .catch(() => {
           // return this.toastedWithErrorCode(err);
-        });
+        })
     },
     async getReleaseOne(id) {
       await api.settings
         .getVersion(id)
-        .then((res) => {
-          this.version = res.data;
-          this.$refs["view-modal"].openModal();
+        .then(res => {
+          this.version = res.data
+          this.$refs['view-modal'].openModal()
         })
         .catch(() => {
           // return this.toastedWithErrorCode(err);
-        });
+        })
     },
     async getUpdateRelease(id) {
-      this.modalPosition = "update";
-      this.selectVersion = id;
+      this.modalPosition = 'update'
+      this.selectVersion = id
       await api.settings
         .getVersion(id)
-        .then((res) => {
-          this.form = res.data;
+        .then(res => {
+          this.form = res.data
         })
-        .catch((err) => {
-          return this.toastedWithErrorCode(err);
-        })
+        .catch(err => this.toastedWithErrorCode(err))
         .finally(() => {
-          this.$refs["create-modal"].openModal();
-        });
+          this.$refs['create-modal'].openModal()
+        })
     },
 
     async deleteRelease(id) {
-      this.loading = true;
+      this.loading = true
       await api.settings
         .deleteVersion(id)
-        .then((res) => {
-          this.form = res.data;
+        .then(res => {
+          this.form = res.data
         })
-        .catch((err) => {
-          return this.toastedWithErrorCode(err);
-        })
+        .catch(err => this.toastedWithErrorCode(err))
         .finally(() => {
-          this.getReleaseNotes();
-          this.loading = false;
-        });
+          this.getReleaseNotes()
+          this.loading = false
+        })
     },
 
     openReleaseModal() {
-      this.modalPosition = "create";
+      this.modalPosition = 'create'
       this.form = {
         version: null,
         latest: {
@@ -260,43 +254,43 @@ export default {
           ru: null,
         },
         published: true,
-      };
-      this.$refs["create-modal"].openModal();
+      }
+      this.$refs['create-modal'].openModal()
     },
     closeReleaseModal() {
-      this.$refs["create-modal"].closeModal();
+      this.$refs['create-modal'].closeModal()
     },
     async openReleaseNote() {
-      await this.getReleaseModal();
-      this.$refs["view-modal"].openModal();
+      await this.getReleaseModal()
+      this.$refs['view-modal'].openModal()
     },
     closeReleaseNote() {
-      this.$refs["view-modal"].closeModal();
+      this.$refs['view-modal'].closeModal()
     },
     async viewRelease(id) {
-      await this.getReleaseOne(id);
+      await this.getReleaseOne(id)
     },
 
     changeCurrentPage(page) {
-      const currentPage = this.query.page;
-      if (page === currentPage) return;
-      this.replaceRouter({ ...this.query, page });
+      const currentPage = this.query.page
+      if (page === currentPage) return
+      this.replaceRouter({ ...this.query, page })
     },
     changeFetchLimit() {
       const query = {
         ...this.query,
         page: 1,
-      };
-      const limit = this.showByValue;
-      this.replaceRouter({ ...query, limit });
+      }
+      const limit = this.showByValue
+      this.replaceRouter({ ...query, limit })
     },
 
     pushRouter(query) {
-      const sortQuery = sortObjectValues(query);
-      this.$router.push({ query: sortQuery });
+      const sortQuery = sortObjectValues(query)
+      this.$router.push({ query: sortQuery })
     },
   },
-};
+}
 </script>
 
 <template>
@@ -319,13 +313,19 @@ export default {
       </template>
     </app-header>
 
-    <div class="d-flex align-items-center justify-content-end"></div>
+    <div class="d-flex align-items-center justify-content-end" />
 
-    <base-modal ref="create-modal" design="release-note">
+    <base-modal
+      ref="create-modal"
+      design="release-note"
+    >
       <template #header>
         <div class="release-note-header">
           <p>{{ $t("release_note.add_release_note") }}</p>
-          <p @click="closeReleaseModal" class="cursor-pointer">
+          <p
+            class="cursor-pointer"
+            @click="closeReleaseModal"
+          >
             <BaseCloseIcon />
           </p>
         </div>
@@ -333,47 +333,60 @@ export default {
       <template #main>
         <div class="release-note-main">
           <div class="release-note__select">
-            <h3 class="block-title">{{ $t("main") }}</h3>
+            <h3 class="block-title">
+              {{ $t("main") }}
+            </h3>
             <ValidationProvider
+              v-slot="{ errors }"
               rules="required"
               :name="`${$t('release_note.version_number')}`"
-              v-slot="{ errors }"
             >
               <base-input
                 v-model="form.version"
                 :label="true"
                 :placeholder="`${$t('release_note.version_number')}`"
               />
-              <span v-if="errors[0]" style="color: red">{{ errors[0] }}</span>
+              <span
+                v-if="errors[0]"
+                style="color: red"
+              >{{ errors[0] }}</span>
             </ValidationProvider>
           </div>
           <div class="row release-note__block">
             <div class="col-12">
-              <h3 class="block-title">{{ $t("release_note.texts") }}</h3>
+              <h3 class="block-title">
+                {{ $t("release_note.texts") }}
+              </h3>
             </div>
             <div class="col-12">
-              <b-tabs card class="custom-tab mt-0">
+              <b-tabs
+                card
+                class="custom-tab mt-0"
+              >
                 <template #tabs-start>
-                  <div class="bottom__line"></div>
+                  <div class="bottom__line" />
                 </template>
-                <b-tab title="O’zbekchada" active>
+                <b-tab
+                  title="O’zbekchada"
+                  active
+                >
                   <div class="release-note__block-item">
                     <p>{{ $t("release_note.new") }} (UZ)</p>
-                    <vue-editor v-model="form.latest['uz']"></vue-editor>
+                    <vue-editor v-model="form.latest['uz']" />
                   </div>
                   <div class="release-note__block-item">
                     <p>{{ $t("edited") }} (UZ)</p>
-                    <vue-editor v-model="form.fixed['uz']"></vue-editor>
+                    <vue-editor v-model="form.fixed['uz']" />
                   </div>
                 </b-tab>
                 <b-tab title="На русском">
                   <div class="release-note__block-item">
                     <p>{{ $t("release_note.new") }} (RU)</p>
-                    <vue-editor v-model="form.latest['ru']"></vue-editor>
+                    <vue-editor v-model="form.latest['ru']" />
                   </div>
                   <div class="release-note__block-item">
                     <p>{{ $t("edited") }} (RU)</p>
-                    <vue-editor v-model="form.fixed['ru']"></vue-editor>
+                    <vue-editor v-model="form.fixed['ru']" />
                   </div>
                 </b-tab>
               </b-tabs>
@@ -383,12 +396,15 @@ export default {
       </template>
       <template #footer>
         <div class="release-note-footer">
-          <base-button @click="closeReleaseModal" :text="`${$t('cancel')}`" />
+          <base-button
+            :text="`${$t('cancel')}`"
+            @click="closeReleaseModal"
+          />
           <base-button
             type="submit"
-            @click="createReleaseNote"
             design="violet-gradient"
             :text="`${$t('add')}`"
+            @click="createReleaseNote"
           />
         </div>
       </template>
@@ -402,7 +418,10 @@ export default {
       <template #header>
         <div class="release-note-header">
           <p>{{ $t("release_note.release_note") }}</p>
-          <p @click="closeReleaseNote" class="cursor-pointer">
+          <p
+            class="cursor-pointer"
+            @click="closeReleaseNote"
+          >
             <BaseCloseIcon />
           </p>
         </div>
@@ -410,35 +429,55 @@ export default {
       <template #main>
         <div class="release-info-main">
           <div class="release-info-main-block">
-            <p class="release-info-main-block-release">{{ version.version }}</p>
+            <p class="release-info-main-block-release">
+              {{ version.version }}
+            </p>
             <p class="release-info-main-block-date">
               {{ dateFormat(version.created_at) }}
             </p>
           </div>
-          <div v-if="version && version.latest" class="release-info-main-block">
+          <div
+            v-if="version && version.latest"
+            class="release-info-main-block"
+          >
             <div
               class="release-info-main-block-tag release-info-main-block-tag-new"
             >
               {{ $t("release_note.new") }}
             </div>
             <div>
-              <p class="release-edited" v-html="version.latest['uz']" />
+              <p
+                class="release-edited"
+                v-html="version.latest['uz']"
+              />
             </div>
             <div>
-              <p class="release-edited" v-html="version.latest['ru']" />
+              <p
+                class="release-edited"
+                v-html="version.latest['ru']"
+              />
             </div>
           </div>
-          <div v-if="version && version.fixed" class="release-info-main-block">
+          <div
+            v-if="version && version.fixed"
+            class="release-info-main-block"
+          >
             <div
               class="release-info-main-block-tag release-info-main-block-tag-edited"
             >
               {{ $t("edited") }}
             </div>
             <div>
-              <p class="release-new" v-html="version.fixed['uz'] || ''" />
+              <p
+                class="release-new"
+                v-html="version.fixed['uz'] || ''"
+              />
             </div>
             <div>
-              <p class="release-new" v-html="version.fixed['ru'] || ''" />
+              <p
+                class="release-new"
+                v-html="version.fixed['ru'] || ''"
+              />
             </div>
           </div>
         </div>
@@ -452,11 +491,11 @@ export default {
     </base-modal>
 
     <b-table
+      id="users-table"
+      ref="contracts-table"
       thead-tr-class="row__head__bottom-border"
       tbody-tr-class="row__body__bottom-border"
       class="table__list mt-3"
-      ref="contracts-table"
-      id="users-table"
       borderless
       responsive
       show-empty
@@ -497,27 +536,42 @@ export default {
             class="icon eye__icon rounded-circle"
             @click="viewRelease(data.item.id)"
           >
-            <base-eye-icon :width="18" :height="18" fill="#ffff" />
+            <base-eye-icon
+              :width="18"
+              :height="18"
+              fill="#ffff"
+            />
           </span>
           <span
             v-if="true || editPermission"
             class="icon edit__icon rounded-circle"
             @click="getUpdateRelease(data.item.id)"
           >
-            <base-edit-icon :width="18" :height="18" fill="#ffff" />
+            <base-edit-icon
+              :width="18"
+              :height="18"
+              fill="#ffff"
+            />
           </span>
           <span
             v-if="true || deletePermission"
             class="icon delete__icon rounded-circle"
             @click="deleteRelease(data.item.id)"
           >
-            <base-delete-icon :width="18" :height="18" fill="#ffff" />
+            <base-delete-icon
+              :width="18"
+              :height="18"
+              fill="#ffff"
+            />
           </span>
         </div>
       </template>
     </b-table>
 
-    <div v-if="!loading && hasPagination && false" class="pagination__vue">
+    <div
+      v-if="!loading && hasPagination && false"
+      class="pagination__vue"
+    >
       <!--   Pagination   -->
       <vue-paginate
         :page-count="pagination.total"

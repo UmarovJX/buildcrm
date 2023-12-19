@@ -1,28 +1,28 @@
 <script>
-import BaseActionList from "@/components/Reusable/Dropdown/AppDropdown";
-import BasePlusIcon from "@/components/icons/BasePlusIcon";
-import BaseDeleteIcon from "@/components/icons/BaseDeleteIcon";
-import BaseButton from "@/components/Reusable/BaseButton";
-import BaseSearchCalendar from "@/components/Reusable/BaseCalendar";
-import BaseCalendar from "@/components/Reusable/BaseCalendar";
-import BaseDatePicker from "@/components/Reusable/BaseDatePicker";
-import BaseFilterTabsContent from "@/components/Reusable/BaseFilterTabsContent";
-import BaseFormTagInput from "@/components/Reusable/BaseFormTagInput";
-import BaseInput from "@/components/Reusable/BaseInput";
-import BaseLoading from "@/components/Reusable/BaseLoading";
-import BaseMultiselect from "@/components/Reusable/BaseMultiselect";
-import BaseNumericInput from "@/components/Reusable/BaseNumericInput";
-import BasePriceInput from "@/components/Reusable/BasePriceInput";
-import BaseSearchInput from "@/components/Reusable/BaseSearchInput";
-import BaseSelect from "@/components/Reusable/BaseSelect";
-import BaseValidationBottomWarning from "@/components/Reusable/BaseValidationBottomWarning";
-import BarsLoading from "@/components/Reusable/Animation/BarsLoading";
-import BaseCalendarNavigation from "@/components/Reusable/Calendar/BaseCalendarNavigation";
-import BaseStarIcon from "@/components/icons/BaseStarIcon";
-import BasePagination from "@/components/Reusable/Navigation/BasePagination";
+import BaseActionList from '@/components/Reusable/Dropdown/AppDropdown'
+import BasePlusIcon from '@/components/icons/BasePlusIcon'
+import BaseDeleteIcon from '@/components/icons/BaseDeleteIcon'
+import BaseButton from '@/components/Reusable/BaseButton'
+import BaseSearchCalendar from '@/components/Reusable/BaseCalendar'
+import BaseCalendar from '@/components/Reusable/BaseCalendar'
+import BaseDatePicker from '@/components/Reusable/BaseDatePicker'
+import BaseFilterTabsContent from '@/components/Reusable/BaseFilterTabsContent'
+import BaseFormTagInput from '@/components/Reusable/BaseFormTagInput'
+import BaseInput from '@/components/Reusable/BaseInput'
+import BaseLoading from '@/components/Reusable/BaseLoading'
+import BaseMultiselect from '@/components/Reusable/BaseMultiselect'
+import BaseNumericInput from '@/components/Reusable/BaseNumericInput'
+import BasePriceInput from '@/components/Reusable/BasePriceInput'
+import BaseSearchInput from '@/components/Reusable/BaseSearchInput'
+import BaseSelect from '@/components/Reusable/BaseSelect'
+import BaseValidationBottomWarning from '@/components/Reusable/BaseValidationBottomWarning'
+import BarsLoading from '@/components/Reusable/Animation/BarsLoading'
+import BaseCalendarNavigation from '@/components/Reusable/Calendar/BaseCalendarNavigation'
+import BaseStarIcon from '@/components/icons/BaseStarIcon'
+import BasePagination from '@/components/Reusable/Navigation/BasePagination'
 
 export default {
-  name: "documentation",
+  name: 'Documentation',
   components: {
     BaseStarIcon,
     BasePagination,
@@ -48,19 +48,19 @@ export default {
   },
   data() {
     return {
-      options: ["item1", "item2", "item3", "item4", "item5", "etc."],
+      options: ['item1', 'item2', 'item3', 'item4', 'item5', 'etc.'],
       number: 0,
-    };
+    }
   },
   methods: {
     consoleText() {
-      console.log("consoleText");
+      console.log('consoleText')
     },
     consoleData() {
-      console.log("consoleData");
+      console.log('consoleData')
     },
   },
-};
+}
 </script>
 <template>
   <div>
@@ -68,13 +68,13 @@ export default {
     <div class="item">
       <p>BaseInput {{ $t("component") }}</p>
       <BaseInput
+        v-model="number"
+        v-b-tooltip
         placeholder="number"
         type="number"
-        v-model="number"
         :counter="true"
         :label="true"
         class="component"
-        v-b-tooltip
         title="src/components/Reusable/BaseInput.vue"
       />
     </div>
@@ -99,8 +99,8 @@ export default {
     <div class="item">
       <p>BaseButton {{ $t("component") }}</p>
       <BaseButton
-        class="component"
         v-b-tooltip
+        class="component"
         title="src/components/Reusable/BaseButton.vue"
       >
         <template #left-icon>
@@ -111,8 +111,8 @@ export default {
     <div class="item">
       <p>BaseButton {{ $t("component") }}</p>
       <BaseButton
-        class="component"
         v-b-tooltip
+        class="component"
         title="src/components/Reusable/BaseButton.vue"
       >
         <template #right-icon>
@@ -123,45 +123,48 @@ export default {
     <div class="item">
       <p>BaseCalendar {{ $t("component") }}</p>
       <BaseCalendar
-        class="component"
         v-b-tooltip
+        class="component"
         title="src/components/Reusable/BaseCalendar.vue"
       />
     </div>
     <div class="item">
       <p>BaseDatePicker {{ $t("component") }}</p>
       <BaseDatePicker
-        class="component"
         v-b-tooltip
+        class="component"
         title="src/components/Reusable/BaseDatePicker.vue"
       />
     </div>
     <div class="item">
       <p>BaseFormTagInput {{ $t("component") }}</p>
       <BaseFormTagInput
-        class="component"
         v-b-tooltip
+        class="component"
         title="src/components/Reusable/BaseFormTagInput.vue"
       >
-        <template #delete-content> deleting </template>
+        <template #delete-content>
+          deleting
+        </template>
       </BaseFormTagInput>
     </div>
     <div class="item">
       <p>BaseInput {{ $t("component") }}</p>
       <BaseInput
+        v-b-tooltip
         placeholder="base input"
         value="value"
         :label="true"
         :error="true"
         currency="uz"
         class="component"
-        v-b-tooltip
         title="src/components/Reusable/BaseInput.vue"
       />
     </div>
     <div class="item">
       <p>BaseInput Disabled {{ $t("component") }}</p>
       <BaseInput
+        v-b-tooltip
         placeholder="base input"
         :disable="true"
         value="value"
@@ -169,24 +172,23 @@ export default {
         :error="true"
         currency="uz"
         class="component"
-        v-b-tooltip
         title="src/components/Reusable/BaseInput.vue"
       />
     </div>
     <div class="item">
       <p>BaseLoading {{ $t("component") }}</p>
       <BaseLoading
-        class="component"
         v-b-tooltip
+        class="component"
         title="src/components/Reusable/BaseLoading.vue"
       />
     </div>
     <div class="item">
       <p>BaseMultiselect {{ $t("component") }}</p>
       <BaseMultiselect
+        v-b-tooltip
         class="component"
         label="multiselect label"
-        v-b-tooltip
         :options="options"
         title="src/components/Reusable/BaseLoading.vue"
       />
@@ -194,71 +196,71 @@ export default {
     <div class="item">
       <p>BaseNumericInput {{ $t("component") }}</p>
       <BaseNumericInput
+        v-b-tooltip
         class="component"
         placeholder="numberic input"
-        v-b-tooltip
         title="src/components/Reusable/BaseNumericInput.vue"
       />
     </div>
     <div class="item">
       <p>BaseNumericInput Disabled {{ $t("component") }}</p>
       <BaseNumericInput
+        v-b-tooltip
         class="component"
         disabled="true"
         placeholder="numeric input"
-        v-b-tooltip
         title="src/components/Reusable/BaseNumericInput.vue"
       />
     </div>
     <div class="item">
       <p>BasePriceInput {{ $t("component") }}</p>
       <BasePriceInput
+        v-b-tooltip
         class="component"
-        :topPlaceholder="true"
+        :top-placeholder="true"
         value="value"
         :precision="54"
-        outputType="nuuumber"
+        output-type="nuuumber"
         placeholder="price input"
-        v-b-tooltip
         title="src/components/Reusable/BasePriceInput.vue"
       />
     </div>
     <div class="item">
       <p>BaseSearchInput {{ $t("component") }}</p>
       <BaseSearchInput
+        v-b-tooltip
         class="component"
         placeholder="search input"
-        v-b-tooltip
         title="src/components/Reusable/BaseSearchInput.vue"
       />
     </div>
     <div class="item">
       <p>BaseSelect {{ $t("component") }}</p>
       <BaseSelect
+        v-b-tooltip
         name="selector"
-        :noPlaceholder="false"
+        :no-placeholder="false"
         :disabled="false"
         :label="true"
         :error="false"
         :options="options"
         class="component"
         placeholder="select"
-        v-b-tooltip
         title="src/components/Reusable/BaseSelect.vue"
       />
     </div>
     <div class="item">
       <p>BaseSelect Disabled {{ $t("component") }}</p>
       <BaseSelect
+        v-b-tooltip
         name="selector"
-        :noPlaceholder="false"
+        :no-placeholder="false"
         :disabled="true"
         :label="true"
         :error="false"
         :options="options"
         class="component"
         placeholder="select"
-        v-b-tooltip
         title="src/components/Reusable/BaseSelect.vue"
       />
     </div>
@@ -279,8 +281,8 @@ export default {
     <div class="item">
       <p>BaseCalendarNavigation {{ $t("component") }}</p>
       <BaseCalendarNavigation
-        status="successful"
         v-b-tooltip
+        status="successful"
         title="src/components/Reusable/Calendar/BaseCalendarNavigation.vue"
       />
     </div>
@@ -294,8 +296,8 @@ export default {
     <div class="item">
       <p>BaseFilterTabsContent {{ $t("component") }}</p>
       <BaseFilterTabsContent
-        :filter-tab-list="options"
         v-b-tooltip
+        :filter-tab-list="options"
         title="src/components/Reusable/Sidebar/BaseFilterTabsContent.vue"
       />
     </div>

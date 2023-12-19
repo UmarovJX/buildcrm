@@ -1,27 +1,26 @@
 <script>
-import BaseNumericInput from "@/components/Reusable/BaseNumericInput";
-import BaseChessOne from "@/components/icons/BaseChessOne";
-import BaseChessTwo from "@/components/icons/BaseChessTwo";
-import BaseDetailsIcon from "@/components/icons/BaseDetailsIcon";
-import BaseChessList from "@/components/icons/BaseChessList";
-import BaseChessPlan from "@/components/icons/BaseChessPlan";
-import BaseButton from "@/components/Reusable/BaseButton";
-import BaseFormTagInput from "@/components/Reusable/BaseFormTagInput";
-import BasePriceInput from "@/components/Reusable/BasePriceInput";
-import { XFormSelect } from "@/components/ui-components/form-select";
-import { clearObjectProperties } from "@/util/reusable";
-import { sortInFirstRelationship } from "@/util/reusable";
-import { sessionStorageGetItem } from "@/util/storage";
-import { mapGetters } from "vuex";
-import ApartmentsPermission from "@/permission/apartments";
-import { XIcon } from "@/components/ui-components/material-icons";
-import { isArray } from "@/util/inspect";
+import BaseNumericInput from '@/components/Reusable/BaseNumericInput'
+import BaseChessOne from '@/components/icons/BaseChessOne'
+import BaseChessTwo from '@/components/icons/BaseChessTwo'
+import BaseDetailsIcon from '@/components/icons/BaseDetailsIcon'
+import BaseChessList from '@/components/icons/BaseChessList'
+import BaseChessPlan from '@/components/icons/BaseChessPlan'
+import BaseButton from '@/components/Reusable/BaseButton'
+import BaseFormTagInput from '@/components/Reusable/BaseFormTagInput'
+import BasePriceInput from '@/components/Reusable/BasePriceInput'
+import { XFormSelect } from '@/components/ui-components/form-select'
+import { clearObjectProperties, sortInFirstRelationship } from '@/util/reusable'
+import { sessionStorageGetItem } from '@/util/storage'
+import { mapGetters } from 'vuex'
+import ApartmentsPermission from '@/permission/apartments'
+import { XIcon } from '@/components/ui-components/material-icons'
+import { isArray } from '@/util/inspect'
 
 export default {
-  name: "ObjectSort",
+  name: 'ObjectSort',
   components: {
     XIcon,
-    XFormSelect: XFormSelect,
+    XFormSelect,
     BaseChessOne,
     BaseChessTwo,
     BaseDetailsIcon,
@@ -47,23 +46,23 @@ export default {
       required: true,
     },
   },
-  emits: ["filter-values"],
+  emits: ['filter-values'],
   data() {
-    const { object } = this.$route.params;
-    const historyTab = sessionStorageGetItem(`object_history_of_tab_${object}`);
+    const { object } = this.$route.params
+    const historyTab = sessionStorageGetItem(`object_history_of_tab_${object}`)
     let currentTab = {
       id: 4,
-      param: "chess",
-      name: "ObjectTable",
-      buttonIcon: "BaseChessList",
-      title: this.$t("object.list"),
-      view: "list",
-    };
+      param: 'chess',
+      name: 'ObjectTable',
+      buttonIcon: 'BaseChessList',
+      title: this.$t('object.list'),
+      view: 'list',
+    }
 
     if (historyTab) {
-      const getTabInfo = this.tabs.find((tab) => tab.name === historyTab);
+      const getTabInfo = this.tabs.find(tab => tab.name === historyTab)
       if (getTabInfo) {
-        currentTab = getTabInfo;
+        currentTab = getTabInfo
       }
     }
 
@@ -86,46 +85,46 @@ export default {
         number: [],
         buildings: [],
       },
-      currencyOptions: ["UZS", "USD"],
-      areaOptions: "M2",
-      currency: "UZS",
+      currencyOptions: ['UZS', 'USD'],
+      areaOptions: 'M2',
+      currency: 'UZS',
       timeoutId: null,
-    };
+    }
   },
   computed: {
     isParkingTable() {
-      return this.$route.query.currentTab === "ParkingTable";
+      return this.$route.query.currentTab === 'ParkingTable'
     },
     numberPlaceHolder() {
-      return this.$route.query.currentTab === "ParkingTable"
-        ? this.$t("object.sort.number_parking")
-        : this.$t("object.sort.number_flat");
+      return this.$route.query.currentTab === 'ParkingTable'
+        ? this.$t('object.sort.number_parking')
+        : this.$t('object.sort.number_flat')
     },
-    ...mapGetters(["getPermission"]),
+    ...mapGetters(['getPermission']),
     query() {
-      return Object.assign({}, this.$route.query);
+      return { ...this.$route.query }
     },
     buildingsRender() {
-      if (!this.filterFields.buildings) return [];
+      if (!this.filterFields.buildings) return []
       return this.form.buildings.map(
-        (id) => this.filterFields.buildings.find((el) => el.id === id).name
-      );
+        id => this.filterFields.buildings.find(el => el.id === id).name,
+      )
     },
     apartmentsFilterPermission() {
-      return ApartmentsPermission.getApartmentsPermission("filter");
+      return ApartmentsPermission.getApartmentsPermission('filter')
     },
   },
   watch: {
     appLoading(finishFetching) {
-      finishFetching && this.setRouteQuery();
+      finishFetching && this.setRouteQuery()
     },
     currentTab(val) {
-      this.clearFilter();
-      this.$emit("current-tab", val);
+      this.clearFilter()
+      this.$emit('current-tab', val)
     },
     form: {
       handler() {
-        this.filterDebounce();
+        this.filterDebounce()
       },
       deep: true,
       immediate: false,
@@ -133,22 +132,22 @@ export default {
   },
 
   async created() {
-    this.initSelectedApartments();
-    this.setRouteQueries();
+    this.initSelectedApartments()
+    this.setRouteQueries()
   },
 
   methods: {
     filterDebounce(debounceDuration = 1000) {
       if (this.timeoutId !== null) {
-        clearTimeout(this.timeoutId);
+        clearTimeout(this.timeoutId)
       }
       this.timeoutId = setTimeout(() => {
-        this.filterApartments();
-      }, debounceDuration);
+        this.filterApartments()
+      }, debounceDuration)
     },
     setRouteQueries() {
-      const query = this.$route.query;
-      const f = Object.assign({}, this.form);
+      const { query } = this.$route
+      const f = { ...this.form }
       // status: null,
       //     price_m2: 0,
       //     price_from: 0,
@@ -161,209 +160,199 @@ export default {
       //     floors: [],
       //     number: [],
       //     buildings: [],
-      const stringTypes = ["status"];
+      const stringTypes = ['status']
       const numberTypes = [
-        "price_m2",
-        "price_from",
-        "price_to",
-        "area_from",
-        "area_to",
-      ];
+        'price_m2',
+        'price_from',
+        'price_to',
+        'area_from',
+        'area_to',
+      ]
       const arrayTypes = [
-        "blocks",
-        "area",
-        "rooms",
-        "floors",
-        "number",
-        "buildings",
-      ];
-      for (let [p, v] of Object.entries(this.form)) {
+        'blocks',
+        'area',
+        'rooms',
+        'floors',
+        'number',
+        'buildings',
+      ]
+      for (const [p, v] of Object.entries(this.form)) {
         if (query.hasOwnProperty(p)) {
           if (numberTypes.includes(p) && parseFloat(query[p])) {
-            f[p] = parseFloat(query[p]);
+            f[p] = parseFloat(query[p])
           }
 
           if (stringTypes.includes(p)) {
-            f[p] = query[p];
+            f[p] = query[p]
           }
 
           if (arrayTypes.includes(p)) {
             if (isArray(query[p])) {
-              if (p === "number") {
-                f[p] = query[p];
+              if (p === 'number') {
+                f[p] = query[p]
               } else {
-                f[p] = query[p].map((p) => parseFloat(p));
+                f[p] = query[p].map(p => parseFloat(p))
               }
+            } else if (p === 'number') {
+              f[p] = [query[p]]
             } else {
-              if (p === "number") {
-                f[p] = [query[p]];
-              } else {
-                f[p] = [parseFloat(query[p])];
-              }
+              f[p] = [parseFloat(query[p])]
             }
           }
         }
       }
 
-      this.form = f;
+      this.form = f
     },
-    selectOutput(array, outputBy = "name") {
-      const selectedArray = array.map((arr) => {
+    selectOutput(array, outputBy = 'name') {
+      const selectedArray = array.map(arr => {
         const fullContext = this.filterFields.blocks.find(
-          (block) => block.id === arr
-        );
-        return fullContext ?? arr;
-      });
-      let output = "";
+          block => block.id === arr,
+        )
+        return fullContext ?? arr
+      })
+      let output = ''
       for (let i = 0; i < selectedArray.length; i++) {
-        output += selectedArray[i][outputBy] + ",";
+        output += `${selectedArray[i][outputBy]},`
       }
-      if (output.slice(-1) === ",") {
-        output = output.slice(0, -1);
+      if (output.slice(-1) === ',') {
+        output = output.slice(0, -1)
       }
-      return output;
+      return output
     },
-    blockOutput(arr, outputBy = "name") {
-      let output = "";
+    blockOutput(arr, outputBy = 'name') {
+      let output = ''
       for (let i = 0; i < arr.length; i++) {
-        const b = this.filterFields.blocks.find((el) => el.id == arr[i]);
-        output += b[outputBy] + ",";
+        const b = this.filterFields.blocks.find(el => el.id == arr[i])
+        output += `${b[outputBy]},`
       }
-      if (output.slice(-1) === ",") {
-        output = output.slice(0, -1);
+      if (output.slice(-1) === ',') {
+        output = output.slice(0, -1)
       }
-      return output;
+      return output
     },
     formatSelectPlaceholder(array) {
-      const items = [...array].sort((a, b) => a - b);
-      let s = "";
+      const items = [...array].sort((a, b) => a - b)
+      let s = ''
       for (let i = 0; i < items.length; i++) {
-        const distinctWithNext = Math.abs(items[i + 1] - items[i]);
-        const distinctWithPrevious = Math.abs(items[i] - items[i - 1]);
+        const distinctWithNext = Math.abs(items[i + 1] - items[i])
+        const distinctWithPrevious = Math.abs(items[i] - items[i - 1])
         if (distinctWithNext === 1) {
           if (distinctWithPrevious === 1) {
             if (i === 0) {
-              s += "-";
+              s += '-'
             }
           } else {
-            s += items[i] + "-";
+            s += `${items[i]}-`
           }
         } else if (distinctWithPrevious === 1) {
           if (i === 0) {
-            s += "-";
+            s += '-'
           }
-          s += items[i] + ",";
+          s += `${items[i]},`
         } else {
-          s += items[i] + ",";
+          s += `${items[i]},`
         }
       }
 
-      if (s.slice(-1) === ",") {
-        s = s.slice(0, -1);
+      if (s.slice(-1) === ',') {
+        s = s.slice(0, -1)
       }
 
-      return s;
+      return s
     },
     filterApartments() {
-      const values = sortInFirstRelationship(this.form);
-      const params = this.$route.params;
-      const statusQuery = this.query.status;
-      const currentTab = this.query.currentTab;
-      let routeQuery = { ...values };
-      routeQuery.limit = this.query.limit;
-      routeQuery.page = 1;
+      const values = sortInFirstRelationship(this.form)
+      const { params } = this.$route
+      const statusQuery = this.query.status
+      const { currentTab } = this.query
+      const routeQuery = { ...values }
+      routeQuery.limit = this.query.limit
+      routeQuery.page = 1
       if (statusQuery) {
-        routeQuery.status = statusQuery;
+        routeQuery.status = statusQuery
       }
       if (currentTab) {
-        routeQuery.currentTab = currentTab;
+        routeQuery.currentTab = currentTab
       }
       this.$router.push({
         query: routeQuery,
         params,
-      });
-      this.clearButton = !!Object.keys(values).length;
+      })
+      this.clearButton = !!Object.keys(values).length
     },
     setApartmentNumbers(apartments) {
-      this.form.number = apartments;
+      this.form.number = apartments
     },
     setFormProperty(property, value) {
-      this.form[property] = value;
-      this.errors[property] = false;
+      this.form[property] = value
+      this.errors[property] = false
     },
     setRouteQuery() {
-      const filterQuery = Object.assign({}, this.$route.query);
-      const queryProperties = Object.keys(filterQuery);
-      const loopPackage = {};
+      const filterQuery = { ...this.$route.query }
+      const queryProperties = Object.keys(filterQuery)
+      const loopPackage = {}
 
-      queryProperties.forEach((property) => {
-        const hasFormProperty = this.form.hasOwnProperty(property);
+      queryProperties.forEach(property => {
+        const hasFormProperty = this.form.hasOwnProperty(property)
         if (hasFormProperty) {
-          if (property === "blocks") {
-            const values = filterQuery[property];
-            const isQueryPrimitive =
-              typeof values === "number" || typeof values === "string";
+          if (property === 'blocks') {
+            const values = filterQuery[property]
+            const isQueryPrimitive = typeof values === 'number' || typeof values === 'string'
             if (isQueryPrimitive) {
               loopPackage[property] = this.filterFields.blocks
-                .filter((block) => {
-                  return block.id.toString() === values.toString();
-                })
-                .map((block) => block.id);
+                .filter(block => block.id.toString() === values.toString())
+                .map(block => block.id)
             } else {
               loopPackage[property] = this.filterFields.blocks
-                .filter((block) => {
-                  return (
-                    values.findIndex((value) => value === block.id.toString()) >
-                    -1
-                  );
-                })
-                .map((block) => block.id);
+                .filter(block => (
+                  values.findIndex(value => value === block.id.toString())
+                    > -1
+                ))
+                .map(block => block.id)
             }
           } else {
-            const queryValue = filterQuery[property];
-            const formValue = this.form[property];
-            const isQueryPrimitive =
-              typeof queryValue === "number" || typeof queryValue === "string";
-            const isArray =
-              Array.isArray(formValue) && typeof formValue === "object";
+            const queryValue = filterQuery[property]
+            const formValue = this.form[property]
+            const isQueryPrimitive = typeof queryValue === 'number' || typeof queryValue === 'string'
+            const isArray = Array.isArray(formValue) && typeof formValue === 'object'
             if (isArray && isQueryPrimitive) {
-              loopPackage[property] = [queryValue];
+              loopPackage[property] = [queryValue]
             } else {
-              loopPackage[property] = queryValue;
+              loopPackage[property] = queryValue
             }
           }
         }
-      });
+      })
 
       if (Object.keys(loopPackage).length) {
-        this.form = { ...this.form, ...loopPackage };
+        this.form = { ...this.form, ...loopPackage }
       }
     },
     initSelectedApartments() {
-      const filterQuery = Object.assign({}, this.$route.query);
-      const hasApartments = filterQuery.hasOwnProperty("number");
+      const filterQuery = { ...this.$route.query }
+      const hasApartments = filterQuery.hasOwnProperty('number')
       if (hasApartments) {
-        const value = filterQuery["number"];
-        const isQueryPrimitive =
-          typeof value === "number" || typeof value === "string";
+        const value = filterQuery.number
+        const isQueryPrimitive = typeof value === 'number' || typeof value === 'string'
 
         if (isQueryPrimitive) {
-          this.defaultApartments = [value];
-        } else this.defaultApartments = value.map((vs) => vs);
+          this.defaultApartments = [value]
+        } else this.defaultApartments = value.map(vs => vs)
       }
     },
     openBar() {
-      this.sortBar = !this.sortBar;
+      this.sortBar = !this.sortBar
     },
     clearApartments() {
-      this.$refs["base-form-tag-input"].clear();
+      this.$refs['base-form-tag-input'].clear()
     },
     clearFilter() {
-      this.form = clearObjectProperties(this.form);
-      this.clearButton = false;
+      this.form = clearObjectProperties(this.form)
+      this.clearButton = false
 
-      this.clearApartments();
-      this.$emit("clear-status");
+      this.clearApartments()
+      this.$emit('clear-status')
       // const query = {
       //   limit: this.query.limit,
       //   page: 1,
@@ -374,15 +363,18 @@ export default {
       // });
     },
     changeProduct(name) {
-      this.currentTab = name;
+      this.currentTab = name
     },
   },
-};
+}
 </script>
 
 <template>
   <div class="sort-list">
-    <div v-if="apartmentsFilterPermission" class="sort-top">
+    <div
+      v-if="apartmentsFilterPermission"
+      class="sort-top"
+    >
       <!--   Номер квартиры   -->
       <div class="filter__inputs-input">
         <base-form-tag-input
@@ -399,7 +391,12 @@ export default {
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <circle cx="10" cy="10" r="10" fill="#9CA3AF" />
+              <circle
+                cx="10"
+                cy="10"
+                r="10"
+                fill="#9CA3AF"
+              />
               <path
                 d="M13.125 6.875L6.875 13.125"
                 stroke="white"
@@ -419,8 +416,14 @@ export default {
         </base-form-tag-input>
       </div>
       <!--  Этаж    -->
-      <b-dropdown left v-if="filterFields.floors">
-        <template v-if="form.floors && form.floors.length" #button-content>
+      <b-dropdown
+        v-if="filterFields.floors"
+        left
+      >
+        <template
+          v-if="form.floors && form.floors.length"
+          #button-content
+        >
           <div class="input-block">
             <span class="input-label">{{ $t("object.level") }}</span>
             <p class="input-text">
@@ -428,7 +431,10 @@ export default {
             </p>
           </div>
         </template>
-        <template v-else #button-content>
+        <template
+          v-else
+          #button-content
+        >
           <p class="default-label">
             {{ $t("object.level") }}
           </p>
@@ -457,8 +463,14 @@ export default {
       </b-dropdown>
 
       <!--   Блок    -->
-      <b-dropdown left v-if="filterFields.blocks">
-        <template v-if="form.blocks && form.blocks.length" #button-content>
+      <b-dropdown
+        v-if="filterFields.blocks"
+        left
+      >
+        <template
+          v-if="form.blocks && form.blocks.length"
+          #button-content
+        >
           <div class="input-block">
             <span class="input-label">{{ $t("object.sort.block") }}</span>
             <p class="input-text">
@@ -466,7 +478,10 @@ export default {
             </p>
           </div>
         </template>
-        <template v-else #button-content>
+        <template
+          v-else
+          #button-content
+        >
           <p class="default-label">
             {{ $t("object.sort.block") }}
           </p>
@@ -499,7 +514,10 @@ export default {
         </b-dropdown-text>
       </b-dropdown>
       <!--Здания-->
-      <b-dropdown left v-if="filterFields.buildings">
+      <b-dropdown
+        v-if="filterFields.buildings"
+        left
+      >
         <template
           v-if="form.buildings && form.buildings.length"
           #button-content
@@ -511,7 +529,10 @@ export default {
             </p>
           </div>
         </template>
-        <template v-else #button-content>
+        <template
+          v-else
+          #button-content
+        >
           <p class="default-label">
             {{ $t("object.sort.building") }}
           </p>
@@ -537,8 +558,14 @@ export default {
       </b-dropdown>
 
       <!--   Жилая площадь    -->
-      <b-dropdown left v-if="filterFields.area">
-        <template v-if="form.area && form.area.length" #button-content>
+      <b-dropdown
+        v-if="filterFields.area"
+        left
+      >
+        <template
+          v-if="form.area && form.area.length"
+          #button-content
+        >
           <div class="input-block">
             <span class="input-label">{{ $t("object.sort.area") }}</span>
             <p class="input-text">
@@ -546,7 +573,10 @@ export default {
             </p>
           </div>
         </template>
-        <template v-else #button-content>
+        <template
+          v-else
+          #button-content
+        >
           <p class="default-label">
             {{ $t("object.sort.area") }}
           </p>
@@ -572,8 +602,14 @@ export default {
       </b-dropdown>
 
       <!--   Комнат    -->
-      <b-dropdown left v-if="filterFields.rooms">
-        <template v-if="form.rooms && form.rooms.length" #button-content>
+      <b-dropdown
+        v-if="filterFields.rooms"
+        left
+      >
+        <template
+          v-if="form.rooms && form.rooms.length"
+          #button-content
+        >
           <div class="input-block">
             <span class="input-label">{{ $t("object.sort.flat") }}</span>
             <p class="input-text">
@@ -581,7 +617,10 @@ export default {
             </p>
           </div>
         </template>
-        <template v-else #button-content>
+        <template
+          v-else
+          #button-content
+        >
           <p class="default-label">
             {{ $t("object.sort.flat") }}
           </p>
@@ -672,9 +711,9 @@ export default {
 
       <base-button
         v-if="clearButton"
-        @click="clearFilter"
         :text="$t('clear')"
         design="violet-gradient"
+        @click="clearFilter"
       />
     </div>
 
@@ -683,18 +722,18 @@ export default {
         v-for="tab in tabs"
         :key="tab.id"
         :class="{ active: currentTab.name === tab.name }"
-        @click="changeProduct(tab)"
         :text="tab.title"
+        @click="changeProduct(tab)"
       >
         <template #left-icon>
           <x-icon
             v-if="tab.buttonIcon === 'local_parking'"
             name="local_parking"
             :class="[currentTab.name === tab.name ? '' : 'color-gray-400']"
-          ></x-icon>
+          />
           <component
-            v-else
             :is="tab.buttonIcon"
+            v-else
             :fill="currentTab.name === tab.name ? '#F9FAFB' : undefined"
           />
         </template>

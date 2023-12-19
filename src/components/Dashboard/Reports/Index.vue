@@ -1,27 +1,27 @@
 <script>
-import { Line } from "vue-chartjs";
+import { Line } from 'vue-chartjs'
 
 export default {
   extends: Line,
 
   data() {},
   mounted() {
-    this.chart();
+    this.chart()
   },
   methods: {
     chart() {
       this.renderChart(
         {
-          labels: ["TEST", "TEST 2"],
+          labels: ['TEST', 'TEST 2'],
           datasets: [
             {
-              label: "Data One",
-              backgroundColor: "#f87979",
+              label: 'Data One',
+              backgroundColor: '#f87979',
               data: [1, 2, 3, 4, 5],
             },
             {
-              label: "Data One",
-              backgroundColor: "#f87979",
+              label: 'Data One',
+              backgroundColor: '#f87979',
               data: [1, 2, 3, 4, 5],
             },
           ],
@@ -29,16 +29,16 @@ export default {
         {
           responsive: true,
           maintainAspectRatio: false,
-        }
-      );
+        },
+      )
     },
   },
-};
+}
 </script>
 
 <template>
   <div>
-    <canvas ref="canvas"></canvas>
+    <canvas ref="canvas" />
   </div>
 </template>
 

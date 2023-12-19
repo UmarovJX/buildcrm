@@ -1,14 +1,14 @@
 <script>
-import "@fancyapps/ui/dist/fancybox.css";
-import { mapGetters, mapMutations } from "vuex";
+import '@fancyapps/ui/dist/fancybox.css'
+import { mapGetters, mapMutations } from 'vuex'
 
-import AppHeader from "@/components/Header/AppHeader";
-import BaseArrowLeft from "@/components/icons/BaseArrowLeftIcon";
+import AppHeader from '@/components/Header/AppHeader'
+import BaseArrowLeft from '@/components/icons/BaseArrowLeftIcon'
 
-import { v3ServiceApi } from "@/services/v3/v3.service";
+import { v3ServiceApi } from '@/services/v3/v3.service'
 
 export default {
-  name: "BadContractDetails",
+  name: 'BadContractDetails',
   components: {
     BaseArrowLeft,
 
@@ -23,98 +23,103 @@ export default {
       manager_id: null,
       header: {
         modalProperties: {
-          position: "create",
-          title: this.$t("add"),
+          position: 'create',
+          title: this.$t('add'),
         },
       },
       fields: [
         {
-          key: "id",
-          label: this.$t("ID"),
+          key: 'id',
+          label: this.$t('ID'),
         },
         {
-          key: "status",
-          label: this.$t("Статус"),
-          formatter: (el) => this.getTranslations(el),
+          key: 'status',
+          label: this.$t('Статус'),
+          formatter: el => this.getTranslations(el),
         },
         {
-          key: "amount",
-          label: this.$t("Сумма"),
+          key: 'amount',
+          label: this.$t('Сумма'),
         },
         {
-          key: "date_paid",
-          label: this.$t("Дата оплаты"),
-          formatter: (date_paid) =>
-            new Date(date_paid).toLocaleDateString(this.$i18n.locale),
+          key: 'date_paid',
+          label: this.$t('Дата оплаты'),
+          formatter: date_paid => new Date(date_paid).toLocaleDateString(this.$i18n.locale),
         },
         {
-          key: "type",
-          label: this.$t("Тип"),
-          formatter: (el) => this.getTranslations(el),
+          key: 'type',
+          label: this.$t('Тип'),
+          formatter: el => this.getTranslations(el),
         },
         {
-          key: "payment_method",
-          label: this.$t("Метод оплаты"),
-          formatter: (el) => this.getTranslations(el),
+          key: 'payment_method',
+          label: this.$t('Метод оплаты'),
+          formatter: el => this.getTranslations(el),
         },
       ],
       deletePlan: {
         plans: [],
-        message: "",
+        message: '',
         removePlan: {},
       },
 
       loading: false,
-    };
+    }
   },
   computed: {
-    ...mapGetters(["getLoading", "getPermission"]),
+    ...mapGetters(['getLoading', 'getPermission']),
   },
   watch: {},
   mounted() {
-    this.fetchItems();
+    this.fetchItems()
   },
   methods: {
     getTranslations(el) {
       const d = {
-        paid: "Оплачено",
+        paid: 'Оплачено',
 
-        initial_payment: "1 взнос",
-        monthly: "Eжемесячный",
-        all: "Общий",
+        initial_payment: '1 взнос',
+        monthly: 'Eжемесячный',
+        all: 'Общий',
 
-        transfer: "Перечисление",
-        cash: "Наличные",
-        plastic_card: "Пластиковая карта",
-        recalculation: "Перерасчет",
-        to_khurshidaka: "К Хуршидака",
-      };
-      return d[el];
+        transfer: 'Перечисление',
+        cash: 'Наличные',
+        plastic_card: 'Пластиковая карта',
+        recalculation: 'Перерасчет',
+        to_khurshidaka: 'К Хуршидака',
+      }
+      return d[el]
     },
-    ...mapMutations(["updateLoading"]),
+    ...mapMutations(['updateLoading']),
     async fetchItems() {
-      const contract = this.$route.params.contract;
-      this.showLoading = true;
+      const { contract } = this.$route.params
+      this.showLoading = true
       v3ServiceApi.orders
         .findByContract({ contract })
-        .then((res) => {
-          this.items = res.data.result;
+        .then(res => {
+          this.items = res.data.result
         })
-        .catch((e) => {
-          this.toastedWithErrorCode(e);
+        .catch(e => {
+          this.toastedWithErrorCode(e)
         })
-        .finally(() => (this.showLoading = false));
+        .finally(() => (this.showLoading = false))
     },
   },
-};
+}
 </script>
 
 <template>
   <div>
     <app-header>
       <template #header-title>
-        <div class="go__back" @click="$router.go(-1)">
-          <BaseArrowLeft :width="32" :height="32"></BaseArrowLeft>
+        <div
+          class="go__back"
+          @click="$router.go(-1)"
+        >
+          <BaseArrowLeft
+            :width="32"
+            :height="32"
+          />
         </div>
         {{ $t("Оплаты по договору: ") }} {{ $route.params.contract }}
       </template>
@@ -135,7 +140,10 @@ export default {
           :fields="fields"
           :busy="showLoading"
         >
-          <template #empty="scope" class="text-center">
+          <template
+            #empty="scope"
+            class="text-center"
+          >
             <div class="d-flex justify-content-center align-items-center">
               {{ scope.emptyText }}
             </div>
@@ -143,10 +151,10 @@ export default {
           <template #table-busy>
             <div class="d-flex justify-content-center w-100">
               <div class="lds-ellipsis">
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
+                <div />
+                <div />
+                <div />
+                <div />
               </div>
             </div>
           </template>

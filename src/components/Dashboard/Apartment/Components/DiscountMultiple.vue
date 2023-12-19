@@ -1,89 +1,89 @@
 <script>
 export default {
+
+  name: 'DiscountMultiple',
   props: {
     discount: {},
     apartments: [],
   },
 
-  name: "DiscountMultiple",
-
   methods: {
     getPrice() {
-      let price = [];
+      const price = []
       switch (this.discount.type) {
-        case "fixed":
+        case 'fixed':
           for (let i = 0; this.apartments.length > i; i++) {
-            let a = this.apartments[i].discounts.find(
-              (i) => i.prepay == this.discount.prepay
-            ).amount;
-            price.push(parseFloat(a * this.apartments[i].plan.area));
+            const a = this.apartments[i].discounts.find(
+              i => i.prepay == this.discount.prepay,
+            ).amount
+            price.push(parseFloat(a * this.apartments[i].plan.area))
           }
-          break;
+          break
         default:
           for (let i = 0; this.apartments.length > i; i++) {
-            price.push(parseFloat(this.apartments[i].price));
+            price.push(parseFloat(this.apartments[i].price))
           }
-          break;
+          break
       }
-      return price.reduce((a, b) => a + b, 0);
+      return price.reduce((a, b) => a + b, 0)
     },
 
     getPrepay() {
-      if (this.discount.prepay === 100) return this.getTotal();
+      if (this.discount.prepay === 100) return this.getTotal()
 
-      let price = this.getPrice();
-      let total;
+      const price = this.getPrice()
+      let total
 
-      let total_discount = this.getDiscount();
+      const total_discount = this.getDiscount()
 
       switch (this.discount.type) {
-        case "fixed":
-          total = price;
-          break;
+        case 'fixed':
+          total = price
+          break
         default:
-          total = price / total_discount;
-          break;
+          total = price / total_discount
+          break
       }
 
-      return (this.discount.prepay * total) / 100;
+      return (this.discount.prepay * total) / 100
     },
 
     getDiscount() {
-      if (this.discount.prepay === 100) return 1;
+      if (this.discount.prepay === 100) return 1
 
-      return 1 - this.discount.amount / 100;
+      return 1 - this.discount.amount / 100
     },
 
     getMonth() {
       return (
-        (this.getTotal() - this.getPrepay()) /
-        this.apartments[0].object.credit_month
-      );
+        (this.getTotal() - this.getPrepay())
+        / this.apartments[0].object.credit_month
+      )
     },
 
     getDebt() {
-      return this.getTotal() - this.getPrepay();
+      return this.getTotal() - this.getPrepay()
     },
 
     getTotal() {
-      let total_discount = this.getDiscount();
+      const total_discount = this.getDiscount()
 
-      let price = this.getPrice();
-      let total;
+      const price = this.getPrice()
+      let total
       // let total = price * area;
       switch (this.discount.type) {
-        case "fixed":
-          total = price;
-          break;
+        case 'fixed':
+          total = price
+          break
         default:
-          total = price / total_discount;
-          break;
+          total = price / total_discount
+          break
       }
 
-      return total;
+      return total
     },
   },
-};
+}
 </script>
 
 <template>
@@ -96,22 +96,22 @@ export default {
 
       <div class="apartment__info">
         Первый взнос -
-        <span
-          >{{
-            getPrepay()
-              | number("0,0.00", {
-                thousandsSeparator: " ",
-                decimalSeparator: ",",
-              })
-          }}
-          {{ $t("ye") }}</span
-        >
+        <span>{{
+                getPrepay()
+                  | number("0,0.00", {
+                    thousandsSeparator: " ",
+                    decimalSeparator: ",",
+                  })
+              }}
+          {{ $t("ye") }}</span>
       </div>
 
-      <div class="apartment__info" v-if="discount.amount > 0">
+      <div
+        v-if="discount.amount > 0"
+        class="apartment__info"
+      >
         Ежемесячный:
-        <span
-          >{{ apartments[0].object.credit_month }} {{ $t("payments.month") }}
+        <span>{{ apartments[0].object.credit_month }} {{ $t("payments.month") }}
           {{
             getMonth()
               | number("0,0.00", {
@@ -123,32 +123,31 @@ export default {
         </span>
       </div>
 
-      <div class="apartment__info" v-if="discount.amount > 0">
+      <div
+        v-if="discount.amount > 0"
+        class="apartment__info"
+      >
         Остаток:
-        <span
-          >{{
-            getDebt()
-              | number("0,0.00", {
-                thousandsSeparator: " ",
-                decimalSeparator: ",",
-              })
-          }}
-          {{ $t("ye") }}</span
-        >
+        <span>{{
+                getDebt()
+                  | number("0,0.00", {
+                    thousandsSeparator: " ",
+                    decimalSeparator: ",",
+                  })
+              }}
+          {{ $t("ye") }}</span>
       </div>
 
       <div class="apartment__info">
         Итого:
-        <span
-          >{{
-            getTotal()
-              | number("0,0.00", {
-                thousandsSeparator: " ",
-                decimalSeparator: ",",
-              })
-          }}
-          {{ $t("ye") }}</span
-        >
+        <span>{{
+                getTotal()
+                  | number("0,0.00", {
+                    thousandsSeparator: " ",
+                    decimalSeparator: ",",
+                  })
+              }}
+          {{ $t("ye") }}</span>
       </div>
     </div>
   </div>

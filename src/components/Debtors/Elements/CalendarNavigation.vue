@@ -1,15 +1,15 @@
 <script>
-import BaseLeftIcon from "@/components/icons/BaseLeftIcon";
-import BaseRightIcon from "@/components/icons/BaseRightIcon";
-import BaseLeftDoubleIcon from "@/components/icons/BaseLeftDoubleIcon";
-import BaseRightDoubleIcon from "@/components/icons/BaseRightDoubleIcon";
-import CircleButtonGenerator from "@/components/Elements/Buttons/CircleButtonGenerator";
-import BaseDownIcon from "@/components/icons/BaseDownIcon";
-import DatePicker from "vue2-datepicker";
-import { dateConvertor, monthsNameList } from "@/util/calendar";
+import BaseLeftIcon from '@/components/icons/BaseLeftIcon'
+import BaseRightIcon from '@/components/icons/BaseRightIcon'
+import BaseLeftDoubleIcon from '@/components/icons/BaseLeftDoubleIcon'
+import BaseRightDoubleIcon from '@/components/icons/BaseRightDoubleIcon'
+import CircleButtonGenerator from '@/components/Elements/Buttons/CircleButtonGenerator'
+import BaseDownIcon from '@/components/icons/BaseDownIcon'
+import DatePicker from 'vue2-datepicker'
+import { dateConvertor, monthsNameList } from '@/util/calendar'
 
 export default {
-  name: "CalendarNavigation",
+  name: 'CalendarNavigation',
   components: {
     BaseLeftDoubleIcon,
     BaseLeftIcon,
@@ -19,105 +19,105 @@ export default {
     DatePicker,
     BaseDownIcon,
   },
-  emits: ["change-date"],
+  emits: ['change-date'],
   props: {
     typeOfView: {
       type: String,
-      default: "month",
+      default: 'month',
     },
   },
   data() {
-    const hasStarterMoment = this.$route.query.hasOwnProperty("starter_moment");
-    let navigationDate = new Date();
+    const hasStarterMoment = this.$route.query.hasOwnProperty('starter_moment')
+    let navigationDate = new Date()
     if (hasStarterMoment) {
-      navigationDate = dateConvertor(this.$route.query.starter_moment);
+      navigationDate = dateConvertor(this.$route.query.starter_moment)
     }
     return {
       navigationDate,
       months: monthsNameList,
-    };
+    }
   },
   computed: {
     dayFormat() {
-      const date = new Date(this.navigationDate);
-      const day = date.getDate();
-      const month = date.getMonth();
-      const monthToText = this.months[month];
-      const translateMonth = this.$t(monthToText);
-      const year = date.getFullYear();
+      const date = new Date(this.navigationDate)
+      const day = date.getDate()
+      const month = date.getMonth()
+      const monthToText = this.months[month]
+      const translateMonth = this.$t(monthToText)
+      const year = date.getFullYear()
       return {
         day,
         month: translateMonth,
         year,
-      };
+      }
     },
     dateCount() {
-      return new Date(this.navigationDate).getDate();
+      return new Date(this.navigationDate).getDate()
     },
     datePickerType() {
-      if (this.typeOfView === "month") {
-        return "month";
+      if (this.typeOfView === 'month') {
+        return 'month'
       }
-      return "date";
+      return 'date'
     },
   },
   watch: {
     navigationDate(lastValue) {
-      this.$emit("change-date", dateConvertor(lastValue));
+      this.$emit('change-date', dateConvertor(lastValue))
     },
-    "$route.query.starter_moment"(lastMoment, oldMoment) {
+    '$route.query.starter_moment': function (lastMoment, oldMoment) {
       if (lastMoment !== oldMoment && lastMoment !== undefined) {
-        this.navigationDate = lastMoment;
+        this.navigationDate = lastMoment
       }
     },
   },
   methods: {
     setCalendarMoment(moment) {
-      this.navigationDate = dateConvertor(moment);
+      this.navigationDate = dateConvertor(moment)
     },
     setMomentToCurrent() {
-      this.navigationDate = new Date();
+      this.navigationDate = new Date()
     },
     buttonDoubleIconsTrigger(count) {
-      const lastDate = new Date(this.navigationDate);
-      const date = lastDate.getDate();
-      const month = lastDate.getMonth();
-      const fullYear = lastDate.getFullYear();
+      const lastDate = new Date(this.navigationDate)
+      const date = lastDate.getDate()
+      const month = lastDate.getMonth()
+      const fullYear = lastDate.getFullYear()
       switch (this.typeOfView) {
-        case "day": {
-          this.navigationDate = lastDate.setDate(this.dateCount + count * 7);
-          break;
+        case 'day': {
+          this.navigationDate = lastDate.setDate(this.dateCount + count * 7)
+          break
         }
-        case "week": {
-          this.navigationDate = new Date(fullYear, month + count, date);
-          break;
+        case 'week': {
+          this.navigationDate = new Date(fullYear, month + count, date)
+          break
         }
-        case "month": {
-          this.navigationDate = new Date(fullYear + count, month, date);
+        case 'month': {
+          this.navigationDate = new Date(fullYear + count, month, date)
         }
       }
     },
     buttonIconsTrigger(count) {
-      const lastDate = new Date(this.navigationDate);
-      const date = lastDate.getDate();
-      const month = lastDate.getMonth();
-      const fullYear = lastDate.getFullYear();
+      const lastDate = new Date(this.navigationDate)
+      const date = lastDate.getDate()
+      const month = lastDate.getMonth()
+      const fullYear = lastDate.getFullYear()
       switch (this.typeOfView) {
-        case "day": {
-          this.navigationDate = lastDate.setDate(this.dateCount + count);
-          break;
+        case 'day': {
+          this.navigationDate = lastDate.setDate(this.dateCount + count)
+          break
         }
-        case "week": {
-          this.navigationDate = lastDate.setDate(this.dateCount + count * 7);
-          break;
+        case 'week': {
+          this.navigationDate = lastDate.setDate(this.dateCount + count * 7)
+          break
         }
-        case "month": {
-          this.navigationDate = new Date(fullYear, month + count, date);
+        case 'month': {
+          this.navigationDate = new Date(fullYear, month + count, date)
         }
       }
     },
   },
-};
+}
 </script>
 
 <template>
@@ -130,7 +130,10 @@ export default {
         </circle-button-generator>
 
         <!--    LEFT ICON    -->
-        <circle-button-generator @click="buttonIconsTrigger(-1)" class="ml-3">
+        <circle-button-generator
+          class="ml-3"
+          @click="buttonIconsTrigger(-1)"
+        >
           <base-left-icon />
         </circle-button-generator>
 
@@ -160,12 +163,18 @@ export default {
                 </template>
               </div>
             </div>
-            <date-picker :type="datePickerType" v-model="navigationDate" />
+            <date-picker
+              v-model="navigationDate"
+              :type="datePickerType"
+            />
           </div>
         </div>
 
         <!--   RIGHT ICON     -->
-        <circle-button-generator @click="buttonIconsTrigger(1)" class="mr-3">
+        <circle-button-generator
+          class="mr-3"
+          @click="buttonIconsTrigger(1)"
+        >
           <base-right-icon />
         </circle-button-generator>
 

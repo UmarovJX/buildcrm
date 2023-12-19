@@ -1,9 +1,9 @@
-export default class page extends require("./field") {
+export default class page extends require('./field') {
   constructor(instruct) {
-    super(...arguments);
+    super(...arguments)
   }
 
   static get type() {
-    return "field.page";
+    return 'field.page'
   }
 }

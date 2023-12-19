@@ -1,25 +1,10 @@
 <script>
-import BaseNumericInput from "@/components/Reusable/BaseNumericInput";
-import Vue from "vue";
+import BaseNumericInput from '@/components/Reusable/BaseNumericInput'
+import Vue from 'vue'
+
 export default {
   components: {
     BaseNumericInput,
-  },
-
-  watch: {
-    "contract.discount.id": function (valNew) {
-      this.type = valNew;
-      this.discount_type = valNew === "other";
-    },
-  },
-
-  data() {
-    return {
-      editable: false,
-      edited: false,
-      discount_type: false,
-      type: null,
-    };
   },
 
   props: {
@@ -29,42 +14,65 @@ export default {
     // area: {},
   },
 
-  methods: {
-    editPrice() {
-      Vue.set(this.apartment, "price_edited", true);
-      // this.apartment.price_edited = true
-      this.editable = true;
-    },
-    savePrice() {
-      this.editable = !this.editable;
-      this.edited = true;
-      this.$emit("apartmentPrice", {});
+  data() {
+    return {
+      editable: false,
+      edited: false,
+      discount_type: false,
+      type: null,
+    }
+  },
+
+  watch: {
+    'contract.discount.id': function (valNew) {
+      this.type = valNew
+      this.discount_type = valNew === 'other'
     },
   },
-};
+
+  methods: {
+    editPrice() {
+      Vue.set(this.apartment, 'price_edited', true)
+      // this.apartment.price_edited = true
+      this.editable = true
+    },
+    savePrice() {
+      this.editable = !this.editable
+      this.edited = true
+      this.$emit('apartmentPrice', {})
+    },
+  },
+}
 </script>
 
 <template>
-  <div class="d-flex align-items-center" style="height: 30px">
+  <div
+    class="d-flex align-items-center"
+    style="height: 30px"
+  >
     <b-button
       v-if="discount_type && !editable"
-      @click="editPrice"
       style="transform: scale(0.6)"
       size="sm"
       :variant="editable ? 'success' : 'primary'"
       class="m-0"
-      ><i class="fa" :class="editable ? 'fa-save' : 'fa-edit'"></i
-    ></b-button>
+      @click="editPrice"
+    ><i
+      class="fa"
+      :class="editable ? 'fa-save' : 'fa-edit'"
+    /></b-button>
 
     <b-button
       v-if="editable && discount_type && type === 'other'"
-      @click="savePrice"
       style="transform: scale(0.6)"
       size="sm"
       :variant="editable ? 'success' : 'primary'"
       class="m-0"
-      ><i class="fa" :class="editable ? 'fa-save' : 'fa-edit'"></i
-    ></b-button>
+      @click="savePrice"
+    ><i
+      class="fa"
+      :class="editable ? 'fa-save' : 'fa-edit'"
+    /></b-button>
 
     <base-numeric-input
       id="total"
@@ -77,7 +85,7 @@ export default {
       separator="space"
       :disabled="!editable"
       :minus="false"
-    ></base-numeric-input>
+    />
   </div>
 </template>
 

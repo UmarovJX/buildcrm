@@ -1,13 +1,13 @@
 <script>
 export default {
-  name: "ClientInformation",
+  name: 'ClientInformation',
   props: {
     client: {
       type: Object,
       default: () => {},
     },
   },
-};
+}
 </script>
 
 <template>
@@ -63,7 +63,10 @@ export default {
           {{ status.phone }}
         </p>
       </div>
-      <div v-if="client.other_phone.length > 5" class="info-item">
+      <div
+        v-if="client.other_phone.length > 5"
+        class="info-item"
+      >
         <span class="label">
           {{ $t("apartments.agree.other_phone") }}
         </span>

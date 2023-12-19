@@ -1,12 +1,12 @@
 <script>
-import { mapGetters } from "vuex";
-import BaseEditIcon from "@/components/icons/BaseEditIcon";
-import BaseButton from "@/components/Reusable/BaseButton";
-import { sortObjectValues } from "@/util/reusable";
-import CompaniesPermission from "@/permission/companies";
+import { mapGetters } from 'vuex'
+import BaseEditIcon from '@/components/icons/BaseEditIcon'
+import BaseButton from '@/components/Reusable/BaseButton'
+import { sortObjectValues } from '@/util/reusable'
+import CompaniesPermission from '@/permission/companies'
 
 export default {
-  name: "CompaniesList",
+  name: 'CompaniesList',
   components: {
     BaseButton,
     BaseEditIcon,
@@ -17,106 +17,107 @@ export default {
       required: true,
     },
   },
-  emits: ["edit-selected-company", "delete-company", "sort-companies"],
+  emits: ['edit-selected-company', 'delete-company', 'sort-companies'],
   data() {
     return {
       editPermission: CompaniesPermission.getCompaniesEditPermission(),
       filter: {
-        sortBy: "",
+        sortBy: '',
         sortDesc: false,
       },
       paymentCheckbox: true,
       primaryPaymentAccount: 0,
       detailsField: [
         {
-          key: "bank_name",
-          label: this.$t("companies.bank_name"),
+          key: 'bank_name',
+          label: this.$t('companies.bank_name'),
         },
         {
-          key: "payment_account",
-          label: this.$t("companies.payment_account"),
+          key: 'payment_account',
+          label: this.$t('companies.payment_account'),
         },
         {
-          key: "inn",
-          label: this.$t("companies.inn"),
+          key: 'inn',
+          label: this.$t('companies.inn'),
         },
         {
-          key: "mfo",
-          label: this.$t("companies.mfo"),
+          key: 'mfo',
+          label: this.$t('companies.mfo'),
         },
         {
-          key: "is_primary",
-          label: "",
+          key: 'is_primary',
+          label: '',
         },
       ],
-    };
+    }
   },
   computed: {
     ...mapGetters({
-      permission: "getPermission",
+      permission: 'getPermission',
     }),
     fields() {
       return [
         {
-          key: "id",
-          label: this.$t("companies.number"),
+          key: 'id',
+          label: this.$t('companies.number'),
         },
         {
-          key: "name",
-          label: this.$t("companies.name"),
+          key: 'name',
+          label: this.$t('companies.name'),
           sortable: true,
         },
         {
-          key: "director",
-          label: this.$t("companies.director"),
+          key: 'director',
+          label: this.$t('companies.director'),
         },
         {
-          key: "phone",
-          label: this.$t("companies.phone"),
-          formatter: (value) => "+" + value,
+          key: 'phone',
+          label: this.$t('companies.phone'),
+          formatter: value => `+${value}`,
         },
         {
-          key: "accounts_number",
-          label: this.$t("companies.accounts_number"),
+          key: 'accounts_number',
+          label: this.$t('companies.accounts_number'),
         },
         {
-          key: "actions",
-          label: this.$t("companies.actions"),
+          key: 'actions',
+          label: this.$t('companies.actions'),
         },
-      ];
+      ]
     },
   },
   methods: {
     sortingChanged(query) {
-      const sortQuery = sortObjectValues(query);
-      this.$emit("sort-companies", sortQuery);
+      const sortQuery = sortObjectValues(query)
+      this.$emit('sort-companies', sortQuery)
     },
     getDirector(firstName, secondName) {
-      return `${firstName} ${secondName}`;
+      return `${firstName} ${secondName}`
     },
     openDetails({ id }) {
-      this.$router.push({ name: "company-details", params: { companyId: id } });
+      this.$router.push({ name: 'company-details', params: { companyId: id } })
     },
     editSelectedCompany(item) {
       if (item) {
-        this.$emit("edit-selected-company", item);
+        this.$emit('edit-selected-company', item)
       }
     },
     deleteCompany(id) {
-      this.$emit("delete-company", id);
+      this.$emit('delete-company', id)
     },
     updatedCompany({ message }) {
-      this.$emit("updated-company", { message });
+      this.$emit('updated-company', { message })
     },
   },
-};
+}
 </script>
 
 <template>
   <div class="mt-2">
     <b-table
+      v-model:sort-by="filter.sortBy"
+      v-model:sort-desc="filter.sortDesc"
       class="table__list font-inter"
-      @sort-changed="sortingChanged"
       thead-tr-class="row__head__bottom-border"
       tbody-tr-class="row__body__bottom-border"
       sticky-header
@@ -124,14 +125,16 @@ export default {
       responsive
       :items="companies"
       :fields="fields"
-      @row-clicked="openDetails"
       show-empty
-      v-model:sort-by="filter.sortBy"
-      v-model:sort-desc="filter.sortDesc"
       sort-icon-left
       :empty-text="$t('no_data')"
+      @sort-changed="sortingChanged"
+      @row-clicked="openDetails"
     >
-      <template class="header_label" #head(name)="data">
+      <template
+        #head(name)="data"
+        class="header_label"
+      >
         <span
           :class="{ active_header_purple: filter.sortBy === data.column }"
           class="label font-craftworksans"

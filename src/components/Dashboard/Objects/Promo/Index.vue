@@ -1,18 +1,18 @@
 <script>
-import api from "@/services/api";
-import { mapGetters, mapMutations } from "vuex";
-import BaseLoadingContent from "@/components/BaseLoadingContent";
-import CreationContent from "@/components/Dashboard/Objects/Promo/components/CreationContent";
-import ListContent from "@/components/Dashboard/Objects/Promo/components/ListContent";
-import PromosPermission from "@/permission/promos";
-import BaseButton from "@/components/Reusable/BaseButton";
-import BasePlusIcon from "@/components/icons/BasePlusIcon";
-import AppHeader from "@/components/Header/AppHeader";
-import AppBreadcrumb from "@/components/AppBreadcrumb";
-import { hasOwnProperty } from "@/util/object";
+import api from '@/services/api'
+import { mapGetters, mapMutations } from 'vuex'
+import BaseLoadingContent from '@/components/BaseLoadingContent'
+import CreationContent from '@/components/Dashboard/Objects/Promo/components/CreationContent'
+import ListContent from '@/components/Dashboard/Objects/Promo/components/ListContent'
+import PromosPermission from '@/permission/promos'
+import BaseButton from '@/components/Reusable/BaseButton'
+import BasePlusIcon from '@/components/icons/BasePlusIcon'
+import AppHeader from '@/components/Header/AppHeader'
+import AppBreadcrumb from '@/components/AppBreadcrumb'
+import { hasOwnProperty } from '@/util/object'
 
 export default {
-  name: "Promo",
+  name: 'Promo',
   components: {
     AppBreadcrumb,
     AppHeader,
@@ -27,108 +27,108 @@ export default {
       promos: [],
       loading: false,
       promoUsage: [],
-      page: "",
+      page: '',
       createPromoPermission: PromosPermission.getPromosCreatePermission(),
-    };
+    }
   },
   computed: {
-    ...mapGetters(["getPermission"]),
+    ...mapGetters(['getPermission']),
     activeContent() {
-      return this.$t("list");
+      return this.$t('list')
     },
     breadCrumbs() {
       return [
         {
           route: {
-            name: "objects",
+            name: 'objects',
           },
           content: {
-            type: "i18n",
-            path: "objects.title",
+            type: 'i18n',
+            path: 'objects.title',
           },
         },
-      ];
+      ]
     },
   },
   async created() {
-    await this.fetchPromoData();
+    await this.fetchPromoData()
   },
   methods: {
     ...mapMutations({
-      changeEditHistory: "changeEditHistory",
+      changeEditHistory: 'changeEditHistory',
     }),
     async fetchPromoData(showLoading = true) {
-      const { id } = this.$route.params;
+      const { id } = this.$route.params
 
       if (showLoading) {
-        this.startLoading();
+        this.startLoading()
       }
 
       await api.promo
         .fetchPromoList(id)
-        .then((response) => {
-          this.promos = response.data;
+        .then(response => {
+          this.promos = response.data
           if (
-            this.promos.length &&
-            hasOwnProperty(this.promos[0], "object_name")
+            this.promos.length
+            && hasOwnProperty(this.promos[0], 'object_name')
           ) {
-            this.page = this.promos[0]["object_name"];
+            this.page = this.promos[0].object_name
           }
         })
-        .catch((error) => {
-          this.toastedWithErrorCode(error);
+        .catch(error => {
+          this.toastedWithErrorCode(error)
         })
         .finally(() => {
           if (showLoading) {
-            this.finishLoading();
+            this.finishLoading()
           }
-        });
+        })
     },
     startLoading() {
-      this.loading = true;
+      this.loading = true
     },
     finishLoading() {
-      this.loading = false;
+      this.loading = false
     },
     addNewPromo() {
-      this.changeEditHistory({});
-      this.$bvModal.show("promoCreationModal");
+      this.changeEditHistory({})
+      this.$bvModal.show('promoCreationModal')
     },
     async editPromoItem(item) {
-      const objectId = this.$route.params.id;
+      const objectId = this.$route.params.id
       await api.promoV2
         .promoEditContext(objectId, item.uuid)
-        .then((response) => {
-          this.changeEditHistory(response.data);
-          this.$bvModal.show("promoCreationModal");
+        .then(response => {
+          this.changeEditHistory(response.data)
+          this.$bvModal.show('promoCreationModal')
         })
-        .catch((error) => {
-          this.toastedWithErrorCode(error);
-        });
+        .catch(error => {
+          this.toastedWithErrorCode(error)
+        })
     },
     async successfullyCreated() {
-      const title = this.$t("promo.successfully_created");
-      this.showSuccessResponse(title);
-      await this.fetchPromoData(false);
+      const title = this.$t('promo.successfully_created')
+      this.showSuccessResponse(title)
+      await this.fetchPromoData(false)
     },
     async successfullyEdited() {
-      const title = this.$t("promo.successfully_edited");
-      this.showSuccessResponse(title);
-      await this.fetchPromoData(false);
+      const title = this.$t('promo.successfully_edited')
+      this.showSuccessResponse(title)
+      await this.fetchPromoData(false)
     },
     showSuccessResponse(title) {
       this.$swal({
-        text: "",
-        icon: "success",
+        text: '',
+        icon: 'success',
         showCancelButton: false,
         title,
-      });
+      })
     },
     errorOnCreation(error) {
-      this.toastedWithErrorCode(error);
+      this.toastedWithErrorCode(error)
     },
   },
-};
+}
 </script>
 
 <template>

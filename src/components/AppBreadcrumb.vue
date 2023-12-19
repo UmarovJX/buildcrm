@@ -1,10 +1,10 @@
 <script>
-import BaseLeftIcon from "@/components/icons/BaseLeftIcon";
-import BaseRightIcon from "@/components/icons/BaseRightIcon";
-import { isFunction } from "@/util/inspect";
+import BaseLeftIcon from '@/components/icons/BaseLeftIcon'
+import BaseRightIcon from '@/components/icons/BaseRightIcon'
+import { isFunction } from '@/util/inspect'
 
 export default {
-  name: "AppBreadcrumb",
+  name: 'AppBreadcrumb',
   components: {
     BaseRightIcon,
     BaseLeftIcon,
@@ -59,67 +59,70 @@ export default {
   },
   computed: {
     title() {
-      const { pageInfo } = this;
-      if (!pageInfo) return null;
-      const { title: pageTitle } = pageInfo;
+      const { pageInfo } = this
+      if (!pageInfo) return null
+      const { title: pageTitle } = pageInfo
 
-      if (typeof pageInfo === "string") {
-        return this.$t(pageInfo);
+      if (typeof pageInfo === 'string') {
+        return this.$t(pageInfo)
       }
 
-      if (typeof pageTitle === "object") {
-        if (pageTitle.type === "i18n") {
-          return this.$t(pageTitle.content);
+      if (typeof pageTitle === 'object') {
+        if (pageTitle.type === 'i18n') {
+          return this.$t(pageTitle.content)
         }
       }
 
-      return pageTitle;
+      return pageTitle
     },
     highlight() {
-      const { pageInfo } = this;
-      if (typeof pageInfo === "string") {
-        return null;
+      const { pageInfo } = this
+      if (typeof pageInfo === 'string') {
+        return null
       }
 
-      const { titleHighlight: pageHighlight } = pageInfo;
-      if (typeof pageHighlight === "object") {
-        if (pageHighlight.type === "i18n") {
-          return this.$t(pageHighlight.content);
+      const { titleHighlight: pageHighlight } = pageInfo
+      if (typeof pageHighlight === 'object') {
+        if (pageHighlight.type === 'i18n') {
+          return this.$t(pageHighlight.content)
         }
       }
 
-      return pageHighlight;
+      return pageHighlight
     },
     pageOutput() {
-      const { page } = this;
-      if (typeof page === "object") {
-        if (page.type === "string") {
-          return page.path;
+      const { page } = this
+      if (typeof page === 'object') {
+        if (page.type === 'string') {
+          return page.path
         }
-        return this.$t(page.path);
+        return this.$t(page.path)
       }
-      return this.$t(page);
+      return this.$t(page)
     },
   },
   methods: {
     backBtnHandler() {
       if (isFunction(this.goBackMethod)) {
-        this.goBackMethod();
+        this.goBackMethod()
       } else {
-        this.$router.go(-1);
+        this.$router.go(-1)
       }
     },
   },
-};
+}
 </script>
 
 <template>
   <div class="d-flex">
     <div
-      @click="backBtnHandler"
       class="app-header-back-button d-flex justify-content-center align-items-center"
+      @click="backBtnHandler"
     >
-      <base-left-icon :width="32" :height="32" />
+      <base-left-icon
+        :width="32"
+        :height="32"
+      />
     </div>
     <div class="app-header-page-content">
       <div class="app-breadcrumb d-flex align-items-center">
@@ -137,7 +140,7 @@ export default {
             :class="breadcrumb.route.class"
             class="app-breadcrumb-link"
           >
-            <slot :name="`${breadcrumb.route.name}-left`"></slot>
+            <slot :name="`${breadcrumb.route.name}-left`" />
             <span class="app-breadcrumb-link-content">
               {{
                 breadcrumb.content.type === "string"
@@ -145,9 +148,12 @@ export default {
                   : $t(breadcrumb.content.path)
               }}
             </span>
-            <slot :name="`${breadcrumb.route.name}-right`"></slot>
+            <slot :name="`${breadcrumb.route.name}-right`" />
             <span>
-              <base-right-icon :width="18" :height="18" />
+              <base-right-icon
+                :width="18"
+                :height="18"
+              />
             </span>
           </router-link>
         </div>
@@ -155,9 +161,15 @@ export default {
           {{ pageOutput }}
         </span>
       </div>
-      <div v-if="title" class="app-header-page-title">
+      <div
+        v-if="title"
+        class="app-header-page-title"
+      >
         <p>{{ title }}</p>
-        <p v-if="highlight" class="app-header-page-title-active">
+        <p
+          v-if="highlight"
+          class="app-header-page-title-active"
+        >
           {{ highlight }}
         </p>
       </div>

@@ -1,6 +1,6 @@
 <script>
 export default {
-  name: "Paginate",
+  name: 'Paginate',
   props: {
     value: {
       type: Number,
@@ -22,15 +22,15 @@ export default {
     },
     prevText: {
       type: String,
-      default: "Prev",
+      default: 'Prev',
     },
     nextText: {
       type: String,
-      default: "Next",
+      default: 'Next',
     },
     breakViewText: {
       type: String,
-      default: "…",
+      default: '…',
     },
     containerClass: {
       type: String,
@@ -61,11 +61,11 @@ export default {
     },
     activeClass: {
       type: String,
-      default: "active",
+      default: 'active',
     },
     disabledClass: {
       type: String,
-      default: "disabled",
+      default: 'disabled',
     },
     noLiSurround: {
       type: Boolean,
@@ -77,76 +77,75 @@ export default {
     },
     firstButtonText: {
       type: String,
-      default: "First",
+      default: 'First',
     },
     lastButtonText: {
       type: String,
-      default: "Last",
+      default: 'Last',
     },
     hidePrevNext: {
       type: Boolean,
       default: false,
     },
   },
-  emits: ["change-page"],
-  beforeUpdate() {
-    if (this.forcePage === undefined) return;
-    if (this.forcePage !== this.selected) {
-      this.selected = this.forcePage;
+  emits: ['change-page'],
+  data() {
+    return {
+      innerValue: 1,
     }
   },
   computed: {
     selected: {
-      get: function () {
-        return this.value || this.innerValue;
+      get() {
+        return this.value || this.innerValue
       },
-      set: function (newValue) {
-        this.innerValue = newValue;
+      set(newValue) {
+        this.innerValue = newValue
       },
     },
-    pages: function () {
-      let items = {};
+    pages() {
+      const items = {}
       if (this.pageCount <= this.pageRange) {
         for (let index = 0; index < this.pageCount; index++) {
           items[index] = {
-            index: index,
+            index,
             content: index + 1,
             selected: index === this.selected - 1,
-          };
+          }
         }
       } else {
-        const halfPageRange = Math.floor(this.pageRange / 2);
+        const halfPageRange = Math.floor(this.pageRange / 2)
 
-        let setPageItem = (index) => {
+        const setPageItem = index => {
           items[index] = {
-            index: index,
+            index,
             content: index + 1,
             selected: index === this.selected - 1,
-          };
-        };
+          }
+        }
 
-        let setBreakView = (index) => {
+        const setBreakView = index => {
           items[index] = {
             disabled: true,
             breakView: true,
-          };
-        };
+          }
+        }
 
         // 1st - loop thru low end of margin pages
         for (let i = 0; i < this.marginPages; i++) {
-          setPageItem(i);
+          setPageItem(i)
         }
 
         // 2nd - loop thru selected range
-        let selectedRangeLow = 0;
+        let selectedRangeLow = 0
         if (this.selected - halfPageRange > 0) {
-          selectedRangeLow = this.selected - 1 - halfPageRange;
+          selectedRangeLow = this.selected - 1 - halfPageRange
         }
 
-        let selectedRangeHigh = selectedRangeLow + this.pageRange - 1;
+        let selectedRangeHigh = selectedRangeLow + this.pageRange - 1
         if (selectedRangeHigh >= this.pageCount) {
-          selectedRangeHigh = this.pageCount - 1;
-          selectedRangeLow = selectedRangeHigh - this.pageRange + 1;
+          selectedRangeHigh = this.pageCount - 1
+          selectedRangeLow = selectedRangeHigh - this.pageRange + 1
         }
 
         for (
@@ -154,17 +153,17 @@ export default {
           i <= selectedRangeHigh && i <= this.pageCount - 1;
           i++
         ) {
-          setPageItem(i);
+          setPageItem(i)
         }
 
         // Check if there is breakView in the left of selected range
         if (selectedRangeLow > this.marginPages) {
-          setBreakView(selectedRangeLow - 1);
+          setBreakView(selectedRangeLow - 1)
         }
 
         // Check if there is breakView in the right of selected range
         if (selectedRangeHigh + 1 < this.pageCount - this.marginPages) {
-          setBreakView(selectedRangeHigh + 1);
+          setBreakView(selectedRangeHigh + 1)
         }
 
         // 3rd - loop thru high end of margin pages
@@ -173,67 +172,71 @@ export default {
           i >= this.pageCount - this.marginPages;
           i--
         ) {
-          setPageItem(i);
+          setPageItem(i)
         }
       }
-      return items;
+      return items
     },
   },
-  data() {
-    return {
-      innerValue: 1,
-    };
+  beforeUpdate() {
+    if (this.forcePage === undefined) return
+    if (this.forcePage !== this.selected) {
+      this.selected = this.forcePage
+    }
   },
   methods: {
     handlePageSelected(selected) {
-      if (this.selected === selected) return;
+      if (this.selected === selected) return
 
-      this.innerValue = selected;
-      this.$emit("change-page", selected);
+      this.innerValue = selected
+      this.$emit('change-page', selected)
     },
     prevPage() {
-      if (this.selected <= 1) return;
+      if (this.selected <= 1) return
 
-      this.handlePageSelected(this.selected - 1);
+      this.handlePageSelected(this.selected - 1)
     },
     nextPage() {
-      if (this.selected >= this.pageCount) return;
+      if (this.selected >= this.pageCount) return
 
-      this.handlePageSelected(this.selected + 1);
+      this.handlePageSelected(this.selected + 1)
     },
     firstPageSelected() {
-      return this.selected === 1;
+      return this.selected === 1
     },
     lastPageSelected() {
-      return this.selected === this.pageCount || this.pageCount === 0;
+      return this.selected === this.pageCount || this.pageCount === 0
     },
     selectFirstPage() {
-      if (this.selected <= 1) return;
+      if (this.selected <= 1) return
 
-      this.handlePageSelected(1);
+      this.handlePageSelected(1)
     },
     selectLastPage() {
-      if (this.selected >= this.pageCount) return;
+      if (this.selected >= this.pageCount) return
 
-      this.handlePageSelected(this.pageCount);
+      this.handlePageSelected(this.pageCount)
     },
   },
-};
+}
 </script>
 
 <template>
-  <ul :class="containerClass" v-if="!noLiSurround">
+  <ul
+    v-if="!noLiSurround"
+    :class="containerClass"
+  >
     <li
       v-if="firstLastButton"
       :class="[pageClass, firstPageSelected() ? disabledClass : '']"
     >
       <a
-        @click="selectFirstPage()"
-        @keyup.enter="selectFirstPage()"
         :class="pageLinkClass"
         :tabindex="firstPageSelected() ? -1 : 0"
+        @click="selectFirstPage()"
+        @keyup.enter="selectFirstPage()"
         v-html="firstButtonText"
-      ></a>
+      />
     </li>
     <!--    prev content-->
     <li
@@ -241,13 +244,13 @@ export default {
       :class="[prevClass, firstPageSelected() ? disabledClass : '']"
     >
       <a
-        @click="prevPage()"
-        @keyup.enter="prevPage()"
         :class="prevLinkClass"
         :tabindex="firstPageSelected() ? -1 : 0"
+        @click="prevPage()"
+        @keyup.enter="prevPage()"
       >
         <!--    Slot Prev Content    -->
-        <slot name="prev-content"></slot>
+        <slot name="prev-content" />
       </a>
     </li>
 
@@ -268,17 +271,20 @@ export default {
       >
         <slot name="breakViewContent">{{ breakViewText }}</slot>
       </a>
-      <a v-else-if="page.disabled" :class="pageLinkClass" tabindex="0">{{
+      <a
+        v-else-if="page.disabled"
+        :class="pageLinkClass"
+        tabindex="0"
+      >{{
         page.content
       }}</a>
       <a
         v-else
-        @click="handlePageSelected(page.index + 1)"
-        @keyup.enter="handlePageSelected(page.index + 1)"
         :class="pageLinkClass"
         tabindex="0"
-        >{{ page.content }}</a
-      >
+        @click="handlePageSelected(page.index + 1)"
+        @keyup.enter="handlePageSelected(page.index + 1)"
+      >{{ page.content }}</a>
     </li>
 
     <li
@@ -286,12 +292,12 @@ export default {
       :class="[nextClass, lastPageSelected() ? disabledClass : '']"
     >
       <a
-        @click="nextPage()"
-        @keyup.enter="nextPage()"
         :class="nextLinkClass"
         :tabindex="lastPageSelected() ? -1 : 0"
+        @click="nextPage()"
+        @keyup.enter="nextPage()"
       >
-        <slot name="next-content"></slot>
+        <slot name="next-content" />
       </a>
     </li>
 
@@ -300,34 +306,40 @@ export default {
       :class="[pageClass, lastPageSelected() ? disabledClass : '']"
     >
       <a
-        @click="selectLastPage()"
-        @keyup.enter="selectLastPage()"
         :class="pageLinkClass"
         :tabindex="lastPageSelected() ? -1 : 0"
+        @click="selectLastPage()"
+        @keyup.enter="selectLastPage()"
         v-html="lastButtonText"
-      ></a>
+      />
     </li>
   </ul>
 
-  <div :class="containerClass" v-else>
+  <div
+    v-else
+    :class="containerClass"
+  >
     <a
       v-if="firstLastButton"
-      @click="selectFirstPage()"
-      @keyup.enter="selectFirstPage()"
       :class="[pageLinkClass, firstPageSelected() ? disabledClass : '']"
       tabindex="0"
+      @click="selectFirstPage()"
+      @keyup.enter="selectFirstPage()"
       v-html="firstButtonText"
-    ></a>
+    />
     <a
       v-if="!(firstPageSelected() && hidePrevNext)"
-      @click="prevPage()"
-      @keyup.enter="prevPage()"
       :class="[prevLinkClass, firstPageSelected() ? disabledClass : '']"
       tabindex="0"
+      @click="prevPage()"
+      @keyup.enter="prevPage()"
     >
-      <slot name="next-content"></slot>
+      <slot name="next-content" />
     </a>
-    <div v-for="(page, index) in pages" :key="index">
+    <div
+      v-for="(page, index) in pages"
+      :key="index"
+    >
       <a
         v-if="page.breakView"
         :class="[
@@ -347,35 +359,33 @@ export default {
           disabledClass,
         ]"
         tabindex="0"
-        >{{ page.content }}</a
-      >
+      >{{ page.content }}</a>
       <a
         v-else
-        @click="handlePageSelected(page.index + 1)"
-        @keyup.enter="handlePageSelected(page.index + 1)"
         :class="[pageLinkClass, page.selected ? activeClass : '']"
         tabindex="0"
-        >{{ page.content }}</a
-      >
+        @click="handlePageSelected(page.index + 1)"
+        @keyup.enter="handlePageSelected(page.index + 1)"
+      >{{ page.content }}</a>
     </div>
     <a
       v-if="!(lastPageSelected() && hidePrevNext)"
-      @click="nextPage()"
-      @keyup.enter="nextPage()"
       :class="[nextLinkClass, lastPageSelected() ? disabledClass : '']"
       tabindex="0"
+      @click="nextPage()"
+      @keyup.enter="nextPage()"
     >
       <!--    Slot Next Content    -->
-      <slot name="next-content"></slot>
+      <slot name="next-content" />
     </a>
     <a
       v-if="firstLastButton"
-      @click="selectLastPage()"
-      @keyup.enter="selectLastPage()"
       :class="[pageLinkClass, lastPageSelected() ? disabledClass : '']"
       tabindex="0"
+      @click="selectLastPage()"
+      @keyup.enter="selectLastPage()"
       v-html="lastButtonText"
-    ></a>
+    />
   </div>
 </template>
 

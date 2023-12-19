@@ -1,8 +1,8 @@
 <script>
-import { mapState } from "vuex";
+import { mapState } from 'vuex'
 
 export default {
-  name: "ErrorNotification",
+  name: 'ErrorNotification',
   // props: {
   //     value: {
   //         type: Object,
@@ -18,14 +18,14 @@ export default {
   data() {
     return {
       timeoutId: null,
-    };
+    }
   },
   computed: {
-    ...mapState("notify", {
-      xNotify: "xNotify",
+    ...mapState('notify', {
+      xNotify: 'xNotify',
     }),
   },
-};
+}
 </script>
 
 <template>

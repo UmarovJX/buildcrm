@@ -1,17 +1,17 @@
 <script>
-import { localeChanged } from "vee-validate";
-import { mapActions, mapGetters, mapMutations } from "vuex";
+import { localeChanged } from 'vee-validate'
+import { mapActions, mapGetters, mapMutations } from 'vuex'
 // import ThemeButton from "@/components/ThemeButton.vue";
 // import BaseAvatar from "@/components/Reusable/BaseAvatar";
-import GeneralPermission from "@/permission/general";
-import api from "@/services/api";
-import BaseModal from "@/components/Reusable/BaseModal";
-import BaseQuestionsIcon from "@/components/icons/BaseQuestionsIcon";
-import BaseCloseIcon from "@/components/icons/BaseCloseIcon";
-import { XIcon } from "@/components/ui-components/material-icons/index";
+import GeneralPermission from '@/permission/general'
+import api from '@/services/api'
+import BaseModal from '@/components/Reusable/BaseModal'
+import BaseQuestionsIcon from '@/components/icons/BaseQuestionsIcon'
+import BaseCloseIcon from '@/components/icons/BaseCloseIcon'
+import { XIcon } from '@/components/ui-components/material-icons/index'
 
 export default {
-  name: "Header",
+  name: 'Header',
   components: {
     BaseCloseIcon,
     BaseQuestionsIcon,
@@ -23,14 +23,13 @@ export default {
   props: {
     theme: {
       type: String,
-      default: "",
+      default: '',
     },
   },
   data() {
-    const settingsPermission =
-      GeneralPermission.getSettingsPermission() &&
-      (GeneralPermission.getPasswordSettingsPermission() ||
-        GeneralPermission.getProfileSettingsPermission());
+    const settingsPermission = GeneralPermission.getSettingsPermission()
+      && (GeneralPermission.getPasswordSettingsPermission()
+        || GeneralPermission.getProfileSettingsPermission())
     return {
       settingsPermission,
       currencyPermission: GeneralPermission.getCurrencyPermission,
@@ -40,190 +39,190 @@ export default {
       app_name: process.env.VUE_APP_NAME,
       isActive: true,
       menuExpanded: false,
-      userTheme: "light-theme",
+      userTheme: 'light-theme',
       version: {},
-    };
+    }
   },
   async created() {
-    await Promise.allSettled([this.fetchMenus()]);
-    this.locale = localStorage.locale !== "uz";
-    await this.getLastVersion();
-    this.getVersion();
+    await Promise.allSettled([this.fetchMenus()])
+    this.locale = localStorage.locale !== 'uz'
+    await this.getLastVersion()
+    this.getVersion()
   },
 
   computed: {
     ...mapGetters([
-      "getPermission",
-      "getAuth",
-      "getMenus",
-      "getMe",
-      "getCurrency",
+      'getPermission',
+      'getAuth',
+      'getMenus',
+      'getMe',
+      'getCurrency',
     ]),
     getNameSnippet() {
       if (this.getMe?.user) {
-        const { firstName, lastName } = this.getMe.user;
-        if (firstName !== "" && lastName !== "") {
-          return lastName[0] + firstName[0];
+        const { firstName, lastName } = this.getMe.user
+        if (firstName !== '' && lastName !== '') {
+          return lastName[0] + firstName[0]
         }
       }
-      return "";
+      return ''
     },
     getUserAvatarUrl() {
       if (this.getMe?.user?.avatar) {
-        return this.getMe.user.avatar;
+        return this.getMe.user.avatar
       }
-      return "";
+      return ''
     },
 
     routePermission() {
       const notUsed = [
-        "confirm-apartment",
-        "login",
-        "home",
-        "objects",
-        "settings",
-        "users",
-        "roles",
-        "clients",
-        "type_plan",
-        "debtors",
-        "contracts",
-        "companies",
-      ];
-      const currentRouteName = this.$route.name;
-      const result = notUsed.findIndex((name) => name === currentRouteName);
-      return result === -1;
+        'confirm-apartment',
+        'login',
+        'home',
+        'objects',
+        'settings',
+        'users',
+        'roles',
+        'clients',
+        'type_plan',
+        'debtors',
+        'contracts',
+        'companies',
+      ]
+      const currentRouteName = this.$route.name
+      const result = notUsed.findIndex(name => name === currentRouteName)
+      return result === -1
     },
   },
   methods: {
-    ...mapActions(["fetchAuth", "nullableAuth", "nullMe"]),
-    ...mapMutations(["updateMenus", "updateCurrency"]),
+    ...mapActions(['fetchAuth', 'nullableAuth', 'nullMe']),
+    ...mapMutations(['updateMenus', 'updateCurrency']),
     getVersion() {
       if (this.getMe) {
-        !this.getMe.version ? this.openVersionModal() : false;
+        !this.getMe.version ? this.openVersionModal() : false
       }
-      return false;
+      return false
     },
     async getLastVersion() {
-      await api.settings.getLastVersion().then((res) => {
-        this.version = res.data;
-      });
+      await api.settings.getLastVersion().then(res => {
+        this.version = res.data
+      })
       // .catch((error) => {
       //   // this.toastedWithErrorCode(error);
       // });
     },
     openVersionModal() {
-      this.$refs["version-modal"].openModal();
+      this.$refs['version-modal'].openModal()
     },
     dateFormat(rawDate) {
       const monthNames = [
-        "january",
-        "february",
-        "march",
-        "april",
-        "may",
-        "june",
-        "july",
-        "august",
-        "september",
-        "october",
-        "november",
-        "december",
-      ];
-      const date = new Date(rawDate);
-      const day = date.getDate();
-      const month = this.$t(monthNames[date.getMonth()]).toLocaleLowerCase();
-      const year = date.getFullYear();
-      return `${day} ${month}, ${year}`;
+        'january',
+        'february',
+        'march',
+        'april',
+        'may',
+        'june',
+        'july',
+        'august',
+        'september',
+        'october',
+        'november',
+        'december',
+      ]
+      const date = new Date(rawDate)
+      const day = date.getDate()
+      const month = this.$t(monthNames[date.getMonth()]).toLocaleLowerCase()
+      const year = date.getFullYear()
+      return `${day} ${month}, ${year}`
     },
     confirmRelease() {
       api.settings
         .confirmLastVersion()
         .then(() => {
-          console.log("version confirmed");
+          console.log('version confirmed')
         })
-        .catch((error) => {
-          this.toastedWithErrorCode(error);
+        .catch(error => {
+          this.toastedWithErrorCode(error)
         })
         .finally(() => {
-          this.$refs["version-modal"].closeModal();
-        });
+          this.$refs['version-modal'].closeModal()
+        })
     },
     async fetchMenus() {
       await api.home
         .fetchMenu()
-        .then((response) => {
-          this.updateMenus(response.data);
+        .then(response => {
+          this.updateMenus(response.data)
         })
-        .catch((error) => {
-          this.toastedWithErrorCode(error);
-        });
+        .catch(error => {
+          this.toastedWithErrorCode(error)
+        })
     },
     async fetchCurrency() {
       try {
         if (this.currencyPermission) {
-          const { data } = await api.settingsV2.fetchCurrency();
-          this.updateCurrency(data);
+          const { data } = await api.settingsV2.fetchCurrency()
+          this.updateCurrency(data)
         }
       } catch (e) {
-        this.toastedWithErrorCode(e);
+        this.toastedWithErrorCode(e)
       }
     },
     Logout() {
-      localStorage.clear();
-      sessionStorage.clear();
-      this.nullableAuth();
-      this.nullMe();
-      this.$router.push({ name: "login" });
+      localStorage.clear()
+      sessionStorage.clear()
+      this.nullableAuth()
+      this.nullMe()
+      this.$router.push({ name: 'login' })
     },
     getName(name) {
-      let locale = localStorage.locale;
-      let value = "";
+      const { locale } = localStorage
+      let value = ''
 
       if (locale) {
         switch (locale) {
-          case "ru":
-            value = name.ru;
-            break;
-          case "uz":
-            value = name.uz;
-            break;
+          case 'ru':
+            value = name.ru
+            break
+          case 'uz':
+            value = name.uz
+            break
         }
       } else {
-        value = name.ru;
+        value = name.ru
       }
 
-      return value;
+      return value
     },
 
     changeLocale() {
       if (this.locale === false) {
-        localStorage.locale = "ru";
-        this.$root.$i18n.locale = "ru";
-        localeChanged();
+        localStorage.locale = 'ru'
+        this.$root.$i18n.locale = 'ru'
+        localeChanged()
       } else {
-        localStorage.locale = "uz";
-        this.$root.$i18n.locale = "uz";
-        localeChanged();
+        localStorage.locale = 'uz'
+        this.$root.$i18n.locale = 'uz'
+        localeChanged()
       }
     },
 
     checkLocale(data) {
-      const { locale } = localStorage;
+      const { locale } = localStorage
       if (data) {
-        if (locale === "ru") {
-          return data["ru"];
+        if (locale === 'ru') {
+          return data.ru
         }
-        return data["uz"];
+        return data.uz
       }
-      return "";
+      return ''
     },
 
     toggleCollapse() {
-      this.isActive = !this.isActive;
+      this.isActive = !this.isActive
     },
   },
-};
+}
 </script>
 
 <template>
@@ -235,7 +234,7 @@ export default {
       class="sidenav-overlay"
       :class="{ show: isActive }"
       @click="isActive = false"
-    ></div>
+    />
 
     <div
       class="fixed-menu"
@@ -247,19 +246,26 @@ export default {
           :to="{ name: 'home' }"
           class="d-flex align-items-center justify-content-center"
         >
-          <img src="@/assets/img/object__img1.png" alt="Xonsaroy" />
+          <img
+            src="@/assets/img/object__img1.png"
+            alt="Xonsaroy"
+          >
         </router-link>
       </div>
       <!-- <div class="shadow-bottom"></div> -->
 
       <div class="menu">
         <ul class="menu-content mb-2">
-          <li v-for="(item, index) in getMenus" :key="index" class="menu__item">
+          <li
+            v-for="(item, index) in getMenus"
+            :key="index"
+            class="menu__item"
+          >
             <router-link
               :to="{ name: item.action }"
               :class="
                 $route.name === item.action ||
-                $route.meta.parent === item.action
+                  $route.meta.parent === item.action
                   ? 'active-link'
                   : 'inactive-link'
               "
@@ -270,7 +276,7 @@ export default {
                 :name="item.icon"
                 :color="
                   $route.name === item.action ||
-                  $route.meta.parent === item.action
+                    $route.meta.parent === item.action
                     ? 'var(--white)'
                     : 'var(--gray-400)'
                 "
@@ -279,7 +285,10 @@ export default {
                 <div class="menu__name">
                   {{ $t(item.action + ".title") }}
                 </div>
-                <div class="menu__count" v-if="item.count > 0">
+                <div
+                  v-if="item.count > 0"
+                  class="menu__count"
+                >
                   {{ item.count }}
                 </div>
               </div>
@@ -292,10 +301,21 @@ export default {
             class="menu-content"
             :class="[isActive ? 'toggle-open' : 'toggle-close']"
           >
-            <li class="menu__item" @click="toggleCollapse">
+            <li
+              class="menu__item"
+              @click="toggleCollapse"
+            >
               <a>
-                <x-icon v-if="isActive" name="menu" color="var(--gray-400)" />
-                <x-icon v-else name="menu_open" color="var(--gray-400)" />
+                <x-icon
+                  v-if="isActive"
+                  name="menu"
+                  color="var(--gray-400)"
+                />
+                <x-icon
+                  v-else
+                  name="menu_open"
+                  color="var(--gray-400)"
+                />
                 <div class="menu-version">
                   <template v-if="isActive">
                     {{ $t("pin_menu") }}
@@ -334,7 +354,10 @@ export default {
       <template #header>
         <div class="release-info-header">
           <p>{{ $t("release_note.release_note") }}</p>
-          <p @click="confirmRelease" class="cursor-pointer">
+          <p
+            class="cursor-pointer"
+            @click="confirmRelease"
+          >
             <base-close-icon />
           </p>
         </div>
@@ -342,29 +365,43 @@ export default {
       <template #main>
         <div class="release-info-main">
           <div class="release-info-main-block">
-            <p class="release-info-main-block-release m-0">{{ version.version }}</p>
+            <p class="release-info-main-block-release m-0">
+              {{ version.version }}
+            </p>
             <p class="release-info-main-block-date m-0">
               {{ dateFormat(version.created_at) }}
             </p>
           </div>
-          <div v-if="version && version.latest" class="release-info-main-block">
+          <div
+            v-if="version && version.latest"
+            class="release-info-main-block"
+          >
             <div
               class="release-info-main-block-tag release-info-main-block-tag-new"
             >
               {{ $t("release_note.new") }}
             </div>
             <div>
-              <p class="release-edited m-0" v-html="checkLocale(version.latest)" />
+              <p
+                class="release-edited m-0"
+                v-html="checkLocale(version.latest)"
+              />
             </div>
           </div>
-          <div v-if="version && version.fixed" class="release-info-main-block">
+          <div
+            v-if="version && version.fixed"
+            class="release-info-main-block"
+          >
             <div
               class="release-info-main-block-tag release-info-main-block-tag-edited"
             >
               {{ $t("edited") }}
             </div>
             <div>
-              <p class="release-new m-0" v-html="checkLocale(version.fixed)" />
+              <p
+                class="release-new m-0"
+                v-html="checkLocale(version.fixed)"
+              />
             </div>
           </div>
         </div>

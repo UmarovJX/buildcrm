@@ -1,10 +1,10 @@
 <script>
 export default {
-  name: "BaseSearchIcon",
+  name: 'BaseSearchIcon',
   props: {
     fill: {
       type: String,
-      default: "#9CA3AF",
+      default: '#9CA3AF',
     },
     width: {
       type: Number,
@@ -15,7 +15,7 @@ export default {
       default: 24,
     },
   },
-};
+}
 </script>
 <template>
   <svg

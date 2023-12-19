@@ -1,13 +1,14 @@
-export default class headingChar extends require("./inline") {
+export default class headingChar extends require('./inline') {
   static get type() {
-    return "headingChar";
+    return 'headingChar'
   }
 
   constructor() {
-    super(...arguments);
-    this.outlineLvl = arguments[arguments.length - 1];
+    super(...arguments)
+    this.outlineLvl = arguments[arguments.length - 1]
   }
+
   getOutlineLevel() {
-    return this.outlineLvl;
+    return this.outlineLvl
   }
 }

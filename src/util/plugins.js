@@ -1,29 +1,29 @@
-import { Vue as OurVue } from "../vue";
-import { HAS_WINDOW_SUPPORT, IS_JSDOM } from "../constants/env";
-import { setConfig } from "./config-set";
-import { warn } from "./warn";
+import { Vue as OurVue } from '../vue'
+import { HAS_WINDOW_SUPPORT, IS_JSDOM } from '../constants/env'
+import { setConfig } from './config-set'
+import { warn } from './warn'
 
 /**
  * Checks if there are multiple instances of Vue, and warns (once) about possible issues.
  * @param {object} Vue
  */
 export const checkMultipleVue = (() => {
-  let checkMultipleVueWarned = false;
+  let checkMultipleVueWarned = false
 
   const MULTIPLE_VUE_WARNING = [
-    "Multiple instances of Vue detected!",
-    "You may need to set up an alias for Vue in your bundler config.",
-    "See: https://bootstrap-vue.org/docs#using-module-bundlers",
-  ].join("\n");
+    'Multiple instances of Vue detected!',
+    'You may need to set up an alias for Vue in your bundler config.',
+    'See: https://bootstrap-vue.org/docs#using-module-bundlers',
+  ].join('\n')
 
-  return (Vue) => {
+  return Vue => {
     /* istanbul ignore next */
     if (!checkMultipleVueWarned && OurVue !== Vue && !IS_JSDOM) {
-      warn(MULTIPLE_VUE_WARNING);
+      warn(MULTIPLE_VUE_WARNING)
     }
-    checkMultipleVueWarned = true;
-  };
-})();
+    checkMultipleVueWarned = true
+  }
+})()
 
 /**
  * Plugin install factory function.
@@ -34,20 +34,20 @@ export const installFactory = ({ components, directives, plugins } = {}) => {
   const install = (Vue, config = {}) => {
     if (install.installed) {
       /* istanbul ignore next */
-      return;
+      return
     }
-    install.installed = true;
-    checkMultipleVue(Vue);
-    setConfig(config, Vue);
-    registerComponents(Vue, components);
-    registerDirectives(Vue, directives);
-    registerPlugins(Vue, plugins);
-  };
+    install.installed = true
+    checkMultipleVue(Vue)
+    setConfig(config, Vue)
+    registerComponents(Vue, components)
+    registerDirectives(Vue, directives)
+    registerPlugins(Vue, plugins)
+  }
 
-  install.installed = false;
+  install.installed = false
 
-  return install;
-};
+  return install
+}
 
 /**
  * Plugin install factory function (no plugin config option).
@@ -59,22 +59,22 @@ export const installFactoryNoConfig = ({
   directives,
   plugins,
 } = {}) => {
-  const install = (Vue) => {
+  const install = Vue => {
     if (install.installed) {
       /* istanbul ignore next */
-      return;
+      return
     }
-    install.installed = true;
-    checkMultipleVue(Vue);
-    registerComponents(Vue, components);
-    registerDirectives(Vue, directives);
-    registerPlugins(Vue, plugins);
-  };
+    install.installed = true
+    checkMultipleVue(Vue)
+    registerComponents(Vue, components)
+    registerDirectives(Vue, directives)
+    registerPlugins(Vue, plugins)
+  }
 
-  install.installed = false;
+  install.installed = false
 
-  return install;
-};
+  return install
+}
 
 /**
  * Plugin object factory function.
@@ -84,7 +84,7 @@ export const installFactoryNoConfig = ({
 export const pluginFactory = (options = {}, extend = {}) => ({
   ...extend,
   install: installFactory(options),
-});
+})
 
 /**
  * Plugin object factory function (no config option).
@@ -94,7 +94,7 @@ export const pluginFactory = (options = {}, extend = {}) => ({
 export const pluginFactoryNoConfig = (options = {}, extend = {}) => ({
   ...extend,
   install: installFactoryNoConfig(options),
-});
+})
 
 /**
  * Load a group of plugins.
@@ -104,10 +104,10 @@ export const pluginFactoryNoConfig = (options = {}, extend = {}) => ({
 export const registerPlugins = (Vue, plugins = {}) => {
   for (const plugin in plugins) {
     if (plugin && plugins[plugin]) {
-      Vue.use(plugins[plugin]);
+      Vue.use(plugins[plugin])
     }
   }
-};
+}
 
 /**
  * Load a component.
@@ -117,9 +117,9 @@ export const registerPlugins = (Vue, plugins = {}) => {
  */
 export const registerComponent = (Vue, name, def) => {
   if (Vue && name && def) {
-    Vue.component(name, def);
+    Vue.component(name, def)
   }
-};
+}
 
 /**
  * Load a group of components.
@@ -128,9 +128,9 @@ export const registerComponent = (Vue, name, def) => {
  */
 export const registerComponents = (Vue, components = {}) => {
   for (const component in components) {
-    registerComponent(Vue, component, components[component]);
+    registerComponent(Vue, component, components[component])
   }
-};
+}
 
 /**
  * Load a directive.
@@ -142,9 +142,9 @@ export const registerDirective = (Vue, name, def) => {
   if (Vue && name && def) {
     // Ensure that any leading V is removed from the
     // name, as Vue adds it automatically
-    Vue.directive(name.replace(/^VB/, "B"), def);
+    Vue.directive(name.replace(/^VB/, 'B'), def)
   }
-};
+}
 
 /**
  * Load a group of directives.
@@ -153,21 +153,21 @@ export const registerDirective = (Vue, name, def) => {
  */
 export const registerDirectives = (Vue, directives = {}) => {
   for (const directive in directives) {
-    registerDirective(Vue, directive, directives[directive]);
+    registerDirective(Vue, directive, directives[directive])
   }
-};
+}
 
 /**
  * Install plugin if window.Vue available
  * @param {object} Plugin definition
  */
-export const vueUse = (VuePlugin) => {
+export const vueUse = VuePlugin => {
   /* istanbul ignore next */
   if (HAS_WINDOW_SUPPORT && window.Vue) {
-    window.Vue.use(VuePlugin);
+    window.Vue.use(VuePlugin)
   }
   /* istanbul ignore next */
   if (HAS_WINDOW_SUPPORT && VuePlugin.NAME) {
-    window[VuePlugin.NAME] = VuePlugin;
+    window[VuePlugin.NAME] = VuePlugin
   }
-};
+}

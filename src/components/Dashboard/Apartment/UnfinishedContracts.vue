@@ -1,8 +1,8 @@
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapActions, mapGetters } from 'vuex'
 // import SuccessAgree from "./Components/SuccessAgree";
-import BaseBreadCrumb from "@/components/BaseBreadCrumb";
-import api from "@/services/api";
+import BaseBreadCrumb from '@/components/BaseBreadCrumb'
+import api from '@/services/api'
 
 export default {
   components: {
@@ -15,31 +15,31 @@ export default {
       page: 1,
       fields: [
         {
-          key: "contract_number",
-          label: "Contract Number",
+          key: 'contract_number',
+          label: 'Contract Number',
           sortable: true,
         },
         {
-          key: "created_by",
-          label: "First Name",
+          key: 'created_by',
+          label: 'First Name',
           sortable: true,
         },
         {
-          key: "created_by.phone",
-          label: "Phone",
+          key: 'created_by.phone',
+          label: 'Phone',
           sortable: true,
         },
         {
-          key: "expiry_at",
-          label: "Expiry at",
+          key: 'expiry_at',
+          label: 'Expiry at',
           sortable: true,
         },
         {
-          key: "actions",
-          label: "",
+          key: 'actions',
+          label: '',
         },
       ],
-      sortBy: "",
+      sortBy: '',
       items: [],
       sortDesc: false,
       currentPage: 1,
@@ -47,102 +47,100 @@ export default {
       getLoading: true,
       header: {
         headers: {
-          Authorization: "Bearer " + localStorage.token,
+          Authorization: `Bearer ${localStorage.token}`,
         },
       },
-    };
+    }
   },
 
   computed: {
-    ...mapGetters(["getApartments", "getPermission", "getMe"]),
+    ...mapGetters(['getApartments', 'getPermission', 'getMe']),
     breadCrumbs() {
       return [
         {
-          routeName: "objects",
-          textContent: this.$t("objects.title"),
+          routeName: 'objects',
+          textContent: this.$t('objects.title'),
         },
-      ];
+      ]
     },
     activeContent() {
-      return this.$t("objects.unfinished_contract");
+      return this.$t('objects.unfinished_contract')
     },
   },
   mounted() {
-    this.getUnfinishedOrders();
+    this.getUnfinishedOrders()
   },
 
   methods: {
-    ...mapActions(["fetchApartments", "fetchReserveClient"]),
+    ...mapActions(['fetchApartments', 'fetchReserveClient']),
     async getUnfinishedOrders() {
-      this.getLoading = true;
+      this.getLoading = true
       await api.orders
         .fetchUnfinishedOrders()
-        .then((res) => {
+        .then(res => {
           if (res) {
-            this.items = res.data;
+            this.items = res.data
           }
         })
         .finally(() => {
-          this.getLoading = false;
-        });
+          this.getLoading = false
+        })
     },
     cancelContract(id) {
       this.$swal({
-        title: this.$t("sweetAlert.title"),
-        text: this.$t("sweetAlert.text_cancel_agree"),
-        icon: "warning",
+        title: this.$t('sweetAlert.title'),
+        text: this.$t('sweetAlert.text_cancel_agree'),
+        icon: 'warning',
         showCancelButton: true,
-        cancelButtonText: this.$t("cancel"),
-        confirmButtonText: this.$t("sweetAlert.yes_close"),
-      }).then((result) => {
+        cancelButtonText: this.$t('cancel'),
+        confirmButtonText: this.$t('sweetAlert.yes_close'),
+      }).then(result => {
         if (result.value) {
-          this.expiredConfirm(id);
+          this.expiredConfirm(id)
         }
-      });
+      })
     },
     async expiredConfirm(id) {
-      this.getLoading = true;
+      this.getLoading = true
       try {
         await api.orders
           .deactivateOrderHold(id)
           .then(() => {
-            this.getUnfinishedOrders();
+            this.getUnfinishedOrders()
           })
           .catch(() => {
-            this.getLoading = false;
-          });
+            this.getLoading = false
+          })
       } catch (error) {
-        this.getLoading = false;
+        this.getLoading = false
         if (!error.response) {
-          this.toasted("Error: Network Error", "error");
+          this.toasted('Error: Network Error', 'error')
+        } else if (error.response.status === 403) {
+          this.toasted(error.response.data.message, 'error')
+        } else if (error.response.status === 401) {
+          this.toasted(error.response.data.message, 'error')
+        } else if (error.response.status === 500) {
+          this.toasted(error.response.data.message, 'error')
         } else {
-          if (error.response.status === 403) {
-            this.toasted(error.response.data.message, "error");
-          } else if (error.response.status === 401) {
-            this.toasted(error.response.data.message, "error");
-          } else if (error.response.status === 500) {
-            this.toasted(error.response.data.message, "error");
-          } else {
-            this.toasted(error.response.data.message, "error");
-          }
+          this.toasted(error.response.data.message, 'error')
         }
       }
     },
     CloseAgree() {
-      this.confirm = false;
+      this.confirm = false
     },
 
     async successAgree(value) {
-      this.contract = value;
-      await this.fetchApartments(this);
+      this.contract = value
+      await this.fetchApartments(this)
       // this.$bvModal.show("modal-success-agree");
-      this.selected.confirm = false;
-      this.selected.view = false;
-      this.selected.values = [];
-      this.selectable = true;
+      this.selected.confirm = false
+      this.selected.view = false
+      this.selected.values = []
+      this.selectable = true
     },
   },
-};
+}
 </script>
 
 <template>
@@ -150,12 +148,13 @@ export default {
     <base-bread-crumb
       :bread-crumbs="breadCrumbs"
       :active-content="activeContent"
-    >
-    </base-bread-crumb>
+    />
     <div class="mt-4">
       <b-table
-        ref="apartment-list-table"
         id="my-table"
+        ref="apartment-list-table"
+        v-model:sort-by="sortBy"
+        v-model:sort-desc="sortDesc"
         class="custom-table"
         sticky-header
         borderless
@@ -164,11 +163,12 @@ export default {
         sort-icon-left
         :items="items"
         :fields="fields"
-        v-model:sort-by="sortBy"
-        v-model:sort-desc="sortDesc"
         :empty-text="$t('no_data')"
       >
-        <template #empty="scope" class="text-center">
+        <template
+          #empty="scope"
+          class="text-center"
+        >
           <span class="d-flex justify-content-center align-items-center">{{
             scope.emptyText
           }}</span>
@@ -193,7 +193,7 @@ export default {
                 class="dropdown-toggle"
                 data-toggle="dropdown"
               >
-                <i class="far fa-ellipsis-h"></i>
+                <i class="far fa-ellipsis-h" />
               </button>
 
               <div class="dropdown-menu">
@@ -208,7 +208,7 @@ export default {
                   }"
                   :class="'dropdown-item dropdown-item--inside'"
                 >
-                  <i class="far fa-eye"></i>
+                  <i class="far fa-eye" />
                   Продолжить оформление
                 </router-link>
 
@@ -217,7 +217,7 @@ export default {
                   class="dropdown-item dropdown-item--inside"
                   @click="cancelContract(data.item.uuid)"
                 >
-                  <i class="far fa-trash text-danger"></i> Отменить оформление
+                  <i class="far fa-trash text-danger" /> Отменить оформление
                 </b-link>
               </div>
             </div>
@@ -225,14 +225,19 @@ export default {
         </template>
       </b-table>
 
-      <b-overlay :show="getLoading" no-wrap opacity="0.5" style="z-index: 2222">
+      <b-overlay
+        :show="getLoading"
+        no-wrap
+        opacity="0.5"
+        style="z-index: 2222"
+      >
         <template #overlay>
           <div class="d-flex justify-content-center w-100">
             <div class="lds-ellipsis">
-              <div></div>
-              <div></div>
-              <div></div>
-              <div></div>
+              <div />
+              <div />
+              <div />
+              <div />
             </div>
           </div>
         </template>

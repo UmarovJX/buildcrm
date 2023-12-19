@@ -1,10 +1,10 @@
-export default class hyperlink extends require("./hyperlink") {
+export default class hyperlink extends require('./hyperlink') {
   constructor(instruct) {
-    super(...arguments);
-    this.link = "#" + instruct.split(/\s+/)[1];
+    super(...arguments)
+    this.link = `#${instruct.split(/\s+/)[1]}`
   }
 
   static get type() {
-    return "field.ref";
+    return 'field.ref'
   }
 }

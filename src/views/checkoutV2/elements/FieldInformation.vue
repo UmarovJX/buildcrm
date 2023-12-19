@@ -1,21 +1,21 @@
 <script>
-import { makeProp as p } from "@/util/props";
+import { makeProp as p } from '@/util/props'
 import {
   PROP_TYPE_BOOLEAN,
   PROP_TYPE_NUMBER_STRING,
   PROP_TYPE_OBJECT,
   PROP_TYPE_STRING,
-} from "@/constants/props";
+} from '@/constants/props'
 
-import { XIcon } from "@/components/ui-components/material-icons";
+import { XIcon } from '@/components/ui-components/material-icons'
 
 export default {
-  name: "FieldInformation",
+  name: 'FieldInformation',
   components: {
     XIcon,
   },
   props: {
-    iconBg: p(PROP_TYPE_STRING, "var(--violet-100)"),
+    iconBg: p(PROP_TYPE_STRING, 'var(--violet-100)'),
     iconColor: p(PROP_TYPE_STRING, undefined),
     iconWrapperStyle: p(PROP_TYPE_OBJECT, {}),
     iconName: p(PROP_TYPE_STRING, undefined),
@@ -28,24 +28,27 @@ export default {
       return {
         backgroundColor: this.iconBg,
         ...this.iconWrapperStyle,
-      };
+      }
     },
     hasIconLeftSlot() {
-      return this.$slots.hasOwnProperty("icon-left");
+      return this.$slots.hasOwnProperty('icon-left')
     },
     hasTitle() {
-      return this.$slots.hasOwnProperty("title");
+      return this.$slots.hasOwnProperty('title')
     },
     hasContent() {
-      return this.$slots.hasOwnProperty("content");
+      return this.$slots.hasOwnProperty('content')
     },
   },
-};
+}
 </script>
 
 <template>
   <div class="field-information">
-    <span class="fdn-icon-left-wrapper" :style="iconLeftWrapperElStyle">
+    <span
+      class="fdn-icon-left-wrapper"
+      :style="iconLeftWrapperElStyle"
+    >
       <slot name="icon-left" />
       <template v-if="!hasIconLeftSlot">
         <x-icon

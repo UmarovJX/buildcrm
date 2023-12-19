@@ -1,20 +1,20 @@
 <script>
-import BaseButton from "@/components/Reusable/BaseButton";
-import BasePlusIcon from "@/components/icons/BasePlusIcon";
-import BaseDotsIcon from "@/components/icons/BaseDotsIcon";
-import BaseEditIcon from "@/components/icons/BaseEditIcon";
-import BaseModal from "@/components/Reusable/BaseModal";
-import BaseCloseIcon from "@/components/icons/BaseCloseIcon";
-import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
-import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
-import BaseDownIcon from "@/components/icons/BaseDownIcon";
-import api from "@/services/api";
-import BaseDeleteIcon from "@/components/icons/BaseDeleteIcon";
-import ContractsPermission from "@/permission/contract";
-import AppDropdown from "@/components/Reusable/Dropdown/AppDropdown";
+import BaseButton from '@/components/Reusable/BaseButton'
+import BasePlusIcon from '@/components/icons/BasePlusIcon'
+import BaseDotsIcon from '@/components/icons/BaseDotsIcon'
+import BaseEditIcon from '@/components/icons/BaseEditIcon'
+import BaseModal from '@/components/Reusable/BaseModal'
+import BaseCloseIcon from '@/components/icons/BaseCloseIcon'
+import BaseArrowLeftIcon from '@/components/icons/BaseArrowLeftIcon'
+import BaseArrowRightIcon from '@/components/icons/BaseArrowRightIcon'
+import BaseDownIcon from '@/components/icons/BaseDownIcon'
+import api from '@/services/api'
+import BaseDeleteIcon from '@/components/icons/BaseDeleteIcon'
+import ContractsPermission from '@/permission/contract'
+import AppDropdown from '@/components/Reusable/Dropdown/AppDropdown'
 
 export default {
-  name: "ContractComments",
+  name: 'ContractComments',
   components: {
     AppDropdown,
     BaseDeleteIcon,
@@ -30,13 +30,13 @@ export default {
   },
 
   data() {
-    const showByOptions = [];
+    const showByOptions = []
 
     for (let number = 10; number <= 50; number += 10) {
       showByOptions.push({
         value: number,
         text: number,
-      });
+      })
     }
 
     return {
@@ -46,12 +46,12 @@ export default {
         limit: 20,
         page: 1,
       },
-      comment: "",
+      comment: '',
       commentId: null,
       comments: [],
       modalProperties: {
-        type: "",
-        title: "",
+        type: '',
+        title: '',
       },
       contractId: this.$route.params.id,
       createCommentPermission:
@@ -60,192 +60,196 @@ export default {
         ContractsPermission.getContractsEditCommentPermission(),
       deleteCommentPermission:
         ContractsPermission.getContractsDeleteCommentPermission(),
-    };
+    }
   },
   computed: {
     countOfPaymentItems() {
-      const { pagination, comments } = this;
-      return comments.length && pagination["totalItems"] > 9;
+      const { pagination, comments } = this
+      return comments.length && pagination.totalItems > 9
     },
     hasComment() {
-      return this.comments && this.comments.length > 0;
+      return this.comments && this.comments.length > 0
     },
   },
   async created() {
-    await this.getComments();
+    await this.getComments()
   },
   methods: {
     async getComments() {
       await api.contractV2
         .getCommentList(this.contractId, this.params)
-        .then((res) => {
-          this.comments = res.data.items;
-          this.pagination = res.data.pagination;
+        .then(res => {
+          this.comments = res.data.items
+          this.pagination = res.data.pagination
         })
-        .catch((err) => {
-          this.toasted(err.message, "error");
-        });
+        .catch(err => {
+          this.toasted(err.message, 'error')
+        })
     },
     swipeCommentsPage(page) {
-      this.params.page = page;
-      this.getComments();
+      this.params.page = page
+      this.getComments()
     },
     changeCommentsShowingLimit() {
-      this.params.page = 1;
-      this.getComments();
+      this.params.page = 1
+      this.getComments()
     },
     fullName(value) {
-      if (value.first_name && value.last_name)
-        return value.first_name + " " + value.last_name;
-      return value;
+      if (value.first_name && value.last_name) return `${value.first_name} ${value.last_name}`
+      return value
     },
     dateFormat(value) {
       const monthNames = [
-        "january",
-        "february",
-        "march",
-        "april",
-        "may",
-        "june",
-        "july",
-        "august",
-        "september",
-        "october",
-        "november",
-        "december",
-      ];
-      let date = "";
+        'january',
+        'february',
+        'march',
+        'april',
+        'may',
+        'june',
+        'july',
+        'august',
+        'september',
+        'october',
+        'november',
+        'december',
+      ]
+      let date = ''
       if (!value.edited) {
-        date = new Date(value.created_at);
+        date = new Date(value.created_at)
       } else {
-        date = new Date(value.updated_at);
+        date = new Date(value.updated_at)
       }
-      const day = date.getDate();
-      const minutes =
-        date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes();
-      const hours =
-        date.getHours() < 10 ? `0${date.getHours()}` : date.getHours();
-      const month = this.$t(monthNames[date.getMonth()]).toLocaleLowerCase();
+      const day = date.getDate()
+      const minutes = date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()
+      const hours = date.getHours() < 10 ? `0${date.getHours()}` : date.getHours()
+      const month = this.$t(monthNames[date.getMonth()]).toLocaleLowerCase()
 
-      if (value.edited)
+      if (value.edited) {
         return (
-          this.$t("edited") +
-          " " +
-          hours +
-          ":" +
-          minutes +
-          ", " +
-          day +
-          " " +
-          month
-        );
-      return hours + ":" + minutes + ", " + day + " " + month;
+          `${this.$t('edited')
+          } ${
+            hours
+          }:${
+            minutes
+          }, ${
+            day
+          } ${
+            month}`
+        )
+      }
+      return `${hours}:${minutes}, ${day} ${month}`
     },
     checkLocales(name) {
-      if (localStorage.locale) return name[localStorage.locale];
-      else return name["ru"];
+      if (localStorage.locale) return name[localStorage.locale]
+      return name.ru
     },
     closeCreateModal() {
-      this.$refs["create"].closeModal();
-      this.comment = "";
-      this.commentId = "";
+      this.$refs.create.closeModal()
+      this.comment = ''
+      this.commentId = ''
     },
     openCreateModal() {
       this.modalProperties = {
-        type: "create",
-        title: "contracts.add_note",
-        btnText: "add",
-      };
-      this.$refs["create"].openModal();
+        type: 'create',
+        title: 'contracts.add_note',
+        btnText: 'add',
+      }
+      this.$refs.create.openModal()
     },
     openEditModal(item) {
       this.modalProperties = {
-        type: "edit",
-        title: "contracts.edit_note",
-        btnText: "edit",
-      };
-      this.comment = item.comment;
-      this.commentId = item.id;
-      this.$refs["create"].openModal();
+        type: 'edit',
+        title: 'contracts.edit_note',
+        btnText: 'edit',
+      }
+      this.comment = item.comment
+      this.commentId = item.id
+      this.$refs.create.openModal()
     },
     warnBeforeDelete(id) {
-      this.commentId = id;
-      this.$refs["warning-before-delete"].openModal();
+      this.commentId = id
+      this.$refs['warning-before-delete'].openModal()
     },
     cancelDelete() {
-      this.commentId = null;
-      this.$refs["warning-before-delete"].closeModal();
+      this.commentId = null
+      this.$refs['warning-before-delete'].closeModal()
     },
     deleteComment() {
       api.contractV2
         .deleteComment(this.contractId, this.commentId)
         .then(() => {
-          this.toasted(`${this.$t("sweetAlert.deleted")}`, "success");
+          this.toasted(`${this.$t('sweetAlert.deleted')}`, 'success')
         })
-        .catch((err) => {
-          this.toasted(err.message, "error");
+        .catch(err => {
+          this.toasted(err.message, 'error')
         })
         .finally(() => {
-          this.$refs["warning-before-delete"].closeModal();
-          this.getComments();
-        });
+          this.$refs['warning-before-delete'].closeModal()
+          this.getComments()
+        })
     },
     async saveComment() {
-      const isValid = await this.$refs["userComment-area"].validate();
+      const isValid = await this.$refs['userComment-area'].validate()
       if (isValid.valid) {
         const data = {
           comment: this.comment,
-        };
-        if (this.modalProperties.type === "create") {
+        }
+        if (this.modalProperties.type === 'create') {
           await api.contractV2
             .addComment(this.contractId, data)
             .then(() => {
               this.toasted(
-                `${this.$t("sweetAlert.success_create_comment")}`,
-                "success"
-              );
+                `${this.$t('sweetAlert.success_create_comment')}`,
+                'success',
+              )
             })
-            .catch((err) => {
-              this.toasted(err.message, "error");
-            });
+            .catch(err => {
+              this.toasted(err.message, 'error')
+            })
         } else {
           await api.contractV2
             .editComment(this.contractId, this.commentId, data)
             .then(() => {
               this.toasted(
-                `${this.$t("sweetAlert.successfully_edited")}`,
-                "success"
-              );
+                `${this.$t('sweetAlert.successfully_edited')}`,
+                'success',
+              )
             })
-            .catch((err) => {
-              this.toasted(err.message, "error");
-            });
+            .catch(err => {
+              this.toasted(err.message, 'error')
+            })
         }
-        this.closeCreateModal();
-        await this.getComments();
+        this.closeCreateModal()
+        await this.getComments()
       } else {
-        this.errors = isValid.errors;
+        this.errors = isValid.errors
       }
     },
   },
-};
+}
 </script>
 
 <template>
   <div>
     <div class="comments">
       <div class="comments-header">
-        <h4 v-if="hasComment" class="comments-header__title">
+        <h4
+          v-if="hasComment"
+          class="comments-header__title"
+        >
           {{ this.$t("contracts.note") }} ({{ pagination.totalItems }}
           {{ $t("contracts.notes") }})
         </h4>
-        <h4 v-else class="comments-header__title">
+        <h4
+          v-else
+          class="comments-header__title"
+        >
           {{ this.$t("contracts.note") }} ({{ $t("contracts.no_notes") }})
         </h4>
         <base-button
           v-if="createCommentPermission"
-          @click="openCreateModal"
           :text="`${$t('contracts.add_note')}`"
+          @click="openCreateModal"
         >
           <template #left-icon>
             <BasePlusIcon fill="var(--violet-600)" />
@@ -253,17 +257,24 @@ export default {
         </base-button>
       </div>
 
-      <div v-if="hasComment" class="comments-body">
-        <div v-for="userComment in comments" class="comment" :key="comment.id">
+      <div
+        v-if="hasComment"
+        class="comments-body"
+      >
+        <div
+          v-for="userComment in comments"
+          :key="comment.id"
+          class="comment"
+        >
           <div class="comment-content">
             <div class="comment-text">
               <p>{{ userComment.comment }}</p>
             </div>
             <div class="comment-action">
               <app-dropdown
+                v-if="deleteCommentPermission || editCommentPermission"
                 :position-right="true"
                 :collapse-arrow="true"
-                v-if="deleteCommentPermission || editCommentPermission"
               >
                 <template #header>
                   <BaseDotsIcon />
@@ -304,12 +315,12 @@ export default {
                   v-if="userComment.user.avatar"
                   :src="userComment.user.avatar"
                   alt=""
-                />
+                >
                 <img
                   v-else
                   :src="require('@/assets/img/no_avatar.png')"
                   alt=""
-                />
+                >
               </div>
               <h5 class="name">
                 {{ fullName(userComment.user) }}
@@ -320,12 +331,17 @@ export default {
               </h5>
             </div>
             <div class="comment-date">
-              <p class="date">{{ dateFormat(userComment) }}</p>
+              <p class="date">
+                {{ dateFormat(userComment) }}
+              </p>
             </div>
           </div>
         </div>
 
-        <div v-if="countOfPaymentItems" class="pagination__vue">
+        <div
+          v-if="countOfPaymentItems"
+          class="pagination__vue"
+        >
           <!--   Pagination   -->
           <vue-paginate
             :page-count="pagination.total"
@@ -357,10 +373,10 @@ export default {
             <span class="show__by__content">
               <span class="description">{{ $t("contracts.show_by") }}:</span>
               <b-form-select
-                @input="changeCommentsShowingLimit"
                 v-model="params.limit"
                 :options="showByOptions"
-              ></b-form-select>
+                @input="changeCommentsShowingLimit"
+              />
               <span class="arrow__down">
                 <base-down-icon />
               </span>
@@ -369,13 +385,22 @@ export default {
         </div>
       </div>
 
-      <div v-else class="comments-body">
-        <p class="comment-empty">{{ $t("contracts.no_note") }}.</p>
+      <div
+        v-else
+        class="comments-body"
+      >
+        <p class="comment-empty">
+          {{ $t("contracts.no_note") }}.
+        </p>
       </div>
     </div>
 
     <!--    CREATE COMMENT MODAL-->
-    <base-modal ref="create" id="create-comment" design="auto-height">
+    <base-modal
+      id="create-comment"
+      ref="create"
+      design="auto-height"
+    >
       <template #header>
         <span class="d-flex align-items-center justify-content-between">
           <!--    TITLE      -->
@@ -384,8 +409,14 @@ export default {
           </span>
 
           <!--   CLOSE    -->
-          <span class="go__back" @click="closeCreateModal">
-            <BaseCloseIcon :width="56" :height="56" />
+          <span
+            class="go__back"
+            @click="closeCreateModal"
+          >
+            <BaseCloseIcon
+              :width="56"
+              :height="56"
+            />
           </span>
         </span>
       </template>
@@ -396,10 +427,10 @@ export default {
             {{ $t("contracts.note_text") }}
           </h5>
           <ValidationProvider
-            :name="$t('objects.create.tariff.type_name')"
             ref="userComment-area"
-            rules="required|min:2"
             v-slot="{ errors }"
+            :name="$t('objects.create.tariff.type_name')"
+            rules="required|min:2"
             class="w-100"
             tag="div"
           >
@@ -408,7 +439,10 @@ export default {
               class="comment-textarea"
               :placeholder="`${$t('contracts.comment')}`"
             />
-            <span class="error__provider" v-if="errors[0]">
+            <span
+              v-if="errors[0]"
+              class="error__provider"
+            >
               {{ errors[0] }}
             </span>
           </ValidationProvider>
@@ -418,10 +452,10 @@ export default {
       <template #footer>
         <div>
           <base-button
-            @click="saveComment"
             :fixed="true"
             class="violet-gradient"
             :text="$t(`${modalProperties.btnText}`)"
+            @click="saveComment"
           />
         </div>
       </template>
@@ -469,18 +503,16 @@ export default {
       <template #footer>
         <div class="warning__before__delete-footer">
           <base-button
-            @click="cancelDelete"
             :fixed="true"
             :text="`${$t('no_cancel')}`"
-          >
-          </base-button>
+            @click="cancelDelete"
+          />
           <base-button
-            @click="deleteComment"
             :fixed="true"
             :text="`${$t('yes_delete')}`"
             class="violet-gradient"
-          >
-          </base-button>
+            @click="deleteComment"
+          />
         </div>
       </template>
     </base-modal>

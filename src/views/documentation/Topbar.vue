@@ -1,11 +1,12 @@
 <script>
-import BaseButton from "@/components/Reusable/BaseButton";
-import BaseNotificationIcon from "@/components/icons/BaseNotificationsIcon";
-import BaseAvatar from "@/components/Reusable/BaseAvatar";
-import BaseTimer from "@/components/Reusable/BaseTimer";
-import DocHeader from "@/views/documentation/DocHeader";
+import BaseButton from '@/components/Reusable/BaseButton'
+import BaseNotificationIcon from '@/components/icons/BaseNotificationsIcon'
+import BaseAvatar from '@/components/Reusable/BaseAvatar'
+import BaseTimer from '@/components/Reusable/BaseTimer'
+import DocHeader from '@/views/documentation/DocHeader'
+
 export default {
-  name: "Topbar",
+  name: 'Topbar',
   components: {
     DocHeader,
     BaseTimer,
@@ -13,7 +14,7 @@ export default {
     BaseNotificationIcon,
     BaseButton,
   },
-};
+}
 </script>
 
 <template>
@@ -21,7 +22,10 @@ export default {
     <DocHeader title="topbar" />
     <div class="topbar-container-content">
       <div class="d-flex">
-        <BaseButton text="" class="mr-3">
+        <BaseButton
+          text=""
+          class="mr-3"
+        >
           <template #right-icon>
             <BaseNotificationIcon />
           </template>
@@ -35,9 +39,14 @@ export default {
       <div class="d-flex">
         <BaseAvatar class="mr-4">
           <template #avatar>
-            <img src="@/assets/img/avatar.svg" alt="logo" />
+            <img
+              src="@/assets/img/avatar.svg"
+              alt="logo"
+            >
           </template>
-          <template #full_name> Достонхон Озодходжаев </template>
+          <template #full_name>
+            Достонхон Озодходжаев
+          </template>
           <template #role>
             {{ $t("roles.admin") }}
           </template>
@@ -50,10 +59,16 @@ export default {
         />
       </div>
       <div class="just-avatar">
-        <BaseAvatar avatar="avatar.svg" class="mr-4" />
+        <BaseAvatar
+          avatar="avatar.svg"
+          class="mr-4"
+        />
         <BaseAvatar background="#E5E7EB">
           <template #avatar>
-            <img src="@/assets/img/avatar.svg" alt="logo" />
+            <img
+              src="@/assets/img/avatar.svg"
+              alt="logo"
+            >
           </template>
         </BaseAvatar>
       </div>
@@ -63,7 +78,10 @@ export default {
           second="59"
           background="linear-gradient(88.25deg, #7C3AED 0%, #818CF8 100%)"
         />
-        <BaseTimer minute="29" second="59" />
+        <BaseTimer
+          minute="29"
+          second="59"
+        />
       </div>
     </div>
   </main>

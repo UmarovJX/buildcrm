@@ -1,20 +1,20 @@
 <script>
-import DocHeader from "@/views/documentation/DocHeader";
-import BaseInput from "@/components/Reusable/BaseInput";
-import BaseMultiselect from "@/components/Reusable/BaseMultiselect";
-import BaseSearchCalendar from "@/components/Reusable/BaseCalendar";
-import FromTillInput from "@/components/Reusable/FromTillInput";
-import FileUploader from "@/components/Reusable/FileUploader";
-import OutputInformation from "@/components/Elements/Outputs/OutputInformation";
-import BaseStarIcon from "@/components/icons/BaseStarIcon";
-import BaseEditIcon from "@/components/icons/BaseEditIcon";
+import DocHeader from '@/views/documentation/DocHeader'
+import BaseInput from '@/components/Reusable/BaseInput'
+import BaseMultiselect from '@/components/Reusable/BaseMultiselect'
+import BaseSearchCalendar from '@/components/Reusable/BaseCalendar'
+import FromTillInput from '@/components/Reusable/FromTillInput'
+import FileUploader from '@/components/Reusable/FileUploader'
+import OutputInformation from '@/components/Elements/Outputs/OutputInformation'
+import BaseStarIcon from '@/components/icons/BaseStarIcon'
+import BaseEditIcon from '@/components/icons/BaseEditIcon'
 
 export default {
-  name: "Sidebar",
+  name: 'Sidebar',
   components: {
     BaseEditIcon,
     BaseStarIcon,
-    "output-information": OutputInformation,
+    'output-information': OutputInformation,
     FileUploader,
     FromTillInput,
     BaseSearchCalendar,
@@ -24,10 +24,10 @@ export default {
   },
   data() {
     return {
-      options: ["item1", "item2", "item3"],
-    };
+      options: ['item1', 'item2', 'item3'],
+    }
   },
-};
+}
 </script>
 
 <template>
@@ -36,58 +36,110 @@ export default {
     <div class="text-fields-content">
       <div class="text-fields-content-row">
         <BaseInput placeholder="Инпут" />
-        <BaseMultiselect placeholder="Инпут" :options="options" />
-        <BaseSearchCalendar searchInput="Инпут" />
+        <BaseMultiselect
+          placeholder="Инпут"
+          :options="options"
+        />
+        <BaseSearchCalendar search-input="Инпут" />
         <FromTillInput />
       </div>
       <div class="text-fields-content-row">
         <FileUploader />
       </div>
       <div class="output-info">
-        <output-information :property="`${$t('date')}`" value="132 456 464">
+        <output-information
+          :property="`${$t('date')}`"
+          value="132 456 464"
+        >
           <template #left-icon>
             <span class="text-fields-content-icon">
-              <BaseStarIcon fill="#7C3AED" width="16" height="16" />
+              <BaseStarIcon
+                fill="#7C3AED"
+                width="16"
+                height="16"
+              />
             </span>
           </template>
           <template #right-icon>
             <span class="text-fields-content-icon">
-              <BaseEditIcon width="18" height="18" fill="white" />
+              <BaseEditIcon
+                width="18"
+                height="18"
+                fill="white"
+              />
             </span>
           </template>
         </output-information>
-        <output-information property="Label" value="Text" />
-        <output-information property="Label" value="">
+        <output-information
+          property="Label"
+          value="Text"
+        />
+        <output-information
+          property="Label"
+          value=""
+        >
           <template #left-icon>
             <span class="text-fields-content-icon">
-              <BaseStarIcon fill="#7C3AED" width="16" height="16" />
+              <BaseStarIcon
+                fill="#7C3AED"
+                width="16"
+                height="16"
+              />
             </span>
           </template>
         </output-information>
-        <output-information property="Label" value="">
+        <output-information
+          property="Label"
+          value=""
+        >
           <template #right-icon>
             <span class="text-fields-content-icon">
-              <BaseEditIcon width="18" height="18" fill="white" />
+              <BaseEditIcon
+                width="18"
+                height="18"
+                fill="white"
+              />
             </span>
           </template>
         </output-information>
-        <output-information property="Label" value="">
+        <output-information
+          property="Label"
+          value=""
+        >
           <template #right-icon>
             <span class="text-fields-content-icon">
-              <BaseEditIcon width="18" height="18" fill="white" />
+              <BaseEditIcon
+                width="18"
+                height="18"
+                fill="white"
+              />
             </span>
           </template>
           <template #left-icon>
             <span class="text-fields-content-icon">
-              <BaseStarIcon fill="#7C3AED" width="16" height="16" />
+              <BaseStarIcon
+                fill="#7C3AED"
+                width="16"
+                height="16"
+              />
             </span>
           </template>
         </output-information>
-        <output-information property="Label" value="" />
-        <output-information property="Label" value="Text">
+        <output-information
+          property="Label"
+          value=""
+        />
+        <output-information
+          property="Label"
+          value="Text"
+        >
           <template #right-icon>
             <span class="text-fields-content-icon">
-              <BaseEditIcon width="18" height="18" fill="white" />
+              <BaseEditIcon
+                width="18"
+                height="18"
+                fill="white"
+              />
             </span>
           </template>
         </output-information>

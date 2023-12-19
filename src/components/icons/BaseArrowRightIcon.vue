@@ -1,10 +1,10 @@
 <script>
 export default {
-  name: "BaseArrowRightIcon",
+  name: 'BaseArrowRightIcon',
   props: {
     fill: {
       type: String,
-      default: "#9CA3AF",
+      default: '#9CA3AF',
     },
     width: {
       type: Number,
@@ -17,10 +17,10 @@ export default {
   },
   computed: {
     viewBox() {
-      return `0 0 ${this.height} ${this.width}`;
+      return `0 0 ${this.height} ${this.width}`
     },
   },
-};
+}
 </script>
 <template>
   <svg

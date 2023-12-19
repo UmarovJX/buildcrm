@@ -1,6 +1,6 @@
 <script>
 export default {
-  name: "ClientInformation",
+  name: 'ClientInformation',
   props: {
     client: {},
   },
@@ -8,23 +8,39 @@ export default {
   data() {
     return {
       isVisibleInfo: false,
-    };
+    }
   },
-};
+}
 </script>
 
 <template>
   <div class="new-object p-0">
-    <div v-b-toggle.collapse-info block class="d-flex p-3">
+    <div
+      v-b-toggle.collapse-info
+      block
+      class="d-flex p-3"
+    >
       <span>{{ $t("client_info") }}</span>
-      <strong v-if="isVisibleInfo" aria-hidden="true" class="ml-auto">
-        <i class="fal fa-chevron-up"></i>
+      <strong
+        v-if="isVisibleInfo"
+        aria-hidden="true"
+        class="ml-auto"
+      >
+        <i class="fal fa-chevron-up" />
       </strong>
-      <strong v-else aria-hidden="true" class="ml-auto">
-        <i class="fal fa-chevron-down"></i>
+      <strong
+        v-else
+        aria-hidden="true"
+        class="ml-auto"
+      >
+        <i class="fal fa-chevron-down" />
       </strong>
     </div>
-    <b-collapse id="collapse-info" v-model="isVisibleInfo" class="px-3 pb-3">
+    <b-collapse
+      id="collapse-info"
+      v-model="isVisibleInfo"
+      class="px-3 pb-3"
+    >
       <table class="table mx-0 mt-2 p-0 my-table-another-variant">
         <tbody class="m-0 p-0">
           <tr>
@@ -52,13 +68,17 @@ export default {
             </td>
           </tr>
           <tr>
-            <td class="px-0 py-2">{{ $t("apartments.agree.birth_day") }}</td>
+            <td class="px-0 py-2">
+              {{ $t("apartments.agree.birth_day") }}
+            </td>
             <td class="px-0 py-2 text-right">
               {{ status.birth_day }}
             </td>
           </tr>
           <tr>
-            <td class="px-0 py-2">{{ $t("apartments.agree.fio") }}</td>
+            <td class="px-0 py-2">
+              {{ $t("apartments.agree.fio") }}
+            </td>
             <td
               class="px-0 py-2 text-right"
               :title="`${client.last_name.kirill} ${client.first_name.kirill} ${client.second_name.kirill}`"
@@ -69,13 +89,17 @@ export default {
             </td>
           </tr>
           <tr>
-            <td class="px-0 py-2">{{ $t("apartments.agree.phone") }}</td>
+            <td class="px-0 py-2">
+              {{ $t("apartments.agree.phone") }}
+            </td>
             <td class="px-0 py-2 text-right">
               {{ status.phone }}
             </td>
           </tr>
           <tr>
-            <td class="px-0 py-2">{{ $t("apartments.agree.other_phone") }}</td>
+            <td class="px-0 py-2">
+              {{ $t("apartments.agree.other_phone") }}
+            </td>
             <td class="px-0 py-2 text-right">
               {{ status.other_phone }}
             </td>

@@ -1,14 +1,14 @@
-export default class Document extends require("./paragraph") {
+export default class Document extends require('./paragraph') {
   constructor(wXml, wDoc, mParent) {
-    super(wXml, wDoc, mParent);
-    wDoc.style.setDefault(this);
+    super(wXml, wDoc, mParent)
+    wDoc.style.setDefault(this)
   }
 
   isDefault() {
-    return true;
+    return true
   }
 
   static get type() {
-    return "style.document";
+    return 'style.document'
   }
 }

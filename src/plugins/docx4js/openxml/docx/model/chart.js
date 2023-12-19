@@ -1,5 +1,5 @@
-export default class chart extends require("./graphic") {
+export default class chart extends require('./graphic') {
   static get type() {
-    return "chart";
+    return 'chart'
   }
 }

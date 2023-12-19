@@ -1,44 +1,44 @@
-import { DEBTORS_EXCEL_FILES } from "@/constants/names";
-import { hasOwnProperty } from "@/util/object";
+import { DEBTORS_EXCEL_FILES } from '@/constants/names'
+import { hasOwnProperty } from '@/util/object'
 // import { isObject } from "@/util/inspect";
 
 export default {
   state: {
     fileFields: [
       {
-        field: "contracts.table.contract",
+        field: 'contracts.table.contract',
         type: null,
-        default: "contract",
+        default: 'contract',
         modelType: null,
       },
       {
-        field: "sum",
+        field: 'sum',
         type: null,
-        default: "amount",
+        default: 'amount',
         modelType: null,
       },
       {
-        field: "payment_type",
+        field: 'payment_type',
         type: null,
-        default: "payment_type",
+        default: 'payment_type',
         modelType: null,
       },
       {
-        field: "contracts.view.payment_type",
+        field: 'contracts.view.payment_type',
         type: null,
-        default: "type",
+        default: 'type',
         modelType: null,
       },
       {
-        field: "date",
+        field: 'date',
         type: null,
-        default: "date",
+        default: 'date',
         modelType: null,
       },
       {
-        field: "contracts.comment",
+        field: 'contracts.comment',
         type: null,
-        default: "comment",
+        default: 'comment',
         modelType: null,
       },
     ],
@@ -60,35 +60,35 @@ export default {
 
   getters: {
     getImportDebtors(state) {
-      return state.debtors;
+      return state.debtors
     },
 
     getImportPaginationDebtors(state) {
-      return state.pagination;
+      return state.pagination
     },
 
     getDebtorsSheets(state) {
-      return state.debtorsExcelSheets;
+      return state.debtorsExcelSheets
     },
 
     getFoundContracts(state) {
-      return state.importContracts.found;
+      return state.importContracts.found
     },
 
     getNotFoundContracts(state) {
-      return state.importContracts.not_found;
+      return state.importContracts.not_found
     },
 
     getSelectAliases(state) {
-      return state.importContracts.aliases;
+      return state.importContracts.aliases
     },
 
     getFileFields(state) {
-      return state.fileFields;
+      return state.fileFields
     },
 
     getPreviewItems(state) {
-      return state.importContracts.previewItems;
+      return state.importContracts.previewItems
     },
 
     //   getHavingAliases(state) {
@@ -111,58 +111,58 @@ export default {
 
   mutations: {
     addItemToLinkedList(state, lCtc) {
-      state.linkingContracts = lCtc;
+      state.linkingContracts = lCtc
     },
     changeFileFieldType(state, { item, type }) {
       const fieldIdx = state.fileFields.findIndex(
-        (f) => f.default === item.default
-      );
+        f => f.default === item.default,
+      )
 
       if (fieldIdx !== -1) {
-        state.fileFields[fieldIdx].type = type;
+        state.fileFields[fieldIdx].type = type
       }
     },
     generateImportTable(state) {
-      state.importContracts.found.forEach((fc) => {
+      state.importContracts.found.forEach(fc => {
         const hasInLink = hasOwnProperty(
           state.linkingContracts,
-          fc.value.alias
-        );
+          fc.value.alias,
+        )
         if (hasInLink) {
-          state.linkingContracts[fc.value.alias].forEach((tableItem) => {
+          state.linkingContracts[fc.value.alias].forEach(tableItem => {
             state.importContracts.previewItems.push({
               ...fc,
               table: tableItem,
-            });
-          });
+            })
+          })
         }
-      });
+      })
     },
     setCreatedAlias(state, aliasList) {
-      state.importContracts.createdAliases = aliasList;
+      state.importContracts.createdAliases = aliasList
     },
     updateNotFoundOption(state, { item, options }) {
-      state.importContracts.not_found[item.index].option = options;
+      state.importContracts.not_found[item.index].option = options
     },
     updateNotFoundAlias(state, { index, option }) {
-      state.importContracts.not_found[index].alias = option;
+      state.importContracts.not_found[index].alias = option
 
       const ctcIdx = state.importContracts.aliases.findIndex(
-        (alias) => alias.contract === option.contract
-      );
+        alias => alias.contract === option.contract,
+      )
 
       if (ctcIdx !== -1) {
         state.importContracts.aliases[ctcIdx] = {
           uuid: option.uuid,
           alias: option.contract,
           contract: state.importContracts.not_found[index].value.contract,
-        };
+        }
       } else {
         state.importContracts.aliases.push({
           uuid: option.uuid,
           alias: option.contract,
           contract: state.importContracts.not_found[index].value.contract,
-        });
+        })
       }
     },
     checkContracts(state, rsp) {
@@ -175,7 +175,7 @@ export default {
             uuid: rsp.data.found[i].uuid,
             contract: rsp.data.found[i].contract_number,
           },
-        });
+        })
       }
 
       for (let i = 0; i < rsp.data.not_found.length; i++) {
@@ -188,7 +188,7 @@ export default {
             contract: rsp.data.not_found[i],
             uuid: null,
           },
-        });
+        })
       }
 
       // for (let i = 0; i < rsp.data.aliases.length; i++) {
@@ -196,11 +196,11 @@ export default {
       // }
     },
     updateDebtors(state, debtors) {
-      state.debtors = debtors;
+      state.debtors = debtors
     },
 
     updatePagination(state, pagination) {
-      state.pagination = pagination;
+      state.pagination = pagination
     },
 
     updateDebtorsExcel(state, debtorsExcelSheets, fromStorage = false) {
@@ -212,11 +212,11 @@ export default {
               name: debtorsExcelSheets.file.name,
             },
             rows: debtorsExcelSheets.rows,
-          })
-        );
+          }),
+        )
       }
 
-      state.debtorsExcelSheets = debtorsExcelSheets;
+      state.debtorsExcelSheets = debtorsExcelSheets
     },
   },
-};
+}

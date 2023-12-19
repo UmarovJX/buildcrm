@@ -1,18 +1,18 @@
 <script>
-import { mapGetters } from "vuex";
-import TabUserMe from "@/components/UserSettings/TabUserMe";
-import TabChangePassword from "@/components/UserSettings/TabChangePassword";
-import BaseUserAccountIcon from "@/components/icons/BaseUserAccountIcon";
-import BaseUserPasswordIcon from "@/components/icons/BaseUserPasswordIcon";
-import BaseBreadCrumb from "@/components/BaseBreadCrumb";
-import GeneralPermission from "@/permission/general";
-import AppHeader from "@/components/Header/AppHeader";
+import { mapGetters } from 'vuex'
+import TabUserMe from '@/components/UserSettings/TabUserMe'
+import TabChangePassword from '@/components/UserSettings/TabChangePassword'
+import BaseUserAccountIcon from '@/components/icons/BaseUserAccountIcon'
+import BaseUserPasswordIcon from '@/components/icons/BaseUserPasswordIcon'
+import BaseBreadCrumb from '@/components/BaseBreadCrumb'
+import GeneralPermission from '@/permission/general'
+import AppHeader from '@/components/Header/AppHeader'
 // import BaseSelect from "@/components/Reusable/BaseSelect";
 // import BaseInput from "@/components/Reusable/BaseInput";
 // import WarningSuccess from "@/components/Reusable/WarningSuccess";
 
 export default {
-  name: "UserSettings",
+  name: 'UserSettings',
   components: {
     AppHeader,
     TabUserMe,
@@ -27,21 +27,21 @@ export default {
   data() {
     return {
       tabIndex: 0,
-      search: "",
+      search: '',
       array: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
       passwordPermission:
-        GeneralPermission.getGeneralPermission("password_settings"),
+        GeneralPermission.getGeneralPermission('password_settings'),
       profileSettingsPermission:
-        GeneralPermission.getGeneralPermission("profile_settings"),
-    };
+        GeneralPermission.getGeneralPermission('profile_settings'),
+    }
   },
   computed: {
     ...mapGetters({
-      theme: "getTheme",
-      permission: "getPermission",
+      theme: 'getTheme',
+      permission: 'getPermission',
     }),
     activeContent() {
-      return this.$t("profile");
+      return this.$t('profile')
     },
     // passwordPermission() {
     //   return GeneralPermission.getPasswordSettingsPermission()
@@ -52,16 +52,16 @@ export default {
   },
   methods: {
     openModal() {
-      this.$refs["base-modal"].openModal();
+      this.$refs['base-modal'].openModal()
     },
     activeTabIconColor(index) {
-      if (this.theme === "light-theme" && this.tabIndex === index) {
-        return "#fff";
+      if (this.theme === 'light-theme' && this.tabIndex === index) {
+        return '#fff'
       }
-      return "#000";
+      return '#000'
     },
   },
-};
+}
 </script>
 
 <template>
@@ -72,8 +72,10 @@ export default {
       </template>
     </app-header>
 
-    <base-bread-crumb :active-content="activeContent" class="mb-4">
-    </base-bread-crumb>
+    <base-bread-crumb
+      :active-content="activeContent"
+      class="mb-4"
+    />
 
     <!--    <base-input-->
     <!--        v-model="search"-->
@@ -100,7 +102,10 @@ export default {
         vertical
         active-tab-class="user__active__tab"
       >
-        <b-tab v-if="profileSettingsPermission" active>
+        <b-tab
+          v-if="profileSettingsPermission"
+          active
+        >
           <template #title>
             <span class="d-flex align-items-center">
               <base-user-account-icon

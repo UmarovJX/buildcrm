@@ -1,7 +1,7 @@
 <script>
 export default {
-  name: "BaseCalendarNavigation",
-};
+  name: 'BaseCalendarNavigation',
+}
 </script>
 
 <template>

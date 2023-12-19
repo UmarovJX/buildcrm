@@ -1,18 +1,18 @@
 <script>
-import BaseModal from "@/components/Reusable/BaseModal";
-import BaseButton from "@/components/Reusable/BaseButton";
-import readExcelFile from "read-excel-file";
-import { mapGetters, mapMutations } from "vuex";
+import BaseModal from '@/components/Reusable/BaseModal'
+import BaseButton from '@/components/Reusable/BaseButton'
+import readExcelFile from 'read-excel-file'
+import { mapGetters, mapMutations } from 'vuex'
 // import api from "@/services/api";
-import BaseCloseIcon from "@/components/icons/BaseCloseIcon";
-import DebtorsFileUploader from "@/components/Reusable/DebtorsFileUploader";
+import BaseCloseIcon from '@/components/icons/BaseCloseIcon'
+import DebtorsFileUploader from '@/components/Reusable/DebtorsFileUploader'
 
-import { XIcon } from "@/components/ui-components/material-icons";
-import { XFormInput } from "@/components/ui-components/form-input";
-import BaseArrowDownIcon from "@/components/icons/BaseArrowDownIcon.vue";
+import { XIcon } from '@/components/ui-components/material-icons'
+import { XFormInput } from '@/components/ui-components/form-input'
+import BaseArrowDownIcon from '@/components/icons/BaseArrowDownIcon.vue'
 
 export default {
-  name: "CreateModal",
+  name: 'CreateModal',
   components: {
     BaseArrowDownIcon,
     BaseCloseIcon,
@@ -27,64 +27,64 @@ export default {
       buttonLoading: false,
       // image: null,
       // name: null
-    };
+    }
   },
   computed: {
-    ...mapGetters(["getFastPlanImage", "getFastPlanName"]),
+    ...mapGetters(['getFastPlanImage', 'getFastPlanName']),
     size() {
       if (this.image) {
-        const kilobyte = this.image.size / 1024;
+        const kilobyte = this.image.size / 1024
         if (kilobyte > 1024) {
-          return Math.round((kilobyte / 1024) * 100) / 100 + " МБ";
+          return `${Math.round((kilobyte / 1024) * 100) / 100} МБ`
         }
-        return Math.round(kilobyte) + " КБ";
+        return `${Math.round(kilobyte)} КБ`
       }
-      return 0;
+      return 0
     },
     image: {
       set(value) {
-        return this.$store.commit("updateFastPlanImage", value);
+        return this.$store.commit('updateFastPlanImage', value)
       },
       get() {
-        return this.getFastPlanImage;
+        return this.getFastPlanImage
       },
     },
     name: {
       set(value) {
-        return this.$store.commit("updateFastPlanName", value);
+        return this.$store.commit('updateFastPlanName', value)
       },
       get() {
-        return this.getFastPlanName;
+        return this.getFastPlanName
       },
     },
   },
   methods: {
     ...mapMutations({
-      updateFastPlanImage: "updateFastPlanImage",
-      updateFastPlanName: "updateFastPlanName",
+      updateFastPlanImage: 'updateFastPlanImage',
+      updateFastPlanName: 'updateFastPlanName',
     }),
     openModal() {
-      this.$refs["base-modal"].openModal();
+      this.$refs['base-modal'].openModal()
     },
     closeModal() {
-      this.$refs["base-modal"].closeModal();
+      this.$refs['base-modal'].closeModal()
     },
     importUploadImage() {
       if (this.image && this.name) {
         this.$router.push({
-          name: "fast_plan_add",
-        });
+          name: 'fast_plan_add',
+        })
       }
     },
     triggerNameEvent(event) {
-      this.updateFastPlanName(event);
+      this.updateFastPlanName(event)
     },
     triggerUploadEvent() {
-      this.image = this.$refs["file-input"].files[0];
-      this.updateFastPlanImage(this.image);
+      this.image = this.$refs['file-input'].files[0]
+      this.updateFastPlanImage(this.image)
     },
   },
-};
+}
 </script>
 
 <template>
@@ -93,10 +93,18 @@ export default {
       <!--   GO BACK     -->
       <div class="d-flex align-items-center justify-content-between">
         <!--    TITLE      -->
-        <div class="title">{{ $t("objects.create.fast_plan.add") }}</div>
+        <div class="title">
+          {{ $t("objects.create.fast_plan.add") }}
+        </div>
 
-        <div class="go__back" @click="closeModal">
-          <base-close-icon :width="56" :height="56" />
+        <div
+          class="go__back"
+          @click="closeModal"
+        >
+          <base-close-icon
+            :width="56"
+            :height="56"
+          />
         </div>
       </div>
     </template>
@@ -106,11 +114,14 @@ export default {
         {{ $t("objects.create.fast_plan.import_text") }}
       </p>
 
-      <div class="upload__content" ref="file-upload">
+      <div
+        ref="file-upload"
+        class="upload__content"
+      >
         <!--   IF FILE UPLOAD     -->
         <div
-          class="d-flex justify-content-between w-100 mr-4 ml-4"
           v-if="image"
+          class="d-flex justify-content-between w-100 mr-4 ml-4"
         >
           <div class="d-flex">
             <span class="xls__logo">
@@ -126,51 +137,63 @@ export default {
               <span>{{ image.name }}</span>
               <span class="mt-1">{{ size }}</span>
             </span>
-            <div v-else class="d-flex ml-3 align-items-center">
+            <div
+              v-else
+              class="d-flex ml-3 align-items-center"
+            >
               <span>Link</span>
             </div>
           </div>
 
           <div class="edit__content">
             <input
+              ref="file-input"
               type="file"
               accept=".png, .pdf"
               name="upload-image"
               class="upload__content-input"
               @change="triggerUploadEvent"
-              ref="file-input"
+            >
+            <base-button
+              text="Заменить"
+              class="edit__upload"
             />
-            <base-button text="Заменить" class="edit__upload" />
           </div>
         </div>
 
         <!--   FILE NOT UPLOAD YET     -->
-        <span v-else class="d-flex justify-content-center align-items-center">
+        <span
+          v-else
+          class="d-flex justify-content-center align-items-center"
+        >
           <span class="arrow__down">
-            <base-arrow-down-icon :width="56" :height="56" fill="#9CA3AF" />
+            <base-arrow-down-icon
+              :width="56"
+              :height="56"
+              fill="#9CA3AF"
+            />
           </span>
           <span class="max-width-16">
             {{ $t("payments.drag_file") }}
             <span class="color-violet-600">
-              {{ $t("payments.click_file") }}</span
-            >
+              {{ $t("payments.click_file") }}</span>
           </span>
         </span>
         <input
           v-if="!image"
+          ref="file-input"
           type="file"
           accept=".png, .pdf"
           name="upload-image"
           class="upload__content-input"
           @change="triggerUploadEvent"
-          ref="file-input"
-        />
+        >
       </div>
 
       <div class="mt-4">
         <x-form-input
-          class="w-100"
           v-model="name"
+          class="w-100"
           :placeholder="$t('objects.create.name')"
           :fixed="true"
           @input="triggerNameEvent"
@@ -189,9 +212,9 @@ export default {
       >
         <base-button
           :text="$t('next')"
-          @click="importUploadImage"
           :fixed="true"
           design="violet-gradient"
+          @click="importUploadImage"
         />
       </b-overlay>
     </template>
@@ -240,7 +263,6 @@ export default {
     .arrow__down
         margin-right: 2.5rem
 
-
     &-input
         outline: none
         cursor: pointer
@@ -255,7 +277,6 @@ export default {
     background-color: var(--gray-100)
     margin-top: 1rem
     width: 100%
-
 
 .edit__upload
     background: var(--gray-200)

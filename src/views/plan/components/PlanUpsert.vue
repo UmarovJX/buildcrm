@@ -1,18 +1,18 @@
 <script>
-import {computed, getCurrentInstance, ref} from "vue";
-import {makeProp} from "@/util/props";
-import {isEmptyObject} from "@/util/inspect";
-import {v3ServiceApi} from "@/services/v3/v3.service";
-import {useToastError} from "@/composables/useToastError";
-import {PROP_TYPE_OBJECT, PROP_TYPE_STRING} from "@/constants/props";
-import {XFormInput} from "@/components/ui-components/form-input";
-import {XModalCenter} from "@/components/ui-components/modal-center";
-import {XFormSelect} from "@/components/ui-components/form-select";
-import BaseDatePicker from "@/components/Reusable/BaseDatePicker.vue";
-import {addZero, dateProperties} from "@/util/date/calendar.util";
+import { computed, getCurrentInstance, ref } from 'vue'
+import { makeProp } from '@/util/props'
+import { isEmptyObject } from '@/util/inspect'
+import { v3ServiceApi } from '@/services/v3/v3.service'
+import { useToastError } from '@/composables/useToastError'
+import { PROP_TYPE_OBJECT, PROP_TYPE_STRING } from '@/constants/props'
+import { XFormInput } from '@/components/ui-components/form-input'
+import { XModalCenter } from '@/components/ui-components/modal-center'
+import { XFormSelect } from '@/components/ui-components/form-select'
+import BaseDatePicker from '@/components/Reusable/BaseDatePicker.vue'
+import { addZero, dateProperties } from '@/util/date/calendar.util'
 
 export default {
-  name: "PlanUpsert",
+  name: 'PlanUpsert',
   components: {
     BaseDatePicker,
     XFormInput,
@@ -20,29 +20,27 @@ export default {
     XFormSelect,
   },
   props: {
-    upsertType: makeProp(PROP_TYPE_STRING, "create", (type) => {
-      return ["create", "edit"].includes(type);
-    }),
+    upsertType: makeProp(PROP_TYPE_STRING, 'create', type => ['create', 'edit'].includes(type)),
     editItem: makeProp(PROP_TYPE_OBJECT, {
       date: [],
       amount: null,
-      type: null
+      type: null,
     }),
     planTypes: {
       type: Array,
-      default: () => ([])
-    }
+      default: () => ([]),
+    },
   },
-  emits: ["created", "close-creating-modal"],
-  setup(props, {emit}) {
-    const {toastError} = useToastError()
+  emits: ['created', 'close-creating-modal'],
+  setup(props, { emit }) {
+    const { toastError } = useToastError()
     const vm = getCurrentInstance().proxy
     const formObserverRef = ref(null)
     const applyButtonLoading = ref(false)
     const clientForm = ref({
       date: {
         from: null,
-        to: null
+        to: null,
       },
       amount: 0,
       type: null,
@@ -51,51 +49,47 @@ export default {
         message: undefined,
       },
     })
-    const formData = ref({...clientForm.value})
+    const formData = ref({ ...clientForm.value })
 
-    const typeOptions = computed(() => {
-      return props.planTypes.map(option => {
-        return {
-          value: option.value,
-          text: option.text[vm.$i18n.locale]
-        }
-      })
-    })
+    const typeOptions = computed(() => props.planTypes.map(option => ({
+      value: option.value,
+      text: option.text[vm.$i18n.locale],
+    })))
 
     function setEditData() {
       if (isEmptyObject(props.editItem)) {
-        return;
+        return
       }
 
-      formData.value.date.from = props.editItem.date_from;
-      formData.value.date.to = props.editItem.date_to;
-      formData.value.type = props.editItem.type.type;
-      formData.value.amount = props.editItem.amount;
+      formData.value.date.from = props.editItem.date_from
+      formData.value.date.to = props.editItem.date_to
+      formData.value.type = props.editItem.type.type
+      formData.value.amount = props.editItem.amount
     }
 
     function closeCreatingModal() {
-      clearForm();
-      emit("close-creating-modal");
+      clearForm()
+      emit('close-creating-modal')
     }
 
     function startLoading() {
-      applyButtonLoading.value = true;
+      applyButtonLoading.value = true
     }
 
     function finishLoading() {
-      applyButtonLoading.value = false;
+      applyButtonLoading.value = false
     }
 
     function submitClientType() {
-      if (props.upsertType === "edit") {
-        editClientType();
+      if (props.upsertType === 'edit') {
+        editClientType()
       } else {
-        applyNewClientType();
+        applyNewClientType()
       }
     }
 
     function makeBody() {
-      const {lastDateOfMonth, year, month} = dateProperties(formData.value.date.from)
+      const { lastDateOfMonth, year, month } = dateProperties(formData.value.date.from)
       return {
         type: formData.value.type,
         date_from: formData.value.date.from,
@@ -110,42 +104,41 @@ export default {
     }
 
     async function applyNewClientType() {
-      const isSatisfied = await formObserverRef.value.validate();
+      const isSatisfied = await formObserverRef.value.validate()
       if (isSatisfied) {
-        startLoading();
+        startLoading()
         try {
           await v3ServiceApi.plan.create(
-              makeBody()
-          );
-          clearForm();
-          await emit("created");
+            makeBody(),
+          )
+          clearForm()
+          await emit('created')
         } catch (e) {
           toastError(e)
         } finally {
-          finishLoading();
+          finishLoading()
         }
       }
     }
 
     async function editClientType() {
-      const isSatisfied = await formObserverRef.value.validate();
+      const isSatisfied = await formObserverRef.value.validate()
       if (isSatisfied) {
-        startLoading();
+        startLoading()
         try {
           const response = await v3ServiceApi.plan.update({
             id: props.editItem.id,
             ...makeBody(),
-          });
-          clearForm();
-          response && emit("created");
+          })
+          clearForm()
+          response && emit('created')
         } catch (e) {
           toastError(e)
         } finally {
-          finishLoading();
+          finishLoading()
         }
       }
     }
-
 
     function clearForm() {
       formData.value.type = null
@@ -160,8 +153,8 @@ export default {
       }
     }
 
-    if (props.upsertType === "edit") {
-      setEditData();
+    if (props.upsertType === 'edit') {
+      setEditData()
     }
 
     return {
@@ -172,30 +165,30 @@ export default {
       typeOptions,
 
       closeCreatingModal,
-      submitClientType
+      submitClientType,
     }
-  }
-};
+  },
+}
 </script>
 
 <template>
   <x-modal-center
-      :bilingual="true"
-      apply-button-text="save"
-      cancel-button-text="cancel"
-      footer-class="d-flex justify-content-between x-gap-1"
-      apply-button-class="w-100"
-      cancel-button-class="w-100"
-      :apply-button-loading="applyButtonLoading"
-      :modal-container-style="{
+    :bilingual="true"
+    apply-button-text="save"
+    cancel-button-text="cancel"
+    footer-class="d-flex justify-content-between x-gap-1"
+    apply-button-class="w-100"
+    cancel-button-class="w-100"
+    :apply-button-loading="applyButtonLoading"
+    :modal-container-style="{
       'max-width': '960px',
       width: '75%',
       height: 'auto',
       overflowY: 'scroll',
     }"
-      @close="closeCreatingModal"
-      @cancel="closeCreatingModal"
-      @apply="submitClientType"
+    @close="closeCreatingModal"
+    @cancel="closeCreatingModal"
+    @apply="submitClientType"
   >
     <template #header>
       <h3 class="x-font-size-36px font-craftworksans color-gray-600">
@@ -205,42 +198,48 @@ export default {
 
     <template #body>
       <validation-observer
-          ref="formObserverRef"
-          class="client-type-creating-body"
+        ref="formObserverRef"
+        class="client-type-creating-body"
       >
         <!--   ? TYPE OF PLAN | SELECT     -->
         <validation-provider
-            ref="typeProvider"
-            name="typeProvider"
-            rules="required"
-            v-slot="{ errors }"
+          ref="typeProvider"
+          v-slot="{ errors }"
+          name="typeProvider"
+          rules="required"
         >
           <x-form-select
-              v-model="formData.type"
-              :multiple="false"
-              :options="typeOptions"
-              :placeholder="$t('plan_type')"
+            v-model="formData.type"
+            :multiple="false"
+            :options="typeOptions"
+            :placeholder="$t('plan_type')"
           />
-          <span class="error__provider" v-if="errors[0]">
+          <span
+            v-if="errors[0]"
+            class="error__provider"
+          >
             {{ errors[0].replace("typeProvider", $t("plan_type")) }}
           </span>
         </validation-provider>
 
         <!--   ? DATE     -->
         <validation-provider
-            ref="dateProvider"
-            name="dateProvider"
-            rules="required"
-            v-slot="{ errors }"
+          ref="dateProvider"
+          v-slot="{ errors }"
+          name="dateProvider"
+          rules="required"
         >
           <base-date-picker
-              type="month"
-              class="w-100"
-              :range="false"
-              :placeholder="`${$t('common.date')}`"
-              v-model="formData.date.from"
+            v-model="formData.date.from"
+            type="month"
+            class="w-100"
+            :range="false"
+            :placeholder="`${$t('common.date')}`"
           />
-          <span class="error__provider" v-if="errors[0]">
+          <span
+            v-if="errors[0]"
+            class="error__provider"
+          >
             {{ errors[0].replace("dateProvider", $t("common.date")) }}
           </span>
         </validation-provider>
@@ -265,23 +264,25 @@ export default {
         </validation-provider>
         -->
 
-
         <!--   ? AMOUNT     -->
         <validation-provider
-            ref="amountProvider"
-            name="amountProvider"
-            rules="required"
-            v-slot="{ errors }"
+          ref="amountProvider"
+          v-slot="{ errors }"
+          name="amountProvider"
+          rules="required"
         >
           <x-form-input
-              type="number"
-              :label="true"
-              :currency-symbol="true"
-              :placeholder="`${ $t('plan_amount') }`"
-              class="w-100"
-              v-model="formData.amount"
+            v-model="formData.amount"
+            type="number"
+            :label="true"
+            :currency-symbol="true"
+            :placeholder="`${ $t('plan_amount') }`"
+            class="w-100"
           />
-          <span class="error__provider" v-if="errors[0]">
+          <span
+            v-if="errors[0]"
+            class="error__provider"
+          >
             {{ errors[0].replace("amountProvider", $t("plan_amount")) }}
           </span>
         </validation-provider>

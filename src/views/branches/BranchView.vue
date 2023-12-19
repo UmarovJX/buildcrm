@@ -1,12 +1,12 @@
 <script>
 export default {
-  name: "BranchView",
-};
+  name: 'BranchView',
+}
 </script>
 
 <template>
   <div>
-    <router-view></router-view>
+    <router-view />
   </div>
 </template>
 

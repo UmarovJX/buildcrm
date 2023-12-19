@@ -1,15 +1,15 @@
 <script>
-import BaseNotificationsIcon from "@/components/icons/BaseNotificationsIcon";
-import BaseCircleWrapper from "@/components/Reusable/BaseCircleWrapper";
+import BaseNotificationsIcon from '@/components/icons/BaseNotificationsIcon'
+import BaseCircleWrapper from '@/components/Reusable/BaseCircleWrapper'
 
 export default {
-  name: "AppNotificationIcon",
+  name: 'AppNotificationIcon',
   components: {
     BaseCircleWrapper,
     BaseNotificationsIcon,
   },
-  emits: ["click"],
-};
+  emits: ['click'],
+}
 </script>
 
 <template>

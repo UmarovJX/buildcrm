@@ -1,9 +1,9 @@
-export default class br extends require("../model") {
+export default class br extends require('../model') {
   static get type() {
-    return "br";
+    return 'br'
   }
 
   get breakType() {
-    //@todo
+    // @todo
   }
 }

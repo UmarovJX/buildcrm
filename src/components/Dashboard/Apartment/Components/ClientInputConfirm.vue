@@ -1,11 +1,11 @@
 <script>
-import { mapGetters } from "vuex";
-import api from "@/services/api";
-import CheckoutPermission from "@/permission/checkout";
+import { mapGetters } from 'vuex'
+import api from '@/services/api'
+import CheckoutPermission from '@/permission/checkout'
 
 export default {
-  name: "ClientInputConfirm",
-  emits: ["focus"],
+  name: 'ClientInputConfirm',
+  emits: ['focus'],
   props: {
     client: {},
   },
@@ -14,53 +14,53 @@ export default {
     return {
       header: {
         headers: {
-          Authorization: "Bearer " + localStorage.token,
+          Authorization: `Bearer ${localStorage.token}`,
         },
       },
-      maskForPhoneNumber: `+### ## ### ## ##`,
+      maskForPhoneNumber: '+### ## ### ## ##',
       markFriendPermission: CheckoutPermission.getMarkFriendPermission(),
-    };
+    }
   },
 
   watch: {
-    client: function () {
-      this.$emit("clientSet", this.client);
+    client() {
+      this.$emit('clientSet', this.client)
     },
   },
 
   computed: {
-    ...mapGetters(["getReserveClient", "getPermission", "getMe"]),
+    ...mapGetters(['getReserveClient', 'getPermission', 'getMe']),
     clientPhoneNumber: {
       get() {
-        return this.client.phone;
+        return this.client.phone
       },
       set(val) {
-        this.client.phone = val.replace(/\s/g, "");
+        this.client.phone = val.replace(/\s/g, '')
       },
     },
     clientOtherPhoneNumber: {
       get() {
-        return this.client.other_phone;
+        return this.client.other_phone
       },
       set(val) {
-        this.client.other_phone = val.replace(/\s/g, "");
+        this.client.other_phone = val.replace(/\s/g, '')
       },
     },
   },
 
   methods: {
     userFocused() {
-      this.$emit("focus");
+      this.$emit('focus')
     },
     async getClientData() {
       if (this.client.passport_series.length === 9) {
-        this.loading = true;
+        this.loading = true
         try {
           // console.log(api.clientsV2, 'api 2');
           const { data } = await api.clientsV2.fetchClientData(
-            this.client.passport_series
-          );
-          console.log(data, "data");
+            this.client.passport_series,
+          )
+          console.log(data, 'data')
           this.client = {
             id: data.id,
             first_name: data.first_name ?? {
@@ -82,48 +82,48 @@ export default {
             other_phone: data.other_phone,
             date_of_issue: data.date_of_issue,
             discount: { id: null },
-            type_client: "unknown",
-          };
-          this.loading = false;
+            type_client: 'unknown',
+          }
+          this.loading = false
         } catch (error) {
-          this.loading = false;
-          this.toastedWithErrorCode(error);
+          this.loading = false
+          this.toastedWithErrorCode(error)
         }
       } else {
-        this.toasted("Введите номер и серию паспорта правильно", "error");
+        this.toasted('Введите номер и серию паспорта правильно', 'error')
       }
     },
 
     getValidationState({ dirty, validated, valid = null }) {
-      return dirty || validated ? valid : null;
+      return dirty || validated ? valid : null
     },
 
     // form
     isCyrillic(type, value) {
       switch (type) {
-        case "first_name":
-          this.client.first_name.kirill = this.symbolIsCyrillic(value);
-          break;
-        case "last_name":
-          this.client.last_name.kirill = this.symbolIsCyrillic(value);
-          break;
-        case "second_name":
-          this.client.second_name.kirill = this.symbolIsCyrillic(value);
-          break;
+        case 'first_name':
+          this.client.first_name.kirill = this.symbolIsCyrillic(value)
+          break
+        case 'last_name':
+          this.client.last_name.kirill = this.symbolIsCyrillic(value)
+          break
+        case 'second_name':
+          this.client.second_name.kirill = this.symbolIsCyrillic(value)
+          break
       }
     },
 
     isLatin(type, value) {
       switch (type) {
-        case "first_name":
-          this.client.first_name.lotin = this.symbolIsLatin(value);
-          break;
-        case "last_name":
-          this.client.last_name.lotin = this.symbolIsLatin(value);
-          break;
-        case "second_name":
-          this.client.second_name.lotin = this.symbolIsLatin(value);
-          break;
+        case 'first_name':
+          this.client.first_name.lotin = this.symbolIsLatin(value)
+          break
+        case 'last_name':
+          this.client.last_name.lotin = this.symbolIsLatin(value)
+          break
+        case 'second_name':
+          this.client.second_name.lotin = this.symbolIsLatin(value)
+          break
       }
     },
 
@@ -133,263 +133,262 @@ export default {
 
       // console.log(this.status.first_name.lotin.length)
       switch (type) {
-        case "first_name":
+        case 'first_name':
           if (this.client.first_name.lotin.length === 0) {
-            this.client.first_name.lotin = this.translateTextToLatin(event);
+            this.client.first_name.lotin = this.translateTextToLatin(event)
           }
-          break;
-        case "last_name":
+          break
+        case 'last_name':
           if (this.client.last_name.lotin.length === 0) {
-            this.client.last_name.lotin = this.translateTextToLatin(event);
+            this.client.last_name.lotin = this.translateTextToLatin(event)
           }
-          break;
-        case "second_name":
+          break
+        case 'second_name':
           if (this.client.second_name.lotin.length === 0) {
-            this.client.second_name.lotin = this.translateTextToLatin(event);
+            this.client.second_name.lotin = this.translateTextToLatin(event)
           }
-          break;
+          break
       }
     },
 
     textToCyrillic(type, event) {
       switch (type) {
-        case "first_name":
+        case 'first_name':
           if (this.client.first_name.kirill.length === 0) {
-            this.client.first_name.kirill = this.translateTextToCyrillic(event);
+            this.client.first_name.kirill = this.translateTextToCyrillic(event)
           }
-          break;
-        case "last_name":
+          break
+        case 'last_name':
           if (this.client.last_name.kirill.length === 0) {
-            this.client.last_name.kirill = this.translateTextToCyrillic(event);
+            this.client.last_name.kirill = this.translateTextToCyrillic(event)
           }
-          break;
-        case "second_name":
+          break
+        case 'second_name':
           if (this.client.second_name.kirill.length === 0) {
-            this.client.second_name.kirill =
-              this.translateTextToCyrillic(event);
+            this.client.second_name.kirill = this.translateTextToCyrillic(event)
           }
-          break;
+          break
       }
     },
 
     symbolIsCyrillic(event) {
       return event
-        .replace(/[^а-яё ҚқЎўҲҳҒғ]/i, "")
-        .replace(/(\..*?)\..*/g, "$1");
+        .replace(/[^а-яё ҚқЎўҲҳҒғ]/i, '')
+        .replace(/(\..*?)\..*/g, '$1')
     },
 
     symbolIsLatin(event) {
-      return event.replace(/[^a-z. ']/i, "").replace(/(\..*?)\..*/g, "$1");
+      return event.replace(/[^a-z. ']/i, '').replace(/(\..*?)\..*/g, '$1')
     },
 
     translateTextToLatin(value) {
-      return this.symbolCyrillicToLatin(value);
+      return this.symbolCyrillicToLatin(value)
     },
 
     translateTextToCyrillic(value) {
-      value = value.replace("Sh", "Ш");
-      value = value.replace("sh", "ш");
+      value = value.replace('Sh', 'Ш')
+      value = value.replace('sh', 'ш')
 
-      value = value.replace("Ch", "Ч");
-      value = value.replace("ch", "ч");
+      value = value.replace('Ch', 'Ч')
+      value = value.replace('ch', 'ч')
 
-      value = value.replace("Q", "Қ");
-      value = value.replace("q", "қ");
+      value = value.replace('Q', 'Қ')
+      value = value.replace('q', 'қ')
 
-      value = value.replace("O'", "Ў");
-      value = value.replace("o'", "ў");
+      value = value.replace("O'", 'Ў')
+      value = value.replace("o'", 'ў')
 
-      value = value.replace("G'", "Ғ");
-      value = value.replace("g'", "ғ");
+      value = value.replace("G'", 'Ғ')
+      value = value.replace("g'", 'ғ')
 
-      value = value.replace("Yu", "Ю");
-      value = value.replace("yu", "ю");
+      value = value.replace('Yu', 'Ю')
+      value = value.replace('yu', 'ю')
 
-      value = value.replace("Ya", "Я");
-      value = value.replace("Ya", "я");
+      value = value.replace('Ya', 'Я')
+      value = value.replace('Ya', 'я')
 
-      value = value.replace("Yo", "Ё");
-      value = value.replace("yo", "ё");
+      value = value.replace('Yo', 'Ё')
+      value = value.replace('yo', 'ё')
 
-      value = value.replace("Ye", "Е");
-      value = value.replace("ye", "е");
+      value = value.replace('Ye', 'Е')
+      value = value.replace('ye', 'е')
 
-      value = value.replace("Kh", "Х");
-      value = value.replace("kh", "х");
+      value = value.replace('Kh', 'Х')
+      value = value.replace('kh', 'х')
 
-      value = value.replace("H", "Ҳ");
-      value = value.replace("h", "ҳ");
+      value = value.replace('H', 'Ҳ')
+      value = value.replace('h', 'ҳ')
 
-      return this.symbolLatinToCyrillic(value);
+      return this.symbolLatinToCyrillic(value)
     },
     symbolCyrillicToLatin(word) {
-      var answer = "",
-        a = {};
+      let answer = ''
+      const a = {}
 
-      a["Ё"] = "YO";
-      a["Й"] = "I";
-      a["Ц"] = "TS";
-      a["У"] = "U";
-      a["К"] = "K";
-      a["Е"] = "E";
-      a["Н"] = "N";
-      a["Г"] = "G";
-      a["Ш"] = "Sh";
-      a["Щ"] = "Sch";
-      a["З"] = "Z";
-      a["Х"] = "Kh";
-      a["Ъ"] = "'";
-      a["ё"] = "yo";
-      a["й"] = "i";
-      a["ц"] = "ts";
-      a["у"] = "u";
-      a["к"] = "k";
-      a["е"] = "e";
-      a["н"] = "n";
-      a["г"] = "g";
-      a["ш"] = "sh";
-      a["щ"] = "sch";
-      a["з"] = "z";
-      a["х"] = "kh";
-      a["ъ"] = "'";
-      a["Ф"] = "F";
-      a["Ы"] = "I";
-      a["В"] = "V";
-      a["А"] = "A";
-      a["П"] = "P";
-      a["Р"] = "R";
-      a["О"] = "O";
-      a["Л"] = "L";
-      a["Д"] = "D";
-      a["Ж"] = "J";
-      a["Э"] = "E";
-      a["ф"] = "f";
-      a["ы"] = "i";
-      a["в"] = "v";
-      a["а"] = "a";
-      a["п"] = "p";
-      a["р"] = "r";
-      a["о"] = "o";
-      a["л"] = "l";
-      a["д"] = "d";
-      a["ж"] = "j";
-      a["э"] = "e";
-      a["Я"] = "Ya";
-      a["Ч"] = "Ch";
-      a["С"] = "S";
-      a["М"] = "M";
-      a["И"] = "I";
-      a["Т"] = "T";
-      a["Ь"] = "'";
-      a["Б"] = "B";
-      a["Ю"] = "Yu";
-      a["я"] = "ya";
-      a["ч"] = "ch";
-      a["с"] = "s";
-      a["м"] = "m";
-      a["и"] = "i";
-      a["т"] = "t";
-      a["ь"] = "'";
-      a["б"] = "b";
-      a["ю"] = "yu";
+      a['Ё'] = 'YO'
+      a['Й'] = 'I'
+      a['Ц'] = 'TS'
+      a['У'] = 'U'
+      a['К'] = 'K'
+      a['Е'] = 'E'
+      a['Н'] = 'N'
+      a['Г'] = 'G'
+      a['Ш'] = 'Sh'
+      a['Щ'] = 'Sch'
+      a['З'] = 'Z'
+      a['Х'] = 'Kh'
+      a['Ъ'] = "'"
+      a['ё'] = 'yo'
+      a['й'] = 'i'
+      a['ц'] = 'ts'
+      a['у'] = 'u'
+      a['к'] = 'k'
+      a['е'] = 'e'
+      a['н'] = 'n'
+      a['г'] = 'g'
+      a['ш'] = 'sh'
+      a['щ'] = 'sch'
+      a['з'] = 'z'
+      a['х'] = 'kh'
+      a['ъ'] = "'"
+      a['Ф'] = 'F'
+      a['Ы'] = 'I'
+      a['В'] = 'V'
+      a['А'] = 'A'
+      a['П'] = 'P'
+      a['Р'] = 'R'
+      a['О'] = 'O'
+      a['Л'] = 'L'
+      a['Д'] = 'D'
+      a['Ж'] = 'J'
+      a['Э'] = 'E'
+      a['ф'] = 'f'
+      a['ы'] = 'i'
+      a['в'] = 'v'
+      a['а'] = 'a'
+      a['п'] = 'p'
+      a['р'] = 'r'
+      a['о'] = 'o'
+      a['л'] = 'l'
+      a['д'] = 'd'
+      a['ж'] = 'j'
+      a['э'] = 'e'
+      a['Я'] = 'Ya'
+      a['Ч'] = 'Ch'
+      a['С'] = 'S'
+      a['М'] = 'M'
+      a['И'] = 'I'
+      a['Т'] = 'T'
+      a['Ь'] = "'"
+      a['Б'] = 'B'
+      a['Ю'] = 'Yu'
+      a['я'] = 'ya'
+      a['ч'] = 'ch'
+      a['с'] = 's'
+      a['м'] = 'm'
+      a['и'] = 'i'
+      a['т'] = 't'
+      a['ь'] = "'"
+      a['б'] = 'b'
+      a['ю'] = 'yu'
 
-      a["Қ"] = "Q";
-      a["қ"] = "q";
+      a['Қ'] = 'Q'
+      a['қ'] = 'q'
 
-      a["Ў"] = "O'";
-      a["ў"] = "o'";
+      a['Ў'] = "O'"
+      a['ў'] = "o'"
 
-      a["Ҳ"] = "H";
-      a["ҳ"] = "h";
+      a['Ҳ'] = 'H'
+      a['ҳ'] = 'h'
 
-      a["Ғ"] = "G'";
-      a["ғ"] = "g'";
+      a['Ғ'] = "G'"
+      a['ғ'] = "g'"
 
-      for (let i in word) {
+      for (const i in word) {
         if (word.hasOwnProperty(i)) {
           if (a[word[i]] === undefined) {
-            answer += word[i];
+            answer += word[i]
           } else {
-            answer += a[word[i]];
+            answer += a[word[i]]
           }
         }
       }
-      return answer;
+      return answer
     },
     symbolLatinToCyrillic(word) {
-      var answer = "",
-        a = {};
+      let answer = ''
+      const a = {}
 
-      a["Q"] = "Қ";
-      a["q"] = "қ";
+      a.Q = 'Қ'
+      a.q = 'қ'
 
-      a["O'"] = "Ў";
-      a["o'"] = "ў";
+      a["O'"] = 'Ў'
+      a["o'"] = 'ў'
 
-      a["H"] = "Ҳ";
-      a["h"] = "ҳ";
+      a.H = 'Ҳ'
+      a.h = 'ҳ'
 
-      a["G'"] = "Ғ";
-      a["g'"] = "ғ";
+      a["G'"] = 'Ғ'
+      a["g'"] = 'ғ'
 
-      a["I"] = "И";
-      a["U"] = "У";
-      a["K"] = "К";
-      a["N"] = "Н";
-      a["G"] = "Г";
-      a["Z"] = "З";
-      a["i"] = "и";
-      a["u"] = "у";
-      a["k"] = "к";
-      a["E"] = "Е";
-      a["e"] = "е";
-      a["n"] = "н";
-      a["g"] = "г";
-      a["z"] = "з";
-      a["F"] = "Ф";
-      a["V"] = "В";
-      a["P"] = "П";
-      a["R"] = "Р";
-      a["O"] = "О";
-      a["L"] = "Л";
-      a["D"] = "Д";
-      a["J"] = "Ж";
-      a["f"] = "ф";
-      a["v"] = "в";
-      a["a"] = "а";
-      a["A"] = "А";
-      a["p"] = "п";
-      a["r"] = "р";
-      a["o"] = "о";
-      a["l"] = "л";
-      a["d"] = "д";
-      a["j"] = "ж";
+      a.I = 'И'
+      a.U = 'У'
+      a.K = 'К'
+      a.N = 'Н'
+      a.G = 'Г'
+      a.Z = 'З'
+      a.i = 'и'
+      a.u = 'у'
+      a.k = 'к'
+      a.E = 'Е'
+      a.e = 'е'
+      a.n = 'н'
+      a.g = 'г'
+      a.z = 'з'
+      a.F = 'Ф'
+      a.V = 'В'
+      a.P = 'П'
+      a.R = 'Р'
+      a.O = 'О'
+      a.L = 'Л'
+      a.D = 'Д'
+      a.J = 'Ж'
+      a.f = 'ф'
+      a.v = 'в'
+      a.a = 'а'
+      a.A = 'А'
+      a.p = 'п'
+      a.r = 'р'
+      a.o = 'о'
+      a.l = 'л'
+      a.d = 'д'
+      a.j = 'ж'
 
-      a["S"] = "С";
-      a["M"] = "М";
-      a["I"] = "И";
-      a["T"] = "Т";
-      a["B"] = "Б";
+      a.S = 'С'
+      a.M = 'М'
+      a.I = 'И'
+      a.T = 'Т'
+      a.B = 'Б'
 
-      a["s"] = "с";
-      a["m"] = "м";
-      a["i"] = "и";
-      a["t"] = "т";
-      a["b"] = "б";
+      a.s = 'с'
+      a.m = 'м'
+      a.i = 'и'
+      a.t = 'т'
+      a.b = 'б'
 
-      for (let i in word) {
+      for (const i in word) {
         if (word.hasOwnProperty(i)) {
           if (a[word[i]] === undefined) {
-            answer += word[i];
+            answer += word[i]
           } else {
-            answer += a[word[i]];
+            answer += a[word[i]]
           }
         }
       }
-      return answer;
+      return answer
     },
   },
-};
+}
 </script>
 
 <template>
@@ -397,9 +396,9 @@ export default {
     <!-- apartments.agree.passport_series -->
     <div class="col-md-4">
       <validation-provider
+        v-slot="validationContext"
         :name="`'${$t('apartments.agree.passport_series')}'`"
         :rules="{ required: true }"
-        v-slot="validationContext"
         class="mb-3"
       >
         <b-form-group
@@ -408,15 +407,15 @@ export default {
         >
           <b-form-input
             id="checkout-pasport"
+            v-model="client.passport_series"
             name="checkout-pasport"
             type="text"
-            @change="getClientData"
-            @focus="userFocused"
             :placeholder="$t('apartments.agree.placeholder.passport_series')"
-            v-model="client.passport_series"
             :state="getValidationState(validationContext)"
             aria-describedby="checkout-pasport-feedback"
-          ></b-form-input>
+            @change="getClientData"
+            @focus="userFocused"
+          />
 
           <b-form-invalid-feedback
             id="checkout-pasport-feedback"
@@ -431,9 +430,9 @@ export default {
     <!-- apartments.agree.issued_by_whom -->
     <div class="col-md-4">
       <validation-provider
+        v-slot="validationContext"
         :name="`'${$t('apartments.agree.issued_by_whom')}'`"
         :rules="{ required: true }"
-        v-slot="validationContext"
         class="mb-3"
       >
         <b-form-group
@@ -442,14 +441,14 @@ export default {
         >
           <b-form-input
             id="issue_passport"
+            v-model="client.issued_by_whom"
             name="issue_passport"
             type="text"
             :placeholder="$t('apartments.agree.placeholder.issued_by_whom')"
-            v-model="client.issued_by_whom"
             :state="getValidationState(validationContext)"
             aria-describedby="issue_passport-feedback"
             @focus="userFocused"
-          ></b-form-input>
+          />
 
           <b-form-invalid-feedback
             id="issue_passport-feedback"
@@ -464,9 +463,9 @@ export default {
     <!-- apartments.agree.date_of_issue -->
     <div class="col-md-4">
       <validation-provider
+        v-slot="validationContext"
         :name="`'${$t('apartments.agree.date_of_issue')}'`"
         :rules="{ required: true }"
-        v-slot="validationContext"
         class="mb-3"
       >
         <b-form-group
@@ -475,14 +474,14 @@ export default {
         >
           <b-form-input
             id="date_of_issue"
+            v-model="client.date_of_issue"
             name="date_of_issue"
             type="date"
             :placeholder="$t('apartments.agree.date_of_issue')"
-            v-model="client.date_of_issue"
             :state="getValidationState(validationContext)"
             aria-describedby="date_of_issue-feedback"
             @focus="userFocused"
-          ></b-form-input>
+          />
 
           <b-form-invalid-feedback
             id="date_of_issue-feedback"
@@ -497,9 +496,9 @@ export default {
     <!-- status.birth_day -->
     <div class="col-md-4">
       <validation-provider
+        v-slot="validationContext"
         :name="`'${$t('apartments.agree.birth_day')}'`"
         :rules="{ required: true }"
-        v-slot="validationContext"
         class="mb-3"
       >
         <b-form-group
@@ -508,14 +507,14 @@ export default {
         >
           <b-form-input
             id="birth_day"
+            v-model="client.birth_day"
             name="birth_day"
             type="date"
             :placeholder="$t('apartments.agree.birth_day')"
-            v-model="client.birth_day"
             :state="getValidationState(validationContext)"
             aria-describedby="birth_day-feedback"
             @focus="userFocused"
-          ></b-form-input>
+          />
 
           <b-form-invalid-feedback
             id="birth_day-feedback"
@@ -528,15 +527,15 @@ export default {
     </div>
 
     <div class="col-md-12">
-      <hr />
+      <hr>
     </div>
 
     <!-- last_name_kirill -->
     <div class="col-md-4">
       <validation-provider
+        v-slot="validationContext"
         :name="`'${$t('apartments.agree.last_name')} (kirill)'`"
         :rules="{ required: true }"
-        v-slot="validationContext"
         class="mb-3"
       >
         <b-form-group
@@ -545,16 +544,16 @@ export default {
         >
           <b-form-input
             id="last_name_kirill"
+            v-model="client.last_name.kirill"
             name="last_name_kirill"
             type="text"
             :placeholder="$t('apartments.agree.placeholder.last_name')"
-            v-model="client.last_name.kirill"
-            @input="isCyrillic('last_name', client.last_name.kirill)"
-            @change="textToLatin('last_name', $event)"
             :state="getValidationState(validationContext)"
             aria-describedby="last_name_kirill-feedback"
+            @input="isCyrillic('last_name', client.last_name.kirill)"
+            @change="textToLatin('last_name', $event)"
             @focus="userFocused"
-          ></b-form-input>
+          />
 
           <b-form-invalid-feedback
             id="last_name_kirill-feedback"
@@ -569,9 +568,9 @@ export default {
     <!-- first_name_kirill -->
     <div class="col-md-4">
       <validation-provider
+        v-slot="validationContext"
         :name="`'${$t('apartments.agree.first_name')} (kirill)'`"
         :rules="{ required: true }"
-        v-slot="validationContext"
         class="mb-3"
       >
         <b-form-group
@@ -580,21 +579,21 @@ export default {
         >
           <b-form-input
             id="first_name_kirill"
+            v-model="client.first_name.kirill"
             name="first_name_kirill"
             type="text"
             :placeholder="$t('apartments.agree.placeholder.first_name')"
-            v-model="client.first_name.kirill"
-            @input="isCyrillic('first_name', client.first_name.kirill)"
-            @change="textToLatin('first_name', $event)"
             :state="getValidationState(validationContext)"
             aria-describedby="first_name_kirill-feedback"
+            @input="isCyrillic('first_name', client.first_name.kirill)"
+            @change="textToLatin('first_name', $event)"
             @focus="userFocused"
-          ></b-form-input>
+          />
 
           <b-form-invalid-feedback
             id="first_name_kirill-feedback"
             class="error__provider"
-            >{{ validationContext.errors[0] }}
+          >{{ validationContext.errors[0] }}
           </b-form-invalid-feedback>
         </b-form-group>
       </validation-provider>
@@ -603,9 +602,9 @@ export default {
     <!-- second_name_kirill -->
     <div class="col-md-4">
       <validation-provider
+        v-slot="validationContext"
         :name="`'${$t('apartments.agree.second_name')} (kirill)'`"
         :rules="{ required: true }"
-        v-slot="validationContext"
         class="mb-3"
       >
         <b-form-group
@@ -614,36 +613,36 @@ export default {
         >
           <b-form-input
             id="second_name_kirill"
+            v-model="client.second_name.kirill"
             name="second_name_kirill"
             type="text"
             :placeholder="$t('apartments.agree.placeholder.second_name')"
-            v-model="client.second_name.kirill"
-            @input="isCyrillic('second_name', client.second_name.kirill)"
-            @change="textToLatin('second_name', $event)"
             :state="getValidationState(validationContext)"
             aria-describedby="second_name_kirill-feedback"
+            @input="isCyrillic('second_name', client.second_name.kirill)"
+            @change="textToLatin('second_name', $event)"
             @focus="userFocused"
-          ></b-form-input>
+          />
 
           <b-form-invalid-feedback
             id="second_name_kirill-feedback"
             class="error__provider"
-            >{{ validationContext.errors[0] }}
+          >{{ validationContext.errors[0] }}
           </b-form-invalid-feedback>
         </b-form-group>
       </validation-provider>
     </div>
 
     <div class="col-md-12">
-      <hr />
+      <hr>
     </div>
 
     <!-- last_name_lotin -->
     <div class="col-md-4">
       <validation-provider
+        v-slot="validationContext"
         :name="`'${$t('apartments.agree.last_name')} (lotin)'`"
         :rules="{ required: true }"
-        v-slot="validationContext"
         class="mb-3"
       >
         <b-form-group
@@ -652,21 +651,21 @@ export default {
         >
           <b-form-input
             id="last_name_lotin"
+            v-model="client.last_name.lotin"
             name="last_name_lotin"
             type="text"
             :placeholder="$t('apartments.agree.placeholder.last_name_lotin')"
-            v-model="client.last_name.lotin"
-            @input="isLatin('last_name', client.last_name.lotin)"
-            @change="textToCyrillic('last_name', $event)"
             :state="getValidationState(validationContext)"
             aria-describedby="last_name_lotin-feedback"
+            @input="isLatin('last_name', client.last_name.lotin)"
+            @change="textToCyrillic('last_name', $event)"
             @focus="userFocused"
-          ></b-form-input>
+          />
 
           <b-form-invalid-feedback
             id="last_name_lotin-feedback"
             class="error__provider"
-            >{{ validationContext.errors[0] }}
+          >{{ validationContext.errors[0] }}
           </b-form-invalid-feedback>
         </b-form-group>
       </validation-provider>
@@ -675,9 +674,9 @@ export default {
     <!-- first_name_lotin -->
     <div class="col-md-4">
       <validation-provider
+        v-slot="validationContext"
         :name="`'${$t('apartments.agree.first_name')} (lotin)'`"
         :rules="{ required: true }"
-        v-slot="validationContext"
         class="mb-3"
       >
         <b-form-group
@@ -686,21 +685,21 @@ export default {
         >
           <b-form-input
             id="first_name_lotin"
+            v-model="client.first_name.lotin"
             name="first_name_lotin"
             type="text"
             :placeholder="$t('apartments.agree.placeholder.first_name_lotin')"
-            v-model="client.first_name.lotin"
-            @input="isLatin('first_name', client.first_name.lotin)"
-            @change="textToCyrillic('first_name', $event)"
             :state="getValidationState(validationContext)"
             aria-describedby="first_name_lotin-feedback"
+            @input="isLatin('first_name', client.first_name.lotin)"
+            @change="textToCyrillic('first_name', $event)"
             @focus="userFocused"
-          ></b-form-input>
+          />
 
           <b-form-invalid-feedback
             id="first_name_lotin-feedback"
             class="error__provider"
-            >{{ validationContext.errors[0] }}
+          >{{ validationContext.errors[0] }}
           </b-form-invalid-feedback>
         </b-form-group>
       </validation-provider>
@@ -709,9 +708,9 @@ export default {
     <!-- second_name_lotin -->
     <div class="col-md-4">
       <validation-provider
+        v-slot="validationContext"
         :name="`'${$t('apartments.agree.second_name')} (lotin)'`"
         :rules="{ required: true }"
-        v-slot="validationContext"
         class="mb-3"
       >
         <b-form-group
@@ -720,53 +719,58 @@ export default {
         >
           <b-form-input
             id="second_name_lotin"
+            v-model="client.second_name.lotin"
             name="second_name_lotin"
             type="text"
             :placeholder="$t('apartments.agree.placeholder.second_name_lotin')"
-            v-model="client.second_name.lotin"
-            @input="isLatin(client.second_name.lotin)"
-            @change="textToCyrillic('second_name', $event)"
             :state="getValidationState(validationContext)"
             aria-describedby="second_name_lotin-feedback"
+            @input="isLatin(client.second_name.lotin)"
+            @change="textToCyrillic('second_name', $event)"
             @focus="userFocused"
-          ></b-form-input>
+          />
 
           <b-form-invalid-feedback
             id="second_name_lotin-feedback"
             class="error__provider"
-            >{{ validationContext.errors[0] }}
+          >{{ validationContext.errors[0] }}
           </b-form-invalid-feedback>
         </b-form-group>
       </validation-provider>
     </div>
 
     <div class="col-md-12">
-      <hr />
+      <hr>
     </div>
 
     <!-- status.phone -->
     <div class="col-md-4">
       <validation-provider
+        v-slot="validationContext"
         :name="`'${$t('apartments.agree.phone')}'`"
         :rules="{ required: true }"
-        v-slot="validationContext"
         class="mb-3"
       >
-        <b-form-group :label="$t('apartments.agree.phone')" label-for="phone">
+        <b-form-group
+          :label="$t('apartments.agree.phone')"
+          label-for="phone"
+        >
           <b-form-input
             id="phone"
+            v-model="clientPhoneNumber"
+            v-mask="maskForPhoneNumber"
             name="phone"
             type="tel"
             :placeholder="$t('apartments.agree.placeholder.phone')"
-            v-model="clientPhoneNumber"
             :state="getValidationState(validationContext)"
-            v-mask="maskForPhoneNumber"
             aria-describedby="phone-feedback"
             @focus="userFocused"
           />
 
-          <b-form-invalid-feedback id="phone-feedback" class="error__provider"
-            >{{ validationContext.errors[0] }}
+          <b-form-invalid-feedback
+            id="phone-feedback"
+            class="error__provider"
+          >{{ validationContext.errors[0] }}
           </b-form-invalid-feedback>
         </b-form-group>
       </validation-provider>
@@ -775,53 +779,80 @@ export default {
     <!-- status.other_phone -->
     <div class="col-md-4">
       <div class="mb-3">
-        <label class="d-block" for="other_phone">{{
+        <label
+          class="d-block"
+          for="other_phone"
+        >{{
           $t("apartments.agree.other_phone")
         }}</label>
         <input
           id="other_phone"
+          v-model="clientOtherPhoneNumber"
+          v-mask="maskForPhoneNumber"
           class="my-form__input form-control"
           type="tel"
           :placeholder="$t('apartments.agree.placeholder.other_phone')"
-          v-model="clientOtherPhoneNumber"
-          v-mask="maskForPhoneNumber"
           @focus="userFocused"
-        />
+        >
       </div>
     </div>
 
     <!-- apartments.agree.language -->
     <div class="col-md-4">
       <div class="mb-3">
-        <label class="d-block" for="language">{{
+        <label
+          class="d-block"
+          for="language"
+        >{{
           $t("apartments.agree.language")
         }}</label>
-        <select class="form-control" id="language" v-model="client.language">
-          <option value="uz">Узбекский</option>
-          <option value="ru">Русский</option>
+        <select
+          id="language"
+          v-model="client.language"
+          class="form-control"
+        >
+          <option value="uz">
+            Узбекский
+          </option>
+          <option value="ru">
+            Русский
+          </option>
         </select>
       </div>
     </div>
 
     <!-- apartments.agree.type_client -->
-    <div class="col-md-4" v-if="markFriendPermission">
+    <div
+      v-if="markFriendPermission"
+      class="col-md-4"
+    >
       <div class="mb-3">
-        <label class="d-block" for="type_client">{{
+        <label
+          class="d-block"
+          for="type_client"
+        >{{
           $t("apartments.agree.type_client")
         }}</label>
         <select
-          class="form-control"
           id="type_client"
           v-model="client.type_client"
+          class="form-control"
         >
-          <option selected value="unknown">Незнакомый</option>
-          <option value="friends">Знакомый</option>
+          <option
+            selected
+            value="unknown"
+          >
+            Незнакомый
+          </option>
+          <option value="friends">
+            Знакомый
+          </option>
         </select>
       </div>
     </div>
 
     <div class="col-md-12">
-      <hr />
+      <hr>
     </div>
   </div>
 </template>

@@ -1,14 +1,14 @@
 <script>
-import { XButton } from "@/components/ui-components/button";
-import BaseLoading from "@/components/Reusable/BaseLoading.vue";
-import { XIcon } from "@/components/ui-components/material-icons";
-import { XCircularBackground } from "@/components/ui-components/circular-background";
-import SettingsCreateHolder from "@/views/settings/components/SettingsCreateHolder.vue";
-import SettingsPermission from "@/permission/settings.permission";
-import { v3ServiceApi } from "@/services/v3/v3.service";
+import { XButton } from '@/components/ui-components/button'
+import BaseLoading from '@/components/Reusable/BaseLoading.vue'
+import { XIcon } from '@/components/ui-components/material-icons'
+import { XCircularBackground } from '@/components/ui-components/circular-background'
+import SettingsCreateHolder from '@/views/settings/components/SettingsCreateHolder.vue'
+import SettingsPermission from '@/permission/settings.permission'
+import { v3ServiceApi } from '@/services/v3/v3.service'
 
 export default {
-  name: "SettingsClientTypes",
+  name: 'SettingsClientTypes',
   components: {
     BaseLoading,
     XButton,
@@ -18,7 +18,7 @@ export default {
   },
   data() {
     return {
-      upsertType: "create",
+      upsertType: 'create',
       showCreateModal: false,
       editStorage: {},
       table: {
@@ -34,117 +34,117 @@ export default {
         loading: false,
       },
       permission: {
-        view: SettingsPermission.getPermission("holders.view"),
-        create: SettingsPermission.getPermission("holders.create"),
-        edit: SettingsPermission.getPermission("holders.edit"),
-        delete: SettingsPermission.getPermission("holders.delete"),
+        view: SettingsPermission.getPermission('holders.view'),
+        create: SettingsPermission.getPermission('holders.create'),
+        edit: SettingsPermission.getPermission('holders.edit'),
+        delete: SettingsPermission.getPermission('holders.delete'),
       },
-    };
+    }
   },
   computed: {
     tableFields() {
       return [
         {
-          key: "icon",
-          label: "",
+          key: 'icon',
+          label: '',
         },
         {
-          key: "holder",
-          label: this.$t("holders.singular"),
+          key: 'holder',
+          label: this.$t('holders.singular'),
         },
         {
-          key: "actions",
-          label: this.$t("actions"),
-          class: "float-right",
+          key: 'actions',
+          label: this.$t('actions'),
+          class: 'float-right',
         },
-      ];
+      ]
     },
   },
   created() {
-    this.fetchHolders();
+    this.fetchHolders()
   },
   methods: {
     startLoading() {
-      this.table.loading = true;
+      this.table.loading = true
     },
     finishLoading() {
-      this.table.loading = false;
+      this.table.loading = false
     },
     createClientType() {
-      this.setUpsertType("create");
-      this.openCreatingClientTypeModal();
+      this.setUpsertType('create')
+      this.openCreatingClientTypeModal()
     },
     async fetchHolders() {
       try {
-        this.startLoading();
+        this.startLoading()
         const response = await v3ServiceApi.holders().findAll({
           page: 1,
           limit: 100,
-        });
-        this.table.items = response.data.result;
-        this.table.pagination = response.data.pagination;
+        })
+        this.table.items = response.data.result
+        this.table.pagination = response.data.pagination
       } catch (e) {
-        this.toastedWithErrorCode(e);
+        this.toastedWithErrorCode(e)
       } finally {
-        this.finishLoading();
+        this.finishLoading()
       }
     },
     setUpsertType(eType) {
-      if (["create", "edit"].includes(eType)) {
-        this.upsertType = eType;
+      if (['create', 'edit'].includes(eType)) {
+        this.upsertType = eType
       }
     },
     openCreatingClientTypeModal() {
-      this.showCreateModal = true;
+      this.showCreateModal = true
     },
     closeCreatingClientTypeModal() {
-      this.showCreateModal = false;
+      this.showCreateModal = false
     },
     clientTypeCreated() {
-      this.closeCreatingClientTypeModal();
-      this.fetchHolders();
+      this.closeCreatingClientTypeModal()
+      this.fetchHolders()
     },
     async deleteClientType(typeId) {
       this.$swal({
-        title: this.$t("sweetAlert.title"),
-        text: this.$t("sweetAlert.text"),
-        icon: "warning",
+        title: this.$t('sweetAlert.title'),
+        text: this.$t('sweetAlert.text'),
+        icon: 'warning',
         showCancelButton: true,
-        cancelButtonText: this.$t("cancel"),
-        confirmButtonText: this.$t("sweetAlert.yes"),
-      }).then(async (result) => {
+        cancelButtonText: this.$t('cancel'),
+        confirmButtonText: this.$t('sweetAlert.yes'),
+      }).then(async result => {
         if (result.value) {
           try {
-            this.startLoading();
+            this.startLoading()
             await v3ServiceApi.holders().remove({
               id: typeId,
-            });
-            await this.fetchHolders();
+            })
+            await this.fetchHolders()
           } catch (e) {
-            this.toastedWithErrorCode(e);
+            this.toastedWithErrorCode(e)
           } finally {
-            this.finishLoading();
+            this.finishLoading()
           }
         }
-      });
+      })
     },
     async editClientType(id) {
       try {
-        this.startLoading();
+        this.startLoading()
         const {
           data: { result },
-        } = await v3ServiceApi.holders().findOne({ id });
-        this.editStorage = result;
-        this.setUpsertType("edit");
-        this.openCreatingClientTypeModal();
+        } = await v3ServiceApi.holders().findOne({ id })
+        this.editStorage = result
+        this.setUpsertType('edit')
+        this.openCreatingClientTypeModal()
       } catch (e) {
-        this.toastedWithErrorCode(e);
+        this.toastedWithErrorCode(e)
       } finally {
-        this.finishLoading();
+        this.finishLoading()
       }
     },
   },
-};
+}
 </script>
 
 <template>
@@ -164,7 +164,10 @@ export default {
         @click="createClientType"
       >
         <template #left-icon>
-          <x-icon name="add" class="violet-600" />
+          <x-icon
+            name="add"
+            class="violet-600"
+          />
         </template>
       </x-button>
     </div>
@@ -207,18 +210,24 @@ export default {
         <div class="float-right d-flex x-gap-1 cursor-pointer">
           <x-circular-background
             v-if="permission.edit"
-            @click="editClientType(item.id)"
             class="bg-violet-600"
+            @click="editClientType(item.id)"
           >
-            <x-icon name="edit" class="color-white" />
+            <x-icon
+              name="edit"
+              class="color-white"
+            />
           </x-circular-background>
 
           <x-circular-background
             v-if="permission.delete"
-            @click="deleteClientType(item.id)"
             class="bg-red-600"
+            @click="deleteClientType(item.id)"
           >
-            <x-icon name="delete" class="color-white" />
+            <x-icon
+              name="delete"
+              class="color-white"
+            />
           </x-circular-background>
         </div>
       </template>

@@ -1,6 +1,6 @@
 <script>
 export default {
-  name: "BaseTabs",
+  name: 'BaseTabs',
   components: {},
   props: {
     tabs: {
@@ -10,24 +10,24 @@ export default {
   },
   methods: {
     activeTab(index) {
-      let i = this.tabs.findIndex((item) => item.is_active);
-      this.tabs[i].is_active = false;
-      this.tabs[index].is_active = true;
+      const i = this.tabs.findIndex(item => item.is_active)
+      this.tabs[i].is_active = false
+      this.tabs[index].is_active = true
     },
   },
-};
+}
 </script>
 
 <template>
   <div class="base-tabs">
     <div
-      class="tab"
       v-for="({ tab, number, is_active }, index) in tabs"
       :key="index"
+      class="tab"
     >
       <span
-        @click="activeTab(index)"
         :class="is_active ? 'tab-active' : 'tab-inactive'"
+        @click="activeTab(index)"
       >
         <p class="tab-text">{{ $t(tab) }}</p>
         <span class="tab-number">{{ number }}</span>

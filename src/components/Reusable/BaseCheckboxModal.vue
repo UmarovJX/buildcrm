@@ -1,9 +1,9 @@
 <script>
-import BaseButton from "@/components/Reusable/BaseButton";
-import BaseCheckbox from "@/components/Reusable/BaseCheckbox";
+import BaseButton from '@/components/Reusable/BaseButton'
+import BaseCheckbox from '@/components/Reusable/BaseCheckbox'
 
 export default {
-  name: "BaseCheckboxModal",
+  name: 'BaseCheckboxModal',
   components: {
     BaseCheckbox,
     BaseButton,
@@ -15,28 +15,31 @@ export default {
     },
     btnText: {
       type: String,
-      default: "",
+      default: '',
     },
   },
-  emits: ["go-to-contract"],
+  emits: ['go-to-contract'],
   methods: {
     makeContract() {
-      this.$emit("go-to-contract");
+      this.$emit('go-to-contract')
     },
   },
-};
+}
 </script>
 
 <template>
   <div :class="chosen ? 'basket' : 'd-none'">
     <div class="basket-block">
-      <base-checkbox disabled checked />
+      <base-checkbox
+        disabled
+        checked
+      />
       <p>{{ $t("chosen") }}: {{ chosen }}</p>
     </div>
     <base-button
-      @click="makeContract"
       design="violet400"
       :text="`${btnText}` || `${$t('create_agree_apartments')}`"
+      @click="makeContract"
     />
   </div>
 </template>

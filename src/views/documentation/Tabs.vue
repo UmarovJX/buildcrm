@@ -1,31 +1,32 @@
 <script>
-import BaseTabs from "@/components/Reusable/BaseTabs";
-import DocHeader from "@/views/documentation/DocHeader";
+import BaseTabs from '@/components/Reusable/BaseTabs'
+import DocHeader from '@/views/documentation/DocHeader'
+
 export default {
-  name: "documentation",
+  name: 'Documentation',
   components: { DocHeader, BaseTabs },
   data() {
     return {
       tabs: [
         {
-          tab: "selected",
+          tab: 'selected',
           number: 900,
           is_active: true,
         },
         {
-          tab: "pointed",
+          tab: 'pointed',
           number: 100,
           is_active: false,
         },
         {
-          tab: "not_selected",
+          tab: 'not_selected',
           number: 45,
           is_active: false,
         },
       ],
-    };
+    }
   },
-};
+}
 </script>
 <template>
   <main class="tabs">

@@ -1,16 +1,16 @@
 <script>
 export default {
-  name: "BaseFormTagInput",
+  name: 'BaseFormTagInput',
   inheritAttrs: false,
-  emits: ["set-tags"],
+  emits: ['set-tags'],
   props: {
     placeholder: {
       type: String,
-      default: () => "Enter a Tag",
+      default: () => 'Enter a Tag',
     },
     type: {
       type: String,
-      default: () => "text",
+      default: () => 'text',
     },
     defaultTags: {
       type: Array,
@@ -20,83 +20,90 @@ export default {
   },
   data() {
     return {
-      tagInput: "",
+      tagInput: '',
       tags: [],
-    };
+    }
   },
   mounted() {
     if (this.defaultTags.length) {
-      this.tags = this.defaultTags;
+      this.tags = this.defaultTags
     }
   },
   methods: {
     addTag(event) {
-      event.preventDefault();
-      const val = event.target.value.trim();
+      event.preventDefault()
+      const val = event.target.value.trim()
       if (val.length > 0) {
-        const hasInPackage = this.tags.findIndex((tag) => tag === val);
+        const hasInPackage = this.tags.findIndex(tag => tag === val)
         if (hasInPackage === -1) {
-          const splitTags = this.tagInput.split(" ");
-          splitTags.forEach((tag) => {
-            this.tags.push(tag);
-          });
-          event.target.value = "";
-          this.tagInput = "";
-          this.$emit("set-tags", this.tags);
+          const splitTags = this.tagInput.split(' ')
+          splitTags.forEach(tag => {
+            this.tags.push(tag)
+          })
+          event.target.value = ''
+          this.tagInput = ''
+          this.$emit('set-tags', this.tags)
         }
       }
     },
     addTagByButton() {
       if (this.tagInput.length > 0) {
         const hasInPackage = this.tags.findIndex(
-          (tag) => tag === this.tagInput
-        );
+          tag => tag === this.tagInput,
+        )
         if (hasInPackage === -1) {
-          this.tags.push(this.tagInput);
-          this.tagInput = "";
-          this.$emit("set-tags", this.tags);
+          this.tags.push(this.tagInput)
+          this.tagInput = ''
+          this.$emit('set-tags', this.tags)
         }
       }
     },
     removeTag(index) {
-      this.tags.splice(index, 1);
-      this.$emit("set-tags", this.tags);
+      this.tags.splice(index, 1)
+      this.$emit('set-tags', this.tags)
     },
     removeLastTag(event) {
       if (event.target.value.length === 0) {
-        this.removeTag(this.tags.length - 1);
-        this.$emit("set-tags", this.tags);
+        this.removeTag(this.tags.length - 1)
+        this.$emit('set-tags', this.tags)
       }
     },
     clear() {
-      this.tagInput = "";
-      this.tags = [];
+      this.tagInput = ''
+      this.tags = []
     },
   },
-};
+}
 </script>
 <template>
   <div class="tag-input">
-    <div v-for="(tag, index) in tags" :key="tag" class="tag-input__tag">
+    <div
+      v-for="(tag, index) in tags"
+      :key="tag"
+      class="tag-input__tag"
+    >
       <span class="tag">{{ tag }}</span>
-      <span @click="removeTag(index)" class="remove__icon">
+      <span
+        class="remove__icon"
+        @click="removeTag(index)"
+      >
         <slot name="delete-content" />
       </span>
     </div>
     <input
+      v-model="tagInput"
       :type="type"
       :placeholder="placeholder"
       v-bind="$attrs"
-      v-model="tagInput"
       class="tag-input__text"
+      :class="{ 'tag-input-active': this.tagInput.length > 0 }"
       @keydown.enter="addTag"
       @keydown.delete="removeLastTag"
-      :class="{ 'tag-input-active': this.tagInput.length > 0 }"
-    />
+    >
     <span
+      v-if="this.tagInput.length"
       class="addition__button"
       @click="addTagByButton"
-      v-if="this.tagInput.length"
     >
       <svg
         width="16"

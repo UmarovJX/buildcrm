@@ -1,10 +1,10 @@
 <script>
-import api from "@/services/api";
-import { mapGetters } from "vuex";
-import TemplatesPermission from "@/permission/templates";
+import api from '@/services/api'
+import { mapGetters } from 'vuex'
+import TemplatesPermission from '@/permission/templates'
 
 export default {
-  name: "ContractListTable",
+  name: 'ContractListTable',
   props: {
     contracts: {
       type: Array,
@@ -15,151 +15,156 @@ export default {
       required: true,
     },
   },
-  emits: ["update-content", "update-loading"],
+  emits: ['update-content', 'update-loading'],
   data() {
     return {
       deletePermission: TemplatesPermission.getTemplatesDeletePermission(),
       downloadPermission: TemplatesPermission.getTemplatesDownloadPermission(),
       primaryPermission: TemplatesPermission.getTemplatesPrimaryPermission(),
-      sortBy: "main",
+      sortBy: 'main',
       sortDesc: true,
       showLoading: false,
-    };
+    }
   },
   computed: {
     ...mapGetters({
-      permission: "getPermission",
+      permission: 'getPermission',
     }),
     fields() {
       const list = [
         {
-          key: "index",
-          label: "#",
+          key: 'index',
+          label: '#',
         },
         {
-          key: "type",
-          label: this.$t("objects.deal_template.type"),
+          key: 'type',
+          label: this.$t('objects.deal_template.type'),
         },
         {
-          key: "language",
-          label: this.$t("clients.language"),
+          key: 'language',
+          label: this.$t('clients.language'),
         },
         {
-          key: "document_type",
-          label: this.$t("document_type"),
-          formatter: (type) => {
-            if (type === "legal") {
-              return this.$t("legal_entity");
+          key: 'document_type',
+          label: this.$t('document_type'),
+          formatter: type => {
+            if (type === 'legal') {
+              return this.$t('legal_entity')
             }
 
-            return this.$t("physical_person");
+            return this.$t('physical_person')
           },
         },
         {
-          key: "created",
-          label: this.$t("created_at"),
+          key: 'created',
+          label: this.$t('created_at'),
         },
         {
-          key: "main",
-          label: "",
+          key: 'main',
+          label: '',
         },
         {
-          key: "actions",
-          label: "",
+          key: 'actions',
+          label: '',
         },
-      ];
+      ]
 
-      if (this.type === "reissue") {
-        return list.filter((fl) => fl.key !== "type");
+      if (this.type === 'reissue') {
+        return list.filter(fl => fl.key !== 'type')
       }
 
-      return list;
+      return list
     },
     showUnselectWarning() {
-      const count = this.contracts.filter((contract) => contract.main);
-      if (this.type === "sale") {
-        return count.length < 3;
+      const count = this.contracts.filter(contract => contract.main)
+      if (this.type === 'sale') {
+        return count.length < 3
       }
 
-      if (this.type === "reservation") {
-        return count.length < 1;
+      if (this.type === 'reservation') {
+        return count.length < 1
       }
 
-      return 0;
+      return 0
     },
   },
   watch: {
     showLoading(value) {
-      this.$emit("update-loading", value);
+      this.$emit('update-loading', value)
     },
   },
   methods: {
     getCategoryName(type) {
-      return this.$t(`${type}`);
+      return this.$t(`${type}`)
     },
     downloadDocumentURl(url) {
-      return url;
+      return url
     },
     timeFormatter(timeSetter) {
-      const time = new Date(timeSetter);
-      const minutes = this.formatSmallTime(time.getMinutes());
-      const hours = this.formatSmallTime(time.getHours());
-      return `${minutes}:${hours}`;
+      const time = new Date(timeSetter)
+      const minutes = this.formatSmallTime(time.getMinutes())
+      const hours = this.formatSmallTime(time.getHours())
+      return `${minutes}:${hours}`
     },
     dayFormatter(timeSetter) {
-      const time = new Date(timeSetter);
-      const date = this.formatSmallTime(time.getDate());
-      const month = this.formatSmallTime(time.getMonth() + 1);
-      const year = time.getFullYear();
-      return `${date}.${month}.${year}`;
+      const time = new Date(timeSetter)
+      const date = this.formatSmallTime(time.getDate())
+      const month = this.formatSmallTime(time.getMonth() + 1)
+      const year = time.getFullYear()
+      return `${date}.${month}.${year}`
     },
     formatSmallTime(time) {
       if (time < 10) {
-        return `0${time}`;
+        return `0${time}`
       }
-      return time;
+      return time
     },
     makeItMain(contractId) {
-      const { id: objectId } = this.$route.params;
-      this.showLoading = true;
+      const { id: objectId } = this.$route.params
+      this.showLoading = true
       api.objectsV2
         .makeContractPrimary({ objectId, contractId })
         .then(() => {
-          this.$emit("update-content");
+          this.$emit('update-content')
         })
-        .catch((error) => {
-          this.toastedWithErrorCode(error);
+        .catch(error => {
+          this.toastedWithErrorCode(error)
         })
         .finally(() => {
-          this.showLoading = false;
-        });
+          this.showLoading = false
+        })
     },
     async deleteContract(contractId) {
-      this.showLoading = false;
-      const objectId = this.$route.params.id;
+      this.showLoading = false
+      const objectId = this.$route.params.id
       await api.objectsV2
         .deleteContract({ objectId, contractId })
         .then(() => {
           const findIndex = this.contracts.findIndex(
-            (contract) => contract.id === contractId
-          );
-          this.contracts.splice(findIndex, 1);
-          this.$emit("update-content");
+            contract => contract.id === contractId,
+          )
+          this.contracts.splice(findIndex, 1)
+          this.$emit('update-content')
         })
-        .catch((error) => {
-          this.toastedWithErrorCode(error);
+        .catch(error => {
+          this.toastedWithErrorCode(error)
         })
         .finally(() => {
-          this.showLoading = false;
-        });
+          this.showLoading = false
+        })
     },
   },
-};
+}
 </script>
 
 <template>
   <div>
-    <b-alert v-if="showUnselectWarning" variant="danger" class="py-2 mb-0" show>
+    <b-alert
+      v-if="showUnselectWarning"
+      variant="danger"
+      class="py-2 mb-0"
+      show
+    >
       <div
         class="alert-body py-0 d-flex w-100 align-items-center justify-content-center"
       >
@@ -169,19 +174,22 @@ export default {
       </div>
     </b-alert>
     <b-table
+      v-model:sort-by="sortBy"
+      v-model:sort-desc="sortDesc"
       sticky-header
       borderless
       responsive
       :items="contracts"
       :fields="fields"
       show-empty
-      v-model:sort-by="sortBy"
-      v-model:sort-desc="sortDesc"
       sort-icon-left
       class="custom-table"
       :empty-text="$t('no_data')"
     >
-      <template #empty="scope" class="text-center">
+      <template
+        #empty="scope"
+        class="text-center"
+      >
         <span class="d-flex justify-content-center align-items-center">
           {{ scope.emptyText }}
         </span>
@@ -194,10 +202,10 @@ export default {
       <template #table-busy>
         <div class="d-flex justify-content-center w-100">
           <div class="lds-ellipsis">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
+            <div />
+            <div />
+            <div />
+            <div />
           </div>
         </div>
       </template>
@@ -221,8 +229,11 @@ export default {
       </template>
 
       <template #cell(main)="data">
-        <span class="star__icon" v-if="data.item.main">
-          <i class="fas fa-check-double"></i>
+        <span
+          v-if="data.item.main"
+          class="star__icon"
+        >
+          <i class="fas fa-check-double" />
         </span>
       </template>
 
@@ -237,18 +248,18 @@ export default {
               class="dropdown-toggle"
               data-toggle="dropdown"
             >
-              <i class="far fa-ellipsis-h"></i>
+              <i class="far fa-ellipsis-h" />
             </button>
 
             <div class="dropdown-menu">
               <a
+                v-if="!data.item.main && primaryPermission"
                 href="#"
                 class="dropdown-item dropdown-item--inside"
-                v-if="!data.item.main && primaryPermission"
                 @click="makeItMain(data.item.id)"
               >
                 <span>
-                  <i class="fas fa-pen"></i>
+                  <i class="fas fa-pen" />
                 </span>
                 <span class="ml-2">
                   {{ $t("objects.make_it_main_contract") }}
@@ -261,19 +272,19 @@ export default {
                 :href="downloadDocumentURl(data.item.path)"
               >
                 <span class="download__icon">
-                  <i class="fas fa-download"></i>
+                  <i class="fas fa-download" />
                 </span>
                 <span class="ml-2">{{ $t("contracts.download") }}</span>
               </a>
 
               <a
-                href="#"
                 v-if="deletePermission"
+                href="#"
                 class="dropdown-item dropdown-item--inside"
                 @click="deleteContract(data.item.id)"
               >
                 <span>
-                  <i class="far fa-trash"></i>
+                  <i class="far fa-trash" />
                 </span>
                 <span class="ml-3">
                   {{ $t("delete") }}

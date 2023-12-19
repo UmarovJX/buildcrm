@@ -3,7 +3,7 @@ export default {
 
   mutations: {
     updateRole(state, role) {
-      state.role = role;
+      state.role = role
     },
   },
 
@@ -13,7 +13,7 @@ export default {
 
   getters: {
     getRole(state) {
-      return state.role;
+      return state.role
     },
   },
-};
+}

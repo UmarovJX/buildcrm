@@ -1,20 +1,20 @@
 <script>
-import { formatDateWithDot, formatToPrice } from "@/util/reusable";
-import BaseButton from "@/components/Reusable/BaseButton";
-import BaseEditIcon from "@/components/icons/BaseEditIcon";
-import BasePlusIcon from "@/components/icons/BasePlusIcon";
-import BaseDeleteIcon from "@/components/icons/BaseDeleteIcon";
-import BaseModal from "@/components/Reusable/BaseModal";
-import BaseCloseIcon from "@/components/icons/BaseCloseIcon";
-import BaseDatePicker from "@/components/Reusable/BaseDatePicker";
-import BasePriceInput from "@/components/Reusable/BasePriceInput";
-import { mapActions } from "vuex";
-import { dateProperties } from "@/util/calendar";
-import { makeProp as p } from "@/util/props";
-import { PROP_TYPE_OBJECT } from "@/constants/props";
+import { formatDateWithDot, formatToPrice } from '@/util/reusable'
+import BaseButton from '@/components/Reusable/BaseButton'
+import BaseEditIcon from '@/components/icons/BaseEditIcon'
+import BasePlusIcon from '@/components/icons/BasePlusIcon'
+import BaseDeleteIcon from '@/components/icons/BaseDeleteIcon'
+import BaseModal from '@/components/Reusable/BaseModal'
+import BaseCloseIcon from '@/components/icons/BaseCloseIcon'
+import BaseDatePicker from '@/components/Reusable/BaseDatePicker'
+import BasePriceInput from '@/components/Reusable/BasePriceInput'
+import { mapActions } from 'vuex'
+import { dateProperties } from '@/util/calendar'
+import { makeProp as p } from '@/util/props'
+import { PROP_TYPE_OBJECT } from '@/constants/props'
 
 export default {
-  name: "ChPaymentSchedule",
+  name: 'ChPaymentSchedule',
   components: {
     BaseDeleteIcon,
     BasePlusIcon,
@@ -28,7 +28,7 @@ export default {
   props: {
     datePickerIconFill: {
       type: String,
-      default: "var(--violet-600)",
+      default: 'var(--violet-600)',
     },
     apartment: p(PROP_TYPE_OBJECT, {}),
   },
@@ -39,90 +39,90 @@ export default {
         amount: null,
         tracker: {},
       },
-    };
+    }
   },
   computed: {
     paymentsSchedule() {
       return [
         ...this.apartment.calc.initial_payments,
         ...this.apartment.calc.credit_months,
-      ];
+      ]
     },
     fields() {
       return [
         {
-          key: "month",
-          label: this.$t("date"),
+          key: 'month',
+          label: this.$t('date'),
         },
         {
-          key: "type",
-          label: this.$t("type"),
+          key: 'type',
+          label: this.$t('type'),
         },
         {
-          key: "amount",
-          label: this.$t("sum"),
-          formatter: (value) => formatToPrice(value, 2),
+          key: 'amount',
+          label: this.$t('sum'),
+          formatter: value => formatToPrice(value, 2),
         },
         {
-          key: "actions",
-          label: this.$t("companies.actions"),
+          key: 'actions',
+          label: this.$t('companies.actions'),
         },
-      ];
+      ]
     },
   },
   methods: {
-    ...mapActions("CheckoutV2", [
-      "addNewPaymentSchedule",
-      "editPaymentSchedule",
-      "deletePaymentSchedule",
-      "changeFirstAttempt",
+    ...mapActions('CheckoutV2', [
+      'addNewPaymentSchedule',
+      'editPaymentSchedule',
+      'deletePaymentSchedule',
+      'changeFirstAttempt',
     ]),
     formatDate: formatDateWithDot,
     editSelectedPayment(payment) {
-      this.disableFirstAttempt();
+      this.disableFirstAttempt()
 
-      const { ymd } = dateProperties(payment.month, "string");
+      const { ymd } = dateProperties(payment.month, 'string')
       this.editContext = {
         ...payment,
         month: ymd,
-      };
-      this.editContext.tracker = payment;
-      this.openEditModal();
+      }
+      this.editContext.tracker = payment
+      this.openEditModal()
     },
     openEditModal() {
-      this.$refs["edit-payment-schedule"].openModal();
+      this.$refs['edit-payment-schedule'].openModal()
     },
     closeEditModal() {
-      this.$refs["edit-payment-schedule"].closeModal();
+      this.$refs['edit-payment-schedule'].closeModal()
     },
     addPayment(payment) {
-      this.disableFirstAttempt();
-      this.addNewPaymentSchedule({ apmId: this.apartment.id, payment });
+      this.disableFirstAttempt()
+      this.addNewPaymentSchedule({ apmId: this.apartment.id, payment })
     },
     deletePayment(payment) {
-      this.disableFirstAttempt();
-      this.deletePaymentSchedule({ apmId: this.apartment.id, payment });
+      this.disableFirstAttempt()
+      this.deletePaymentSchedule({ apmId: this.apartment.id, payment })
     },
     editPayment() {
-      this.disableFirstAttempt();
-      const { time } = dateProperties(this.editContext.month, "string");
+      this.disableFirstAttempt()
+      const { time } = dateProperties(this.editContext.month, 'string')
       this.editPaymentSchedule({
         apmId: this.apartment.id,
         payment: {
           ...this.editContext,
           month: time,
         },
-      });
-      this.closeEditModal();
+      })
+      this.closeEditModal()
     },
     disableFirstAttempt() {
       this.changeFirstAttempt({
         apmId: this.apartment.id,
         firstAttempt: false,
-      });
+      })
     },
   },
-};
+}
 </script>
 
 <template>
@@ -139,7 +139,10 @@ export default {
       :items="paymentsSchedule"
       :empty-text="$t('no_data')"
     >
-      <template class="header_label" #head(name)="data">
+      <template
+        #head(name)="data"
+        class="header_label"
+      >
         <span>
           {{ data.label }}
         </span>
@@ -197,14 +200,25 @@ export default {
         </div>
       </template>
     </b-table>
-    <base-modal ref="edit-payment-schedule" design="auto-height">
+    <base-modal
+      ref="edit-payment-schedule"
+      design="auto-height"
+    >
       <template #header>
         <div class="d-flex align-items-center justify-content-between">
           <!--    TITLE      -->
-          <p class="title">{{ $t("apartments.agree.number") }}</p>
+          <p class="title">
+            {{ $t("apartments.agree.number") }}
+          </p>
           <!--   CLOSE    -->
-          <p class="close-btn" @click="closeEditModal">
-            <BaseCloseIcon :width="56" :height="56" />
+          <p
+            class="close-btn"
+            @click="closeEditModal"
+          >
+            <BaseCloseIcon
+              :width="56"
+              :height="56"
+            />
           </p>
         </div>
       </template>
@@ -235,9 +249,9 @@ export default {
       </template>
       <template #footer>
         <base-button
-          @click="editPayment"
           :fixed="true"
           :text="`${$t('apply')}`"
+          @click="editPayment"
         />
       </template>
     </base-modal>

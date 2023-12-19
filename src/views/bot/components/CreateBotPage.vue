@@ -1,26 +1,24 @@
 <script>
-import { XFormInput } from "@/components/ui-components/form-input";
-import { makeProp } from "@/util/props";
-import { PROP_TYPE_STRING, PROP_TYPE_OBJECT } from "@/constants/props";
-import { XModalCenter } from "@/components/ui-components/modal-center";
-import api from "@/services/api";
-import { v3ServiceApi } from "@/services/v3/v3.service";
-import BaseTabPicker from "@/components/Reusable/BaseTabPicker.vue";
+import { XFormInput } from '@/components/ui-components/form-input'
+import { makeProp } from '@/util/props'
+import { PROP_TYPE_STRING, PROP_TYPE_OBJECT } from '@/constants/props'
+import { XModalCenter } from '@/components/ui-components/modal-center'
+import api from '@/services/api'
+import { v3ServiceApi } from '@/services/v3/v3.service'
+import BaseTabPicker from '@/components/Reusable/BaseTabPicker.vue'
 
 export default {
-  name: "CreateBotPage",
+  name: 'CreateBotPage',
   components: {
     BaseTabPicker,
     XFormInput,
     XModalCenter,
   },
   props: {
-    upsertType: makeProp(PROP_TYPE_STRING, "create", (type) => {
-      return ["create", "edit"].includes(type);
-    }),
+    upsertType: makeProp(PROP_TYPE_STRING, 'create', type => ['create', 'edit'].includes(type)),
     editItem: makeProp(PROP_TYPE_OBJECT, {
       id: undefined,
-      slug: "",
+      slug: '',
       title: {},
       description: {},
     }),
@@ -29,14 +27,14 @@ export default {
       required: true,
     },
   },
-  emits: ["bot-page-created", "close-modal"],
+  emits: ['bot-page-created', 'close-modal'],
   data() {
     const form = {
-      slug: "",
+      slug: '',
       title: {},
       description: {},
-      id: "",
-    };
+      id: '',
+    }
     return {
       currentLang: this.allLanguages[0],
       applyButtonLoading: false,
@@ -44,7 +42,7 @@ export default {
       item: {
         ...form,
       },
-    };
+    }
   },
   // watch: {
   //   "status.title.uz": debounce(function (nameInUz) {
@@ -55,54 +53,54 @@ export default {
   //   }, 500),
   // },
   created() {
-    if (this.upsertType == "edit") {
-      this.item.id = this.editItem.id;
-      this.item.slug = this.editItem.slug;
-      this.item.title = { ...this.editItem.title };
-      this.item.description = { ...this.editItem.description };
+    if (this.upsertType == 'edit') {
+      this.item.id = this.editItem.id
+      this.item.slug = this.editItem.slug
+      this.item.title = { ...this.editItem.title }
+      this.item.description = { ...this.editItem.description }
     }
   },
   methods: {
     setTab(e) {
-      this.currentLang = e;
+      this.currentLang = e
     },
     closeCreatingModal() {
-      this.clearForm();
-      this.$emit("close-modal");
+      this.clearForm()
+      this.$emit('close-modal')
     },
     startLoading() {
-      this.applyButtonLoading = true;
+      this.applyButtonLoading = true
     },
     finishLoading() {
-      this.applyButtonLoading = false;
+      this.applyButtonLoading = false
     },
 
     async saveItem() {
-      const isSatisfied = await this.$refs["creating-observer"].validate();
+      const isSatisfied = await this.$refs['creating-observer'].validate()
       if (isSatisfied) {
-        this.startLoading();
+        this.startLoading()
         try {
-          if (this.upsertType === "create") {
-            await v3ServiceApi.botPages.create(this.item);
+          if (this.upsertType === 'create') {
+            await v3ServiceApi.botPages.create(this.item)
           } else {
-            await v3ServiceApi.botPages.update(this.item);
+            await v3ServiceApi.botPages.update(this.item)
           }
-          this.clearForm();
-          this.$emit("bot-page-created");
+          this.clearForm()
+          this.$emit('bot-page-created')
         } catch (e) {
-          this.toastedWithErrorCode(e);
+          this.toastedWithErrorCode(e)
         } finally {
-          this.finishLoading();
+          this.finishLoading()
         }
       }
     },
     clearForm() {
-      this.item.slug = "";
-      this.item.title = {};
-      this.item.description = {};
+      this.item.slug = ''
+      this.item.title = {}
+      this.item.description = {}
     },
   },
-};
+}
 </script>
 
 <template>
@@ -143,51 +141,60 @@ export default {
         <!--  ? STATUS TITLE UZ     -->
         <validation-provider
           ref="clientTypeNameVProvider"
+          v-slot="{ errors }"
           name="slug"
           rules="required"
-          v-slot="{ errors }"
           class="title-uz-provider"
         >
           <x-form-input
+            v-model="item.slug"
             type="text"
             :placeholder="$t('slug')"
             class="w-100"
-            v-model="item.slug"
           />
-          <span class="error__provider" v-if="errors[0]">
+          <span
+            v-if="errors[0]"
+            class="error__provider"
+          >
             {{ errors[0].replace("slug", $t("title")) }}
           </span>
         </validation-provider>
         <base-tab-picker
           :options="allLanguages"
-          noAll
+          no-all
           :current="currentLang"
           @tab-selected="setTab"
-        ></base-tab-picker>
+        />
 
         <h3 class="mt-4 mb-2 status-pick-color-title">
           {{ $t("Title") }}
         </h3>
-        <validation-provider :name="`title`" class="title-uz-provider">
+        <validation-provider
+          :name="`title`"
+          class="title-uz-provider"
+        >
           <x-form-input
+            v-model="item.title[currentLang]"
             type="text"
             :placeholder="$t('version')"
             class="w-100"
-            v-model="item.title[currentLang]"
           />
         </validation-provider>
 
         <h3 class="mt-4 mb-2 status-pick-color-title">
           {{ $t("Description") }}
         </h3>
-        <validation-provider :name="`title_`" class="title-uz-provider">
+        <validation-provider
+          :name="`title_`"
+          class="title-uz-provider"
+        >
           <div class="ta-wrapper">
             <textarea
-              name=""
               :id="'title'"
-              rows="10"
               v-model="item.description[currentLang]"
-            ></textarea>
+              name=""
+              rows="10"
+            />
           </div>
         </validation-provider>
       </validation-observer>

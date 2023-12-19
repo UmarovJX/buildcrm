@@ -1,14 +1,14 @@
 <script>
-import BaseModal from "@/components/Reusable/BaseModal";
-import BaseButton from "@/components/Reusable/BaseButton";
-import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
-import readExcelFile from "read-excel-file";
-import { mapMutations } from "vuex";
-import api from "@/services/api";
-import FileUploader from "@/components/Reusable/FileUploader";
+import BaseModal from '@/components/Reusable/BaseModal'
+import BaseButton from '@/components/Reusable/BaseButton'
+import BaseArrowLeftIcon from '@/components/icons/BaseArrowLeftIcon'
+import readExcelFile from 'read-excel-file'
+import { mapMutations } from 'vuex'
+import api from '@/services/api'
+import FileUploader from '@/components/Reusable/FileUploader'
 
 export default {
-  name: "ImportPaymentsModal",
+  name: 'ImportPaymentsModal',
   components: {
     FileUploader,
     BaseModal,
@@ -22,80 +22,80 @@ export default {
     },
   },
   beforeRouteLeave(to, from, next) {
-    this.excelFile = null;
-    next();
+    this.excelFile = null
+    next()
   },
   data() {
     return {
       buttonLoading: false,
       excelFile: null,
-    };
+    }
   },
   computed: {
     size() {
       if (this.excelFile) {
-        const kilobyte = this.excelFile.size / 1024;
+        const kilobyte = this.excelFile.size / 1024
         if (kilobyte > 10) {
-          return Math.round(kilobyte / 1024) + " МБ";
+          return `${Math.round(kilobyte / 1024)} МБ`
         }
 
-        return Math.round(kilobyte) + " КБ";
+        return `${Math.round(kilobyte)} КБ`
       }
-      return 0;
+      return 0
     },
   },
   methods: {
     ...mapMutations({
-      initExcelSheet: "initExcelSheet",
+      initExcelSheet: 'initExcelSheet',
     }),
     downloadTemplate() {
-      api.contractV2.downloadContractTemplate().then((response) => {
-        const fileURL = window.URL.createObjectURL(new Blob([response.data]));
-        const fileLink = document.createElement("a");
-        fileLink.href = fileURL;
-        fileLink.setAttribute("download", "contract_template.xlsx");
-        document.body.appendChild(fileLink);
-        fileLink.click();
-      });
+      api.contractV2.downloadContractTemplate().then(response => {
+        const fileURL = window.URL.createObjectURL(new Blob([response.data]))
+        const fileLink = document.createElement('a')
+        fileLink.href = fileURL
+        fileLink.setAttribute('download', 'contract_template.xlsx')
+        document.body.appendChild(fileLink)
+        fileLink.click()
+      })
     },
     openModal() {
-      this.$refs["base-modal"].openModal();
+      this.$refs['base-modal'].openModal()
     },
     closeModal() {
-      this.$refs["base-modal"].closeModal();
+      this.$refs['base-modal'].closeModal()
     },
     importUploadExcel() {
-      const file = this.$refs["file-upload"].excelFile;
+      const file = this.$refs['file-upload'].excelFile
       if (file) {
         this.$router.push({
-          name: "contract-import-payments",
+          name: 'contract-import-payments',
           params: {
             id: this.contract.id,
           },
-        });
+        })
       }
     },
     triggerUploadEvent() {
-      this.excelFile = this.$refs["file-input"].files[0];
-      readExcelFile(this.excelFile).then((rows) => {
-        const head = rows[0];
-        const sortRows = rows.slice(1).map((row) => {
-          const loopPackage = {};
+      this.excelFile = this.$refs['file-input'].files[0]
+      readExcelFile(this.excelFile).then(rows => {
+        const head = rows[0]
+        const sortRows = rows.slice(1).map(row => {
+          const loopPackage = {}
           head.forEach((headCell, index) => {
-            loopPackage[headCell] = row[index];
-          });
-          return loopPackage;
-        });
-        sortRows.unshift(head);
+            loopPackage[headCell] = row[index]
+          })
+          return loopPackage
+        })
+        sortRows.unshift(head)
         this.initExcelSheet({
           rows: sortRows,
           file: this.excelFile,
           contract: this.contract,
-        });
-      });
+        })
+      })
     },
   },
-};
+}
 </script>
 
 <template>
@@ -103,8 +103,14 @@ export default {
     <template #header>
       <!--   GO BACK     -->
       <span class="d-flex align-items-center">
-        <span class="go__back" @click="closeModal">
-          <base-arrow-left-icon :width="32" :height="32"></base-arrow-left-icon>
+        <span
+          class="go__back"
+          @click="closeModal"
+        >
+          <base-arrow-left-icon
+            :width="32"
+            :height="32"
+          />
         </span>
         <!--    TITLE      -->
         <span class="title">{{ $t("payments.payment_add") }}</span>
@@ -112,14 +118,19 @@ export default {
     </template>
 
     <template #main>
-      <p class="instruction">{{ $t("payments.import") }}</p>
+      <p class="instruction">
+        {{ $t("payments.import") }}
+      </p>
 
-      <FileUploader ref="file-upload" :contract="contract" />
+      <FileUploader
+        ref="file-upload"
+        :contract="contract"
+      />
 
       <base-button
-        @click="downloadTemplate"
         :text="$t('payments.download_template')"
         class="download__template"
+        @click="downloadTemplate"
       />
     </template>
 
@@ -134,9 +145,9 @@ export default {
       >
         <base-button
           :text="$t('next')"
-          @click="importUploadExcel"
           :fixed="true"
           design="violet-gradient"
+          @click="importUploadExcel"
         />
       </b-overlay>
     </template>
@@ -185,7 +196,6 @@ export default {
 
     .arrow__down
         margin-right: 2.5rem
-
 
     &-input
         outline: none

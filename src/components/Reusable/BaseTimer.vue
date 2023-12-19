@@ -1,12 +1,12 @@
 <script>
 export default {
-  name: "BaseTimer",
+  name: 'BaseTimer',
   components: {},
   props: {
     background: {
       type: String,
       required: false,
-      default: "#7C3AED",
+      default: '#7C3AED',
     },
     minute: {
       type: Number,
@@ -17,11 +17,14 @@ export default {
       required: true,
     },
   },
-};
+}
 </script>
 
 <template>
-  <div class="base-timer" :style="{ background: background }">
+  <div
+    class="base-timer"
+    :style="{ background: background }"
+  >
     <span class="base-timer-time">{{ minute }} : {{ second }}</span>
   </div>
 </template>

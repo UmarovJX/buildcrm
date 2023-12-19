@@ -1,22 +1,22 @@
 <script>
-import BaseButton from "@/components/Reusable/BaseButton";
-import BasePlusIcon from "@/components/icons/BasePlusIcon";
-import BaseDotsIcon from "@/components/icons/BaseDotsIcon";
-import BaseEditIcon from "@/components/icons/BaseEditIcon";
-import BaseModal from "@/components/Reusable/BaseModal";
-import BaseCloseIcon from "@/components/icons/BaseCloseIcon";
-import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
-import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
-import api from "@/services/api";
-import BaseDeleteIcon from "@/components/icons/BaseDeleteIcon";
-import { XFormSelect } from "@/components/ui-components/form-select";
-import { sortInFirstRelationship, sortObjectValues } from "@/util/reusable";
-import AppDropdown from "@/components/Reusable/Dropdown/AppDropdown";
+import BaseButton from '@/components/Reusable/BaseButton'
+import BasePlusIcon from '@/components/icons/BasePlusIcon'
+import BaseDotsIcon from '@/components/icons/BaseDotsIcon'
+import BaseEditIcon from '@/components/icons/BaseEditIcon'
+import BaseModal from '@/components/Reusable/BaseModal'
+import BaseCloseIcon from '@/components/icons/BaseCloseIcon'
+import BaseArrowLeftIcon from '@/components/icons/BaseArrowLeftIcon'
+import BaseArrowRightIcon from '@/components/icons/BaseArrowRightIcon'
+import api from '@/services/api'
+import BaseDeleteIcon from '@/components/icons/BaseDeleteIcon'
+import { XFormSelect } from '@/components/ui-components/form-select'
+import { sortInFirstRelationship, sortObjectValues } from '@/util/reusable'
+import AppDropdown from '@/components/Reusable/Dropdown/AppDropdown'
 
 export default {
-  name: "ApartmentComments",
+  name: 'ApartmentComments',
   components: {
-    XFormSelect: XFormSelect,
+    XFormSelect,
     AppDropdown,
     BaseDeleteIcon,
     BaseButton,
@@ -35,7 +35,7 @@ export default {
     },
     apartmentUuid: {
       type: String,
-      required: "",
+      required: '',
     },
     commentsData: {
       type: Object,
@@ -52,22 +52,22 @@ export default {
   },
 
   data() {
-    const showByOptions = [];
+    const showByOptions = []
 
     for (let number = 10; number <= 50; number += 10) {
       showByOptions.push({
         value: number,
         text: number,
-      });
+      })
     }
 
-    let { limit: showByValue } = this.$route.query;
+    let { limit: showByValue } = this.$route.query
 
     if (!showByValue) {
-      showByValue = 20;
+      showByValue = 20
     }
 
-    const objectId = this.$route.params.object;
+    const objectId = this.$route.params.object
     return {
       showByValue,
       showByOptions,
@@ -77,264 +77,271 @@ export default {
         limit: 20,
         page: 1,
       },
-      comment: "",
+      comment: '',
       commentId: null,
       comments: [],
       modalProperties: {
-        type: "",
-        title: "",
+        type: '',
+        title: '',
       },
       loading: false,
-    };
+    }
+  },
+  computed: {
+    userAvatar() {
+      return this.comment?.user?.avatar
+    },
+    countOfPaymentItems() {
+      const { pagination, comments } = this
+      return comments.length && pagination.totalItems > 9
+    },
+    hasComment() {
+      return this.comments && this.comments.length > 0
+    },
+    query() {
+      return { ...this.$route.query }
+    },
   },
   watch: {
     commentsData: {
       deep: true,
       immediate: true,
       handler() {
-        this.setComments();
+        this.setComments()
       },
     },
   },
-  computed: {
-    userAvatar() {
-      return this.comment?.user?.avatar;
-    },
-    countOfPaymentItems() {
-      const { pagination, comments } = this;
-      return comments.length && pagination["totalItems"] > 9;
-    },
-    hasComment() {
-      return this.comments && this.comments.length > 0;
-    },
-    query() {
-      return Object.assign({}, this.$route.query);
-    },
-  },
   created() {
-    this.setComments();
+    this.setComments()
   },
   methods: {
     changeRoute() {
-      const sortingQuery = Object.assign({}, this.query);
+      const sortingQuery = { ...this.query }
       this.$router.push({
         query: {
           ...this.query,
           ...sortInFirstRelationship(sortingQuery),
         },
-      });
+      })
     },
     setComments() {
       if (this.expressView && this.commentsData && this.commentsData.items) {
-        this.comments = this.commentsData.items.slice(0, 2);
+        this.comments = this.commentsData.items.slice(0, 2)
       } else {
-        this.comments = this.commentsData.items;
+        this.comments = this.commentsData.items
       }
-      this.pagination = this.commentsData.pagination;
+      this.pagination = this.commentsData.pagination
 
       if (this.pagination && this.pagination.current > this.pagination.total) {
-        this.swipeCommentsPage(this.pagination.total);
+        this.swipeCommentsPage(this.pagination.total)
       }
     },
     viewAllComments() {
       this.$router.push({
-        name: "apartment-view-comment",
+        name: 'apartment-view-comment',
         params: {
           object: this.$route.params.object,
           id: this.apartmentUuid,
         },
-      });
+      })
     },
     swipeCommentsPage(page) {
-      const currentPage = this.query.page;
-      if (page === currentPage) return;
-      this.replaceRouter({ ...this.query, page });
-      this.$emit("update-comments", this.query);
+      const currentPage = this.query.page
+      if (page === currentPage) return
+      this.replaceRouter({ ...this.query, page })
+      this.$emit('update-comments', this.query)
     },
     replaceRouter(query) {
-      const sortQuery = sortObjectValues(query);
-      this.$router.replace({ query: sortQuery });
+      const sortQuery = sortObjectValues(query)
+      this.$router.replace({ query: sortQuery })
     },
     changeCommentsShowingLimit() {
       if (this.query.limit !== this.showByValue.toString()) {
         const query = {
           ...this.query,
           page: 1,
-        };
-        const limit = this.showByValue;
-        this.replaceRouter({ ...query, limit });
-        this.$emit("update-comments", this.query);
+        }
+        const limit = this.showByValue
+        this.replaceRouter({ ...query, limit })
+        this.$emit('update-comments', this.query)
       }
     },
     fullName(value) {
-      if (value.first_name && value.last_name)
-        return value.first_name + " " + value.last_name;
-      return value;
+      if (value.first_name && value.last_name) return `${value.first_name} ${value.last_name}`
+      return value
     },
     dateFormat(value) {
       const monthNames = [
-        "january",
-        "february",
-        "march",
-        "april",
-        "may",
-        "june",
-        "july",
-        "august",
-        "september",
-        "october",
-        "november",
-        "december",
-      ];
-      let date = "";
+        'january',
+        'february',
+        'march',
+        'april',
+        'may',
+        'june',
+        'july',
+        'august',
+        'september',
+        'october',
+        'november',
+        'december',
+      ]
+      let date = ''
       if (!value.edited) {
-        date = new Date(value.created_at);
+        date = new Date(value.created_at)
       } else {
-        date = new Date(value.updated_at);
+        date = new Date(value.updated_at)
       }
-      const day = date.getDate();
-      const minutes =
-        date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes();
-      const hours =
-        date.getHours() < 10 ? `0${date.getHours()}` : date.getHours();
-      const month = this.$t(monthNames[date.getMonth()]).toLocaleLowerCase();
+      const day = date.getDate()
+      const minutes = date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()
+      const hours = date.getHours() < 10 ? `0${date.getHours()}` : date.getHours()
+      const month = this.$t(monthNames[date.getMonth()]).toLocaleLowerCase()
 
-      if (value.edited)
+      if (value.edited) {
         return (
-          this.$t("edited") +
-          " " +
-          hours +
-          ":" +
-          minutes +
-          ", " +
-          day +
-          " " +
-          month
-        );
-      return hours + ":" + minutes + ", " + day + " " + month;
+          `${this.$t('edited')
+          } ${
+            hours
+          }:${
+            minutes
+          }, ${
+            day
+          } ${
+            month}`
+        )
+      }
+      return `${hours}:${minutes}, ${day} ${month}`
     },
     checkLocales(name) {
-      if (localStorage.locale) return name[localStorage.locale];
-      else return name["ru"];
+      if (localStorage.locale) return name[localStorage.locale]
+      return name.ru
     },
     closeCreateModal() {
-      this.$refs["create"].closeModal();
-      this.comment = "";
-      this.commentId = "";
+      this.$refs.create.closeModal()
+      this.comment = ''
+      this.commentId = ''
     },
     openCreateModal() {
       this.modalProperties = {
-        type: "create",
-        title: "contracts.add_note",
-        btnText: "add",
-      };
-      this.$refs["create"].openModal();
+        type: 'create',
+        title: 'contracts.add_note',
+        btnText: 'add',
+      }
+      this.$refs.create.openModal()
     },
     openEditModal(item) {
       this.modalProperties = {
-        type: "edit",
-        title: "contracts.edit_note",
-        btnText: "edit",
-      };
-      this.comment = item.comment;
-      this.commentId = item.id;
-      this.$refs["create"].openModal();
+        type: 'edit',
+        title: 'contracts.edit_note',
+        btnText: 'edit',
+      }
+      this.comment = item.comment
+      this.commentId = item.id
+      this.$refs.create.openModal()
     },
     warnBeforeDelete(id) {
-      this.commentId = id;
-      this.$refs["warning-before-delete"].openModal();
+      this.commentId = id
+      this.$refs['warning-before-delete'].openModal()
     },
     cancelDelete() {
-      this.commentId = null;
-      this.$refs["warning-before-delete"].closeModal();
+      this.commentId = null
+      this.$refs['warning-before-delete'].closeModal()
     },
     deleteComment() {
       api.apartmentsV2
         .deleteApartmentComment(
           this.objectId,
           this.apartmentUuid,
-          this.commentId
+          this.commentId,
         )
         .then(() => {
-          this.toasted(`${this.$t("sweetAlert.deleted")}`, "success");
+          this.toasted(`${this.$t('sweetAlert.deleted')}`, 'success')
         })
-        .catch((err) => {
-          this.toasted(err.message, "error");
+        .catch(err => {
+          this.toasted(err.message, 'error')
         })
         .finally(() => {
-          this.$refs["warning-before-delete"].closeModal();
+          this.$refs['warning-before-delete'].closeModal()
           // this.getComments()
-          this.$emit("update-comments", this.params);
-        });
+          this.$emit('update-comments', this.params)
+        })
     },
     async saveComment() {
-      await this.$refs["comment-area"].validate().then(async (res) => {
-        this.errors = res.errors;
+      await this.$refs['comment-area'].validate().then(async res => {
+        this.errors = res.errors
         if (res.valid) {
           const data = {
             comment: this.comment,
-          };
-          this.loading = true;
-          if (this.modalProperties.type === "create") {
+          }
+          this.loading = true
+          if (this.modalProperties.type === 'create') {
             await api.apartmentsV2
               .createApartmentComment(this.objectId, this.apartmentUuid, data)
               .then(() => {
                 this.toasted(
-                  `${this.$t("sweetAlert.success_create_comment")}`,
-                  "success"
-                );
-                this.closeCreateModal();
+                  `${this.$t('sweetAlert.success_create_comment')}`,
+                  'success',
+                )
+                this.closeCreateModal()
               })
-              .catch((err) => {
-                this.toasted(err.message, "error");
-              });
+              .catch(err => {
+                this.toasted(err.message, 'error')
+              })
           } else {
             await api.apartmentsV2
               .editApartmentComment(
                 this.objectId,
                 this.apartmentUuid,
                 this.commentId,
-                data
+                data,
               )
               .then(() => {
                 this.toasted(
-                  `${this.$t("sweetAlert.successfully_edited")}`,
-                  "success"
-                );
-                this.closeCreateModal();
+                  `${this.$t('sweetAlert.successfully_edited')}`,
+                  'success',
+                )
+                this.closeCreateModal()
               })
-              .catch((err) => {
-                this.toasted(err.message, "error");
-              });
+              .catch(err => {
+                this.toasted(err.message, 'error')
+              })
           }
-          this.loading = false;
-          await this.$emit("update-comments", this.params);
+          this.loading = false
+          await this.$emit('update-comments', this.params)
           // await this.getComments()
         }
-      });
+      })
     },
   },
-};
+}
 </script>
 
 <template>
   <div>
     <div class="comments">
       <div class="comments-header">
-        <h4 v-if="expressView" class="comments-header__title express-title">
+        <h4
+          v-if="expressView"
+          class="comments-header__title express-title"
+        >
           Последние примечание
         </h4>
-        <h4 v-else-if="hasComment" class="comments-header__title">
+        <h4
+          v-else-if="hasComment"
+          class="comments-header__title"
+        >
           {{ $t("contracts.note") }} ( {{ pagination.totalItems }}
           {{ $t("contracts.notes") }} )
         </h4>
-        <h4 v-else class="comments-header__title">
+        <h4
+          v-else
+          class="comments-header__title"
+        >
           {{ $t("contracts.note") }} ({{ $t("contracts.no_notes") }})
         </h4>
         <template v-if="expressView">
           <base-button
-            @click="viewAllComments"
             :text="`${$t('filter_names.all')}`"
+            @click="viewAllComments"
           >
             <template #right-icon>
               <BaseArrowRightIcon />
@@ -344,8 +351,8 @@ export default {
         <template v-else>
           <base-button
             v-if="permissions && permissions.create"
-            @click="openCreateModal"
             :text="`${$t('contracts.add_note')}`"
+            @click="openCreateModal"
           >
             <template #left-icon>
               <BasePlusIcon fill="var(--violet-600)" />
@@ -354,17 +361,24 @@ export default {
         </template>
       </div>
 
-      <div v-if="hasComment && !commentLoading" class="comments-body">
-        <div v-for="userComment in comments" class="comment" :key="comment.id">
+      <div
+        v-if="hasComment && !commentLoading"
+        class="comments-body"
+      >
+        <div
+          v-for="userComment in comments"
+          :key="comment.id"
+          class="comment"
+        >
           <div class="comment-content">
             <div class="comment-text">
               <p>{{ userComment.comment }}</p>
             </div>
             <div class="comment-action">
               <app-dropdown
+                v-if="permissions && (permissions.delete || permissions.edit)"
                 :collapse-arrow="true"
                 :position-right="true"
-                v-if="permissions && (permissions.delete || permissions.edit)"
               >
                 <template #header>
                   <BaseDotsIcon />
@@ -401,12 +415,16 @@ export default {
           <div class="comment-footer">
             <div class="comment-info">
               <div class="avatar">
-                <img v-if="userAvatar" :src="userAvatar" alt="" />
+                <img
+                  v-if="userAvatar"
+                  :src="userAvatar"
+                  alt=""
+                >
                 <img
                   v-else
                   :src="require('@/assets/img/no_avatar.png')"
                   alt=""
-                />
+                >
               </div>
               <h5 class="name">
                 {{ fullName(userComment.user) }}
@@ -417,7 +435,9 @@ export default {
               </h5>
             </div>
             <div class="comment-date">
-              <p class="date">{{ dateFormat(userComment) }}</p>
+              <p class="date">
+                {{ dateFormat(userComment) }}
+              </p>
             </div>
           </div>
         </div>
@@ -426,8 +446,8 @@ export default {
           class="d-flex justify-content-end"
         >
           <base-button
-            @click="openCreateModal"
             :text="`${$t('contracts.add_note')}`"
+            @click="openCreateModal"
           >
             <template #left-icon>
               <BasePlusIcon fill="var(--violet-600)" />
@@ -435,7 +455,10 @@ export default {
           </base-button>
         </div>
 
-        <div v-if="!expressView && countOfPaymentItems" class="pagination__vue">
+        <div
+          v-if="!expressView && countOfPaymentItems"
+          class="pagination__vue"
+        >
           <!--   Pagination   -->
           <vue-paginate
             :page-count="pagination.total"
@@ -465,30 +488,35 @@ export default {
           <!--  Show By Select    -->
           <div class="show__by">
             <x-form-select
+              v-model="showByValue"
               :label="false"
               :options="showByOptions"
-              v-model="showByValue"
               @change="changeCommentsShowingLimit"
             >
               <template #output-prefix>
-                <span class="show-by-description"
-                  >{{ $t("contracts.show_by") }}:</span
-                >
+                <span
+                  class="show-by-description"
+                >{{ $t("contracts.show_by") }}:</span>
               </template>
             </x-form-select>
           </div>
         </div>
       </div>
 
-      <div v-else class="comments-body">
-        <p class="comment-empty">{{ $t("contracts.no_note") }}.</p>
+      <div
+        v-else
+        class="comments-body"
+      >
+        <p class="comment-empty">
+          {{ $t("contracts.no_note") }}.
+        </p>
         <div
           v-if="expressView && permissions && permissions.create"
           class="d-flex justify-content-end"
         >
           <base-button
-            @click="openCreateModal"
             :text="`${$t('contracts.add_note')}`"
+            @click="openCreateModal"
           >
             <template #left-icon>
               <BasePlusIcon fill="var(--violet-600)" />
@@ -507,10 +535,10 @@ export default {
           <template #overlay>
             <div class="d-flex justify-content-center w-100">
               <div class="lds-ellipsis">
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
+                <div />
+                <div />
+                <div />
+                <div />
               </div>
             </div>
           </template>
@@ -519,7 +547,11 @@ export default {
     </div>
 
     <!--    CREATE COMMENT MODAL-->
-    <base-modal ref="create" id="create-comment" design="auto-height">
+    <base-modal
+      id="create-comment"
+      ref="create"
+      design="auto-height"
+    >
       <template #header>
         <span class="d-flex align-items-center justify-content-between">
           <!--    TITLE      -->
@@ -528,8 +560,14 @@ export default {
           </span>
 
           <!--   CLOSE    -->
-          <span class="go__back" @click="closeCreateModal">
-            <BaseCloseIcon :width="56" :height="56" />
+          <span
+            class="go__back"
+            @click="closeCreateModal"
+          >
+            <BaseCloseIcon
+              :width="56"
+              :height="56"
+            />
           </span>
         </span>
       </template>
@@ -540,10 +578,10 @@ export default {
             {{ $t("contracts.note_text") }}
           </h5>
           <ValidationProvider
-            :name="$t('objects.create.tariff.type_name')"
             ref="userComment-area"
-            rules="required|min:2"
             v-slot="{ errors }"
+            :name="$t('objects.create.tariff.type_name')"
+            rules="required|min:2"
             class="w-100"
             tag="div"
           >
@@ -552,7 +590,10 @@ export default {
               class="comment-textarea"
               :placeholder="`${$t('contracts.comment')}`"
             />
-            <span class="error__provider" v-if="errors[0]">
+            <span
+              v-if="errors[0]"
+              class="error__provider"
+            >
               {{ errors[0] }}
             </span>
           </ValidationProvider>
@@ -563,10 +604,10 @@ export default {
         <div>
           <base-button
             :disabled="loading"
-            @click="saveComment"
             :fixed="true"
             design="violet-gradient"
             :text="$t(`${modalProperties.btnText}`)"
+            @click="saveComment"
           />
         </div>
       </template>
@@ -614,17 +655,16 @@ export default {
       <template #footer>
         <div class="warning__before__delete-footer">
           <base-button
-            @click="cancelDelete"
             :fixed="true"
             :text="`${$t('no_cancel')}`"
+            @click="cancelDelete"
           />
           <base-button
-            @click="deleteComment"
             :fixed="true"
             :text="`${$t('yes_delete')}`"
             design="violet-gradient"
-          >
-          </base-button>
+            @click="deleteComment"
+          />
         </div>
       </template>
     </base-modal>

@@ -1,22 +1,22 @@
 <script>
-import BaseTimesCircleIcon from "@/components/icons/BaseTimesCircleIcon";
-import { debounce } from "@/util/reusable";
-import BaseUpIcon from "@/components/icons/BaseUpIcon";
-import BaseDownIcon from "@/components/icons/BaseDownIcon";
+import BaseTimesCircleIcon from '@/components/icons/BaseTimesCircleIcon'
+import { debounce } from '@/util/reusable'
+import BaseUpIcon from '@/components/icons/BaseUpIcon'
+import BaseDownIcon from '@/components/icons/BaseDownIcon'
 
 const cssDefaultProperty = {
   type: String,
-  default: "",
-};
+  default: '',
+}
 export default {
-  name: "BaseInput",
+  name: 'BaseInput',
   components: {
     BaseUpIcon,
     BaseDownIcon,
     BaseTimesCircleIcon,
-    BaseNumericInput: () => import("@/components/Reusable/BaseNumericInput"),
+    BaseNumericInput: () => import('@/components/Reusable/BaseNumericInput'),
   },
-  emits: ["input", "trigger-input", "search-by-filter", "replace-router"],
+  emits: ['input', 'trigger-input', 'search-by-filter', 'replace-router'],
   props: {
     placeholder: {
       type: String,
@@ -27,7 +27,7 @@ export default {
     },
     type: {
       type: String,
-      default: () => "text",
+      default: () => 'text',
     },
     counter: {
       type: Boolean,
@@ -43,11 +43,11 @@ export default {
     },
     currency: {
       type: String,
-      default: " ",
+      default: ' ',
     },
     mask: {
       type: String,
-      default: "",
+      default: '',
     },
     disable: {
       type: Boolean,
@@ -68,15 +68,15 @@ export default {
     return {
       debounceInput: this.value,
       showClearIcon: false,
-    };
+    }
   },
   computed: {
     searchInput: {
       get() {
-        return this.value;
+        return this.value
       },
       set(val) {
-        this.$emit("input", val);
+        this.$emit('input', val)
       },
     },
     inputFieldStyle() {
@@ -91,7 +91,7 @@ export default {
         marginBottom,
         marginLeft,
         marginRight,
-      } = this;
+      } = this
       return {
         margin,
         padding,
@@ -103,81 +103,88 @@ export default {
         marginBottom,
         marginLeft,
         marginRight,
-      };
+      }
     },
   },
   watch: {
     searchInput: debounce(function (newValue) {
-      this.debounceInput = newValue;
+      this.debounceInput = newValue
     }, 350),
     debounceInput() {
       setTimeout(() => {
-        this.focusOnSearchInput();
-      }, 100);
-      if (this.type === "text" || this.type === "search") {
-        this.toggleClearIcon();
-        this.triggerInputEvent();
+        this.focusOnSearchInput()
+      }, 100)
+      if (this.type === 'text' || this.type === 'search') {
+        this.toggleClearIcon()
+        this.triggerInputEvent()
       }
     },
   },
   mounted() {
     if (this.searchInput?.length) {
-      this.toggleClearIcon();
+      this.toggleClearIcon()
     }
   },
   methods: {
     focusOnSearchInput() {
-      this.$refs["base-input"].focus();
+      this.$refs['base-input'].focus()
     },
     clearSearchInput() {
-      this.searchInput = "";
+      this.searchInput = ''
     },
     toggleClearIcon() {
-      this.showClearIcon = !!this.searchInput.length;
+      this.showClearIcon = !!this.searchInput.length
     },
     triggerInputEvent() {
-      this.$emit("trigger-input", this.debounceInput);
+      this.$emit('trigger-input', this.debounceInput)
     },
     triggerNumberEvent($event) {
-      this.debounceInput = $event;
-      this.$emit("trigger-input", this.debounceInput);
+      this.debounceInput = $event
+      this.$emit('trigger-input', this.debounceInput)
     },
     increment() {
       // const myArray = this.searchInput.split(/([0-9]+)/)
       // console.log(myArray, 'myArray before');
       // myArray.filter(item => item !== '')
       // console.log(myArray, 'myArray after');
-      this.searchInput++;
+      this.searchInput++
     },
     decrement() {
       if (this.searchInput > 0) {
-        this.searchInput--;
+        this.searchInput--
       }
     },
   },
-};
+}
 </script>
 
 <template>
-  <div class="base-input" :class="{ error: error, label: value && label }">
-    <div v-if="value && label" class="input-label">
+  <div
+    class="base-input"
+    :class="{ error: error, label: value && label }"
+  >
+    <div
+      v-if="value && label"
+      class="input-label"
+    >
       <span>
         {{ placeholder }}
       </span>
     </div>
     <input
       v-if="counter"
+      id="base-input"
+      ref="base-input"
       v-model="searchInput"
       :type="type"
       :disabled="disable"
-      id="base-input"
-      ref="base-input"
       :placeholder="placeholder"
       @input="triggerInputEvent"
-    />
+    >
 
     <base-numeric-input
       v-else-if="type === 'number'"
+      ref="base-input"
       :currency="currency"
       :minus="false"
       :value="null"
@@ -185,34 +192,33 @@ export default {
       currency-symbol-position="suffix"
       separator="space"
       :placeholder="placeholder"
-      ref="base-input"
       :field-style="inputFieldStyle"
       @input="triggerNumberEvent"
     />
     <input
       v-else-if="!mask"
+      id="base-input"
+      ref="base-input"
       v-model="searchInput"
       :type="type"
       :disabled="disable"
-      id="base-input"
-      ref="base-input"
       :style="inputFieldStyle"
       :placeholder="placeholder"
       @input="triggerInputEvent"
-    />
+    >
 
     <input
       v-else
-      v-model="searchInput"
-      :type="type"
-      v-mask="mask"
-      :disabled="disable"
       id="base-input-mask"
       ref="base-input"
+      v-model="searchInput"
+      v-mask="mask"
+      :type="type"
+      :disabled="disable"
       :style="inputFieldStyle"
       :placeholder="placeholder"
       @input="triggerInputEvent"
-    />
+    >
     <span
       v-if="showClearIcon && !disable"
       class="clear__icon"
@@ -220,7 +226,10 @@ export default {
     >
       <base-times-circle-icon />
     </span>
-    <div v-if="counter" class="spin__icon">
+    <div
+      v-if="counter"
+      class="spin__icon"
+    >
       <div @click="increment">
         <base-up-icon />
       </div>

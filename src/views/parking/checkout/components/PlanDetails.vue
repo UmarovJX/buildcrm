@@ -1,15 +1,15 @@
 <script>
-import FieldInformation from "@/views/parking/checkout/elements/FieldInformation";
-import { hasChild } from "@/util/object";
-import { makeProp as p } from "@/util/props";
-import { PROP_TYPE_BOOLEAN, PROP_TYPE_OBJECT } from "@/constants/props";
-import { dateProperties } from "@/util/calendar";
-import BaseButton from "@/components/Reusable/BaseButton";
-import { XIcon } from "@/components/ui-components/material-icons";
-import { mapActions } from "vuex";
+import FieldInformation from '@/views/parking/checkout/elements/FieldInformation'
+import { hasChild } from '@/util/object'
+import { makeProp as p } from '@/util/props'
+import { PROP_TYPE_BOOLEAN, PROP_TYPE_OBJECT } from '@/constants/props'
+import { dateProperties } from '@/util/calendar'
+import BaseButton from '@/components/Reusable/BaseButton'
+import { XIcon } from '@/components/ui-components/material-icons'
+import { mapActions } from 'vuex'
 
 export default {
-  name: "ChPlanDetails",
+  name: 'ChPlanDetails',
   components: {
     FieldInformation,
     BaseButton,
@@ -22,27 +22,27 @@ export default {
   computed: {
     buildDate() {
       if (hasChild(this.apartment)) {
-        const { build_date } = this.apartment.object;
-        const { month, year } = dateProperties(build_date, "string");
-        const value = Math.ceil((month + 1) / 3);
-        let outputValue = ` ${this.$t("quarter")}, ${year}`;
+        const { build_date } = this.apartment.object
+        const { month, year } = dateProperties(build_date, 'string')
+        const value = Math.ceil((month + 1) / 3)
+        const outputValue = ` ${this.$t('quarter')}, ${year}`
         const romeNmb = {
-          1: "I",
-          2: "II",
-          3: "III",
-          4: "IV",
-        };
-        return romeNmb[value] + outputValue;
+          1: 'I',
+          2: 'II',
+          3: 'III',
+          4: 'IV',
+        }
+        return romeNmb[value] + outputValue
       }
-      return this.$t("not_found");
+      return this.$t('not_found')
     },
   },
   methods: {
-    ...mapActions("ParkingCheckout", {
-      removeApartment: "removeApartment",
+    ...mapActions('ParkingCheckout', {
+      removeApartment: 'removeApartment',
     }),
   },
-};
+}
 </script>
 
 <template>
@@ -119,7 +119,10 @@ export default {
       @click="removeApartment({ apmId: apartment.id })"
     >
       <template #left-icon>
-        <x-icon name="remove" color="var(--violet-600)"></x-icon>
+        <x-icon
+          name="remove"
+          color="var(--violet-600)"
+        />
       </template>
     </base-button>
   </div>

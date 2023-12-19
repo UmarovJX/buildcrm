@@ -1,21 +1,21 @@
 <script>
-import api from "@/services/api";
-import { mapGetters, mapMutations } from "vuex";
-import { TYPE, PAYMENT_TYPE, DEBTORS_EXCEL_FILES } from "@/constants/names";
-import { isNull, isNUNEZ } from "@/util/inspect";
+import api from '@/services/api'
+import { mapGetters, mapMutations } from 'vuex'
+import { TYPE, PAYMENT_TYPE, DEBTORS_EXCEL_FILES } from '@/constants/names'
+import { isNull, isNUNEZ } from '@/util/inspect'
 
-import AppHeader from "@/components/Header/AppHeader";
-import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
-import BaseButton from "@/components/Reusable/BaseButton";
-import BaseRightIcon from "@/components/icons/BaseRightIcon";
-import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
-import FirstStep from "@/views/debtors/steps/FirstStep";
-import SecondStep from "@/views/debtors/steps/SecondStep";
-import ThirdStep from "@/views/debtors/steps/ThirdStep";
-import BaseModal from "@/components/Reusable/BaseModal";
+import AppHeader from '@/components/Header/AppHeader'
+import BaseArrowRightIcon from '@/components/icons/BaseArrowRightIcon'
+import BaseButton from '@/components/Reusable/BaseButton'
+import BaseRightIcon from '@/components/icons/BaseRightIcon'
+import BaseArrowLeftIcon from '@/components/icons/BaseArrowLeftIcon'
+import FirstStep from '@/views/debtors/steps/FirstStep'
+import SecondStep from '@/views/debtors/steps/SecondStep'
+import ThirdStep from '@/views/debtors/steps/ThirdStep'
+import BaseModal from '@/components/Reusable/BaseModal'
 
 export default {
-  name: "ImportDebtorsList",
+  name: 'ImportDebtorsList',
   components: {
     FirstStep,
     SecondStep,
@@ -37,27 +37,8 @@ export default {
   //   }
   // },
   beforeRouteLeave(to, from, next) {
-    sessionStorage.removeItem(DEBTORS_EXCEL_FILES);
-    next();
-  },
-  created() {
-    // window.onbeforeunload = function (e) {
-    //   e = e || window.event;
-    //   //old browsers
-    //   if (e) {
-    //     e.returnValue = "Changes you made may not be saved";
-    //   }
-    //   //safari, chrome(chrome ignores text)
-    //   return "Changes you made may not be saved";
-    // };
-    const hasNotFile = isNull(this.getDebtorsSheets.file);
-    if (hasNotFile) {
-      const fileProperties = sessionStorage.getItem(DEBTORS_EXCEL_FILES);
-      if (fileProperties) {
-        const sheets = JSON.parse(sessionStorage.getItem(DEBTORS_EXCEL_FILES));
-        this.updateDebtorsExcel(sheets, true);
-      }
-    }
+    sessionStorage.removeItem(DEBTORS_EXCEL_FILES)
+    next()
   },
   data() {
     return {
@@ -69,271 +50,300 @@ export default {
       listLoading: false,
       resultDebtors: [],
       permissionLeave: false,
-      nextRoute: "",
-    };
+      nextRoute: '',
+    }
+  },
+  created() {
+    // window.onbeforeunload = function (e) {
+    //   e = e || window.event;
+    //   //old browsers
+    //   if (e) {
+    //     e.returnValue = "Changes you made may not be saved";
+    //   }
+    //   //safari, chrome(chrome ignores text)
+    //   return "Changes you made may not be saved";
+    // };
+    const hasNotFile = isNull(this.getDebtorsSheets.file)
+    if (hasNotFile) {
+      const fileProperties = sessionStorage.getItem(DEBTORS_EXCEL_FILES)
+      if (fileProperties) {
+        const sheets = JSON.parse(sessionStorage.getItem(DEBTORS_EXCEL_FILES))
+        this.updateDebtorsExcel(sheets, true)
+      }
+    }
   },
   computed: {
     ...mapGetters({
-      getDebtorsSheets: "getDebtorsSheets",
-      currentPagination: "getCurrentPagination",
-      getSelectAliases: "getSelectAliases",
-      getPreviewItems: "getPreviewItems",
-      getFileFields: "getFileFields",
+      getDebtorsSheets: 'getDebtorsSheets',
+      currentPagination: 'getCurrentPagination',
+      getSelectAliases: 'getSelectAliases',
+      getPreviewItems: 'getPreviewItems',
+      getFileFields: 'getFileFields',
     }),
     haveConstructorOrder() {
-      return Object.keys(this.getDebtorsSheets).length > 0;
+      return Object.keys(this.getDebtorsSheets).length > 0
     },
     fileName() {
-      return this.getDebtorsSheets?.file?.name ?? "";
+      return this.getDebtorsSheets?.file?.name ?? ''
     },
   },
   methods: {
     ...mapMutations({
-      setCurrentPagination: "SET_CURRENT_PAGINATION",
-      updateDebtorsExcel: "updateDebtorsExcel",
-      checkContractsMutation: "checkContracts",
-      setCreatedAlias: "setCreatedAlias",
-      generateImportTable: "generateImportTable",
+      setCurrentPagination: 'SET_CURRENT_PAGINATION',
+      updateDebtorsExcel: 'updateDebtorsExcel',
+      checkContractsMutation: 'checkContracts',
+      setCreatedAlias: 'setCreatedAlias',
+      generateImportTable: 'generateImportTable',
     }),
     cancelLeave() {
-      this.permissionLeave = false;
-      this.$refs["leave-modal"].closeModal();
+      this.permissionLeave = false
+      this.$refs['leave-modal'].closeModal()
     },
     confirmLeave() {
-      this.permissionLeave = true;
-      this.$router.push({ name: this.nextRoute });
-      this.$refs["leave-modal"].closeModal();
+      this.permissionLeave = true
+      this.$router.push({ name: this.nextRoute })
+      this.$refs['leave-modal'].closeModal()
     },
     backNavigation() {
-      this.$router.go(-1);
+      this.$router.go(-1)
     },
     async getImportDebtorsContract() {
       if (this.appLoading) {
-        return;
+        return
       }
 
       const typeFieldValidation = await this.$refs[
-        "first-step"
-      ].validateFirstStep();
+        'first-step'
+      ].validateFirstStep()
 
       if (typeFieldValidation) {
-        const promiseSet = [];
-        const cSet = this.$refs["first-step"].getContractNumbers();
+        const promiseSet = []
+        const cSet = this.$refs['first-step'].getContractNumbers()
 
         if (cSet[0].length > 1) {
-          cSet.forEach((cs) => {
+          cSet.forEach(cs => {
             if (cs.length) {
               promiseSet.push(
                 this.checkContracts({
                   contracts: cs,
-                })
-              );
+                }),
+              )
             }
-          });
+          })
         }
 
         try {
-          this.appLoading = true;
+          this.appLoading = true
           await Promise.allSettled(promiseSet).then(() => {
             this.validationError = {
               visible: true,
-              message: "Успешно",
-              type: "success",
-            };
+              message: 'Успешно',
+              type: 'success',
+            }
 
-            this.stepTwoDisable = false;
+            this.stepTwoDisable = false
             setTimeout(() => {
-              this.tabIndex = 1;
-            }, 100);
-          });
+              this.tabIndex = 1
+            }, 100)
+          })
         } finally {
-          this.appLoading = false;
+          this.appLoading = false
         }
       } else {
         this.validationError = {
           visible: true,
           message:
-            "Поля, выделенные красным цветом, не заполнены или заполнены неправильно",
-          type: "error",
-        };
-        this.stepTwoDisable = true;
+            'Поля, выделенные красным цветом, не заполнены или заполнены неправильно',
+          type: 'error',
+        }
+        this.stepTwoDisable = true
       }
     },
     async checkContracts(body) {
       return await api.debtorsV2
         .checkImportDebtors(body)
-        .then((rsp) => {
-          this.checkContractsMutation(rsp);
+        .then(rsp => {
+          this.checkContractsMutation(rsp)
         })
-        .catch((err) => {
-          let error = [];
+        .catch(err => {
+          let error = []
           for (const value of Object.values(err.response.data)) {
-            error = [...error, value];
+            error = [...error, value]
           }
           this.validationError = {
             visible: true,
-            message: error.join(", "),
-            type: "error",
-          };
-        });
+            message: error.join(', '),
+            type: 'error',
+          }
+        })
     },
     async changeTab() {
       if (this.tabIndex === 0) {
-        await this.getImportDebtorsContract();
+        await this.getImportDebtorsContract()
       } else if (this.tabIndex === 1) {
-        this.appLoading = true;
-        this.generateImportTable();
-        await this.sendDebtorsDetail();
+        this.appLoading = true
+        this.generateImportTable()
+        await this.sendDebtorsDetail()
       }
     },
     async validateSecondStep() {
-      await this.uploadAliases().then((rsp) => {
+      await this.uploadAliases().then(rsp => {
         if (rsp.data.length > 0) {
-          this.setCreatedAlias(rsp.data);
-          this.generateImportTable();
+          this.setCreatedAlias(rsp.data)
+          this.generateImportTable()
         }
-      });
+      })
     },
     matchPaymentType(type) {
-      return PAYMENT_TYPE[type];
+      return PAYMENT_TYPE[type]
     },
     matchType(type) {
-      return TYPE[type];
+      return TYPE[type]
     },
     async sendDebtorsDetail() {
       if (this.getPreviewItems.length) {
-        let loopCounter = 0;
-        const rows = this.getPreviewItems;
+        let loopCounter = 0
+        const rows = this.getPreviewItems
 
         const priceName = this.getFileFields.find(
-          (f) => f.default === "amount"
-        ).type;
+          f => f.default === 'amount',
+        ).type
         const dateName = this.getFileFields.find(
-          (f) => f.default === "date"
-        ).type;
+          f => f.default === 'date',
+        ).type
         const paymentMethodName = this.getFileFields.find(
-          (f) => f.default === "payment_type"
-        ).type;
+          f => f.default === 'payment_type',
+        ).type
         const typeName = this.getFileFields.find(
-          (f) => f.default === "type"
-        ).type;
+          f => f.default === 'type',
+        ).type
         const commentName = this.getFileFields.find(
-          (f) => f.default === "comment"
-        ).type;
+          f => f.default === 'comment',
+        ).type
 
-        const c = [[]];
+        const c = [[]]
 
         for (let i = 0; i < rows.length; i++) {
-          const p = Object.assign(
-            {},
-            {
-              uuid: rows[i].value.uuid,
-              amount: rows[i].table[priceName],
-              date: rows[i].table[dateName],
-              payment_type: this.matchPaymentType(
-                rows[i].table[paymentMethodName]
-              ),
-              type: this.matchType(rows[i].table[typeName]),
-              comment: rows[i].table[commentName] ?? "",
-            }
-          );
+          const p = {
+
+            uuid: rows[i].value.uuid,
+            amount: rows[i].table[priceName],
+            date: rows[i].table[dateName],
+            payment_type: this.matchPaymentType(
+              rows[i].table[paymentMethodName],
+            ),
+            type: this.matchType(rows[i].table[typeName]),
+            comment: rows[i].table[commentName] ?? '',
+          }
 
           if (isNUNEZ(p.type) && isNUNEZ(p.payment_type)) {
             if (c[c.length - 1].length <= loopCounter % 1000) {
-              c[c.length - 1].push(p);
+              c[c.length - 1].push(p)
             } else {
-              c.push([p]);
+              c.push([p])
             }
           }
 
-          loopCounter++;
+          loopCounter++
         }
 
-        const promiseSet = [];
+        const promiseSet = []
         if (c[0].length > 1) {
-          c.forEach((cs) => {
+          c.forEach(cs => {
             if (cs.length) {
-              promiseSet.push(this.getPreviewInformation(cs));
+              promiseSet.push(this.getPreviewInformation(cs))
             }
-          });
+          })
         }
 
         await Promise.allSettled(promiseSet)
-          .then((rsp) => {
-            rsp.forEach((r) => {
-              r.value.data.forEach((i) => {
-                this.resultList.push(i);
-              });
-            });
+          .then(rsp => {
+            rsp.forEach(r => {
+              r.value.data.forEach(i => {
+                this.resultList.push(i)
+              })
+            })
 
-            this.tabIndex = 2;
+            this.tabIndex = 2
           })
-          .catch((e) => {
-            this.toastedWithErrorCode(e);
+          .catch(e => {
+            this.toastedWithErrorCode(e)
           })
           .finally(() => {
-            this.appLoading = false;
-          });
+            this.appLoading = false
+          })
       }
     },
     async getPreviewInformation(contracts) {
       return await api.debtorsV2.viewImportList({
         contracts,
-      });
+      })
     },
     async uploadAliases() {
       if (this.getSelectAliases.length) {
         return await api.debtorsV2.createAliases({
           aliases: this.getSelectAliases,
-        });
+        })
       }
 
       return Promise.resolve({
         data: [],
-      });
+      })
     },
     async submitConcludeDebtors() {
-      this.appLoading = true;
+      this.appLoading = true
       try {
-        const payments = this.resultList.map((r) => ({
+        const payments = this.resultList.map(r => ({
           uuid: r.uuid,
           ...r.data,
-        }));
+        }))
 
         const resp = await api.debtorsV2.activatePayments({
           payments,
-        });
+        })
 
         if (resp) {
-          await this.$store.dispatch("notify/openNotify", {
-            type: "success",
+          await this.$store.dispatch('notify/openNotify', {
+            type: 'success',
             duration: 3000,
             message: resp.data.message,
-          });
-          await this.$router.push({ name: "debtors" });
+          })
+          await this.$router.push({ name: 'debtors' })
         }
       } catch (e) {
-        this.toastedWithErrorCode(e);
+        this.toastedWithErrorCode(e)
       } finally {
-        this.appLoading = false;
+        this.appLoading = false
       }
     },
   },
-};
+}
 </script>
 
 <template>
   <div>
     <app-header>
       <template #header-breadcrumb>
-        <div v-if="haveConstructorOrder" class="navigation__content">
-          <div class="go__back" @click="backNavigation">
-            <base-arrow-left-icon :width="32" :height="32" />
+        <div
+          v-if="haveConstructorOrder"
+          class="navigation__content"
+        >
+          <div
+            class="go__back"
+            @click="backNavigation"
+          >
+            <base-arrow-left-icon
+              :width="32"
+              :height="32"
+            />
           </div>
           <div class="breadcrumb__content">
             <div>
               {{ $t("debtors.title") }}
-              <base-arrow-right-icon :width="18" :height="18" />
+              <base-arrow-right-icon
+                :width="18"
+                :height="18"
+              />
               <span>{{ $t("debtors.import_debtors") }}</span>
             </div>
             <div class="head">
@@ -348,8 +358,8 @@ export default {
 
     <div>
       <b-tabs
-        pills
         v-model="tabIndex"
+        pills
         content-class="app-tabs-content"
         nav-class="app-tabs-content-header"
       >
@@ -362,13 +372,16 @@ export default {
                 {{ $t("debtors.file_field") }}
               </p>
               <div class="app-tab-title-right-icon">
-                <base-right-icon :width="20" :height="20" />
+                <base-right-icon
+                  :width="20"
+                  :height="20"
+                />
               </div>
             </div>
           </template>
 
           <div>
-            <first-step ref="first-step"></first-step>
+            <first-step ref="first-step" />
           </div>
         </b-tab>
         <!--  END OF FIRST TAB    -->
@@ -382,7 +395,10 @@ export default {
                 {{ $t("contracts.list_contracts") }}
               </p>
               <div class="app-tab-title-right-icon">
-                <base-right-icon :width="20" :height="20" />
+                <base-right-icon
+                  :width="20"
+                  :height="20"
+                />
               </div>
             </div>
           </template>
@@ -397,12 +413,17 @@ export default {
           <template #title>
             <div class="app-tab-title">
               <span class="app-tab-title-number">3</span>
-              <p class="app-tab-title-content">{{ $t("recheck") }}</p>
+              <p class="app-tab-title-content">
+                {{ $t("recheck") }}
+              </p>
             </div>
           </template>
 
           <div v-if="tabIndex === 2">
-            <third-step :list="resultList" :loading="listLoading"></third-step>
+            <third-step
+              :list="resultList"
+              :loading="listLoading"
+            />
           </div>
         </b-tab>
 
@@ -410,13 +431,16 @@ export default {
 
         <!--        TABS END -->
         <template #tabs-end>
-          <b-nav-item role="presentation" href="#">
+          <b-nav-item
+            role="presentation"
+            href="#"
+          >
             <base-button
               v-if="tabIndex === 2"
-              @click="submitConcludeDebtors"
               class="violet-gradient"
               :text="`${$t('create_agree')}`"
               :loading="appLoading"
+              @click="submitConcludeDebtors"
             >
               <template #right-icon>
                 <base-arrow-right-icon fill="var(--white)" />
@@ -426,8 +450,8 @@ export default {
               v-else
               :text="`${$t('next')}`"
               class="violet-gradient"
-              @click="changeTab"
               :loading="appLoading"
+              @click="changeTab"
             >
               <template #right-icon>
                 <base-arrow-right-icon fill="var(--white)" />
@@ -438,9 +462,15 @@ export default {
       </b-tabs>
     </div>
 
-    <base-modal ref="leave-modal" design="auto-height">
+    <base-modal
+      ref="leave-modal"
+      design="auto-height"
+    >
       <template #header>
-        <div class="d-flex align-items-center" style="gap: 1rem">
+        <div
+          class="d-flex align-items-center"
+          style="gap: 1rem"
+        >
           <div>
             <svg
               width="56"
@@ -462,7 +492,9 @@ export default {
               />
             </svg>
           </div>
-          <div class="title">{{ $t("leave_import") }}</div>
+          <div class="title">
+            {{ $t("leave_import") }}
+          </div>
         </div>
       </template>
 
@@ -471,20 +503,21 @@ export default {
       </template>
 
       <template #footer>
-        <div class="d-flex align-items-center" style="gap: 2rem">
+        <div
+          class="d-flex align-items-center"
+          style="gap: 2rem"
+        >
           <base-button
-            @click="cancelLeave"
             :fixed="true"
             :text="`${$t('no_leave')}`"
-          >
-          </base-button>
+            @click="cancelLeave"
+          />
           <base-button
-            @click="confirmLeave"
             :text="`${$t('yes_leave')}`"
             :fixed="true"
             class="violet-gradient"
-          >
-          </base-button>
+            @click="confirmLeave"
+          />
         </div>
       </template>
     </base-modal>

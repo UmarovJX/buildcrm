@@ -1,9 +1,9 @@
 <script>
-import EditRole from "@/views/roles/Store.vue";
-import api from "@/services/api";
+import EditRole from '@/views/roles/Store.vue'
+import api from '@/services/api'
 
 export default {
-  name: "UpdateRole",
+  name: 'UpdateRole',
   components: {
     EditRole,
   },
@@ -12,57 +12,57 @@ export default {
       roleBase: {},
       permissions: null,
       name: {
-        uz: "",
-        ru: "",
+        uz: '',
+        ru: '',
       },
-      appLoading: "default",
+      appLoading: 'default',
       getLoading: false,
-    };
+    }
   },
   async created() {
-    await this.fetchRolePermissions();
+    await this.fetchRolePermissions()
   },
   methods: {
     async fetchRolePermissions() {
-      this.appLoading = "started";
+      this.appLoading = 'started'
       await api.roles
         .fetchRole(this.$route.params.id)
         .then(({ data }) => {
-          this.roleBase = data;
-          this.permissions = data.permissions;
+          this.roleBase = data
+          this.permissions = data.permissions
           this.name = data.name ?? {
-            uz: "",
-            ru: "",
-          };
+            uz: '',
+            ru: '',
+          }
         })
         .finally(() => {
-          this.appLoading = "finished";
-        });
+          this.appLoading = 'finished'
+        })
     },
     editRole(form) {
-      this.getLoading = true;
+      this.getLoading = true
       api.roles
         .updateRole(this.$route.params.id, form)
-        .then((response) => {
-          this.toasted(response.data.message, "success");
+        .then(response => {
+          this.toasted(response.data.message, 'success')
 
-          this.$router.push({ name: "roles" });
+          this.$router.push({ name: 'roles' })
 
           this.$swal(
-            `${this.$t("sweetAlert.success_update_role")}`,
-            "",
-            "success"
-          );
+            `${this.$t('sweetAlert.success_update_role')}`,
+            '',
+            'success',
+          )
         })
-        .catch((error) => {
-          this.toastedWithErrorCode(error);
+        .catch(error => {
+          this.toastedWithErrorCode(error)
         })
         .finally(() => {
-          this.getLoading = false;
-        });
+          this.getLoading = false
+        })
     },
   },
-};
+}
 </script>
 
 <template>

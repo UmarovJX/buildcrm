@@ -1,34 +1,36 @@
 <script>
-import { mapGetters, mapActions } from "vuex";
-import moment from "moment";
-import api from "@/services/api";
+import { mapGetters, mapActions } from 'vuex'
+import moment from 'moment'
+import api from '@/services/api'
 
 export default {
-  name: "CompleteOrder",
+  name: 'CompleteOrder',
+
+  components: {},
   data() {
     return {
       step: 1,
-      search_label: "",
+      search_label: '',
       client: {
         first_name: {
-          lotin: "",
-          kirill: "",
+          lotin: '',
+          kirill: '',
         },
         last_name: {
-          lotin: "",
-          kirill: "",
+          lotin: '',
+          kirill: '',
         },
         second_name: {
-          lotin: "",
-          kirill: "",
+          lotin: '',
+          kirill: '',
         },
-        passport_series: "",
-        issued_by_whom: "",
+        passport_series: '',
+        issued_by_whom: '',
         date_of_issue: null,
-        language: "uz",
-        type_client: "unknown",
+        language: 'uz',
+        type_client: 'unknown',
         birth_day: null,
-        phone: "",
+        phone: '',
         other_phone: null,
       },
 
@@ -40,9 +42,9 @@ export default {
         contract_date: null,
       },
 
-      comment: "",
+      comment: '',
 
-      month: "6",
+      month: '6',
       date_change: false,
 
       confirm: false,
@@ -64,7 +66,7 @@ export default {
 
       header: {
         headers: {
-          Authorization: "Bearer " + localStorage.token,
+          Authorization: `Bearer ${localStorage.token}`,
         },
       },
       contract: {
@@ -75,49 +77,47 @@ export default {
       loading: false,
       isVisible: true,
       calc: {},
-    };
+    }
   },
 
-  components: {},
-
   created() {
-    this.backToView();
+    this.backToView()
   },
 
   computed: {
     ...mapGetters([
-      "getReserveClient",
-      "getPermission",
-      "getMe",
-      "getApartmentOrder",
+      'getReserveClient',
+      'getPermission',
+      'getMe',
+      'getApartmentOrder',
     ]),
 
     getApartmentDiscounts() {
       if (
-        (this.getApartmentItem.object &&
-          this.getApartmentItem.object.credit_month) != 0
+        (this.getApartmentItem.object
+          && this.getApartmentItem.object.credit_month) != 0
       ) {
-        return this.getApartmentItem.discounts;
+        return this.getApartmentItem.discounts
       }
 
-      return [];
+      return []
     },
     getApartmentItem() {
-      let val = this.getApartmentOrder;
+      const val = this.getApartmentOrder
       if (val && val.apartments && val.apartments.length == 1) {
-        return val.apartments[0];
+        return val.apartments[0]
       }
-      return [];
+      return []
     },
     getApartmentMultiple() {
-      let val = JSON.parse(localStorage.getItem("order"));
+      const val = JSON.parse(localStorage.getItem('order'))
       if (val && val.apartments.length > 0) {
-        return val.apartments;
+        return val.apartments
       }
-      return [];
+      return []
     },
     apartmentInfoItem() {
-      let val = this.getApartmentOrder;
+      const val = this.getApartmentOrder
       if (val) {
         return {
           contract_number: val.contract_number,
@@ -125,118 +125,116 @@ export default {
           expiry_at: val.expiry_at,
           status: val.status,
           uuid: val.uuid,
-        };
+        }
       }
-      return {};
+      return {}
     },
   },
 
   watch: {
-    month: function (newVal) {
-      this.CreditMonths(newVal);
+    month(newVal) {
+      this.CreditMonths(newVal)
     },
 
-    step: function () {
-      this.CreditMonths(this.month);
+    step() {
+      this.CreditMonths(this.month)
     },
 
-    "apartment_edit.price": function () {
-      this.getDiscountEdited();
-      this.CreditMonths(this.month);
+    'apartment_edit.price': function () {
+      this.getDiscountEdited()
+      this.CreditMonths(this.month)
     },
 
-    "apartment_edit.prepay_price": function () {
-      this.getDiscountEdited();
-      this.CreditMonths(this.month);
+    'apartment_edit.prepay_price': function () {
+      this.getDiscountEdited()
+      this.CreditMonths(this.month)
     },
   },
 
   mounted() {
     this.fetchApartmentOrder(this).then(() => {
-      this.backToView();
+      this.backToView()
 
-      this.apartment_edit.contract_number =
-        this.apartmentInfoItem.contract_number;
-    });
+      this.apartment_edit.contract_number = this.apartmentInfoItem.contract_number
+    })
 
     if (this.getApartmentItem.order && this.getApartmentItem.order.id) {
-      this.reserveClientFull();
+      this.reserveClientFull()
     }
 
-    this.month = this.getApartmentItem.object?.credit_month;
+    this.month = this.getApartmentItem.object?.credit_month
   },
 
   methods: {
-    ...mapActions(["fetchApartmentOrder"]),
+    ...mapActions(['fetchApartmentOrder']),
     getCalData(data) {
       this.calc = {
         ...data,
-      };
+      }
     },
     successAgree(value) {
-      this.contract = value;
-      this.$bvModal.show("modal-success-agree");
+      this.contract = value
+      this.$bvModal.show('modal-success-agree')
     },
     CloseAgree() {
-      this.confirm = false;
+      this.confirm = false
     },
     backToView() {
-      if (this.apartmentInfoItem.status == "contract") {
+      if (this.apartmentInfoItem.status == 'contract') {
         this.$router.push({
-          name: "apartment-view",
+          name: 'apartment-view',
           params: { id: this.$route.params.id },
-        });
+        })
       }
     },
     getDiscountEdited() {
-      let price = this.apartment_edit.price;
-      let prepay_price = this.apartment_edit.prepay_price;
+      const { price } = this.apartment_edit
+      const { prepay_price } = this.apartment_edit
 
-      let percente = (prepay_price * 100) / price;
+      const percente = (prepay_price * 100) / price
 
-      this.client.discount.prepay = percente;
+      this.client.discount.prepay = percente
     },
     deleteInitialPayment(index) {
       if (this.initial_payments.length === 2) {
-        this.initial_payments.splice(index, 1);
-        this.initial_payments.splice(0, 1);
+        this.initial_payments.splice(index, 1)
+        this.initial_payments.splice(0, 1)
       } else {
-        this.initial_payments.splice(index, 1);
+        this.initial_payments.splice(index, 1)
       }
     },
     addInitialPayment() {
-      let today = this.client.first_payment_date
+      const today = this.client.first_payment_date
         ? new Date(this.client.first_payment_date)
-        : new Date();
+        : new Date()
 
       if (this.initial_payments.length === 0) {
-        let month = parseInt(this.month);
-        let amount =
-          this.client.discount.id === "other" && month === 0
-            ? this.getTotalOther()
-            : this.getPrepay();
+        const month = parseInt(this.month)
+        const amount = this.client.discount.id === 'other' && month === 0
+          ? this.getTotalOther()
+          : this.getPrepay()
 
         this.initial_payments.push({
-          amount: amount,
+          amount,
           edit: false,
           edited: false,
-          month: moment(today).format("YYYY-MM-DD"),
-        });
+          month: moment(today).format('YYYY-MM-DD'),
+        })
       }
 
       this.initial_payments.push({
         amount: 0,
         edit: false,
         edited: false,
-        month: moment(today).format("YYYY-MM-DD"), //today,
-      });
+        month: moment(today).format('YYYY-MM-DD'), // today,
+      })
 
-      this.getPrepay();
+      this.getPrepay()
     },
     async Search() {
       try {
-        const { data } = await api.clients.fetchClientData(this.search_label);
-        this.step = 1;
+        const { data } = await api.clients.fetchClientData(this.search_label)
+        this.step = 1
 
         this.client = {
           id: data.id,
@@ -260,29 +258,27 @@ export default {
           other_phone: data.other_phone,
           date_of_issue: data.date_of_issue,
           discount: { id: null },
-        };
+        }
       } catch (error) {
         if (!error.response) {
-          this.toasted("Error: Network Error", "error");
+          this.toasted('Error: Network Error', 'error')
+        } else if (error.response.status === 403) {
+          this.toasted(error.response.data.message, 'error')
+        } else if (error.response.status === 401) {
+          this.toasted(error.response.data.message, 'error')
+        } else if (error.response.status === 500) {
+          this.toasted(error.response.data.message, 'error')
         } else {
-          if (error.response.status === 403) {
-            this.toasted(error.response.data.message, "error");
-          } else if (error.response.status === 401) {
-            this.toasted(error.response.data.message, "error");
-          } else if (error.response.status === 500) {
-            this.toasted(error.response.data.message, "error");
-          } else {
-            this.toasted(error.response.data.message, "error");
-          }
+          this.toasted(error.response.data.message, 'error')
         }
       }
     },
     async reserveClientFull() {
       try {
         const { data } = await api.clients.fetchReserveClient(
-          this.getApartmentItem.order.id
-        );
-        this.step = 1;
+          this.getApartmentItem.order.id,
+        )
+        this.step = 1
         this.client = {
           id: data.id,
           first_name: data.first_name,
@@ -296,109 +292,105 @@ export default {
           other_phone: data.other_phone,
           date_of_issue: data.date_of_issue,
           discount: { id: null },
-        };
+        }
       } catch (error) {
         if (!error.response) {
-          this.toasted("Error: Network Error", "error");
+          this.toasted('Error: Network Error', 'error')
+        } else if (error.response.status === 403) {
+          this.toasted(error.response.data.message, 'error')
+        } else if (error.response.status === 401) {
+          this.toasted(error.response.data.message, 'error')
+        } else if (error.response.status === 500) {
+          this.toasted(error.response.data.message, 'error')
         } else {
-          if (error.response.status === 403) {
-            this.toasted(error.response.data.message, "error");
-          } else if (error.response.status === 401) {
-            this.toasted(error.response.data.message, "error");
-          } else if (error.response.status === 500) {
-            this.toasted(error.response.data.message, "error");
-          } else {
-            this.toasted(error.response.data.message, "error");
-          }
+          this.toasted(error.response.data.message, 'error')
         }
       }
     },
     getValidationState({ dirty, validated, valid = null }) {
-      return dirty || validated ? valid : null;
+      return dirty || validated ? valid : null
     },
     onSubmit() {
-      this.step = 2;
-      this.confirm = true;
-      this.next = false;
+      this.step = 2
+      this.confirm = true
+      this.next = false
     },
     async postStore() {
-      this.loading = true;
+      this.loading = true
 
       await api.clients
         .createClient(this.client)
-        .then((response) => {
+        .then(response => {
           if (response) {
-            this.onSubmit();
+            this.onSubmit()
           }
         })
-        .catch((error) => {
+        .catch(error => {
           if (!error.response) {
-            this.toasted("Error: Network Error", "error");
+            this.toasted('Error: Network Error', 'error')
+          } else if (error.response.status === 403) {
+            this.toasted(error.response.data.message, 'error')
+          } else if (error.response.status === 401) {
+            this.toasted(error.response.data, 'error')
+          } else if (error.response.status === 500) {
+            this.toasted(error.response.data.message, 'error')
+          } else if (error.response.status === 422) {
+            this.error = true
+            this.geteErrors = error.response.data
           } else {
-            if (error.response.status === 403) {
-              this.toasted(error.response.data.message, "error");
-            } else if (error.response.status === 401) {
-              this.toasted(error.response.data, "error");
-            } else if (error.response.status === 500) {
-              this.toasted(error.response.data.message, "error");
-            } else if (error.response.status === 422) {
-              this.error = true;
-              this.geteErrors = error.response.data;
-            } else {
-              this.toasted(error.response.data.message, "error");
-            }
+            this.toasted(error.response.data.message, 'error')
           }
         })
         .finally(() => {
-          this.loading = false;
-        });
+          this.loading = false
+        })
     },
     async sendForm() {
-      if (this.client.discount.id === null) return;
+      if (this.client.discount.id === null) return
       this.$swal({
-        title: this.$t("sweetAlert.title"),
-        text: this.$t("sweetAlert.text_agree"),
-        icon: "warning",
+        title: this.$t('sweetAlert.title'),
+        text: this.$t('sweetAlert.text_agree'),
+        icon: 'warning',
         showCancelButton: true,
-        cancelButtonText: this.$t("cancel"),
-        confirmButtonText: this.$t("sweetAlert.yes_agree"),
-      }).then((result) => {
+        cancelButtonText: this.$t('cancel'),
+        confirmButtonText: this.$t('sweetAlert.yes_agree'),
+      }).then(result => {
         if (result.value) {
-          this.loading = true;
-          const formData = new FormData();
+          this.loading = true
+          const formData = new FormData()
 
           // if (this.getApartmentItem.order.id)
           //   formData.append("order_id", this.getApartmentItem.order.id);
 
-          formData.append("type", "simple");
-          formData.append("first_name[lotin]", this.client.first_name.lotin);
-          formData.append("first_name[kirill]", this.client.first_name.kirill);
+          formData.append('type', 'simple')
+          formData.append('first_name[lotin]', this.client.first_name.lotin)
+          formData.append('first_name[kirill]', this.client.first_name.kirill)
 
-          formData.append("last_name[lotin]", this.client.last_name.lotin);
-          formData.append("last_name[kirill]", this.client.last_name.kirill);
+          formData.append('last_name[lotin]', this.client.last_name.lotin)
+          formData.append('last_name[kirill]', this.client.last_name.kirill)
 
-          formData.append("second_name[lotin]", this.client.second_name.lotin);
+          formData.append('second_name[lotin]', this.client.second_name.lotin)
           formData.append(
-            "second_name[kirill]",
-            this.client.second_name.kirill
-          );
+            'second_name[kirill]',
+            this.client.second_name.kirill,
+          )
 
-          formData.append("passport_series", this.client.passport_series);
-          formData.append("issued_by_whom", this.client.issued_by_whom);
-          formData.append("language", this.client.language);
-          formData.append("phone", this.client.phone);
-          formData.append("other_phone", this.client.other_phone);
-          formData.append("date_of_issue", this.client.date_of_issue);
-          formData.append("discount_id", this.client.discount.id);
-          formData.append("birth_day", this.client.birth_day);
+          formData.append('passport_series', this.client.passport_series)
+          formData.append('issued_by_whom', this.client.issued_by_whom)
+          formData.append('language', this.client.language)
+          formData.append('phone', this.client.phone)
+          formData.append('other_phone', this.client.other_phone)
+          formData.append('date_of_issue', this.client.date_of_issue)
+          formData.append('discount_id', this.client.discount.id)
+          formData.append('birth_day', this.client.birth_day)
 
-          formData.append("type_client", this.type_client);
+          formData.append('type_client', this.type_client)
 
-          formData.append("monthly_edited", this.edit.monthly_edited ? 1 : 0);
+          formData.append('monthly_edited', this.edit.monthly_edited ? 1 : 0)
 
           if (
-            this.getMe.role.id === 1 ||
-            this.getPermission.contracts.monthly
+            this.getMe.role.id === 1
+            || this.getPermission.contracts.monthly
           ) {
             for (
               let monthly = 0;
@@ -406,17 +398,17 @@ export default {
               monthly++
             ) {
               formData.append(
-                "monthly[" + monthly + "][edited]",
-                this.credit_months[monthly].edited ? 1 : 0
-              );
+                `monthly[${monthly}][edited]`,
+                this.credit_months[monthly].edited ? 1 : 0,
+              )
               formData.append(
-                "monthly[" + monthly + "][amount]",
-                this.credit_months[monthly].amount
-              );
+                `monthly[${monthly}][amount]`,
+                this.credit_months[monthly].amount,
+              )
               formData.append(
-                "monthly[" + monthly + "][date]",
-                this.credit_months[monthly].month
-              );
+                `monthly[${monthly}][date]`,
+                this.credit_months[monthly].month,
+              )
             }
           }
 
@@ -426,285 +418,273 @@ export default {
             initial_payment++
           ) {
             formData.append(
-              "initial_payments[" + initial_payment + "][edited]",
-              this.initial_payments[initial_payment].edited ? 1 : 0
-            );
+              `initial_payments[${initial_payment}][edited]`,
+              this.initial_payments[initial_payment].edited ? 1 : 0,
+            )
             formData.append(
-              "initial_payments[" + initial_payment + "][amount]",
-              this.initial_payments[initial_payment].amount
-            );
+              `initial_payments[${initial_payment}][amount]`,
+              this.initial_payments[initial_payment].amount,
+            )
             formData.append(
-              "initial_payments[" + initial_payment + "][date]",
-              this.initial_payments[initial_payment].month
-            );
+              `initial_payments[${initial_payment}][date]`,
+              this.initial_payments[initial_payment].month,
+            )
           }
 
-          formData.append("comment", this.comment);
+          formData.append('comment', this.comment)
 
-          if (this.client.discount.id === "other") {
-            formData.append("apartment_price", this.apartment_edit.price);
+          if (this.client.discount.id === 'other') {
+            formData.append('apartment_price', this.apartment_edit.price)
             formData.append(
-              "apartment_prepay_price",
-              this.apartment_edit.prepay_price
-            );
+              'apartment_prepay_price',
+              this.apartment_edit.prepay_price,
+            )
           }
 
-          formData.append("first_payment_date", this.client.first_payment_date);
+          formData.append('first_payment_date', this.client.first_payment_date)
 
-          if (this.client.payment_date)
-            formData.append("payment_date", this.client.payment_date);
+          if (this.client.payment_date) formData.append('payment_date', this.client.payment_date)
 
           // if (this.date_change) {
-          formData.append("date_change", 1);
+          formData.append('date_change', 1)
           formData.append(
-            "contract_number",
-            this.apartment_edit.contract_number
-          );
-          formData.append("contract_date", this.apartment_edit.contract_date);
+            'contract_number',
+            this.apartment_edit.contract_number,
+          )
+          formData.append('contract_date', this.apartment_edit.contract_date)
           // }
 
           if (this.step === 2 && this.client.discount.prepay != 100) {
-            formData.append("months", this.month);
+            formData.append('months', this.month)
           }
 
           api.orders
             .reserveApartment(this.getApartmentItem.id, formData)
-            .then((response) => {
-              this.toasted(response.data.message, "success");
-              this.$bvModal.hide("modal-agree");
-              this.contract = response.data;
-              this.$bvModal.show("modal-success-agree");
+            .then(response => {
+              this.toasted(response.data.message, 'success')
+              this.$bvModal.hide('modal-agree')
+              this.contract = response.data
+              this.$bvModal.show('modal-success-agree')
             })
-            .catch((error) => {
+            .catch(error => {
               if (!error.response) {
-                this.toasted("Error: Network Error", "error");
+                this.toasted('Error: Network Error', 'error')
+              } else if (error.response.status === 403) {
+                this.toasted(error.response.data.message, 'error')
+              } else if (error.response.status === 401) {
+                this.toasted(error.response.data, 'error')
+              } else if (error.response.status === 500) {
+                this.toasted(error.response.data.message, 'error')
+              } else if (error.response.status === 422) {
+                this.error = true
+                this.geteErrors = error.response.data
               } else {
-                if (error.response.status === 403) {
-                  this.toasted(error.response.data.message, "error");
-                } else if (error.response.status === 401) {
-                  this.toasted(error.response.data, "error");
-                } else if (error.response.status === 500) {
-                  this.toasted(error.response.data.message, "error");
-                } else if (error.response.status === 422) {
-                  this.error = true;
-                  this.geteErrors = error.response.data;
-                } else {
-                  this.toasted(error.response.data.message, "error");
-                }
+                this.toasted(error.response.data.message, 'error')
               }
             })
             .finally(() => {
-              this.loading = false;
-            });
+              this.loading = false
+            })
         }
-      });
+      })
     },
     removeBlock() {
       this.$swal({
-        title: this.$t("sweetAlert.title"),
-        text: this.$t("sweetAlert.text_cancel_agree"),
-        icon: "warning",
+        title: this.$t('sweetAlert.title'),
+        text: this.$t('sweetAlert.text_cancel_agree'),
+        icon: 'warning',
         showCancelButton: true,
-        cancelButtonText: this.$t("cancel"),
-        confirmButtonText: this.$t("sweetAlert.yes_close"),
-      }).then((result) => {
+        cancelButtonText: this.$t('cancel'),
+        confirmButtonText: this.$t('sweetAlert.yes_close'),
+      }).then(result => {
         if (result.value) {
           // this.$bvModal.hide("modal-agree");
 
           // this.$emit("CloseAgree");
 
           this.$router.push({
-            name: "apartment-view",
+            name: 'apartment-view',
             params: { id: this.$route.params.id },
-          });
+          })
         }
-      });
+      })
     },
     ChangeDiscount() {
-      if (this.client.discount.id === "other") {
+      if (this.client.discount.id === 'other') {
         this.client.discount = {
-          id: "other",
+          id: 'other',
           prepay: 30,
           amount: 0,
-        };
+        }
 
-        this.apartment_edit.price = this.getApartmentItem.price;
-        this.apartment_edit.prepay_price = this.getPrepay();
+        this.apartment_edit.price = this.getApartmentItem.price
+        this.apartment_edit.prepay_price = this.getPrepay()
       }
 
-      this.CreditMonths(this.month);
+      this.CreditMonths(this.month)
 
       if (this.client.discount.id === null) {
-        this.next = false;
-        this.confirm = false;
-        return;
+        this.next = false
+        this.confirm = false
+        return
       }
 
       if (this.client.discount.prepay === 100) {
-        this.next = false;
-        this.confirm = true;
-        return;
+        this.next = false
+        this.confirm = true
+        return
       }
 
-      this.confirm = false;
-      this.next = true;
-      return;
+      this.confirm = false
+      this.next = true
     },
     getPrepay() {
-      let total_discount = this.getDiscount();
+      const total_discount = this.getDiscount()
 
-      let total;
+      let total
 
-      if (this.client.discount.id === "other")
-        total = this.apartment_edit.price / total_discount;
+      if (this.client.discount.id === 'other') total = this.apartment_edit.price / total_discount
       else {
         switch (this.client.discount.type) {
-          case "fixed":
-            total =
-              this.client.discount.amount * this.getApartmentItem.plan.area;
-            break;
+          case 'fixed':
+            total = this.client.discount.amount * this.getApartmentItem.plan.area
+            break
           default:
-            total = this.getApartmentItem.price / total_discount;
-            break;
+            total = this.getApartmentItem.price / total_discount
+            break
         }
       }
 
       if (this.initial_payments.length > 1) {
-        total = 0;
+        total = 0
 
         for (let i = 0; this.initial_payments.length > i; i++) {
-          total += parseFloat(this.initial_payments[i].amount);
+          total += parseFloat(this.initial_payments[i].amount)
         }
 
-        return total;
+        return total
       }
 
       if (this.apartment_edit.prepay_price) {
-        return parseFloat(this.apartment_edit.prepay_price);
+        return parseFloat(this.apartment_edit.prepay_price)
       }
 
-      return (this.client.discount.prepay * total) / 100;
+      return (this.client.discount.prepay * total) / 100
     },
     getTotalOther() {
-      return parseFloat(this.apartment_edit.price);
+      return parseFloat(this.apartment_edit.price)
     },
     getDiscount() {
-      if (this.client.discount.prepay === 100) return 1;
+      if (this.client.discount.prepay === 100) return 1
 
-      return 1 - this.client.discount.amount / 100;
+      return 1 - this.client.discount.amount / 100
     },
     getMonth() {
-      return (this.getTotal() - this.getPrepay()) / this.month;
+      return (this.getTotal() - this.getPrepay()) / this.month
     },
     getDebt() {
       // let price = this.getTotal() - this.getPrepay();
 
-      return this.getTotal() - this.getPrepay();
+      return this.getTotal() - this.getPrepay()
     },
     getTotal() {
-      let total_discount = this.getDiscount();
+      const total_discount = this.getDiscount()
 
       // let total = price * area;
 
-      let total = 0;
+      let total = 0
 
-      if (this.client.discount.id === "other")
-        total = this.apartment_edit.price / total_discount;
+      if (this.client.discount.id === 'other') total = this.apartment_edit.price / total_discount
       else {
         switch (this.client.discount.type) {
-          case "fixed":
-            total =
-              this.client.discount.amount * this.getApartmentItem.plan.area;
-            break;
+          case 'fixed':
+            total = this.client.discount.amount * this.getApartmentItem.plan.area
+            break
           default:
-            total = this.getApartmentItem.price / total_discount;
-            break;
+            total = this.getApartmentItem.price / total_discount
+            break
         }
       }
 
-      return total;
+      return total
     },
     CreditMonths(newVal) {
-      let today = this.client.payment_date
+      const today = this.client.payment_date
         ? new Date(this.client.payment_date)
-        : new Date();
+        : new Date()
 
-      this.credit_months = [];
+      this.credit_months = []
 
-      for (var i = 0; i < newVal; i++) {
+      for (let i = 0; i < newVal; i++) {
         this.credit_months.push({
           month: today.setMonth(today.getMonth() + 1),
           amount: this.getMonth(),
           edit: false,
           edited: false,
-        });
+        })
       }
     },
     editMonthlyPayment(index) {
       if (this.credit_months[index].edit) {
-        this.credit_months[index].edit = false;
+        this.credit_months[index].edit = false
 
         if (!this.credit_months[index].amount) {
-          this.credit_months[index].amount = 0;
+          this.credit_months[index].amount = 0
         }
 
         if (parseFloat(this.credit_months[index].amount) != this.getMonth()) {
-          this.edit.monthly_edited = true;
-          this.credit_months[index].edited = true;
-          this.setNewPriceMonthly();
+          this.edit.monthly_edited = true
+          this.credit_months[index].edited = true
+          this.setNewPriceMonthly()
         }
 
-        return;
+        return
       }
 
-      this.credit_months[index].edit = true;
-
-      return;
+      this.credit_months[index].edit = true
     },
     editInitialPayment(index) {
       if (this.initial_payments[index].edit) {
-        this.initial_payments[index].edit = false;
+        this.initial_payments[index].edit = false
 
         if (
           parseFloat(this.initial_payments[index].amount) != this.getMonth()
         ) {
-          this.edit.initial_edited = true;
-          this.initial_payments[index].edited = true;
-          this.setNewPriceMonthly();
+          this.edit.initial_edited = true
+          this.initial_payments[index].edited = true
+          this.setNewPriceMonthly()
         }
 
-        return;
+        return
       }
 
-      this.initial_payments[index].edit = true;
-
-      return;
+      this.initial_payments[index].edit = true
     },
     setNewPriceMonthly() {
-      let total = this.getPrepay();
-      let months = 0;
+      let total = this.getPrepay()
+      let months = 0
 
-      for (var i = 0; i < this.credit_months.length; i++) {
+      for (let i = 0; i < this.credit_months.length; i++) {
         if (this.credit_months[i].edited) {
-          total += parseFloat(this.credit_months[i].amount);
+          total += parseFloat(this.credit_months[i].amount)
         } else {
-          months += 1;
+          months += 1
         }
       }
 
-      let monthly_amount = (this.getTotal() - total) / months;
+      const monthly_amount = (this.getTotal() - total) / months
 
-      for (var m = 0; m < this.credit_months.length; m++) {
+      for (let m = 0; m < this.credit_months.length; m++) {
         if (!this.credit_months[m].edited) {
-          this.credit_months[m].amount = monthly_amount;
+          this.credit_months[m].amount = monthly_amount
         }
       }
     },
     async getClientData() {
-      this.search_label = this.client.passport_series;
+      this.search_label = this.client.passport_series
       if (this.search_label.length == 9) {
         try {
-          const { data } = await api.clients.fetchClientData(this.search_label);
+          const { data } = await api.clients.fetchClientData(this.search_label)
           this.client = {
             id: data.id,
             first_name: data.first_name ?? {
@@ -727,321 +707,329 @@ export default {
             other_phone: data.other_phone,
             date_of_issue: data.date_of_issue,
             discount: { id: null },
-          };
+          }
         } catch (error) {
-          this.toastedWithErrorCode(error);
+          this.toastedWithErrorCode(error)
         }
       } else {
-        this.toasted("Введите номер и серию паспорта правильно", "error");
+        this.toasted('Введите номер и серию паспорта правильно', 'error')
       }
     },
 
     isCyrillic_last_name_kirill(value) {
-      this.client.last_name.kirill = this.symbolIsCyrillic(value);
+      this.client.last_name.kirill = this.symbolIsCyrillic(value)
     },
     isCyrillic_first_name_kirill(value) {
-      this.client.first_name.kirill = this.symbolIsCyrillic(value);
+      this.client.first_name.kirill = this.symbolIsCyrillic(value)
     },
     isCyrillic_second_name_kirill(value) {
-      this.client.second_name.kirill = this.symbolIsCyrillic(value);
+      this.client.second_name.kirill = this.symbolIsCyrillic(value)
     },
 
     isLatin_last_name_lotin(value) {
-      this.client.last_name.lotin = this.symbolIsLatin(value);
+      this.client.last_name.lotin = this.symbolIsLatin(value)
     },
     isLatin_first_name_lotin(value) {
-      this.client.first_name.lotin = this.symbolIsLatin(value);
+      this.client.first_name.lotin = this.symbolIsLatin(value)
     },
     isLatin_second_name_lotin(value) {
-      this.client.second_name.lotin = this.symbolIsLatin(value);
+      this.client.second_name.lotin = this.symbolIsLatin(value)
     },
 
     textToLatin_last_name_kirill(value) {
       if (this.client.last_name.lotin.length === 0) {
-        this.client.last_name.lotin = this.translateTextToLatin(value);
+        this.client.last_name.lotin = this.translateTextToLatin(value)
       }
     },
     textToLatin_first_name_kirill(value) {
       if (this.client.first_name.lotin.length === 0) {
-        this.client.first_name.lotin = this.translateTextToLatin(value);
+        this.client.first_name.lotin = this.translateTextToLatin(value)
       }
     },
     textToLatin_second_name_kirill(value) {
       if (this.client.second_name.lotin.length === 0) {
-        this.client.second_name.lotin = this.translateTextToLatin(value);
+        this.client.second_name.lotin = this.translateTextToLatin(value)
       }
     },
 
     textToCyrillic_last_name_lotin(value) {
       if (this.client.last_name.kirill.length === 0) {
-        this.client.last_name.kirill = this.translateTextToCyrillic(value);
+        this.client.last_name.kirill = this.translateTextToCyrillic(value)
       }
     },
     textToCyrillic_first_name_lotin(value) {
       if (this.client.first_name.kirill.length === 0) {
-        this.client.first_name.kirill = this.translateTextToCyrillic(value);
+        this.client.first_name.kirill = this.translateTextToCyrillic(value)
       }
     },
     textToCyrillic_second_name_lotin(value) {
       if (this.client.second_name.kirill.length === 0) {
-        this.client.second_name.kirill = this.translateTextToCyrillic(value);
+        this.client.second_name.kirill = this.translateTextToCyrillic(value)
       }
     },
 
     symbolIsCyrillic(event) {
       return event
-        .replace(/[^а-яё ҚқЎўҲҳҒғ]/i, "")
-        .replace(/(\..*?)\..*/g, "$1");
+        .replace(/[^а-яё ҚқЎўҲҳҒғ]/i, '')
+        .replace(/(\..*?)\..*/g, '$1')
     },
     symbolIsLatin(event) {
-      return event.replace(/[^a-z. ']/i, "").replace(/(\..*?)\..*/g, "$1");
+      return event.replace(/[^a-z. ']/i, '').replace(/(\..*?)\..*/g, '$1')
     },
 
     translateTextToLatin(value) {
-      return this.symbolCyrillicToLatin(value);
+      return this.symbolCyrillicToLatin(value)
     },
     translateTextToCyrillic(value) {
-      value = value.replace("Sh", "Ш");
-      value = value.replace("sh", "ш");
+      value = value.replace('Sh', 'Ш')
+      value = value.replace('sh', 'ш')
 
-      value = value.replace("Ch", "Ч");
-      value = value.replace("ch", "ч");
+      value = value.replace('Ch', 'Ч')
+      value = value.replace('ch', 'ч')
 
-      value = value.replace("Q", "Қ");
-      value = value.replace("q", "қ");
+      value = value.replace('Q', 'Қ')
+      value = value.replace('q', 'қ')
 
-      value = value.replace("O'", "Ў");
-      value = value.replace("o'", "ў");
+      value = value.replace("O'", 'Ў')
+      value = value.replace("o'", 'ў')
 
-      value = value.replace("G'", "Ғ");
-      value = value.replace("g'", "ғ");
+      value = value.replace("G'", 'Ғ')
+      value = value.replace("g'", 'ғ')
 
-      value = value.replace("Yu", "Ю");
-      value = value.replace("yu", "ю");
+      value = value.replace('Yu', 'Ю')
+      value = value.replace('yu', 'ю')
 
-      value = value.replace("Ya", "Я");
-      value = value.replace("Ya", "я");
+      value = value.replace('Ya', 'Я')
+      value = value.replace('Ya', 'я')
 
-      value = value.replace("Yo", "Ё");
-      value = value.replace("yo", "ё");
+      value = value.replace('Yo', 'Ё')
+      value = value.replace('yo', 'ё')
 
-      value = value.replace("Ye", "Е");
-      value = value.replace("ye", "е");
+      value = value.replace('Ye', 'Е')
+      value = value.replace('ye', 'е')
 
-      value = value.replace("Kh", "Х");
-      value = value.replace("kh", "х");
+      value = value.replace('Kh', 'Х')
+      value = value.replace('kh', 'х')
 
-      value = value.replace("H", "Ҳ");
-      value = value.replace("h", "ҳ");
+      value = value.replace('H', 'Ҳ')
+      value = value.replace('h', 'ҳ')
 
-      return this.symbolLatinToCyrillic(value);
+      return this.symbolLatinToCyrillic(value)
     },
 
     symbolCyrillicToLatin(word) {
-      var answer = "",
-        a = {};
+      let answer = ''
+      const a = {}
 
-      a["Ё"] = "YO";
-      a["Й"] = "I";
-      a["Ц"] = "TS";
-      a["У"] = "U";
-      a["К"] = "K";
-      a["Е"] = "E";
-      a["Н"] = "N";
-      a["Г"] = "G";
-      a["Ш"] = "Sh";
-      a["Щ"] = "Sch";
-      a["З"] = "Z";
-      a["Х"] = "Kh";
-      a["Ъ"] = "'";
-      a["ё"] = "yo";
-      a["й"] = "i";
-      a["ц"] = "ts";
-      a["у"] = "u";
-      a["к"] = "k";
-      a["е"] = "e";
-      a["н"] = "n";
-      a["г"] = "g";
-      a["ш"] = "sh";
-      a["щ"] = "sch";
-      a["з"] = "z";
-      a["х"] = "kh";
-      a["ъ"] = "'";
-      a["Ф"] = "F";
-      a["Ы"] = "I";
-      a["В"] = "V";
-      a["А"] = "A";
-      a["П"] = "P";
-      a["Р"] = "R";
-      a["О"] = "O";
-      a["Л"] = "L";
-      a["Д"] = "D";
-      a["Ж"] = "J";
-      a["Э"] = "E";
-      a["ф"] = "f";
-      a["ы"] = "i";
-      a["в"] = "v";
-      a["а"] = "a";
-      a["п"] = "p";
-      a["р"] = "r";
-      a["о"] = "o";
-      a["л"] = "l";
-      a["д"] = "d";
-      a["ж"] = "j";
-      a["э"] = "e";
-      a["Я"] = "Ya";
-      a["Ч"] = "Ch";
-      a["С"] = "S";
-      a["М"] = "M";
-      a["И"] = "I";
-      a["Т"] = "T";
-      a["Ь"] = "'";
-      a["Б"] = "B";
-      a["Ю"] = "Yu";
-      a["я"] = "ya";
-      a["ч"] = "ch";
-      a["с"] = "s";
-      a["м"] = "m";
-      a["и"] = "i";
-      a["т"] = "t";
-      a["ь"] = "'";
-      a["б"] = "b";
-      a["ю"] = "yu";
+      a['Ё'] = 'YO'
+      a['Й'] = 'I'
+      a['Ц'] = 'TS'
+      a['У'] = 'U'
+      a['К'] = 'K'
+      a['Е'] = 'E'
+      a['Н'] = 'N'
+      a['Г'] = 'G'
+      a['Ш'] = 'Sh'
+      a['Щ'] = 'Sch'
+      a['З'] = 'Z'
+      a['Х'] = 'Kh'
+      a['Ъ'] = "'"
+      a['ё'] = 'yo'
+      a['й'] = 'i'
+      a['ц'] = 'ts'
+      a['у'] = 'u'
+      a['к'] = 'k'
+      a['е'] = 'e'
+      a['н'] = 'n'
+      a['г'] = 'g'
+      a['ш'] = 'sh'
+      a['щ'] = 'sch'
+      a['з'] = 'z'
+      a['х'] = 'kh'
+      a['ъ'] = "'"
+      a['Ф'] = 'F'
+      a['Ы'] = 'I'
+      a['В'] = 'V'
+      a['А'] = 'A'
+      a['П'] = 'P'
+      a['Р'] = 'R'
+      a['О'] = 'O'
+      a['Л'] = 'L'
+      a['Д'] = 'D'
+      a['Ж'] = 'J'
+      a['Э'] = 'E'
+      a['ф'] = 'f'
+      a['ы'] = 'i'
+      a['в'] = 'v'
+      a['а'] = 'a'
+      a['п'] = 'p'
+      a['р'] = 'r'
+      a['о'] = 'o'
+      a['л'] = 'l'
+      a['д'] = 'd'
+      a['ж'] = 'j'
+      a['э'] = 'e'
+      a['Я'] = 'Ya'
+      a['Ч'] = 'Ch'
+      a['С'] = 'S'
+      a['М'] = 'M'
+      a['И'] = 'I'
+      a['Т'] = 'T'
+      a['Ь'] = "'"
+      a['Б'] = 'B'
+      a['Ю'] = 'Yu'
+      a['я'] = 'ya'
+      a['ч'] = 'ch'
+      a['с'] = 's'
+      a['м'] = 'm'
+      a['и'] = 'i'
+      a['т'] = 't'
+      a['ь'] = "'"
+      a['б'] = 'b'
+      a['ю'] = 'yu'
 
-      a["Қ"] = "Q";
-      a["қ"] = "q";
+      a['Қ'] = 'Q'
+      a['қ'] = 'q'
 
-      a["Ў"] = "O'";
-      a["ў"] = "o'";
+      a['Ў'] = "O'"
+      a['ў'] = "o'"
 
-      a["Ҳ"] = "H";
-      a["ҳ"] = "h";
+      a['Ҳ'] = 'H'
+      a['ҳ'] = 'h'
 
-      a["Ғ"] = "G'";
-      a["ғ"] = "g'";
+      a['Ғ'] = "G'"
+      a['ғ'] = "g'"
 
-      for (let i in word) {
+      for (const i in word) {
         if (word.hasOwnProperty(i)) {
           if (a[word[i]] === undefined) {
-            answer += word[i];
+            answer += word[i]
           } else {
-            answer += a[word[i]];
+            answer += a[word[i]]
           }
         }
       }
-      return answer;
+      return answer
     },
     symbolLatinToCyrillic(word) {
-      var answer = "",
-        a = {};
+      let answer = ''
+      const a = {}
 
-      a["Q"] = "Қ";
-      a["q"] = "қ";
+      a.Q = 'Қ'
+      a.q = 'қ'
 
-      a["O'"] = "Ў";
-      a["o'"] = "ў";
+      a["O'"] = 'Ў'
+      a["o'"] = 'ў'
 
-      a["H"] = "Ҳ";
-      a["h"] = "ҳ";
+      a.H = 'Ҳ'
+      a.h = 'ҳ'
 
-      a["G'"] = "Ғ";
-      a["g'"] = "ғ";
+      a["G'"] = 'Ғ'
+      a["g'"] = 'ғ'
 
-      a["I"] = "И";
-      a["U"] = "У";
-      a["K"] = "К";
-      a["N"] = "Н";
-      a["G"] = "Г";
-      a["Z"] = "З";
-      a["i"] = "и";
-      a["u"] = "у";
-      a["k"] = "к";
-      a["E"] = "Е";
-      a["e"] = "е";
-      a["n"] = "н";
-      a["g"] = "г";
-      a["z"] = "з";
-      a["F"] = "Ф";
-      a["V"] = "В";
-      a["P"] = "П";
-      a["R"] = "Р";
-      a["O"] = "О";
-      a["L"] = "Л";
-      a["D"] = "Д";
-      a["J"] = "Ж";
-      a["f"] = "ф";
-      a["v"] = "в";
-      a["a"] = "а";
-      a["A"] = "А";
-      a["p"] = "п";
-      a["r"] = "р";
-      a["o"] = "о";
-      a["l"] = "л";
-      a["d"] = "д";
-      a["j"] = "ж";
+      a.I = 'И'
+      a.U = 'У'
+      a.K = 'К'
+      a.N = 'Н'
+      a.G = 'Г'
+      a.Z = 'З'
+      a.i = 'и'
+      a.u = 'у'
+      a.k = 'к'
+      a.E = 'Е'
+      a.e = 'е'
+      a.n = 'н'
+      a.g = 'г'
+      a.z = 'з'
+      a.F = 'Ф'
+      a.V = 'В'
+      a.P = 'П'
+      a.R = 'Р'
+      a.O = 'О'
+      a.L = 'Л'
+      a.D = 'Д'
+      a.J = 'Ж'
+      a.f = 'ф'
+      a.v = 'в'
+      a.a = 'а'
+      a.A = 'А'
+      a.p = 'п'
+      a.r = 'р'
+      a.o = 'о'
+      a.l = 'л'
+      a.d = 'д'
+      a.j = 'ж'
 
-      a["S"] = "С";
-      a["M"] = "М";
-      a["I"] = "И";
-      a["T"] = "Т";
-      a["B"] = "Б";
+      a.S = 'С'
+      a.M = 'М'
+      a.I = 'И'
+      a.T = 'Т'
+      a.B = 'Б'
 
-      a["s"] = "с";
-      a["m"] = "м";
-      a["i"] = "и";
-      a["t"] = "т";
-      a["b"] = "б";
+      a.s = 'с'
+      a.m = 'м'
+      a.i = 'и'
+      a.t = 'т'
+      a.b = 'б'
 
-      for (let i in word) {
+      for (const i in word) {
         if (word.hasOwnProperty(i)) {
           if (a[word[i]] === undefined) {
-            answer += word[i];
+            answer += word[i]
           } else {
-            answer += a[word[i]];
+            answer += a[word[i]]
           }
         }
       }
-      return answer;
+      return answer
     },
   },
-};
+}
 </script>
 
 <template>
-  <div class="container-fluid px-0 mx-0" v-if="step === 2">
-    <form ref="form" @submit.stop.prevent="sendForm">
+  <div
+    v-if="step === 2"
+    class="container-fluid px-0 mx-0"
+  >
+    <form
+      ref="form"
+      @submit.stop.prevent="sendForm"
+    >
       <div class="row">
         <!-- Таблица ежемесячных платежей -->
         <div class="col-xl-8">
           <div
             class="d-flex justify-content-between align-items-center sticky-top bg-custom-white px-3 py-2 rounded shadow-sm"
           >
-            <h6 class="mb-0">Таблица ежемесячных платежей:</h6>
+            <h6 class="mb-0">
+              Таблица ежемесячных платежей:
+            </h6>
             <div class="d-flex justify-content-end align-items-center">
               <div
-                class="mr-2 w-25"
                 v-if="
                   client.discount.prepay != 100 || client.discount.prepay < 100
                 "
+                class="mr-2 w-25"
               >
                 <!-- <label class="d-block" for="month">Месяцев</label> -->
                 <input
                   id="month"
+                  v-model="month"
                   class="my-form__input w-100"
                   type="number"
                   min="0"
                   required
-                  v-model="month"
-                />
+                >
               </div>
               <span
                 v-if="
                   month > 0 &&
-                  (client.discount.prepay != 100 ||
-                    client.discount.prepay < 100)
+                    (client.discount.prepay != 100 ||
+                      client.discount.prepay < 100)
                 "
               >
-                {{ month }} месяцев по <br />
+                {{ month }} месяцев по <br>
                 {{
                   getMonth()
                     | number("0,0.00", {
@@ -1055,10 +1043,10 @@ export default {
           </div>
           <div class="table-responsive custom-table mt-0">
             <table
-              class="table"
               v-if="
                 client.discount.prepay != 100 || client.discount.prepay < 100
               "
+              class="table"
             >
               <thead>
                 <tr>
@@ -1074,7 +1062,7 @@ export default {
                 <tr
                   v-if="
                     initial_payments.length === 0 ||
-                    initial_payments.length === 1
+                      initial_payments.length === 1
                   "
                 >
                   <td>
@@ -1096,10 +1084,10 @@ export default {
                           status.discount.id === "other" && month == 0
                             ? getTotalOther()
                             : getPrepay()
-                              | number("0,0.00", {
-                                thousandsSeparator: " ",
-                                decimalSeparator: ",",
-                              })
+                            | number("0,0.00", {
+                              thousandsSeparator: " ",
+                              decimalSeparator: ",",
+                            })
                         }}
                         {{ $t("ye") }}
                       </span>
@@ -1109,15 +1097,15 @@ export default {
                         type="button"
                         @click="addInitialPayment"
                       >
-                        <i class="fa fa-plus-circle"></i>
+                        <i class="fa fa-plus-circle" />
                       </button>
                     </div>
                   </td>
                 </tr>
 
                 <tr
-                  v-else
                   v-for="(initialPayment, index) in initial_payments"
+                  v-else
                   :key="'initial' + index"
                 >
                   <td>
@@ -1126,15 +1114,15 @@ export default {
                     </span>
 
                     <div
-                      class="col-md-12 float-left"
                       v-if="initialPayment.edit && index != 0"
+                      class="col-md-12 float-left"
                     >
                       <div class="row">
                         <input
+                          v-model="initialPayment.month"
                           type="date"
                           class="form-control"
-                          v-model="initialPayment.month"
-                        />
+                        >
                       </div>
                     </div>
                   </td>
@@ -1157,15 +1145,15 @@ export default {
                       </span>
 
                       <div
-                        class="col-md-4 float-left"
                         v-if="initialPayment.edit"
+                        class="col-md-4 float-left"
                       >
                         <div class="row">
                           <input
+                            v-model="initialPayment.amount"
                             type="text"
                             class="form-control"
-                            v-model="initialPayment.amount"
-                          />
+                          >
                         </div>
                       </div>
 
@@ -1173,40 +1161,40 @@ export default {
                         class="d-flex justify-content-between align-items-center"
                       >
                         <button
-                          class="btn btn-success btn-sm mr-1 mt-0"
                           v-if="index === initial_payments.length - 1"
+                          class="btn btn-success btn-sm mr-1 mt-0"
                           type="button"
                           @click="addInitialPayment"
                         >
-                          <i class="fa fa-plus-circle"></i>
+                          <i class="fa fa-plus-circle" />
                         </button>
 
                         <button
                           v-if="
                             ((getMe.role && getMe.role.id) === 1 &&
                               !initialPayment.edit) ||
-                            (getPermission.contracts &&
-                              getPermission.contracts.monthly &&
-                              !initialPayment.edit)
+                              (getPermission.contracts &&
+                                getPermission.contracts.monthly &&
+                                !initialPayment.edit)
                           "
                           type="button"
-                          @click="editInitialPayment(index)"
                           class="btn btn-sm btn-primary mt-0 mr-1"
+                          @click="editInitialPayment(index)"
                         >
-                          <i class="fa fa-edit"></i>
+                          <i class="fa fa-edit" />
                         </button>
 
                         <div v-if="initialPayment.edit">
                           <button
                             v-if="
                               (getMe.role && getMe.role.id) === 1 ||
-                              getPermission.contracts.monthly
+                                getPermission.contracts.monthly
                             "
                             type="button"
-                            @click="editInitialPayment(index)"
                             class="btn btn-sm btn-success mt-0 mr-1"
+                            @click="editInitialPayment(index)"
                           >
-                            <i class="fa fa-save"></i>
+                            <i class="fa fa-save" />
                           </button>
                         </div>
 
@@ -1216,23 +1204,26 @@ export default {
                               getMe.role &&
                               getMe.role.id === 1 &&
                               !month.edit) ||
-                            (index != 0 &&
-                              getPermission.contracts &&
-                              getPermission.contracts.monthly &&
-                              !month.edit)
+                              (index != 0 &&
+                                getPermission.contracts &&
+                                getPermission.contracts.monthly &&
+                                !month.edit)
                           "
                           type="button"
-                          @click="deleteInitialPayment(index)"
                           class="btn btn-sm btn-danger mt-0 mr-0"
+                          @click="deleteInitialPayment(index)"
                         >
-                          <i class="fa fa-trash"></i>
+                          <i class="fa fa-trash" />
                         </button>
                       </div>
                     </div>
                   </td>
                 </tr>
 
-                <tr v-for="(month, index) in credit_months" :key="index">
+                <tr
+                  v-for="(month, index) in credit_months"
+                  :key="index"
+                >
                   <td>
                     {{ month.month | moment("DD.MM.YYYY") }}
                   </td>
@@ -1254,42 +1245,45 @@ export default {
                         {{ $t("ye") }}
                       </span>
 
-                      <div class="col-md-4 float-left" v-if="month.edit">
+                      <div
+                        v-if="month.edit"
+                        class="col-md-4 float-left"
+                      >
                         <div class="row">
                           <input
+                            v-model.number="month.amount"
                             type="text"
                             class="form-control"
                             required
-                            v-model.number="month.amount"
-                          />
+                          >
                         </div>
                       </div>
 
                       <button
                         v-if="
                           (getMe.role && getMe.role.id === 1 && !month.edit) ||
-                          (getPermission.contracts &&
-                            getPermission.contracts.monthly &&
-                            !month.edit)
+                            (getPermission.contracts &&
+                              getPermission.contracts.monthly &&
+                              !month.edit)
                         "
                         type="button"
-                        @click="editMonthlyPayment(index)"
                         class="btn btn-sm btn-primary mr-0 mt-0"
+                        @click="editMonthlyPayment(index)"
                       >
-                        <i class="fa fa-edit"></i>
+                        <i class="fa fa-edit" />
                       </button>
 
                       <div v-if="month.edit">
                         <button
                           v-if="
                             (getMe.role && getMe.role.id) === 1 ||
-                            getPermission.contracts.monthly
+                              getPermission.contracts.monthly
                           "
                           type="button"
-                          @click="editMonthlyPayment(index)"
                           class="btn btn-sm btn-success mr-0 mt-0"
+                          @click="editMonthlyPayment(index)"
                         >
-                          <i class="fa fa-save"></i>
+                          <i class="fa fa-save" />
                         </button>
                       </div>
                     </div>
@@ -1305,13 +1299,24 @@ export default {
           <div class="sticky-top">
             <!-- Info -->
             <div class="new-object p-0">
-              <div v-b-toggle.collapse-info class="d-flex p-3">
+              <div
+                v-b-toggle.collapse-info
+                class="d-flex p-3"
+              >
                 <span>{{ $t("client_info") }}</span>
-                <strong v-if="isVisible" aria-hidden="true" class="ml-auto">
-                  <i class="fal fa-chevron-up"></i>
+                <strong
+                  v-if="isVisible"
+                  aria-hidden="true"
+                  class="ml-auto"
+                >
+                  <i class="fal fa-chevron-up" />
                 </strong>
-                <strong v-else aria-hidden="true" class="ml-auto">
-                  <i class="fal fa-chevron-down"></i>
+                <strong
+                  v-else
+                  aria-hidden="true"
+                  class="ml-auto"
+                >
+                  <i class="fal fa-chevron-down" />
                 </strong>
               </div>
               <b-collapse
@@ -1322,31 +1327,41 @@ export default {
                 <table class="table mx-0 mt-2 p-0 my-table-another-variant">
                   <tbody class="m-0 p-0">
                     <tr>
-                      <td class="px-0 py-2">Номер паспорта</td>
+                      <td class="px-0 py-2">
+                        Номер паспорта
+                      </td>
                       <td class="px-0 py-2 text-right">
                         {{ status.passport_series }}
                       </td>
                     </tr>
                     <tr>
-                      <td class="px-0 py-2">Место выдачи паспорта</td>
+                      <td class="px-0 py-2">
+                        Место выдачи паспорта
+                      </td>
                       <td class="px-0 py-2 text-right">
                         {{ status.issued_by_whom }}
                       </td>
                     </tr>
                     <tr>
-                      <td class="px-0 py-2">Дата выпуска пасспорта</td>
+                      <td class="px-0 py-2">
+                        Дата выпуска пасспорта
+                      </td>
                       <td class="px-0 py-2 text-right">
                         {{ status.date_of_issue }}
                       </td>
                     </tr>
                     <tr>
-                      <td class="px-0 py-2">Дата рождения</td>
+                      <td class="px-0 py-2">
+                        Дата рождения
+                      </td>
                       <td class="px-0 py-2 text-right">
                         {{ status.birth_day }}
                       </td>
                     </tr>
                     <tr>
-                      <td class="px-0 py-2">ФИО</td>
+                      <td class="px-0 py-2">
+                        ФИО
+                      </td>
                       <td
                         class="px-0 py-2 text-right"
                         :title="`${client.last_name.kirill} ${client.first_name.kirill} ${client.second_name.kirill}`"
@@ -1357,13 +1372,17 @@ export default {
                       </td>
                     </tr>
                     <tr>
-                      <td class="px-0 py-2">Телефон номер</td>
+                      <td class="px-0 py-2">
+                        Телефон номер
+                      </td>
                       <td class="px-0 py-2 text-right">
                         {{ status.phone }}
                       </td>
                     </tr>
                     <tr>
-                      <td class="px-0 py-2">Дополнительный номер</td>
+                      <td class="px-0 py-2">
+                        Дополнительный номер
+                      </td>
                       <td class="px-0 py-2 text-right">
                         {{ status.other_phone }}
                       </td>
@@ -1379,7 +1398,7 @@ export default {
                 v-if="getApartmentItem"
                 :apartment="getApartmentItem"
                 @getCalData="getCalData"
-              ></Discount>
+              />
             </div>
 
             <div class="new-object p-3 d-none">
@@ -1391,10 +1410,10 @@ export default {
                     status.discount.id === "other"
                       ? apartment_edit.price
                       : getApartmentItem.price
-                        | number("0,0.00", {
-                          thousandsSeparator: " ",
-                          decimalSeparator: ",",
-                        })
+                      | number("0,0.00", {
+                        thousandsSeparator: " ",
+                        decimalSeparator: ",",
+                      })
                   }}
                   {{ $t("ye") }}
                 </h6>
@@ -1403,12 +1422,14 @@ export default {
                 <div class="container px-0 mx-0 mt-4">
                   <div class="row">
                     <div class="col-12">
-                      <div class="mb-3" v-if="month > 0">
+                      <div
+                        v-if="month > 0"
+                        class="mb-3"
+                      >
                         <label
                           class="d-block h6 font-weight-normal"
                           for="initial-fee"
-                          >Первоначальный взнос:</label
-                        >
+                        >Первоначальный взнос:</label>
                         <div class="row">
                           <div class="col-md-8">
                             <input
@@ -1420,12 +1441,12 @@ export default {
                                 client.discount.id === 'other' && month == 0
                                   ? getTotalOther()
                                   : getPrepay()
-                                    | number('0,0.00', {
-                                      thousandsSeparator: ' ',
-                                      decimalSeparator: ',',
-                                    })
+                                  | number('0,0.00', {
+                                    thousandsSeparator: ' ',
+                                    decimalSeparator: ',',
+                                  })
                               "
-                            />
+                            >
                           </div>
                           <div class="col-md-4 pl-md-0 mt-md-0 mt-2">
                             <input
@@ -1434,23 +1455,23 @@ export default {
                               type="text"
                               :value="
                                 client &&
-                                client.discount &&
-                                client.discount.prepay
+                                  client.discount &&
+                                  client.discount.prepay
                                   ? client.discount.prepay.toFixed(2) + ' %'
                                   : ''
                               "
-                            />
+                            >
                           </div>
                         </div>
                       </div>
 
                       <button
-                        type="button"
                         v-if="client.discount.id === 'other'"
-                        @click="edit.price = true"
+                        type="button"
                         class="btn btn-light mx-auto mb-3"
+                        @click="edit.price = true"
                       >
-                        <i class="fa fa-edit"></i>
+                        <i class="fa fa-edit" />
                         {{ $t("apartments.agree.edit_price") }}
                       </button>
                     </div>
@@ -1459,38 +1480,46 @@ export default {
               </div>
 
               <!-- Цена продажи -->
-              <div class="row" v-else>
+              <div
+                v-else
+                class="row"
+              >
                 <div class="col-12">
                   <div class="mb-3">
-                    <label class="d-block" for="initial-fee"
-                      >Цена продажи:</label
-                    >
+                    <label
+                      class="d-block"
+                      for="initial-fee"
+                    >Цена продажи:</label>
                     <div class="row">
                       <div class="col-12">
                         <input
                           id="initial-price"
+                          v-model="apartment_edit.price"
                           class="my-form__input"
                           step="0.01"
                           type="number"
-                          v-model="apartment_edit.price"
-                        />
+                        >
                       </div>
                     </div>
                   </div>
 
-                  <div class="mb-3" v-if="month > 0">
-                    <label class="d-block" for="initial-fee"
-                      >Первоначальный взнос:</label
-                    >
+                  <div
+                    v-if="month > 0"
+                    class="mb-3"
+                  >
+                    <label
+                      class="d-block"
+                      for="initial-fee"
+                    >Первоначальный взнос:</label>
                     <div class="row">
                       <div class="col-md-10">
                         <input
                           id="initial-fee"
+                          v-model="apartment_edit.prepay_price"
                           class="my-form__input"
                           type="number"
                           step="0.01"
-                          v-model="apartment_edit.prepay_price"
-                        />
+                        >
                       </div>
                       <div
                         class="col-md-2 pl-0 d-flex align-items-center justify-content-start"
@@ -1504,22 +1533,24 @@ export default {
 
                   <button
                     type="button"
-                    @click="edit.price = false"
                     class="btn btn-primary mx-auto mb-3"
+                    @click="edit.price = false"
                   >
-                    <i class="fa fa-save"></i> {{ $t("save") }}
+                    <i class="fa fa-save" /> {{ $t("save") }}
                   </button>
                 </div>
               </div>
 
               <!-- Сумма рассрочки -->
               <table
-                class="table mx-0 p-0 my-0 my-table-another-variant"
                 v-if="month > 0"
+                class="table mx-0 p-0 my-0 my-table-another-variant"
               >
                 <tbody class="m-0 p-0">
                   <tr>
-                    <td class="px-0 py-2">Сумма рассрочки</td>
+                    <td class="px-0 py-2">
+                      Сумма рассрочки
+                    </td>
                     <td class="px-0 py-2 text-right">
                       {{
                         getDebt()
@@ -1540,18 +1571,27 @@ export default {
               <div class="d-none">
                 <label>Комментария</label>
                 <textarea
+                  v-model="comment"
                   rows="3"
                   cols="3"
-                  v-model="comment"
                   class="form-control"
-                ></textarea>
+                />
               </div>
 
               <!-- error msg -->
-              <div class="alert alert-danger mt-3" v-if="error">
+              <div
+                v-if="error"
+                class="alert alert-danger mt-3"
+              >
                 <ul>
-                  <li v-for="(error, index) in errors" :key="index">
-                    <span v-for="msg in error" :key="msg">
+                  <li
+                    v-for="(error, index) in errors"
+                    :key="index"
+                  >
+                    <span
+                      v-for="msg in error"
+                      :key="msg"
+                    >
                       {{ msg }}
                     </span>
                   </li>
@@ -1566,7 +1606,7 @@ export default {
                   class="btn btn-secondary mr-0"
                   @click="[(step = 1), (next = true), (confirm = false)]"
                 >
-                  <i class="fa fa-chevron-circle-left"></i>
+                  <i class="fa fa-chevron-circle-left" />
                   {{ $t("back") }}
                 </button>
 
@@ -1581,12 +1621,12 @@ export default {
 
                 <!-- create_agree -->
                 <button
+                  v-if="!loading && confirm"
                   type="submit"
                   class="btn btn-success mr-0"
-                  v-if="!loading && confirm"
                 >
                   {{ $t("create_agree") }}
-                  <i class="fa fa-file-contract"></i>
+                  <i class="fa fa-file-contract" />
                 </button>
 
                 <!-- create_agree loading -->
@@ -1596,7 +1636,7 @@ export default {
                   class="btn btn-success mr-0"
                 >
                   {{ $t("create_agree") }}
-                  <i class="fas fa-spinner fa-spin"></i>
+                  <i class="fas fa-spinner fa-spin" />
                 </button>
               </div>
             </div>

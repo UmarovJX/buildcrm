@@ -1,8 +1,8 @@
 <script>
-import { formatDateWithDot, formatToPrice } from "@/util/reusable";
+import { formatDateWithDot, formatToPrice } from '@/util/reusable'
 
 export default {
-  name: "PromoSection",
+  name: 'PromoSection',
   props: {
     promo: {
       type: Array,
@@ -11,39 +11,49 @@ export default {
   },
   methods: {
     priceDiscount(value) {
-      return formatToPrice(value, 2);
+      return formatToPrice(value, 2)
     },
     startDate(value) {
-      return formatDateWithDot(value);
+      return formatDateWithDot(value)
     },
     getName(name) {
-      let locale = localStorage.locale;
-      let value = "";
+      const { locale } = localStorage
+      let value = ''
 
       if (locale) {
         switch (locale) {
-          case "ru":
-            value = name.ru;
-            break;
-          case "uz":
-            value = name.uz;
-            break;
+          case 'ru':
+            value = name.ru
+            break
+          case 'uz':
+            value = name.uz
+            break
         }
       } else {
-        value = name.ru;
+        value = name.ru
       }
 
-      return value;
+      return value
     },
   },
-};
+}
 </script>
 
 <template>
   <!--   PROMO SECTION -->
-  <div v-if="promo.length" class="promos">
-    <div v-for="item in promo" :key="item.id" class="promo__section">
-      <div class="d-flex justify-content-between mb-3" id="promo-sale">
+  <div
+    v-if="promo.length"
+    class="promos"
+  >
+    <div
+      v-for="item in promo"
+      :key="item.id"
+      class="promo__section"
+    >
+      <div
+        id="promo-sale"
+        class="d-flex justify-content-between mb-3"
+      >
         <span class="d-block">
           <svg
             width="20"
@@ -62,27 +72,28 @@ export default {
           <span class="ml-2 promo__section-title">{{
             getName(item.name)
           }}</span>
-          <b-tooltip target="promo-sale" triggers="hover">
+          <b-tooltip
+            target="promo-sale"
+            triggers="hover"
+          >
             {{ $t("more_info") }}
           </b-tooltip>
         </span>
-        <span class="promo__section-subtitle"
-          >{{ $t("to") }} {{ startDate(item.end_date) }}</span
-        >
+        <span
+          class="promo__section-subtitle"
+        >{{ $t("to") }} {{ startDate(item.end_date) }}</span>
       </div>
       <span
         v-for="discount in item.discounts"
         :key="discount.promo_id"
         class="apartment__details-row"
       >
-        <span class="property"
-          >{{ $t("apartments.first_payment") }} {{ discount.discount }}%</span
-        >
-        <span class="value"
-          >{{ priceDiscount(discount.price) }} {{ $t("ye") }}/m<sup
-            >2</sup
-          ></span
-        >
+        <span
+          class="property"
+        >{{ $t("apartments.first_payment") }} {{ discount.discount }}%</span>
+        <span
+          class="value"
+        >{{ priceDiscount(discount.price) }} {{ $t("ye") }}/m<sup>2</sup></span>
       </span>
     </div>
   </div>
@@ -106,7 +117,6 @@ export default {
   .promo__section:last-child
     border-bottom: 3px solid var(--gray-100)
 
-
 .promo__section
   font-family: Inter, sans-serif
   padding-top: 1.5rem
@@ -126,7 +136,6 @@ export default {
     font-weight: 600
     font-size: 14px
     line-height: 20px
-
 
 .apartment__details
   padding-top: 1rem

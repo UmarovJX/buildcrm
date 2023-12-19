@@ -1,59 +1,59 @@
 <script>
 export default {
-  name: "ApartmentListFilterTabs",
-  emits: ["get-new-content"],
-  created() {
-    this.setCurrentStatus();
-  },
+  name: 'ApartmentListFilterTabs',
+  emits: ['get-new-content'],
   data() {
     return {
-      currentStatus: "all",
-    };
+      currentStatus: 'all',
+    }
   },
   computed: {
     filterList() {
       return [
         {
-          name: "apartments.tab_names.all",
-          status: "all",
+          name: 'apartments.tab_names.all',
+          status: 'all',
         },
         {
-          name: "apartments.tab_names.available",
-          status: "available",
+          name: 'apartments.tab_names.available',
+          status: 'available',
         },
         {
-          name: "apartments.tab_names.booked",
-          status: "booked",
+          name: 'apartments.tab_names.booked',
+          status: 'booked',
         },
         {
-          name: "apartments.tab_names.promo",
-          status: "promo",
+          name: 'apartments.tab_names.promo',
+          status: 'promo',
         },
         {
-          name: "apartments.tab_names.sold",
-          status: "sold",
+          name: 'apartments.tab_names.sold',
+          status: 'sold',
         },
         {
-          name: "apartments.tab_names.unavailable",
-          status: "unavailable",
+          name: 'apartments.tab_names.unavailable',
+          status: 'unavailable',
         },
-      ];
+      ]
     },
+  },
+  created() {
+    this.setCurrentStatus()
   },
   methods: {
     getFilteredContent(status) {
-      this.currentStatus = status;
-      this.$emit("get-new-content", status);
+      this.currentStatus = status
+      this.$emit('get-new-content', status)
     },
     setCurrentStatus() {
-      const { query } = this.$route;
-      const hasQueryAndStatus = Object.keys(query).length > 0 && query.status;
+      const { query } = this.$route
+      const hasQueryAndStatus = Object.keys(query).length > 0 && query.status
       if (hasQueryAndStatus) {
-        this.currentStatus = query.status;
+        this.currentStatus = query.status
       }
     },
   },
-};
+}
 </script>
 
 <template>
@@ -62,9 +62,9 @@ export default {
       <div
         v-for="{ name, status } in filterList"
         :key="status"
-        @click="getFilteredContent(status)"
         class="filter__content-item"
         :class="[status === currentStatus ? 'filter__content-item-active' : '']"
+        @click="getFilteredContent(status)"
       >
         <p>{{ $t(`${name}`) }}</p>
       </div>

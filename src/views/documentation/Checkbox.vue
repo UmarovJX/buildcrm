@@ -1,10 +1,11 @@
 <script>
-import DocHeader from "@/views/documentation/DocHeader";
-import BaseCheckbox from "@/components/Reusable/BaseCheckbox";
+import DocHeader from '@/views/documentation/DocHeader'
+import BaseCheckbox from '@/components/Reusable/BaseCheckbox'
+
 export default {
-  name: "Checkbox",
+  name: 'Checkbox',
   components: { BaseCheckbox, DocHeader },
-};
+}
 </script>
 
 <template>
@@ -20,7 +21,10 @@ export default {
         <div class="checkbox-content-box-row">
           <BaseCheckbox checked />
           <BaseCheckbox checked />
-          <BaseCheckbox disabled checked />
+          <BaseCheckbox
+            disabled
+            checked
+          />
         </div>
       </div>
     </div>

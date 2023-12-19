@@ -1,22 +1,21 @@
-import Permission from "@/permission/index";
+import Permission from '@/permission/index'
 
 export default class DebtorsPermission extends Permission {
   static debtors() {
-    return super.getUserPermission("debtors");
+    return super.getUserPermission('debtors')
   }
 
   static getDebtorsPermission(property) {
-    const splitProperty = property.split(".");
-    const [one, two] = splitProperty;
-    if (this.hasAdminRole()) return true;
+    const splitProperty = property.split('.')
+    const [one, two] = splitProperty
+    if (this.hasAdminRole()) return true
     if (splitProperty.length > 1) {
-      return this.debtors()[one][two] ?? false;
-    } else {
-      return this.debtors()[one] ?? false;
+      return this.debtors()[one][two] ?? false
     }
+    return this.debtors()[one] ?? false
   }
 
   static getDebtorsViewPermission() {
-    return this.getDebtorsPermission("view");
+    return this.getDebtorsPermission('view')
   }
 }

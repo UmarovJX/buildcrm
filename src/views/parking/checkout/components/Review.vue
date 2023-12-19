@@ -1,17 +1,17 @@
 <script>
-import SectionTitle from "@/views/parking/checkout/elements/SectionTitle";
-import ChPaymentResult from "@/views/parking/checkout/components/PaymentResult";
-import ChPlanDetails from "@/views/parking/checkout/components/PlanDetails";
-import FieldInformation from "@/views/parking/checkout/elements/FieldInformation";
-import { mapActions, mapGetters, mapState } from "vuex";
-import { formatToPrice } from "@/util/reusable";
-import { XBottomClipboard } from "@/components/ui-components/bottom-clipboard";
-import { XButton } from "@/components/ui-components/button";
-import { isEmptyObject, isNUNEZ } from "@/util/inspect";
-import api from "@/services/api";
+import SectionTitle from '@/views/parking/checkout/elements/SectionTitle'
+import ChPaymentResult from '@/views/parking/checkout/components/PaymentResult'
+import ChPlanDetails from '@/views/parking/checkout/components/PlanDetails'
+import FieldInformation from '@/views/parking/checkout/elements/FieldInformation'
+import { mapActions, mapGetters, mapState } from 'vuex'
+import { formatToPrice } from '@/util/reusable'
+import { XBottomClipboard } from '@/components/ui-components/bottom-clipboard'
+import { XButton } from '@/components/ui-components/button'
+import { isEmptyObject, isNUNEZ } from '@/util/inspect'
+import api from '@/services/api'
 
 export default {
-  name: "ChReviewSide",
+  name: 'ChReviewSide',
   components: {
     SectionTitle,
     ChPaymentResult,
@@ -23,199 +23,197 @@ export default {
   data() {
     return {
       companyTypes: [],
-    };
+    }
   },
   created() {
-    this.fetchCompanyType();
+    this.fetchCompanyType()
   },
   computed: {
-    ...mapState("ParkingCheckout", {
-      clientInfo: "clientData",
-      clientTypeList: "clientTypeList",
-      countryList: "countryList",
+    ...mapState('ParkingCheckout', {
+      clientInfo: 'clientData',
+      clientTypeList: 'clientTypeList',
+      countryList: 'countryList',
     }),
-    ...mapGetters("ParkingCheckout", {
-      apartments: "gtsApartments",
-      totalForAll: "totalForAll",
-      trashCount: "trashCount",
+    ...mapGetters('ParkingCheckout', {
+      apartments: 'gtsApartments',
+      totalForAll: 'totalForAll',
+      trashCount: 'trashCount',
     }),
     clientDetails() {
       if (isEmptyObject(this.clientInfo)) {
-        return [];
+        return []
       }
 
-      let details = [];
+      let details = []
 
-      if (this.clientInfo.subject === "legal") {
-        const findCompanyType = this.companyTypes.find((typeCtx) => {
-          return typeCtx.id === this.clientInfo.attributes.company_type_id;
-        });
+      if (this.clientInfo.subject === 'legal') {
+        const findCompanyType = this.companyTypes.find(typeCtx => typeCtx.id === this.clientInfo.attributes.company_type_id)
 
-        let companyType = "";
+        let companyType = ''
 
         if (findCompanyType) {
-          companyType = findCompanyType.name[this.$i18n.locale];
+          companyType = findCompanyType.name[this.$i18n.locale]
         }
 
         details = [
           {
-            title: "person_type",
-            content: "legal_entity",
-            icon: "business_center",
+            title: 'person_type',
+            content: 'legal_entity',
+            icon: 'business_center',
           },
           {
-            title: "bank",
+            title: 'bank',
             content: this.clientInfo.attributes.bank_name,
-            icon: "account_balance",
+            icon: 'account_balance',
           },
           {
-            title: "company_type",
+            title: 'company_type',
             content: companyType,
-            icon: "label",
+            icon: 'label',
           },
           {
-            title: "company_name",
+            title: 'company_name',
             content: this.clientInfo.attributes.name,
-            icon: "apartment",
+            icon: 'apartment',
           },
           {
-            title: "account_number",
+            title: 'account_number',
             content: this.clientInfo.attributes.payment_number,
-            icon: "account_balance_wallet",
+            icon: 'account_balance_wallet',
           },
           {
-            title: "mfo",
+            title: 'mfo',
             content: this.clientInfo.attributes.mfo,
-            icon: "numbers",
+            icon: 'numbers',
           },
           {
-            title: "inn",
+            title: 'inn',
             content: this.clientInfo.attributes.inn,
-            icon: "numbers",
+            icon: 'numbers',
           },
           {
-            title: "ndc",
+            title: 'ndc',
             content: this.clientInfo.attributes.nds,
-            icon: "numbers",
+            icon: 'numbers',
           },
           {
-            title: "fax",
+            title: 'fax',
             content: this.clientInfo.attributes.fax,
-            icon: "fax",
+            icon: 'fax',
           },
           {
-            title: "legal_address",
+            title: 'legal_address',
             content: this.clientInfo.attributes.legal_address,
-            icon: "location_on",
+            icon: 'location_on',
           },
-        ];
+        ]
       } else {
-        const { locale } = this.$i18n;
-        const typography = locale === "uz" ? "lotin" : "kirill";
+        const { locale } = this.$i18n
+        const typography = locale === 'uz' ? 'lotin' : 'kirill'
         const name = {
           l: this.clientInfo.attributes.last_name[typography],
           f: this.clientInfo.attributes.first_name[typography],
           m: this.clientInfo.attributes.middle_name[typography],
-        };
+        }
 
-        const fullName = `${name.l} ${name.f} ${name.m}`;
+        const fullName = `${name.l} ${name.f} ${name.m}`
 
         const country = this.countryList.find(
-          (cty) => cty.id === this.clientInfo.attributes.country_id
-        );
+          cty => cty.id === this.clientInfo.attributes.country_id,
+        )
 
         details = [
           {
-            title: "person_type",
-            content: "physical_person",
-            icon: "assignment_ind",
+            title: 'person_type',
+            content: 'physical_person',
+            icon: 'assignment_ind',
           },
           {
-            title: "nation",
+            title: 'nation',
             content: country.name[locale],
-            icon: "flag",
+            icon: 'flag',
           },
           {
-            title: "passport_series_example",
+            title: 'passport_series_example',
             content: this.clientInfo.attributes.passport_series,
-            icon: "contact_page",
+            icon: 'contact_page',
           },
           {
-            title: "birth_day",
+            title: 'birth_day',
             content: this.clientInfo.attributes.date_of_birth,
-            icon: "cake",
+            icon: 'cake',
           },
           {
-            title: "fio_full",
+            title: 'fio_full',
             content: fullName,
-            icon: "person",
+            icon: 'person',
           },
           {
-            title: "communication_language",
+            title: 'communication_language',
             content: this.clientInfo.language,
-            icon: "language",
+            icon: 'language',
           },
           {
-            title: "checkout.address_line",
+            title: 'checkout.address_line',
             content: this.clientInfo.attributes.address_line,
-            icon: "home_pin",
+            icon: 'home_pin',
           },
-        ];
+        ]
       }
 
       details.push({
-        title: "phone",
+        title: 'phone',
         content: this.clientInfo.phones[0].phone,
-        icon: "call",
-      });
+        icon: 'call',
+      })
 
       if (
-        this.clientInfo.phones.length > 1 &&
-        isNUNEZ(this.clientInfo.phones[1].phone)
+        this.clientInfo.phones.length > 1
+        && isNUNEZ(this.clientInfo.phones[1].phone)
       ) {
         details.push({
-          title: "additional_phone_number",
+          title: 'additional_phone_number',
           content: this.clientInfo.phones[1].phone,
-          icon: "call",
-        });
+          icon: 'call',
+        })
       }
 
       if (isNUNEZ(this.clientInfo?.email)) {
         details.push({
-          title: "email",
+          title: 'email',
           content: this.clientInfo.email,
-          icon: "mail",
-        });
+          icon: 'mail',
+        })
       }
 
       if (isNUNEZ(this.clientInfo?.additional_email)) {
         details.push({
-          title: "additional_email",
+          title: 'additional_email',
           content: this.clientInfo.additional_email,
-          icon: "mail",
-        });
+          icon: 'mail',
+        })
       }
 
-      return details;
+      return details
     },
   },
   methods: {
     prettier: formatToPrice,
-    ...mapActions("ParkingCheckout", {
-      returnRemovedApartments: "returnRemovedApartments",
+    ...mapActions('ParkingCheckout', {
+      returnRemovedApartments: 'returnRemovedApartments',
     }),
     async fetchCompanyType() {
       await api.companies
         .getCompanyType()
-        .then((response) => {
-          this.companyTypes = response.data;
+        .then(response => {
+          this.companyTypes = response.data
         })
-        .catch((error) => {
-          this.toastedWithErrorCode(error);
-        });
+        .catch(error => {
+          this.toastedWithErrorCode(error)
+        })
     },
   },
-};
+}
 </script>
 
 <template>
@@ -238,9 +236,9 @@ export default {
     </div>
     <div class="apn-result">
       <div
-        class="apn-result__item"
         v-for="apartment in apartments"
         :key="apartment.id"
+        class="apn-result__item"
       >
         <section-title
           :bilingual="true"

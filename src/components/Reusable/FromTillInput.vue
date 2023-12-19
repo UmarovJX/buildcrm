@@ -1,7 +1,8 @@
 <script>
-import BaseInput from "@/components/Reusable/BaseInput";
+import BaseInput from '@/components/Reusable/BaseInput'
+
 export default {
-  name: "FromTillInput",
+  name: 'FromTillInput',
   components: { BaseInput },
   props: {
     error: {
@@ -11,21 +12,32 @@ export default {
     from_label: {
       type: String,
       required: false,
-      default: () => "От",
+      default: () => 'От',
     },
     till_label: {
       type: String,
       required: false,
-      default: () => "До",
+      default: () => 'До',
     },
   },
-};
+}
 </script>
 
 <template>
-  <div class="from-till-input" :class="error ? 'error' : ''">
-    <BaseInput :placeholder="from_label" :label="true" type="number" />
-    <BaseInput :placeholder="till_label" :label="true" type="number" />
+  <div
+    class="from-till-input"
+    :class="error ? 'error' : ''"
+  >
+    <BaseInput
+      :placeholder="from_label"
+      :label="true"
+      type="number"
+    />
+    <BaseInput
+      :placeholder="till_label"
+      :label="true"
+      type="number"
+    />
   </div>
 </template>
 

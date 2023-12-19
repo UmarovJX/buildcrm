@@ -1,6 +1,6 @@
 <script>
 export default {
-  name: "BaseLoading",
+  name: 'BaseLoading',
   props: {
     width: {
       type: Number,
@@ -12,14 +12,14 @@ export default {
     },
     fill: {
       type: String,
-      default: "#E5E7EB",
+      default: '#E5E7EB',
     },
     stroke: {
       type: String,
-      default: "#7C3AED",
+      default: '#7C3AED',
     },
   },
-};
+}
 </script>
 
 <template>

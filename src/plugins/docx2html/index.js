@@ -1,5 +1,5 @@
-import docx4js from "../docx4js/openxml/document";
-import converters from "./docx/html/factory";
+import docx4js from '../docx4js/openxml/document'
+import converters from './docx/html/factory'
 
 /**
  *
@@ -11,9 +11,9 @@ import converters from "./docx/html/factory";
  * @returns
  */
 export function docx2html(file, opt) {
-  return docx4js.load(file).then((docx) => {
-    const html = docx.parse(docx4js.createVisitorFactory(converters, {}));
-    console.log(html);
+  return docx4js.load(file).then(docx => {
+    const html = docx.parse(docx4js.createVisitorFactory(converters, {}))
+    console.log(html)
     // return Object.create({
     //     content: html.content,
     //     toString() {
@@ -32,5 +32,5 @@ export function docx2html(file, opt) {
     //         html.release()
     //     }
     // })
-  });
+  })
 }

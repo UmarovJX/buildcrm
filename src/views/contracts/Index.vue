@@ -1,39 +1,39 @@
 <script>
-import BaseFilterTabsContent from "@/components/Reusable/BaseFilterTabsContent2";
-import SearchBarContent from "@/components/Contracts/SearchBarContent";
-import BaseArrowDownIcon from "@/components/icons/BaseArrowDownIcon";
+import BaseFilterTabsContent from '@/components/Reusable/BaseFilterTabsContent2'
+import SearchBarContent from '@/components/Contracts/SearchBarContent'
+import BaseArrowDownIcon from '@/components/icons/BaseArrowDownIcon'
 // import BaseStarIcon from "@/components/icons/BaseStarIcon";
-import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
-import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
-import BaseLoading from "@/components/Reusable/BaseLoading";
-import {XFormSelect} from "@/components/ui-components/form-select";
-import {XIcon} from "@/components/ui-components/material-icons";
-import {XSquareBackground} from "@/components/ui-components/square-background";
-import ExportDropdown from "@/views/contracts/components/ExportDropdown.vue";
-import ApproverList from "@/views/contracts/components/ApproverList.vue";
-import api from "@/services/api";
+import BaseArrowLeftIcon from '@/components/icons/BaseArrowLeftIcon'
+import BaseArrowRightIcon from '@/components/icons/BaseArrowRightIcon'
+import BaseLoading from '@/components/Reusable/BaseLoading'
+import { XFormSelect } from '@/components/ui-components/form-select'
+import { XIcon } from '@/components/ui-components/material-icons'
+import { XSquareBackground } from '@/components/ui-components/square-background'
+import ExportDropdown from '@/views/contracts/components/ExportDropdown.vue'
+import ApproverList from '@/views/contracts/components/ApproverList.vue'
+import api from '@/services/api'
 import {
   formatDateWithDot,
   formatToPrice,
   phonePrettier,
   sortObjectValues,
-} from "@/util/reusable";
-import {mapGetters} from "vuex";
-import ContractsPermission from "@/permission/contract";
-import AppHeader from "@/components/Header/AppHeader";
+} from '@/util/reusable'
+import { mapGetters } from 'vuex'
+import ContractsPermission from '@/permission/contract'
+import AppHeader from '@/components/Header/AppHeader'
 import {
   isNotUndefinedNullEmptyZero,
   isNull,
   isObject,
   isUndefinedOrNullOrEmpty,
-} from "@/util/inspect";
-import {hasOwnProperty, keys} from "@/util/object";
-import {formatDateToHM} from "@/util/date/calendar.util";
-import Permission from "@/permission";
-import BaseButton from "@/components/Reusable/BaseButton";
+} from '@/util/inspect'
+import { hasOwnProperty, keys } from '@/util/object'
+import { formatDateToHM } from '@/util/date/calendar.util'
+import Permission from '@/permission'
+import BaseButton from '@/components/Reusable/BaseButton'
 
 export default {
-  name: "Contracts",
+  name: 'Contracts',
   components: {
     BaseButton,
     ApproverList,
@@ -47,24 +47,24 @@ export default {
     // BaseStarIcon,
     // BaseDownIcon,
     BaseLoading,
-    XFormSelect: XFormSelect,
+    XFormSelect,
     XIcon,
     XSquareBackground,
   },
   data() {
-    const showByOptions = [];
+    const showByOptions = []
 
     for (let number = 10; number <= 50; number += 10) {
       showByOptions.push({
         value: number,
         text: number,
-      });
+      })
     }
 
     const filterTabList = [
       {
-        name: "tab_status.all",
-        status: "",
+        name: 'tab_status.all',
+        status: '',
         counts: 0,
       },
       // {
@@ -93,40 +93,40 @@ export default {
       //   counts: 0,
       // },
       {
-        name: "tab_status.reorder",
-        status: "is_reorder",
+        name: 'tab_status.reorder',
+        status: 'is_reorder',
         counts: 0,
       },
       {
-        name: "tab_status.deleted",
-        status: "is_trashed",
+        name: 'tab_status.deleted',
+        status: 'is_trashed',
         counts: 0,
       },
-    ];
+    ]
 
-    const hasAdminRole = Permission.hasAdminRole();
+    const hasAdminRole = Permission.hasAdminRole()
 
     if (hasAdminRole) {
       filterTabList.splice(filterTabList.length - 1, 0, {
-        name: "tab_status.archived",
-        status: "is_archive",
+        name: 'tab_status.archived',
+        status: 'is_archive',
         counts: 0,
-      });
+      })
     }
 
-    let {search: searchValue, limit: showByValue = 20} = this.$route.query;
+    const { search: searchValue, limit: showByValue = 20 } = this.$route.query
 
-    const contractsPermission = ContractsPermission.contracts();
+    const contractsPermission = ContractsPermission.contracts()
 
     const permissionDownloadReport = hasAdminRole
-        ? true
-        : hasOwnProperty(contractsPermission, "download_report")
-            ? contractsPermission.download_report
-            : false;
+      ? true
+      : hasOwnProperty(contractsPermission, 'download_report')
+        ? contractsPermission.download_report
+        : false
 
     return {
       hack: true,
-      currentTab: "",
+      currentTab: '',
       timeout: null,
       hasAdminRole,
       showByValue,
@@ -136,7 +136,7 @@ export default {
       tableItems: [],
       pagination: {},
       showLoading: false,
-      selectMode: "single",
+      selectMode: 'single',
       selectable: true,
       counts: {},
       importFile: {
@@ -145,146 +145,143 @@ export default {
         selected: null,
         options: [
           {
-            text: "order",
-            value: "order",
+            text: 'order',
+            value: 'order',
           },
           {
-            text: "report",
-            value: "report",
+            text: 'report',
+            value: 'report',
           },
         ],
       },
       permissionDownloadReport,
       filterPermission: ContractsPermission.getContractsFilterPermission(),
       downloadPermission: ContractsPermission.getContractsDownloadPermission(),
-    };
+    }
   },
   computed: {
     ...mapGetters({
-      permission: "getPermission",
+      permission: 'getPermission',
     }),
     statuses() {
       if (keys(this.counts).length) {
-        return this.filterTabList.map((filterTab) => {
-          return {
-            ...filterTab,
-            counts: this.counts[filterTab.name.split(".")[1]],
-          };
-        });
+        return this.filterTabList.map(filterTab => ({
+          ...filterTab,
+          counts: this.counts[filterTab.name.split('.')[1]],
+        }))
       }
-      return this.filterTabList;
+      return this.filterTabList
     },
     tableFields() {
-      let fields = [
+      const fields = [
         {
-          key: "contract",
-          label: this.$t("contracts.table.contract"),
+          key: 'contract',
+          label: this.$t('contracts.table.contract'),
         },
         {
-          key: "client",
-          label: this.$t("contracts.table.client"),
+          key: 'client',
+          label: this.$t('contracts.table.client'),
         },
         {
-          key: "apartmentsNumber",
-          label: this.$t("contracts.apartment_number"),
+          key: 'apartmentsNumber',
+          label: this.$t('contracts.apartment_number'),
           formatter: (v, key, item) => {
-            let list = [];
-            if (item.type === "parking") {
-              list = item.parkings;
+            let list = []
+            if (item.type === 'parking') {
+              list = item.parkings
             } else {
-              list = item.apartments;
+              list = item.apartments
             }
 
             return list
-                .reduce((acc, app) => acc + "," + app.number, "")
-                .slice(1);
+              .reduce((acc, app) => `${acc},${app.number}`, '')
+              .slice(1)
           },
-          thStyle: "width: 110px",
+          thStyle: 'width: 110px',
         },
         {
-          key: "status",
-          label: this.$t("contracts.table.status"),
-          thStyle: "width: 90px",
+          key: 'status',
+          label: this.$t('contracts.table.status'),
+          thStyle: 'width: 90px',
         },
         {
-          key: "payments.transaction_price",
-          label: this.$t("contracts.table.cost"),
-          formatter: (price) => formatToPrice(price) + " " + this.$t("ye"),
+          key: 'payments.transaction_price',
+          label: this.$t('contracts.table.cost'),
+          formatter: price => `${formatToPrice(price)} ${this.$t('ye')}`,
         },
         {
-          key: "payments.percentage_paid",
-          label: this.$t("paid"),
-          formatter: (price) => formatToPrice(price) + "%",
+          key: 'payments.percentage_paid',
+          label: this.$t('paid'),
+          formatter: price => `${formatToPrice(price)}%`,
         },
         {
-          key: "object",
-          label: this.$t("contracts.table.object"),
-          formatter: (object) => object?.name,
+          key: 'object',
+          label: this.$t('contracts.table.object'),
+          formatter: object => object?.name,
         },
         {
-          key: "created",
-          label: this.$t("roles.manager"),
-          formatter: (created) =>
-              created?.first_name + " " + created?.last_name,
+          key: 'created',
+          label: this.$t('roles.manager'),
+          formatter: created => `${created?.first_name} ${created?.last_name}`,
         },
         {
-          key: "date",
-          label: this.$t("contracts.table.date"),
+          key: 'date',
+          label: this.$t('contracts.table.date'),
         },
         {
-          key: "actions",
-          label: "",
+          key: 'actions',
+          label: '',
         },
-      ];
+      ]
 
       if (
-          hasOwnProperty(this.$route.query, "status") &&
-          ["trashed", "deleted"].includes(this.$route.query.status)
+        hasOwnProperty(this.$route.query, 'status')
+          && ['trashed', 'deleted'].includes(this.$route.query.status)
       ) {
         fields.splice(1, 0, {
-          key: "deleted_at",
-          label: this.$t("deleted_date"),
-          formatter: (date) => {
+          key: 'deleted_at',
+          label: this.$t('deleted_date'),
+          formatter: date => {
             if (isNull()) {
-              return "";
+              return ''
             }
 
-            return formatDateToHM(date) + "\t" + formatDateWithDot(date);
+            return `${formatDateToHM(date)}\t${formatDateWithDot(date)}`
           },
-        });
+        })
       }
 
-      return fields;
+      return fields
     },
     query() {
-      return Object.assign({}, this.$route.query);
+      return { ...this.$route.query }
     },
     countOfItems() {
-      if (this.tableItems) return this.tableItems.length;
-      return 0;
+      if (this.tableItems) return this.tableItems.length
+      return 0
     },
   },
   watch: {
     showByValue(n, o) {
-      console.log(n);
-      console.log(o);
-      const isNotUpdate = n === null || n === o;
-      if (isNotUpdate) return;
+      console.log(n)
+      console.log(o)
+      const isNotUpdate = n === null || n === o
+      if (isNotUpdate) return
       const localQuery = {
         ...this.query,
         page: 1,
-      };
-      const limit = n;
-      this.replaceRouter({...localQuery, limit});
+      }
+      const limit = n
+      this.replaceRouter({ ...localQuery, limit })
     },
-    "$route.query": {
-      handler: function () {
-        this.fetchContractList();
+    '$route.query': {
+      handler() {
+        this.fetchContractList()
       },
       deep: true,
     },
     searchValue() {
-      this.getContractListBySearch();
+      this.getContractListBySearch()
     },
     // "importFile.selected"(vSelected) {
     //   if (vSelected === "order") {
@@ -297,167 +294,158 @@ export default {
     // },
   },
   created() {
-    this.fetchContractList();
+    this.fetchContractList()
     this.currentTab = this.query.is_archive
-        ? "is_archive"
-        : this.query.is_trashed
-            ? "is_trashed"
-            : this.query.is_reorder
-                ? "is_reorder"
-                : "";
+      ? 'is_archive'
+      : this.query.is_trashed
+        ? 'is_trashed'
+        : this.query.is_reorder
+          ? 'is_reorder'
+          : ''
   },
   methods: {
-    formattingPhone: (phone) => phonePrettier(phone),
-    dateReverser: (time) => formatDateWithDot(time),
+    formattingPhone: phone => phonePrettier(phone),
+    dateReverser: time => formatDateWithDot(time),
     async fetchStatusesOfCounts() {
-      const query = this.createQuery();
+      const query = this.createQuery()
       try {
-        const response = await api.contractV2.getCounts(query);
-        this.counts = response.data.result;
+        const response = await api.contractV2.getCounts(query)
+        this.counts = response.data.result
       } catch (e) {
-        this.toastedWithErrorCode(e);
+        this.toastedWithErrorCode(e)
       }
     },
     limitChanged(e) {
       if (this.hack) {
-        this.hack = false;
+        this.hack = false
       }
       // this.changeFetchLimit(e);
     },
     checkLocales(name) {
-      if (localStorage.locale) return name[localStorage.locale];
-      else return name["ru"];
+      if (localStorage.locale) return name[localStorage.locale]
+      return name.ru
     },
     getClientMajorPhone(phones) {
       if (!phones.length) {
-        return "";
+        return ''
       }
 
-      phones = phones.filter((p) => {
-        return (
-            isNotUndefinedNullEmptyZero(p.phone) && p.phone.toString().length > 3
-        );
-      });
+      phones = phones.filter(p => (
+        isNotUndefinedNullEmptyZero(p.phone) && p.phone.toString().length > 3
+      ))
 
       if (phones.length > 0) {
-        return this.formattingPhone(phones[0].phone);
+        return this.formattingPhone(phones[0].phone)
       }
     },
     downloadContractLink(id) {
       api.contract
-          .downloadContract(id)
-          .then(({data, headers}) => {
-            // eslint-disable-next-line no-prototype-builtins
-            const filename = headers.hasOwnProperty("x-filename")
-                ? headers["x-filename"]
-                : "contract";
-            const fileURL = window.URL.createObjectURL(new Blob([data]));
-            const fileLink = document.createElement("a");
-            fileLink.href = fileURL;
-            fileLink.setAttribute("download", filename);
-            document.body.appendChild(fileLink);
-            fileLink.click();
-          })
-          .catch(() => {
-            return "#";
-          });
+        .downloadContract(id)
+        .then(({ data, headers }) => {
+          // eslint-disable-next-line no-prototype-builtins
+          const filename = headers.hasOwnProperty('x-filename')
+            ? headers['x-filename']
+            : 'contract'
+          const fileURL = window.URL.createObjectURL(new Blob([data]))
+          const fileLink = document.createElement('a')
+          fileLink.href = fileURL
+          fileLink.setAttribute('download', filename)
+          document.body.appendChild(fileLink)
+          fileLink.click()
+        })
+        .catch(() => '#')
     },
     getClientName(client) {
       if (isUndefinedOrNullOrEmpty(client.attributes)) {
-        return "";
+        return ''
       }
 
-      let language = "kirill";
+      let language = 'kirill'
 
-      if (this.$i18n.locale === "uz") {
-        language = "lotin";
+      if (this.$i18n.locale === 'uz') {
+        language = 'lotin'
       }
 
-      if (client.subject === "legal") {
+      if (client.subject === 'legal') {
         return (
-            client.attributes.company.name[this.$i18n.locale] +
-            " " +
-            client.attributes.name
-        );
+          `${client.attributes.company.name[this.$i18n.locale]
+          } ${
+            client.attributes.name}`
+        )
       }
 
-      const {first_name, last_name, middle_name} =
-      client.attributes ?? client;
+      const { first_name, last_name, middle_name } = client.attributes ?? client
       return (
-          this.clientName(last_name, language) +
-          " " +
-          this.clientName(first_name, language) +
-          " " +
-          this.clientName(middle_name, language)
-      );
+        `${this.clientName(last_name, language)
+        } ${
+          this.clientName(first_name, language)
+        } ${
+          this.clientName(middle_name, language)}`
+      )
     },
-    contractView({id}, index, event) {
-      const clickedDownloadBtn =
-          event.target.classList.contains("download__icon");
+    contractView({ id }, index, event) {
+      const clickedDownloadBtn = event.target.classList.contains('download__icon')
       if (clickedDownloadBtn) {
         if (this.downloadPermission) {
-          this.downloadContractLink(id);
+          this.downloadContractLink(id)
         }
       } else {
         this.$router.push({
-          name: "contracts-view",
+          name: 'contracts-view',
           params: {
             id,
           },
-        });
+        })
       }
     },
     clientName(multiName, language) {
       if (!isObject(multiName)) {
-        return "";
+        return ''
       }
 
-      const lastNameByLang = multiName[language];
+      const lastNameByLang = multiName[language]
       if (lastNameByLang) {
-        return lastNameByLang;
-      } else {
-        const lastNameOtherLang =
-            language === "kirill" ? multiName["lotin"] : multiName["kirill"];
-        if (lastNameOtherLang) return lastNameOtherLang;
+        return lastNameByLang
       }
+      const lastNameOtherLang = language === 'kirill' ? multiName.lotin : multiName.kirill
+      if (lastNameOtherLang) return lastNameOtherLang
 
-      return "";
+      return ''
     },
     fetchContentByStatus(status) {
-      this.currentTab = status;
-      const query = Object.assign({}, this.query);
+      this.currentTab = status
+      const query = { ...this.query }
       // eslint-disable-next-line no-prototype-builtins
-      if (query.hasOwnProperty("page")) {
-        delete query.page;
+      if (query.hasOwnProperty('page')) {
+        delete query.page
       }
-      ["is_reorder", "is_archive", "is_trashed"].forEach((el) => {
-        delete query[el];
-      });
-      const newQuery = {limit: this.showByValue, ...query};
+      ['is_reorder', 'is_archive', 'is_trashed'].forEach(el => {
+        delete query[el]
+      })
+      const newQuery = { limit: this.showByValue, ...query }
       if (status) {
-        newQuery[status] = 1;
+        newQuery[status] = 1
       }
-      this.replaceRouter(newQuery);
+      this.replaceRouter(newQuery)
     },
     changeCurrentPage(page) {
-      const currentPage = this.query.page;
-      if (page === currentPage) return;
-      this.replaceRouter({...this.query, page});
+      const currentPage = this.query.page
+      if (page === currentPage) return
+      this.replaceRouter({ ...this.query, page })
     },
     changeFetchLimit(e) {
-      console.log(e);
-      console.log(this.showByValue.toString());
-      const {query} = this;
-      const isNotUpdate =
-          !this.query.limit ||
-          query.limit?.toString() === this.showByValue.toString();
-      if (isNotUpdate) return;
+      console.log(e)
+      console.log(this.showByValue.toString())
+      const { query } = this
+      const isNotUpdate = !this.query.limit
+          || query.limit?.toString() === this.showByValue.toString()
+      if (isNotUpdate) return
       const localQuery = {
         ...this.query,
         page: 1,
-      };
-      const limit = this.showByValue;
-      this.replaceRouter({...localQuery, limit});
+      }
+      const limit = this.showByValue
+      this.replaceRouter({ ...localQuery, limit })
     },
     // setSearchValue(search) {
     //   const hasSearchQuery = this.query.hasOwnProperty('search')
@@ -469,100 +457,100 @@ export default {
     //   this.searchValue = search
     // },
     getContractListBySearch() {
-      const {query, searchValue} = this;
+      const { query, searchValue } = this
       // eslint-disable-next-line no-prototype-builtins
-      const hasSearchQuery = query.hasOwnProperty("search");
+      const hasSearchQuery = query.hasOwnProperty('search')
       if (!hasSearchQuery) {
         this.pushRouter({
           search: searchValue,
-        });
-        return;
+        })
+        return
       }
 
-      query.search = searchValue;
-      this.pushRouter(query);
+      query.search = searchValue
+      this.pushRouter(query)
     },
     createQuery() {
-      const query = sortObjectValues(this.query);
+      const query = sortObjectValues(this.query)
       const propArrayList = [
-        "object_id",
-        "blocks",
-        "floors",
-        "branch",
-        "created_by",
-        "contract_number",
-        "apartment_number",
-        "type",
-        "created_by",
-        "statuses",
-      ];
+        'object_id',
+        'blocks',
+        'floors',
+        'branch',
+        'created_by',
+        'contract_number',
+        'apartment_number',
+        'type',
+        'created_by',
+        'statuses',
+      ]
 
-      propArrayList.forEach((prop) => {
+      propArrayList.forEach(prop => {
         if (
-            // eslint-disable-next-line no-prototype-builtins
-            query.hasOwnProperty(prop) &&
-            typeof query[prop] === "string"
+        // eslint-disable-next-line no-prototype-builtins
+          query.hasOwnProperty(prop)
+            && typeof query[prop] === 'string'
         ) {
-          query[prop] = [query[prop]];
+          query[prop] = [query[prop]]
         }
-      });
+      })
 
-      if (!this.hasAdminRole && this.$route.query.status === "archived") {
-        delete query.status;
+      if (!this.hasAdminRole && this.$route.query.status === 'archived') {
+        delete query.status
       }
-      return query;
+      return query
     },
     async fetchContractList() {
       if (this.timeout) {
-        clearTimeout(this.timeout);
+        clearTimeout(this.timeout)
       }
       this.timeout = setTimeout(async () => {
-        this.timeout = null;
-        const query = this.createQuery();
+        this.timeout = null
+        const query = this.createQuery()
 
-        this.showLoading = true;
-        this.tableItems = [];
+        this.showLoading = true
+        this.tableItems = []
 
-        this.fetchStatusesOfCounts();
+        this.fetchStatusesOfCounts()
         await api.contractV2
-            .fetchContractsList(query)
-            .then((response) => {
-              if (!this.timeout) {
-                this.tableItems = response.data.items;
+          .fetchContractsList(query)
+          .then(response => {
+            if (!this.timeout) {
+              this.tableItems = response.data.items
 
-                this.pagination = response.data.pagination;
-              }
-            })
-            .finally(() => {
-              this.showLoading = false;
-            });
-      }, 500);
+              this.pagination = response.data.pagination
+            }
+          })
+          .finally(() => {
+            this.showLoading = false
+          })
+      }, 500)
     },
     searchQueryFilter(searchQuery) {
       // eslint-disable-next-line no-prototype-builtins
-      const hasQueryStatus = this.query.hasOwnProperty("status");
+      const hasQueryStatus = this.query.hasOwnProperty('status')
       if (hasQueryStatus) {
-        const {status} = this.query;
+        const { status } = this.query
         this.pushRouter({
           ...searchQuery,
           status,
-        });
-        return;
+        })
+        return
       }
 
-      this.pushRouter(searchQuery);
+      this.pushRouter(searchQuery)
     },
     replaceRouter(query) {
-      const sortQuery = sortObjectValues(query);
-      this.$router.replace({query: sortQuery});
+      const sortQuery = sortObjectValues(query)
+      this.$router.replace({ query: sortQuery })
     },
     pushRouter(query) {
-      const sortQuery = sortObjectValues(query);
-      this.$router.push({query: {}});
-      this.$router.push({query: sortQuery});
+      const sortQuery = sortObjectValues(query)
+      this.$router.push({ query: {} })
+      this.$router.push({ query: sortQuery })
     },
   },
-};
+}
 </script>
 
 <template>
@@ -573,93 +561,108 @@ export default {
       </template>
 
       <template #header-actions>
-        <export-dropdown v-if="permissionDownloadReport"/>
+        <export-dropdown v-if="permissionDownloadReport" />
       </template>
     </app-header>
 
     <!--  Tabs  -->
     <base-filter-tabs-content
-        v-if="filterPermission"
-        :current="currentTab"
-        :filter-tab-list="statuses"
-        @get-new-content="fetchContentByStatus"
+      v-if="filterPermission"
+      :current="currentTab"
+      :filter-tab-list="statuses"
+      @get-new-content="fetchContentByStatus"
     />
 
     <!--  Search Content  -->
     <search-bar-content
-        ref="filterModal"
-        @replace-router="searchQueryFilter"
-        @search-by-filter="searchQueryFilter"
+      ref="filterModal"
+      @replace-router="searchQueryFilter"
+      @search-by-filter="searchQueryFilter"
     />
     <!--  Table List -->
     <b-table
-        sticky-header
-        borderless
-        responsive
-        :busy="showLoading"
-        :items="tableItems"
-        :fields="tableFields"
-        class="table__list"
-        :empty-text="$t('no_data')"
-        thead-tr-class="row__head__bottom-border"
-        tbody-tr-class="row__body__bottom-border cursor-pointer"
-        show-empty
-        sort-icon-left
-        @row-clicked="contractView"
+      sticky-header
+      borderless
+      responsive
+      :busy="showLoading"
+      :items="tableItems"
+      :fields="tableFields"
+      class="table__list"
+      :empty-text="$t('no_data')"
+      thead-tr-class="row__head__bottom-border"
+      tbody-tr-class="row__body__bottom-border cursor-pointer"
+      show-empty
+      sort-icon-left
+      @row-clicked="contractView"
     >
       <!--!  CONTRACT   -->
       <template #cell(contract)="data">
-        <router-link :to="{ name:'contracts-view', params:{ id:data.item.id } }" class="router__link">
+        <router-link
+          :to="{ name:'contracts-view', params:{ id:data.item.id } }"
+          class="router__link"
+        >
           <span class="d-flex align-items-center">
-          <x-square-background
+            <x-square-background
               v-if="data.item.archived"
               padding="0.4"
               class="mr-2 bg-yellow-200"
-          >
-            <x-icon name="archive" class="color-yellow-600"></x-icon>
-          </x-square-background>
-          <x-square-background
+            >
+              <x-icon
+                name="archive"
+                class="color-yellow-600"
+              />
+            </x-square-background>
+            <x-square-background
               v-if="data.item.type === 'parking'"
               padding="0.4"
               class="mr-2 bg-violet-600"
-          >
-            <x-icon name="local_parking" class="color-yellow-400"></x-icon>
-          </x-square-background>
-          <span>
-            {{ data.item.contract }}
-          </span>
-          <x-square-background
+            >
+              <x-icon
+                name="local_parking"
+                class="color-yellow-400"
+              />
+            </x-square-background>
+            <span>
+              {{ data.item.contract }}
+            </span>
+            <x-square-background
               v-if="data.item['reissued']"
-              padding="0.4"
               :id="`reissued_${data.item['reissued']}`"
+              padding="0.4"
               class="ml-2 bg-yellow-200"
-          >
-            <x-icon name="update" class="color-yellow-600"></x-icon>
-          </x-square-background>
+            >
+              <x-icon
+                name="update"
+                class="color-yellow-600"
+              />
+            </x-square-background>
             <b-tooltip :target="`reissued_${data.item['reissued']}`">
-                {{ $t('reissued') }}
+              {{ $t('reissued') }}
             </b-tooltip>
-        </span>
+          </span>
         </router-link>
       </template>
 
       <!--!   CLIENT   -->
       <template #cell(client)="{ item }">
-        <router-link :to="{ name:'contracts-view', params:{ id:item.id } }" class="router__link">
+        <router-link
+          :to="{ name:'contracts-view', params:{ id:item.id } }"
+          class="router__link"
+        >
           <div class="d-flex">
             <div
-                v-if="item.client.client_type.is_vip"
-                class="d-flex align-items-center mr-1"
+              v-if="item.client.client_type.is_vip"
+              class="d-flex align-items-center mr-1"
             >
               <x-square-background
-                  :id="'clientName' + item.id"
-                  class="bg-violet-100 cursor-pointer"
-                  padding="0.2"
+                :id="'clientName' + item.id"
+                class="bg-violet-100 cursor-pointer"
+                padding="0.2"
               >
                 <x-icon
-                    :name="item.client.client_type.icon"
-                    color="var(--violet-600)"
-                    size="18"
+                  :name="item.client.client_type.icon"
+                  color="var(--violet-600)"
+                  size="18"
                 />
               </x-square-background>
               <b-tooltip :target="'clientName' + item.id">
@@ -673,15 +676,24 @@ export default {
 
       <!--!   APARTMENTS NUMBER   -->
       <template #cell(apartmentsNumber)="data">
-        <router-link :to="{ name:'contracts-view', params:{ id: data.item.id } }" class="router__link">
+        <router-link
+          :to="{ name:'contracts-view', params:{ id: data.item.id } }"
+          class="router__link"
+        >
           {{ data.value }}
         </router-link>
       </template>
 
       <!--!   STATUS   -->
       <template #cell(status)="{ item }">
-        <router-link :to="{ name:'contracts-view', params:{ id: item.id } }" class="router__link">
-          <span class="current__status" :class="item.status">
+        <router-link
+          :to="{ name:'contracts-view', params:{ id: item.id } }"
+          class="router__link"
+        >
+          <span
+            class="current__status"
+            :class="item.status"
+          >
             {{ $t(`contracts.status.${item.status}`) }}
           </span>
         </router-link>
@@ -689,81 +701,101 @@ export default {
 
       <!--!   TRANSACTION PRICE   -->
       <template #cell(payments.transaction_price)="data">
-        <router-link :to="{ name:'contracts-view', params:{ id: data.item.id } }" class="router__link">
+        <router-link
+          :to="{ name:'contracts-view', params:{ id: data.item.id } }"
+          class="router__link"
+        >
           {{ data.value }}
         </router-link>
       </template>
 
       <!--!   OBJECT   -->
       <template #cell(object)="data">
-        <router-link :to="{ name:'contracts-view', params:{ id: data.item.id } }" class="router__link">
+        <router-link
+          :to="{ name:'contracts-view', params:{ id: data.item.id } }"
+          class="router__link"
+        >
           {{ data.value }}
         </router-link>
       </template>
 
       <!--!   DATE   -->
       <template #cell(date)="data">
-        <router-link :to="{ name:'contracts-view', params:{ id: data.item.id } }" class="router__link">
+        <router-link
+          :to="{ name:'contracts-view', params:{ id: data.item.id } }"
+          class="router__link"
+        >
           <span>{{ dateReverser(data.item.created_at) }}</span>
         </router-link>
       </template>
 
       <!--!   CREATED   -->
       <template #cell(created)="data">
-        <router-link :to="{ name:'contracts-view', params:{ id: data.item.id } }" class="router__link">
+        <router-link
+          :to="{ name:'contracts-view', params:{ id: data.item.id } }"
+          class="router__link"
+        >
           {{ data.value }}
         </router-link>
       </template>
 
       <!--!  ACTIONS    -->
       <template #cell(actions)>
-        <span v-if="downloadPermission" class="arrow__down-violet">
+        <span
+          v-if="downloadPermission"
+          class="arrow__down-violet"
+        >
           <base-arrow-down-icon
-              class="download__icon"
-              :width="20"
-              :height="20"
-              fill="#fff"
+            class="download__icon"
+            :width="20"
+            :height="20"
+            fill="#fff"
           />
         </span>
       </template>
 
       <!--  Busy Animation    -->
       <template #table-busy>
-        <base-loading/>
+        <base-loading />
       </template>
 
       <template #empty>
         <div
-            class="d-flex justify-content-center align-items-center flex-column not__found"
+          class="d-flex justify-content-center align-items-center flex-column not__found"
         >
-          <p class="head">{{ $t("contracts_not_found.title") }}</p>
+          <p class="head">
+            {{ $t("contracts_not_found.title") }}
+          </p>
           <p>{{ $t("contracts_not_found.description") }}</p>
         </div>
       </template>
     </b-table>
-    <div v-if="!showLoading && countOfItems" class="pagination__vue">
+    <div
+      v-if="!showLoading && countOfItems"
+      class="pagination__vue"
+    >
       <!--   Pagination   -->
       <vue-paginate
-          :page-count="pagination.total"
-          :value="pagination.current"
-          :container-class="'container'"
-          :page-class="'page-item'"
-          :page-link-class="'page-link'"
-          :next-class="'page-item'"
-          :prev-class="'page-item'"
-          :prev-link-class="'page-link'"
-          :next-link-class="'page-link'"
-          @change-page="changeCurrentPage"
+        :page-count="pagination.total"
+        :value="pagination.current"
+        :container-class="'container'"
+        :page-class="'page-item'"
+        :page-link-class="'page-link'"
+        :next-class="'page-item'"
+        :prev-class="'page-item'"
+        :prev-link-class="'page-link'"
+        :next-link-class="'page-link'"
+        @change-page="changeCurrentPage"
       >
         <template #next-content>
           <span class="d-flex align-items-center justify-content-center">
-            <base-arrow-right-icon/>
+            <base-arrow-right-icon />
           </span>
         </template>
 
         <template #prev-content>
           <span class="d-flex align-items-center justify-content-center">
-            <base-arrow-left-icon/>
+            <base-arrow-left-icon />
           </span>
         </template>
       </vue-paginate>
@@ -771,10 +803,10 @@ export default {
       <!--  Show By Select    -->
       <div class="show__by">
         <x-form-select
-            :label="false"
-            :options="showByOptions"
-            v-model="showByValue"
-            @change="limitChanged"
+          v-model="showByValue"
+          :label="false"
+          :options="showByOptions"
+          @change="limitChanged"
         >
           <template #output-prefix>
             <span class="show-by-description">

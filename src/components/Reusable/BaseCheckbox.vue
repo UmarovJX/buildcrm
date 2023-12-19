@@ -1,6 +1,6 @@
 <script>
 export default {
-  name: "BaseCheckbox",
+  name: 'BaseCheckbox',
   components: {},
   props: {
     disabled: {
@@ -17,27 +17,27 @@ export default {
   data() {
     return {
       inlineWatcher: this.checked,
-    };
+    }
   },
   watch: {
     checked(latest) {
       if (latest !== this.inlineWatcher) {
-        this.inlineWatcher = latest;
+        this.inlineWatcher = latest
       }
     },
   },
-};
+}
 </script>
 
 <template>
   <div class="base-checkbox">
     <input
+      v-model="inlineWatcher"
       :disabled="disabled"
       type="checkbox"
       name="checkbox"
-      v-model="inlineWatcher"
       @input="$emit('input', $event)"
-    />
+    >
   </div>
 </template>
 

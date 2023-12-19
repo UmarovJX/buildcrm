@@ -1,26 +1,29 @@
-import { v3ServiceApi } from "@/services/v3/v3.service.js";
-import Core from "@/services/core/index";
+import { v3ServiceApi } from '@/services/v3/v3.service.js'
+import Core from '@/services/core/index'
 
 class LanguagesV3 extends Core {
   constructor(axios = v3ServiceApi) {
-    super(axios);
+    super(axios)
   }
 
   getLanguages(body) {
-    return this.post(`language/index`, body);
+    return this.post('language/index', body)
   }
 
   getAllLanguages() {
-    return this.post("language/list");
+    return this.post('language/list')
   }
+
   createLanguage(body) {
-    return this.post(`language/create`, body);
+    return this.post('language/create', body)
   }
+
   updateLanguage(body) {
-    return this.post(`language/update`, body);
+    return this.post('language/update', body)
   }
+
   removeLanguage(body) {
-    return this.post(`language/remove`, body);
+    return this.post('language/remove', body)
   }
   // getObjectParkings(body) {
   //   return this.post(`parking/findAll`, body);
@@ -45,4 +48,4 @@ class LanguagesV3 extends Core {
 
 export default {
   LanguagesV3,
-};
+}

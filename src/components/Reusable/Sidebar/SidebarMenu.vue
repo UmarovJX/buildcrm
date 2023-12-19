@@ -1,30 +1,30 @@
 <script>
 export default {
-  name: "SidebarMenu",
+  name: 'SidebarMenu',
   data() {
     return {
       sidebarLinks: [
         {
-          leftIcon: "",
-          rightIcon: "",
-          routerLink: "",
-          routeName: "",
+          leftIcon: '',
+          rightIcon: '',
+          routerLink: '',
+          routeName: '',
           expand: false,
           hierarchy: 1,
           children: [
             {
-              leftIcon: "",
-              rightIcon: "",
-              routerLink: "",
-              routeName: "",
+              leftIcon: '',
+              rightIcon: '',
+              routerLink: '',
+              routeName: '',
               hierarchy: 2,
             },
           ],
         },
       ],
-    };
+    }
   },
-};
+}
 </script>
 
 <template>
@@ -50,7 +50,7 @@ export default {
       <span class="main-view-wrapper">
         {{ routeName }}
       </span>
-      <span class="right-icon-wrapper"> </span>
+      <span class="right-icon-wrapper" />
     </div>
   </div>
 </template>

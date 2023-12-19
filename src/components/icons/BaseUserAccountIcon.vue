@@ -1,6 +1,6 @@
 <script>
 export default {
-  name: "BaseUserAccountIcon",
+  name: 'BaseUserAccountIcon',
   props: {
     extraClass: {
       type: String,
@@ -8,7 +8,7 @@ export default {
     },
     fill: {
       type: String,
-      default: "#9CA3AF",
+      default: '#9CA3AF',
     },
     width: {
       type: Number,
@@ -19,7 +19,7 @@ export default {
       default: 20,
     },
   },
-};
+}
 </script>
 
 <template>

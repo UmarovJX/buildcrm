@@ -1,13 +1,13 @@
 <script>
-import { BOverlay } from "bootstrap-vue";
-import { mapActions, mapGetters } from "vuex";
-import SideBarFilter from "./SideBarFilter.vue";
+import { BOverlay } from 'bootstrap-vue'
+import { mapActions, mapGetters } from 'vuex'
 // import BaseFilterTabsContent from "@/components/Reusable/BaseFilterTabsContent";
-import BaseBreadCrumb from "@/components/BaseBreadCrumb";
-import api from "@/services/api";
+import BaseBreadCrumb from '@/components/BaseBreadCrumb'
+import api from '@/services/api'
+import SideBarFilter from './SideBarFilter.vue'
 
 export default {
-  name: "Contracts",
+  name: 'Contracts',
   components: {
     // BaseFilterTabsContent,
     BaseBreadCrumb,
@@ -19,246 +19,244 @@ export default {
     return {
       fields: [
         {
-          key: "contract_number",
-          label: "№",
+          key: 'contract_number',
+          label: '№',
           sortable: true,
         },
         {
-          key: "client",
-          label: this.$t("contracts.client_name"),
+          key: 'client',
+          label: this.$t('contracts.client_name'),
           // sortable: true,
         },
         {
-          key: "client.phone",
-          label: this.$t("contracts.client_phone"),
-          formatter: (value) => "+" + value,
+          key: 'client.phone',
+          label: this.$t('contracts.client_phone'),
+          formatter: value => `+${value}`,
         },
         {
-          key: "price",
-          label: this.$t("contracts.price"),
+          key: 'price',
+          label: this.$t('contracts.price'),
           sortable: true,
         },
         {
-          key: "object.name",
-          label: this.$t("contracts.object"),
+          key: 'object.name',
+          label: this.$t('contracts.object'),
         },
         {
-          key: "status",
-          label: this.$t("apartments.list.status"),
+          key: 'status',
+          label: this.$t('apartments.list.status'),
           // sortable: true,
-          formatter: (value) => this.getStatusOrder(value),
+          formatter: value => this.getStatusOrder(value),
         },
         {
-          key: "date",
-          label: this.$t("clients.date"),
+          key: 'date',
+          label: this.$t('clients.date'),
           sortable: true,
         },
         {
-          key: "actions",
-          label: "",
+          key: 'actions',
+          label: '',
         },
       ],
       filter: {},
-      sortBy: "",
+      sortBy: '',
       sortDesc: false,
       page: 1,
       currentPage: 1,
       loading: false,
-    };
+    }
   },
   created() {
     this.filter = {
       ...this.$route.query,
-    };
-    this.currentPage = Number(this.filter.page);
+    }
+    this.currentPage = Number(this.filter.page)
   },
   computed: {
-    ...mapGetters(["getContracts", "getLoading", "getPaginationContracts"]),
+    ...mapGetters(['getContracts', 'getLoading', 'getPaginationContracts']),
     filterTabList() {
       return [
         {
-          name: this.$t("filter_names.all"),
-          status: "all",
+          name: this.$t('filter_names.all'),
+          status: 'all',
         },
         {
-          name: this.$t("filter_names.booked"),
-          status: "booked",
+          name: this.$t('filter_names.booked'),
+          status: 'booked',
         },
         {
-          name: this.$t("filter_names.sold"),
-          status: "sold",
+          name: this.$t('filter_names.sold'),
+          status: 'sold',
         },
         {
-          name: this.$t("filter_names.in_payment"),
-          status: "in_payment",
+          name: this.$t('filter_names.in_payment'),
+          status: 'in_payment',
         },
         {
-          name: this.$t("filter_names.archive"),
-          status: "archive",
+          name: this.$t('filter_names.archive'),
+          status: 'archive',
         },
-      ];
+      ]
     },
     getPagination() {
       if (this.getPaginationContracts.total) {
-        return this.getPaginationContracts.total;
+        return this.getPaginationContracts.total
       }
-      return 1;
+      return 1
     },
     activeContent() {
-      return this.$t("contracts.title");
+      return this.$t('contracts.title')
     },
   },
   mounted() {
-    this.fetchContracts(this);
+    this.fetchContracts(this)
   },
 
   methods: {
-    ...mapActions(["fetchContracts"]),
+    ...mapActions(['fetchContracts']),
     getFilterTabsContent(status) {
-      console.log(status);
+      console.log(status)
     },
     downloadContractLink(id) {
       api.contract
         .downloadContract(id)
         .then(() => {
-          window.open(process.env.VUE_APP_URL + `/orders/${id}/contract`);
+          window.open(`${process.env.VUE_APP_URL}/orders/${id}/contract`)
         })
-        .catch(() => {
-          return "#";
-        });
+        .catch(() => '#')
     },
     sortingChanged(val) {
-      this.filter.sort_by = val.sortBy;
-      this.filter.order_by = val.sortDesc ? "desc" : "asc";
-      this.filter.page = 1;
-      this.currentPage = this.filter.page;
+      this.filter.sort_by = val.sortBy
+      this.filter.order_by = val.sortDesc ? 'desc' : 'asc'
+      this.filter.page = 1
+      this.currentPage = this.filter.page
 
       this.$router.push({
-        name: "contracts",
+        name: 'contracts',
         query: this.filter,
-      });
+      })
       setTimeout(() => {
-        this.fetchContracts(this);
-      }, 1000);
+        this.fetchContracts(this)
+      }, 1000)
     },
     async contractsFiltered(event) {
-      this.filter = event;
-      let filter = {};
+      this.filter = event
+      const filter = {}
       if (this.filter.object_id.length > 0) {
-        filter.object_id = this.filter.object_id;
+        filter.object_id = this.filter.object_id
       }
       if (this.filter.apartment_number.length > 0) {
-        filter.apartment_number = this.filter.apartment_number;
+        filter.apartment_number = this.filter.apartment_number
       }
       if (this.filter.date.length > 0) {
-        filter.date = this.filter.date;
+        filter.date = this.filter.date
       }
       // if (this.filter.status.length > 0) {
       //   filter.status = this.filter.status;
       // }
 
-      if (this.filter.contract_number !== "") {
-        filter.contract_number = this.filter.contract_number;
+      if (this.filter.contract_number !== '') {
+        filter.contract_number = this.filter.contract_number
       }
-      if (this.filter.phone !== "") {
-        filter.phone = this.filter.phone;
+      if (this.filter.phone !== '') {
+        filter.phone = this.filter.phone
       }
-      if (this.filter.full_name !== "") {
-        filter.full_name = this.filter.full_name;
+      if (this.filter.full_name !== '') {
+        filter.full_name = this.filter.full_name
       }
-      this.filter.page = 1;
-      this.currentPage = this.filter.page;
-      filter.page = this.filter.page;
+      this.filter.page = 1
+      this.currentPage = this.filter.page
+      filter.page = this.filter.page
       this.$router.push({
-        name: "contracts",
+        name: 'contracts',
         query: filter,
-      });
-      const vm = this;
+      })
+      const vm = this
       setTimeout(() => {
-        this.fetchContracts(vm);
-      }, 1000);
+        this.fetchContracts(vm)
+      }, 1000)
       // await this.fetchContracts(this);
     },
     rowClass(item, type) {
-      if (item && type === "row") {
-        if (item.status === "contract") {
-          return "table-info";
+      if (item && type === 'row') {
+        if (item.status === 'contract') {
+          return 'table-info'
         }
-        if (item.status === "sold") {
-          return "table-success";
+        if (item.status === 'sold') {
+          return 'table-success'
         }
       } else {
-        return null;
+        return null
       }
     },
     async PageCallBack(pageNum) {
-      this.page = pageNum;
-      this.filter.page = Number(this.page);
-      this.currentPage = this.filter.page;
+      this.page = pageNum
+      this.filter.page = Number(this.page)
+      this.currentPage = this.filter.page
       this.$router.push({
-        name: "contracts",
+        name: 'contracts',
         query: this.filter,
-      });
-      await this.fetchContracts(this);
+      })
+      await this.fetchContracts(this)
     },
     getStatusOrder(status) {
-      let msg;
+      let msg
       switch (status) {
-        case "sold":
-          msg = "Продано";
-          break;
-        case "booked":
-          msg = "";
-          break;
-        case "contract":
-          msg = "Оформлен контракт ";
-          break;
+        case 'sold':
+          msg = 'Продано'
+          break
+        case 'booked':
+          msg = ''
+          break
+        case 'contract':
+          msg = 'Оформлен контракт '
+          break
       }
 
-      return msg;
+      return msg
     },
   },
 
   filters: {
     getStatus(status, buy, book) {
-      let msg;
+      let msg
 
       switch (status) {
-        case "sold":
-          msg = buy;
-          break;
-        case "booked":
-          msg = "Забронировал до " + book;
-          break;
-        case "contract":
-          msg = buy;
-          break;
+        case 'sold':
+          msg = buy
+          break
+        case 'booked':
+          msg = `Забронировал до ${book}`
+          break
+        case 'contract':
+          msg = buy
+          break
         default:
-          msg = "отказался купить или другое";
-          break;
+          msg = 'отказался купить или другое'
+          break
       }
 
-      return msg;
+      return msg
     },
 
     getStatusOrder(status) {
-      let msg;
+      let msg
       switch (status) {
-        case "sold":
-          msg = "Продано";
-          break;
-        case "booked":
-          msg = "";
-          break;
-        case "contract":
-          msg = "Оформлен контракт ";
-          break;
+        case 'sold':
+          msg = 'Продано'
+          break
+        case 'booked':
+          msg = ''
+          break
+        case 'contract':
+          msg = 'Оформлен контракт '
+          break
       }
 
-      return msg;
+      return msg
     },
   },
-};
+}
 </script>
 
 <template>
@@ -266,10 +264,10 @@ export default {
     <base-bread-crumb :active-content="activeContent">
       <template #extra-content>
         <button
-          class="btn btn-primary mt-0 mr-0 ml-auto"
           v-b-toggle.contracts-list-filter
+          class="btn btn-primary mt-0 mr-0 ml-auto"
         >
-          <i class="far fa-sliders-h mr-2"></i>
+          <i class="far fa-sliders-h mr-2" />
           {{ $t("apartments.list.filter") }}
         </button>
       </template>
@@ -279,7 +277,10 @@ export default {
       Contracts Clone
     </router-link>
 
-    <SideBarFilter @contractsFiltered="contractsFiltered" :filtered="filter" />
+    <SideBarFilter
+      :filtered="filter"
+      @contractsFiltered="contractsFiltered"
+    />
 
     <!--    <base-filter-tabs-content-->
     <!--        :filter-tab-list="filterTabList"-->
@@ -288,8 +289,10 @@ export default {
 
     <div class="app-content">
       <b-table
-        ref="contracts-table"
         id="contracts-table"
+        ref="contracts-table"
+        v-model:sort-by="sortBy"
+        v-model:sort-desc="sortDesc"
         class="custom-table"
         sticky-header
         borderless
@@ -298,25 +301,25 @@ export default {
         sort-icon-left
         :items="getContracts"
         :fields="fields"
-        v-model:sort-by="sortBy"
         :tbody-tr-class="rowClass"
-        v-model:sort-desc="sortDesc"
         :empty-text="$t('no_data')"
         @sort-changed="sortingChanged"
       >
-        <template #empty="scope" class="text-center">
+        <template
+          #empty="scope"
+          class="text-center"
+        >
           <span class="d-flex justify-content-center align-items-center">
-            {{ scope.emptyText }}</span
-          >
+            {{ scope.emptyText }}</span>
         </template>
 
         <template #table-busy>
           <div class="d-flex justify-content-center w-100">
             <div class="lds-ellipsis">
-              <div></div>
-              <div></div>
-              <div></div>
-              <div></div>
+              <div />
+              <div />
+              <div />
+              <div />
             </div>
           </div>
         </template>
@@ -352,10 +355,10 @@ export default {
             data.item.status === "booked"
               ? 0
               : data.item.transaction_price
-                | number("0,0.00", {
-                  thousandsSeparator: " ",
-                  decimalSeparator: ",",
-                })
+              | number("0,0.00", {
+                thousandsSeparator: " ",
+                decimalSeparator: ",",
+              })
           }}
           {{ $t("ye") }}
         </template>
@@ -381,19 +384,19 @@ export default {
                 class="dropdown-toggle"
                 data-toggle="dropdown"
               >
-                <i class="far fa-ellipsis-h"></i>
+                <i class="far fa-ellipsis-h" />
               </button>
               <div class="dropdown-menu">
                 <a
-                  class="dropdown-item dropdown-item--inside"
                   v-if="
                     data.item.status === 'contract' ||
-                    data.item.status === 'sold'
+                      data.item.status === 'sold'
                   "
+                  class="dropdown-item dropdown-item--inside"
                   href="#"
                   @click="downloadContractLink(data.item.id)"
                 >
-                  <i class="fa fa-download"></i>
+                  <i class="fa fa-download" />
                   {{ $t("contracts.download") }}
                 </a>
 
@@ -405,7 +408,7 @@ export default {
                   :to="{ name: 'contracts-view', params: { id: data.item.id } }"
                   :class="'dropdown-item dropdown-item--inside'"
                 >
-                  <i class="far fa-eye"></i>
+                  <i class="far fa-eye" />
                   {{ $t("apartments.list.more") }}
                 </router-link>
               </div>
@@ -413,14 +416,18 @@ export default {
           </div>
         </template>
 
-        <b-overlay :show="getLoading" no-wrap opacity="0.5">
+        <b-overlay
+          :show="getLoading"
+          no-wrap
+          opacity="0.5"
+        >
           <template #overlay>
             <div class="d-flex justify-content-center w-100">
               <div class="lds-ellipsis">
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
+                <div />
+                <div />
+                <div />
+                <div />
               </div>
             </div>
           </template>
@@ -429,10 +436,11 @@ export default {
 
       <paginate
         v-if="getPagination"
-        :pageCount="getPagination"
-        :clickHandler="PageCallBack"
-        :prevText="`<i class='fa fa-chevron-left'></i>`"
-        :nextText="`<i class='fa fa-chevron-right'></i>`"
+        v-model="currentPage"
+        :page-count="getPagination"
+        :click-handler="PageCallBack"
+        :prev-text="`<i class='fa fa-chevron-left'></i>`"
+        :next-text="`<i class='fa fa-chevron-right'></i>`"
         :container-class="'pagination'"
         :page-class="'page-item'"
         :page-link-class="'page-link'"
@@ -440,19 +448,22 @@ export default {
         :prev-class="'page-item'"
         :prev-link-class="'page-link'"
         :next-link-class="'page-link'"
-        v-model="currentPage"
-      >
-      </paginate>
+      />
     </div>
 
-    <b-overlay :show="getLoading" no-wrap opacity="0.5" style="z-index: 2222">
+    <b-overlay
+      :show="getLoading"
+      no-wrap
+      opacity="0.5"
+      style="z-index: 2222"
+    >
       <template #overlay>
         <div class="d-flex justify-content-center w-100">
           <div class="lds-ellipsis">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
+            <div />
+            <div />
+            <div />
+            <div />
           </div>
         </div>
       </template>

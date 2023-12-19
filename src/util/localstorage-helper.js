@@ -1,42 +1,32 @@
-const CryptoJS = require("crypto-js");
+const CryptoJS = require('crypto-js')
 
-const secret = "secret";
-export const encrypt = (data) => {
+const secret = 'secret'
+export const encrypt = data => {
   if (data != null) {
-    return CryptoJS.AES.encrypt(JSON.stringify(data), secret).toString();
+    return CryptoJS.AES.encrypt(JSON.stringify(data), secret).toString()
   }
-  return null;
-};
+  return null
+}
 
-export const decrypt = (ciphertext) => {
+export const decrypt = ciphertext => {
   try {
-    if (ciphertext != null && ciphertext !== "null") {
-      let bytes = CryptoJS.AES.decrypt(ciphertext.toString(), secret);
-      let decrypted = bytes.toString(CryptoJS.enc.Utf8);
-      return JSON.parse(decrypted);
+    if (ciphertext != null && ciphertext !== 'null') {
+      const bytes = CryptoJS.AES.decrypt(ciphertext.toString(), secret)
+      const decrypted = bytes.toString(CryptoJS.enc.Utf8)
+      return JSON.parse(decrypted)
     }
-    return null;
+    return null
   } catch (e) {
-    return null;
+    return null
   }
-};
+}
 
-export const setLocalVar = (key, value) => {
-  return localStorage.setItem(key, value);
-};
+export const setLocalVar = (key, value) => localStorage.setItem(key, value)
 
-export const getLocalVar = (key) => {
-  return localStorage.getItem(key);
-};
+export const getLocalVar = key => localStorage.getItem(key)
 
-export const removeLocalVar = (key) => {
-  return localStorage.removeItem(key);
-};
+export const removeLocalVar = key => localStorage.removeItem(key)
 
-export const setSessionVar = (key, value) => {
-  return sessionStorage.setItem(key, value);
-};
+export const setSessionVar = (key, value) => sessionStorage.setItem(key, value)
 
-export const getSessionVar = (key) => {
-  return sessionStorage.getItem(key);
-};
+export const getSessionVar = key => sessionStorage.getItem(key)

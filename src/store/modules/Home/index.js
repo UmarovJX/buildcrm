@@ -1,25 +1,23 @@
-import api from "@/services/api";
+import api from '@/services/api'
 
 export default {
   actions: {
     async fetchCounts(ctx, vm) {
       try {
-        const response = await api.home.fetchHome();
-        const counts = response.data;
-        ctx.commit("getUpdateCounts", counts);
+        const response = await api.home.fetchHome()
+        const counts = response.data
+        ctx.commit('getUpdateCounts', counts)
       } catch (error) {
         if (!error.response) {
-          vm.toasted("Error: Network Error", "error");
+          vm.toasted('Error: Network Error', 'error')
+        } else if (error.response.status === 403) {
+          vm.toasted(error.response.data.message, 'error')
+        } else if (error.response.status === 401) {
+          vm.toasted(error.response.data.message, 'error')
+        } else if (error.response.status === 500) {
+          vm.toasted(error.response.data.message, 'error')
         } else {
-          if (error.response.status === 403) {
-            vm.toasted(error.response.data.message, "error");
-          } else if (error.response.status === 401) {
-            vm.toasted(error.response.data.message, "error");
-          } else if (error.response.status === 500) {
-            vm.toasted(error.response.data.message, "error");
-          } else {
-            vm.toasted(error.response.data.message, "error");
-          }
+          vm.toasted(error.response.data.message, 'error')
         }
       }
     },
@@ -27,7 +25,7 @@ export default {
 
   mutations: {
     getUpdateCounts(state, counts) {
-      state.counts = counts;
+      state.counts = counts
     },
   },
 
@@ -37,7 +35,7 @@ export default {
 
   getters: {
     getHomeCounts(state) {
-      return state.counts;
+      return state.counts
     },
   },
-};
+}

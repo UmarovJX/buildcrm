@@ -1,10 +1,12 @@
 export default class parser {
   constructor(wXml, wDoc) {
-    this.wXml = wXml;
-    this.wDoc = wDoc;
+    this.wXml = wXml
+    this.wDoc = wDoc
   }
+
   static get type() {
-    return null;
+    return null
   }
+
   parse(visitFactories) {}
 }

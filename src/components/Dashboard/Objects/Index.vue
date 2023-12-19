@@ -1,24 +1,24 @@
 <script>
-import api from "@/services/api";
-import { mapGetters, mapActions } from "vuex";
-import { formatToPrice } from "@/util/reusable";
-import ObjectsPermission from "@/permission/objects";
-import ApartmentsPermission from "@/permission/apartments";
-import PromosPermission from "@/permission/promos";
-import PlansPermission from "@/permission/plans";
-import UploadLogo from "./Components/UploadLogo";
-import BaseDotsIcon from "@/components/icons/BaseDotsIcon";
-import AppHeader from "@/components/Header/AppHeader";
-import Permission from "@/permission";
-import BaseButton from "@/components/Reusable/BaseButton.vue";
-import { XIcon } from "@/components/ui-components/material-icons";
-import { XCircularBackground } from "@/components/ui-components/circular-background";
-import HidePriceButton from "@/components/Reusable/HidePriceButton.vue";
+import api from '@/services/api'
+import { mapGetters, mapActions } from 'vuex'
+import { formatToPrice } from '@/util/reusable'
+import ObjectsPermission from '@/permission/objects'
+import ApartmentsPermission from '@/permission/apartments'
+import PromosPermission from '@/permission/promos'
+import PlansPermission from '@/permission/plans'
+import BaseDotsIcon from '@/components/icons/BaseDotsIcon'
+import AppHeader from '@/components/Header/AppHeader'
+import Permission from '@/permission'
+import BaseButton from '@/components/Reusable/BaseButton.vue'
+import { XIcon } from '@/components/ui-components/material-icons'
+import { XCircularBackground } from '@/components/ui-components/circular-background'
+import HidePriceButton from '@/components/Reusable/HidePriceButton.vue'
 
-import { useShowPrice } from "@/composables/useShowPrice";
+import { useShowPrice } from '@/composables/useShowPrice'
+import UploadLogo from './Components/UploadLogo'
 
 export default {
-  name: "Objects",
+  name: 'Objects',
   components: {
     HidePriceButton,
     XCircularBackground,
@@ -45,140 +45,140 @@ export default {
       area_to: null,
     },
     getLoading: false,
-    createPermission: ObjectsPermission.getObjectsPermission("create"),
-    deletePermission: ObjectsPermission.getObjectsPermission("delete"),
-    editPermission: ObjectsPermission.getObjectsPermission("edit"),
-    viewPermission: ObjectsPermission.getObjectsPermission("view"),
-    logoUploadPermission: ObjectsPermission.getObjectsPermission("upload_logo"),
+    createPermission: ObjectsPermission.getObjectsPermission('create'),
+    deletePermission: ObjectsPermission.getObjectsPermission('delete'),
+    editPermission: ObjectsPermission.getObjectsPermission('edit'),
+    viewPermission: ObjectsPermission.getObjectsPermission('view'),
+    logoUploadPermission: ObjectsPermission.getObjectsPermission('upload_logo'),
     apartmentsViewPermission:
-      ApartmentsPermission.getApartmentsPermission("view"),
+      ApartmentsPermission.getApartmentsPermission('view'),
     promosViewPermission: PromosPermission.getPromosViewPermission(),
     plansViewPermission: PlansPermission.getPlansViewPermission(),
     manageFacilitiesPermission:
-      ObjectsPermission.getObjectsPermission("manage_facilities"),
+      ObjectsPermission.getObjectsPermission('manage_facilities'),
   }),
 
   mounted() {
-    this.fetchObjects(this);
+    this.fetchObjects(this)
   },
 
   computed: {
-    ...mapGetters(["getObjects", "getPermission"]),
+    ...mapGetters(['getObjects', 'getPermission']),
     activeContent() {
-      return this.$t("objects.title");
+      return this.$t('objects.title')
     },
 
     archivedButtonText() {
       return this.archived
-        ? this.$t("objects.active")
-        : this.$t("objects.archived");
+        ? this.$t('objects.active')
+        : this.$t('objects.archived')
     },
     archivedButtonIcon() {
-      return this.archived ? "unarchive" : "inventory_2";
+      return this.archived ? 'unarchive' : 'inventory_2'
     },
   },
 
   methods: {
     async setArchive() {
-      this.archived = !this.archived;
-      this.getLoading = true;
-      await this.fetchObjects(this);
-      this.getLoading = false;
+      this.archived = !this.archived
+      this.getLoading = true
+      await this.fetchObjects(this)
+      this.getLoading = false
     },
     archiveObject(item) {
-      const d = new FormData();
-      d.append("id", item.id);
+      const d = new FormData()
+      d.append('id', item.id)
 
       this.$swal({
         title: this.$t(item.name),
         text: this.archived
-          ? this.$t("sweetAlert.want_unarchive")
-          : this.$t("sweetAlert.want_archive"),
-        icon: "warning",
+          ? this.$t('sweetAlert.want_unarchive')
+          : this.$t('sweetAlert.want_archive'),
+        icon: 'warning',
         showCancelButton: true,
-        cancelButtonText: this.$t("cancel"),
-        confirmButtonText: this.$t("sweetAlert.yesPure"),
-      }).then((result) => {
+        cancelButtonText: this.$t('cancel'),
+        confirmButtonText: this.$t('sweetAlert.yesPure'),
+      }).then(result => {
         if (result.value) {
-          this.getLoading = true;
+          this.getLoading = true
           api.objectsV3
             .setArchive(d)
-            .then((response) => {
+            .then(response => {
               this.fetchObjects(this).then(() => {
-                this.getLoading = false;
-              });
+                this.getLoading = false
+              })
               this.$swal(
                 response.data.result.is_archive
-                  ? this.$t("sweetAlert.archived")
-                  : this.$t("sweetAlert.unarchived"),
-                "",
-                "success"
-              );
+                  ? this.$t('sweetAlert.archived')
+                  : this.$t('sweetAlert.unarchived'),
+                '',
+                'success',
+              )
             })
-            .catch((error) => {
-              this.getLoading = false;
-              this.toastedWithErrorCode(error);
-            });
+            .catch(error => {
+              this.getLoading = false
+              this.toastedWithErrorCode(error)
+            })
         }
-      });
+      })
     },
-    ...mapActions(["fetchObjects"]),
+    ...mapActions(['fetchObjects']),
     createBlock() {
-      this.$router.push({ name: "objectsStore" });
+      this.$router.push({ name: 'objectsStore' })
     },
 
     priceFormat(value) {
-      return formatToPrice(value);
+      return formatToPrice(value)
     },
 
     uploadLogo() {
-      this.getLoading = true;
+      this.getLoading = true
       this.fetchObjects(this).then(() => {
-        this.getLoading = false;
-      });
+        this.getLoading = false
+      })
     },
 
     filterSend() {
-      this.getLoading = true;
+      this.getLoading = true
       this.fetchFilterApartments(this).then(() => {
-        this.getLoading = false;
-      });
-      this.$router.push({ name: "objects-filter" });
+        this.getLoading = false
+      })
+      this.$router.push({ name: 'objects-filter' })
     },
 
     deleteObject(object) {
       this.$swal({
-        title: this.$t("sweetAlert.title"),
-        text: this.$t("sweetAlert.text"),
-        icon: "warning",
+        title: this.$t('sweetAlert.title'),
+        text: this.$t('sweetAlert.text'),
+        icon: 'warning',
         showCancelButton: true,
-        cancelButtonText: this.$t("cancel"),
-        confirmButtonText: this.$t("sweetAlert.yes"),
-      }).then((result) => {
+        cancelButtonText: this.$t('cancel'),
+        confirmButtonText: this.$t('sweetAlert.yes'),
+      }).then(result => {
         if (result.value) {
-          this.getLoading = true;
+          this.getLoading = true
           api.objects
             .deleteObject(object)
-            .then((response) => {
-              this.toasted(response.data.message, "success");
+            .then(response => {
+              this.toasted(response.data.message, 'success')
               this.fetchObjects(this).then(() => {
-                this.getLoading = false;
-              });
+                this.getLoading = false
+              })
 
-              this.$swal(this.$t("sweetAlert.deleted"), "", "success");
+              this.$swal(this.$t('sweetAlert.deleted'), '', 'success')
             })
-            .catch((error) => {
-              this.getLoading = false;
-              this.toastedWithErrorCode(error);
-            });
+            .catch(error => {
+              this.getLoading = false
+              this.toastedWithErrorCode(error)
+            })
         }
-      });
+      })
     },
   },
   setup() {
-    return useShowPrice();
+    return useShowPrice()
   },
-};
+}
 </script>
 
 <template>
@@ -188,11 +188,11 @@ export default {
         {{ $t("objects.title") }}
       </template>
       <template #header-actions>
-        <hide-price-button></hide-price-button>
+        <hide-price-button />
         <base-button
-          @click="setArchive"
-          :text="archivedButtonText"
           v-if="permission.hasAdminRole()"
+          :text="archivedButtonText"
+          @click="setArchive"
         >
           <template #left-icon>
             <x-icon
@@ -206,19 +206,23 @@ export default {
       </template>
     </app-header>
     <div class="search__content">
-      <div></div>
-      <div class="d-flex x-gap-1"></div>
+      <div />
+      <div class="d-flex x-gap-1" />
     </div>
     <div class="object-cards">
       <template v-if="viewPermission">
-        <div class="card" v-for="(object, index) in getObjects" :key="index">
+        <div
+          v-for="(object, index) in getObjects"
+          :key="index"
+          class="card"
+        >
           <div
             v-if="
               deletePermission ||
-              editPermission ||
-              logoUploadPermission ||
-              promosViewPermission ||
-              plansViewPermission
+                editPermission ||
+                logoUploadPermission ||
+                promosViewPermission ||
+                plansViewPermission
             "
             class="object__more-info"
           >
@@ -238,11 +242,14 @@ export default {
                   :class="'dropdown-item'"
                   :to="{ name: 'objectsEdit', params: { id: object.id } }"
                 >
-                  <i class="fas fa-pen"></i> {{ $t("edit") }}
+                  <i class="fas fa-pen" /> {{ $t("edit") }}
                 </router-link>
 
-                <b-link class="dropdown-item" @click="archiveObject(object)">
-                  <i class="fas fa-archive"></i>
+                <b-link
+                  class="dropdown-item"
+                  @click="archiveObject(object)"
+                >
+                  <i class="fas fa-archive" />
                   {{ archived ? $t("unarchiveV") : $t("archiveV") }}
                 </b-link>
 
@@ -259,7 +266,7 @@ export default {
                   :to="{ name: 'objects-promo', params: { id: object.id } }"
                   :class="'dropdown-item'"
                 >
-                  <i class="fas fa-gift"></i>
+                  <i class="fas fa-gift" />
                   <span>
                     {{ $t("promo.promos") }}
                   </span>
@@ -270,7 +277,7 @@ export default {
                   :to="{ name: 'type-plan-view', params: { id: object.id } }"
                   :class="'dropdown-item'"
                 >
-                  <i class="fal fa-credit-card"></i>
+                  <i class="fal fa-credit-card" />
                   <span>
                     {{ $t("type_plan.title") }}
                   </span>
@@ -280,7 +287,7 @@ export default {
                   :to="{ name: 'type-parking-view', params: { id: object.id } }"
                   :class="'dropdown-item'"
                 >
-                  <i class="fal fa-parking"></i>
+                  <i class="fal fa-parking" />
                   <span>
                     {{ $t("parkings") }}
                   </span>
@@ -290,28 +297,28 @@ export default {
                   :to="{ name: 'facilities', params: { object: object.id } }"
                   :class="'dropdown-item'"
                 >
-                  <i class="fal fa-map-marker-alt"></i>
+                  <i class="fal fa-map-marker-alt" />
                   <span>
                     {{ $t("Facilities") }}
                   </span>
                 </router-link>
 
                 <b-link
-                  class="dropdown-item"
                   v-if="logoUploadPermission"
-                  @click="object_id = object.id"
                   v-b-modal.modal-upload-logo
+                  class="dropdown-item"
+                  @click="object_id = object.id"
                 >
-                  <i class="fas fa-image"></i> {{ $t("upload_logo") }}
+                  <i class="fas fa-image" /> {{ $t("upload_logo") }}
                 </b-link>
 
                 <a
-                  class="dropdown-item"
                   v-if="deletePermission"
-                  @click="deleteObject(object.id)"
+                  class="dropdown-item"
                   href="#"
+                  @click="deleteObject(object.id)"
                 >
-                  <i class="fas fa-trash"></i> {{ $t("delete") }}
+                  <i class="fas fa-trash" /> {{ $t("delete") }}
                 </a>
               </div>
             </div>
@@ -341,7 +348,10 @@ export default {
                   {{ object.apartments_count }}
                   {{ $t("objects.view_apartments") }}
                 </p>
-                <p class="card-block__subtitle price" v-if="showPrice">
+                <p
+                  v-if="showPrice"
+                  class="card-block__subtitle price"
+                >
                   {{
                     $t("price_from", {
                       msg: priceFormat(object.apartment_price),
@@ -363,7 +373,10 @@ export default {
                   "
                 />
               </div>
-              <div class="card-block" v-if="object.is_parking">
+              <div
+                v-if="object.is_parking"
+                class="card-block"
+              >
                 <p class="card-block__title">
                   {{ object.parking_count }} {{ $t("objects.view_parkings") }}
                 </p>
@@ -385,14 +398,31 @@ export default {
             :event="apartmentsViewPermission ? 'click' : ''"
             :to="{ name: 'apartments', params: { object: object.id } }"
           >
-            <img v-if="object.image" v-lazy="object.image" alt="" />
-            <img v-else v-lazy="require('@/assets/img/not-found.png')" alt="" />
+            <img
+              v-if="object.image"
+              v-lazy="object.image"
+              alt=""
+            >
+            <img
+              v-else
+              v-lazy="require('@/assets/img/not-found.png')"
+              alt=""
+            >
           </router-link>
         </div>
       </template>
-      <div class="card" v-if="createPermission && !archived">
-        <div class="card-body card-empty" @click="createBlock">
-          <img :src="require('@/assets/icons/icon-plus.svg')" alt="" />
+      <div
+        v-if="createPermission && !archived"
+        class="card"
+      >
+        <div
+          class="card-body card-empty"
+          @click="createBlock"
+        >
+          <img
+            :src="require('@/assets/icons/icon-plus.svg')"
+            alt=""
+          >
           <p>{{ $t("object_create") }}</p>
         </div>
       </div>
@@ -402,14 +432,18 @@ export default {
       :object-id="object_id"
       @UploadLogo="uploadLogo"
     />
-    <b-overlay :show="getLoading" no-wrap opacity="0.5">
+    <b-overlay
+      :show="getLoading"
+      no-wrap
+      opacity="0.5"
+    >
       <template #overlay>
         <div class="d-flex justify-content-center w-100">
           <div class="lds-ellipsis">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
+            <div />
+            <div />
+            <div />
+            <div />
           </div>
         </div>
       </template>

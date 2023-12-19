@@ -1,21 +1,21 @@
 <script>
-import { Fancybox } from "@fancyapps/ui";
-import "@fancyapps/ui/dist/fancybox.css";
-import { mapGetters, mapActions } from "vuex";
-import api from "@/services/api";
-import CreateModal from "@/components/Dashboard/TypePlan/Components/CreateModal";
-import BaseSearchInput from "@/components/Reusable/BaseSearchInput";
-import BaseEditIcon from "@/components/icons/BaseEditIcon";
-import DeleteHasApartment from "@/components/Dashboard/TypePlan/DeleteHasApartment";
-import PlansPermission from "@/permission/plans";
-import BaseButton from "@/components/Reusable/BaseButton";
-import BaseDeleteIcon from "@/components/icons/BaseDeleteIcon";
-import BaseLoadingContent from "@/components/BaseLoadingContent";
-import AppHeader from "@/components/Header/AppHeader";
-import { XButton } from "@/components/ui-components/button";
+import { Fancybox } from '@fancyapps/ui'
+import '@fancyapps/ui/dist/fancybox.css'
+import { mapGetters, mapActions } from 'vuex'
+import api from '@/services/api'
+import CreateModal from '@/components/Dashboard/TypePlan/Components/CreateModal'
+import BaseSearchInput from '@/components/Reusable/BaseSearchInput'
+import BaseEditIcon from '@/components/icons/BaseEditIcon'
+import DeleteHasApartment from '@/components/Dashboard/TypePlan/DeleteHasApartment'
+import PlansPermission from '@/permission/plans'
+import BaseButton from '@/components/Reusable/BaseButton'
+import BaseDeleteIcon from '@/components/icons/BaseDeleteIcon'
+import BaseLoadingContent from '@/components/BaseLoadingContent'
+import AppHeader from '@/components/Header/AppHeader'
+import { XButton } from '@/components/ui-components/button'
 
 export default {
-  name: "TypePlanList",
+  name: 'TypePlanList',
   components: {
     BaseLoadingContent,
     BaseDeleteIcon,
@@ -36,39 +36,39 @@ export default {
       manager_id: null,
       header: {
         modalProperties: {
-          position: "create",
-          title: this.$t("add"),
+          position: 'create',
+          title: this.$t('add'),
         },
       },
       fields: [
         {
-          key: "image",
-          label: this.$t("type_plan.image"),
+          key: 'image',
+          label: this.$t('type_plan.image'),
         },
         {
-          key: "plan",
-          label: this.$t("type_plan.name"),
+          key: 'plan',
+          label: this.$t('type_plan.name'),
         },
         {
-          key: "area",
-          label: this.$t("type_plan.area"),
+          key: 'area',
+          label: this.$t('type_plan.area'),
         },
         {
-          key: "balcony_area",
-          label: this.$t("type_plan.balcony"),
+          key: 'balcony_area',
+          label: this.$t('type_plan.balcony'),
         },
         {
-          key: "apartments_count",
-          label: this.$t("apartments_count"),
+          key: 'apartments_count',
+          label: this.$t('apartments_count'),
         },
         {
-          key: "actions",
-          label: "",
+          key: 'actions',
+          label: '',
         },
       ],
       deletePlan: {
         plans: [],
-        message: "",
+        message: '',
         removePlan: {},
       },
       sendPlan: {
@@ -79,20 +79,20 @@ export default {
         plan_id: null,
       },
       loading: false,
-    };
+    }
   },
   computed: {
-    ...mapGetters(["getPlan", "getLoading", "getPermission"]),
+    ...mapGetters(['getPlan', 'getLoading', 'getPermission']),
   },
   mounted() {
-    this.fetchPlans(this);
-    Fancybox.bind("[data-fancybox]");
+    this.fetchPlans(this)
+    Fancybox.bind('[data-fancybox]')
   },
   methods: {
-    ...mapActions(["fetchPlans"]),
+    ...mapActions(['fetchPlans']),
     imagePath(item) {
-      if (item && item.images[0]) return item.images[0].path;
-      return null;
+      if (item && item.images[0]) return item.images[0].path
+      return null
     },
     clearModal() {
       this.sendPlan = {
@@ -101,75 +101,75 @@ export default {
         balcony_area: null,
         images: [],
         plan_id: null,
-      };
+      }
     },
     async deleteTypePlan(item) {
-      const objectId = this.$route.params.id;
-      const { apartments_count, id: planId } = item;
+      const objectId = this.$route.params.id
+      const { apartments_count, id: planId } = item
       if (apartments_count) {
-        this.showLoading = true;
+        this.showLoading = true
         const response = await api.plans
           .deletePlanWhenHasApartment(objectId, planId)
           .then(() => ({}))
-          .catch((error) => error.response)
+          .catch(error => error.response)
           .finally(() => {
-            this.showLoading = false;
-          });
+            this.showLoading = false
+          })
 
-        const hadResponse = Object.keys(response).length;
+        const hadResponse = Object.keys(response).length
         if (hadResponse) {
-          const { plans, message } = response.data;
-          this.deletePlan.plans = plans;
-          this.deletePlan.message = message;
-          this.deletePlan.removePlan = item;
-          this.$bvModal.show("delete-plan-modal");
+          const { plans, message } = response.data
+          this.deletePlan.plans = plans
+          this.deletePlan.message = message
+          this.deletePlan.removePlan = item
+          this.$bvModal.show('delete-plan-modal')
         }
       } else {
-        this.showLoading = true;
+        this.showLoading = true
         api.plans
           .deletePlan(objectId, planId)
           .then(() => {
-            this.successfullyDeletePlan();
+            this.successfullyDeletePlan()
           })
-          .catch((error) => {
-            this.toastedWithErrorCode(error);
+          .catch(error => {
+            this.toastedWithErrorCode(error)
           })
           .finally(() => {
-            this.showLoading = false;
-          });
+            this.showLoading = false
+          })
       }
     },
     async updateList() {
-      this.loading = true;
-      await this.fetchPlans(this);
-      this.loading = false;
+      this.loading = true
+      await this.fetchPlans(this)
+      this.loading = false
     },
     showAddModal() {
-      this.$refs["create-update"].openPlanModal();
+      this.$refs['create-update'].openPlanModal()
     },
     showDrawingList() {
-      const objectId = this.$route.params.id;
-      this.$router.push({ name: "fast_plan", params: { object: objectId } });
+      const objectId = this.$route.params.id
+      this.$router.push({ name: 'fast_plan', params: { object: objectId } })
     },
     successfullyDeletePlan() {
-      this.closeDeletePlanModal();
-      const message = `${this.$t("sweetAlert.deleted")}`;
-      this.$swal(message, "", "success");
-      this.fetchPlans(this);
+      this.closeDeletePlanModal()
+      const message = `${this.$t('sweetAlert.deleted')}`
+      this.$swal(message, '', 'success')
+      this.fetchPlans(this)
     },
     closeDeletePlanModal() {
-      this.$bvModal.hide("delete-plan-modal");
+      this.$bvModal.hide('delete-plan-modal')
     },
     edit(item) {
       // this.$router.push({
       //     name: "type-plan-edit",
       //     params: {object: this.getPlan.id, id: id},
       // })
-      this.sendPlan = item;
-      this.$refs["create-update"].openPlanModal();
+      this.sendPlan = item
+      this.$refs['create-update'].openPlanModal()
     },
   },
-};
+}
 </script>
 
 <template>
@@ -189,16 +189,16 @@ export default {
 
       <div class="d-flex x-gap-1">
         <x-button
-          @click="showDrawingList"
           :text="$t('objects.create.fast_plan.name')"
           left-icon="activity_zone"
+          @click="showDrawingList"
         />
         <x-button
-          @click="showAddModal"
           :text="$t('objects.create.plan.add')"
           variant="secondary"
           left-icon="add"
           color-icon="var(--violet-600)"
+          @click="showAddModal"
         />
       </div>
     </div>
@@ -218,7 +218,10 @@ export default {
           :fields="fields"
           :busy="showLoading"
         >
-          <template #empty="scope" class="text-center">
+          <template
+            #empty="scope"
+            class="text-center"
+          >
             <div class="d-flex justify-content-center align-items-center">
               {{ scope.emptyText }}
             </div>
@@ -226,10 +229,10 @@ export default {
           <template #table-busy>
             <div class="d-flex justify-content-center w-100">
               <div class="lds-ellipsis">
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
+                <div />
+                <div />
+                <div />
+                <div />
               </div>
             </div>
           </template>
@@ -247,7 +250,7 @@ export default {
               height="80"
               alt="plan_image"
               fluid
-            />
+            >
           </template>
 
           <template #cell(balcony_area)="data">
@@ -255,7 +258,10 @@ export default {
           </template>
 
           <template #cell(actions)="data">
-            <div v-if="editPermission || deletePermission" class="actions">
+            <div
+              v-if="editPermission || deletePermission"
+              class="actions"
+            >
               <BaseButton
                 v-if="editPermission"
                 class="button rounded-circle"
@@ -291,9 +297,9 @@ export default {
 
       <create-modal
         ref="create-update"
+        :plan="sendPlan"
         @update-list="updateList"
         @clear-field="clearModal"
-        :plan="sendPlan"
       />
     </div>
 

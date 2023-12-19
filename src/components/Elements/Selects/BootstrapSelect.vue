@@ -1,6 +1,6 @@
 <script>
 export default {
-  name: "BootstrapSelect",
+  name: 'BootstrapSelect',
   props: {
     options: {
       type: Array,
@@ -11,40 +11,39 @@ export default {
       default: null,
     },
   },
-  emits: ["select"],
+  emits: ['select'],
   data() {
     return {
       localValue: null,
-    };
+    }
   },
   watch: {
     localValue: {
       handler(newLocalValue) {
-        this.$emit("select", newLocalValue);
+        this.$emit('select', newLocalValue)
       },
       deep: true,
     },
   },
   mounted() {
     if (this.defaultValue) {
-      this.localValue = this.defaultValue;
+      this.localValue = this.defaultValue
     }
   },
   methods: {
     setValue(newValue) {
-      this.localValue = newValue;
+      this.localValue = newValue
     },
   },
-};
+}
 </script>
 
 <template>
   <b-form-select
+    v-model="localValue"
     class="bootstrap-select"
     :options="options"
-    v-model="localValue"
-  >
-  </b-form-select>
+  />
 </template>
 
 <style lang="scss" scoped>

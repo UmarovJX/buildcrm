@@ -1,23 +1,23 @@
 <script>
-import { isPrimitiveValue, sortObjectValues } from "@/util/reusable";
-import api from "@/services/api";
-import BaseCheckboxModal from "@/components/Reusable/BaseCheckboxModal.vue";
-import BaseCheckbox from "@/components/Reusable/BaseCheckbox.vue";
-import { XFormSelect } from "@/components/ui-components/form-select";
-import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon.vue";
-import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon.vue";
-import BaseRightModal from "@/components/Reusable/BaseRightModal.vue";
-import { isUndefinedOrNullOrEmpty } from "@/util/inspect";
-import router from "@/routes";
-import AppHeader from "@/components/Header/AppHeader.vue";
-import AppBreadcrumb from "@/components/AppBreadcrumb.vue";
-import BaseSearchInput from "@/components/Reusable/BaseSearchInput.vue";
-import BaseFilterButton from "@/components/Elements/BaseFilterButton.vue";
-import BaseLoading from "@/components/Reusable/BaseLoading.vue";
-import { mapGetters } from "vuex";
+import { isPrimitiveValue, sortObjectValues } from '@/util/reusable'
+import api from '@/services/api'
+import BaseCheckboxModal from '@/components/Reusable/BaseCheckboxModal.vue'
+import BaseCheckbox from '@/components/Reusable/BaseCheckbox.vue'
+import { XFormSelect } from '@/components/ui-components/form-select'
+import BaseArrowLeftIcon from '@/components/icons/BaseArrowLeftIcon.vue'
+import BaseArrowRightIcon from '@/components/icons/BaseArrowRightIcon.vue'
+import BaseRightModal from '@/components/Reusable/BaseRightModal.vue'
+import { isUndefinedOrNullOrEmpty } from '@/util/inspect'
+import router from '@/routes'
+import AppHeader from '@/components/Header/AppHeader.vue'
+import AppBreadcrumb from '@/components/AppBreadcrumb.vue'
+import BaseSearchInput from '@/components/Reusable/BaseSearchInput.vue'
+import BaseFilterButton from '@/components/Elements/BaseFilterButton.vue'
+import BaseLoading from '@/components/Reusable/BaseLoading.vue'
+import { mapGetters } from 'vuex'
 
 export default {
-  name: "ChooseApartments",
+  name: 'ChooseApartments',
   components: {
     BaseSearchInput,
     BaseCheckboxModal,
@@ -32,58 +32,58 @@ export default {
     BaseLoading,
   },
   data() {
-    const showByOptions = [];
+    const showByOptions = []
 
     for (let number = 10; number <= 50; number += 10) {
       showByOptions.push({
         value: number,
         text: number,
-      });
+      })
     }
 
-    let { limit: showByValue } = this.$route.query;
+    let { limit: showByValue } = this.$route.query
 
     if (!showByValue) {
-      showByValue = 20;
+      showByValue = 20
     }
 
     const header = {
       pageInfo: {
-        title: this.$t("objects.create.fast_plan.choose_apartments"),
-        titleHighlight: "",
+        title: this.$t('objects.create.fast_plan.choose_apartments'),
+        titleHighlight: '',
       },
       page: {
-        type: "multi_language",
-        path: "objects.create.fast_plan.select_room",
+        type: 'multi_language',
+        path: 'objects.create.fast_plan.select_room',
       },
       breadcrumbs: [
         {
           content: {
-            type: "multi_language",
-            path: "objects.title",
+            type: 'multi_language',
+            path: 'objects.title',
           },
           route: {
-            name: "objects",
-            path: "/objects",
+            name: 'objects',
+            path: '/objects',
           },
         },
         {
           content: {
-            type: "string",
-            path: "",
+            type: 'string',
+            path: '',
           },
           route: {
-            name: "objects",
-            path: "/objects",
+            name: 'objects',
+            path: '/objects',
           },
         },
         {
           content: {
-            type: "multi_language",
-            path: "objects.create.plan.name",
+            type: 'multi_language',
+            path: 'objects.create.plan.name',
           },
           route: {
-            name: "type-plan-view",
+            name: 'type-plan-view',
             params: {
               id: this.$route.params.object,
             },
@@ -91,11 +91,11 @@ export default {
         },
         {
           content: {
-            type: "multi_language",
-            path: "objects.create.fast_plan.name",
+            type: 'multi_language',
+            path: 'objects.create.fast_plan.name',
           },
           route: {
-            name: "fast_plan",
+            name: 'fast_plan',
             params: {
               object: this.$route.params.object,
             },
@@ -103,18 +103,18 @@ export default {
         },
         {
           content: {
-            type: "multi_language",
-            path: "objects.create.fast_plan.add_plan",
+            type: 'multi_language',
+            path: 'objects.create.fast_plan.add_plan',
           },
           route: {
-            name: "fast_plan_add",
+            name: 'fast_plan_add',
             params: {
               object: this.$route.params.object,
             },
           },
         },
       ],
-    };
+    }
 
     return {
       header,
@@ -131,40 +131,40 @@ export default {
       chosen: 0,
       fields: [
         {
-          key: "check",
+          key: 'check',
           // item: BaseCheckbox,
         },
         {
-          key: "number",
-          label: this.$t("object.sort.number_flat"),
+          key: 'number',
+          label: this.$t('object.sort.number_flat'),
           sortable: true,
         },
         {
-          key: "floor",
-          label: this.$t("apartments.list.floor"),
+          key: 'floor',
+          label: this.$t('apartments.list.floor'),
           sortable: true,
         },
         {
-          key: "entrance",
-          label: this.$t("apartments.list.entrance"),
+          key: 'entrance',
+          label: this.$t('apartments.list.entrance'),
           sortable: true,
         },
         {
-          key: "rooms",
-          label: "Комнатность",
+          key: 'rooms',
+          label: 'Комнатность',
           sortable: true,
         },
         {
-          key: "area",
-          label: this.$t("apartments.list.area"),
+          key: 'area',
+          label: this.$t('apartments.list.area'),
           sortable: true,
         },
       ],
-      sortBy: "",
+      sortBy: '',
       sortDesc: false,
       currentPage: 1,
       showLoading: false,
-      selectMode: "single",
+      selectMode: 'single',
       contract: {},
       selectable: true,
       selected: {
@@ -185,52 +185,52 @@ export default {
         area: [],
         rooms: [],
       },
-    };
+    }
   },
 
   async created() {
-    await this.fetchContractList();
-    await this.getFilterFields();
+    await this.fetchContractList()
+    await this.getFilterFields()
 
     window.onbeforeunload = function (e) {
-      e = e || window.event;
-      //old browsers
+      e = e || window.event
+      // old browsers
       if (e) {
-        e.returnValue = "Changes you made may not be saved";
+        e.returnValue = 'Changes you made may not be saved'
       }
-      //safari, chrome(chrome ignores text)
-      return "Changes you made may not be saved";
-    };
+      // safari, chrome(chrome ignores text)
+      return 'Changes you made may not be saved'
+    }
   },
   mounted() {
     if (!(this.getFastPlanImage && this.getFastPlanName)) {
       this.$router.push({
-        name: "fast_plan",
+        name: 'fast_plan',
         params: { object: this.$route.params.object },
-      });
+      })
     }
     if (this.query && this.query.number) {
-      this.search = this.query.number[0];
+      this.search = this.query.number[0]
     }
   },
   computed: {
-    ...mapGetters(["getFastPlanImage", "getFastPlanName", "getFastPlanId"]),
+    ...mapGetters(['getFastPlanImage', 'getFastPlanName', 'getFastPlanId']),
     checkedApartments() {
-      return this.checkoutList.filter((ch) => ch.checked);
+      return this.checkoutList.filter(ch => ch.checked)
     },
     query() {
-      return Object.assign({}, this.$route.query);
+      return { ...this.$route.query }
     },
     countOfItems() {
-      return this.apartments.length;
+      return this.apartments.length
     },
   },
 
   watch: {
-    "$route.query": {
+    '$route.query': {
       handler(value) {
         if (value) {
-          this.fetchContractList();
+          this.fetchContractList()
         }
       },
       deep: true,
@@ -239,243 +239,239 @@ export default {
 
   methods: {
     backPlan() {
-      const { object } = this.$route.params;
-      this.$router.push({ name: "fast_plan_add", params: { object } });
+      const { object } = this.$route.params
+      this.$router.push({ name: 'fast_plan_add', params: { object } })
     },
     async createDrawing() {
-      const objectId = this.$route.params.object;
-      const body = new FormData();
-      body.append("name", this.getFastPlanName);
-      if (!(typeof this.getFastPlanImage === "string")) {
-        body.append("image", this.getFastPlanImage);
+      const objectId = this.$route.params.object
+      const body = new FormData()
+      body.append('name', this.getFastPlanName)
+      if (!(typeof this.getFastPlanImage === 'string')) {
+        body.append('image', this.getFastPlanImage)
       }
-      body.append("plan_id", this.$route.params.plan);
+      body.append('plan_id', this.$route.params.plan)
       this.checkoutList.forEach((item, index) => {
-        body.append(`apartments[${index}]`, item.id);
-      });
+        body.append(`apartments[${index}]`, item.id)
+      })
 
       if (!this.getFastPlanId) {
         await api.plans
           .createFastPlan(objectId, body)
           .then(() => {
             this.$router.push({
-              name: "fast_plan",
+              name: 'fast_plan',
               params: {
                 object: objectId,
               },
-            });
-            this.$store.dispatch("notify/openNotify", {
-              type: "success",
+            })
+            this.$store.dispatch('notify/openNotify', {
+              type: 'success',
               duration: 3000,
-            });
+            })
           })
-          .catch((err) => {
-            this.$store.dispatch("notify/openNotify", {
-              type: "error",
+          .catch(err => {
+            this.$store.dispatch('notify/openNotify', {
+              type: 'error',
               duration: 3000,
-            });
-            return err;
-          });
+            })
+            return err
+          })
       } else {
         await api.plans
           .updateFastPlan(objectId, this.getFastPlanId, body)
           .then(() => {
             this.$router.push({
-              name: "fast_plan",
+              name: 'fast_plan',
               params: {
                 object: objectId,
               },
-            });
-            this.$store.dispatch("notify/openNotify", {
-              type: "success",
+            })
+            this.$store.dispatch('notify/openNotify', {
+              type: 'success',
               duration: 3000,
-            });
+            })
           })
-          .catch((err) => {
-            this.$store.dispatch("notify/openNotify", {
-              type: "error",
+          .catch(err => {
+            this.$store.dispatch('notify/openNotify', {
+              type: 'error',
               duration: 3000,
-            });
-            return err;
-          });
+            })
+            return err
+          })
       }
     },
     startLoading() {
-      this.showLoading = true;
+      this.showLoading = true
     },
     finishLoading() {
-      this.showLoading = false;
+      this.showLoading = false
     },
 
     activateApartment({ index, item }, event) {
-      const { current } = this.pagination;
-      const { checked } = event.target;
-      this.apartments[index].checked = checked;
+      const { current } = this.pagination
+      const { checked } = event.target
+      this.apartments[index].checked = checked
       if (checked) {
-        this.checkoutList.push({ checked, id: item.id, page: current });
-        const allActive = this.apartments.every((a) => a.checked === true);
+        this.checkoutList.push({ checked, id: item.id, page: current })
+        const allActive = this.apartments.every(a => a.checked === true)
         if (allActive) {
-          this.checkAll = true;
+          this.checkAll = true
         }
       } else {
-        this.checkoutList = this.checkoutList.filter((ch) => ch.id !== item.id);
+        this.checkoutList = this.checkoutList.filter(ch => ch.id !== item.id)
         if (this.checkAll) {
-          this.checkAll = false;
+          this.checkAll = false
         }
       }
     },
 
     chooseAllApartment(event) {
-      const { current } = this.pagination;
-      const { checked } = event.target;
-      this.checkAll = checked;
-      this.apartments = this.apartments.map((a) => ({ ...a, checked }));
-      this.apartments.forEach((a) => {
-        const index = this.checkoutList.findIndex((ch) => ch.id === a.id);
+      const { current } = this.pagination
+      const { checked } = event.target
+      this.checkAll = checked
+      this.apartments = this.apartments.map(a => ({ ...a, checked }))
+      this.apartments.forEach(a => {
+        const index = this.checkoutList.findIndex(ch => ch.id === a.id)
         if (a.checked) {
           if (index === -1) {
-            this.checkoutList.push({ checked, id: a.id, page: current });
+            this.checkoutList.push({ checked, id: a.id, page: current })
           }
-        } else {
-          if (index !== -1) {
-            this.checkoutList.splice(index, 1);
-          }
+        } else if (index !== -1) {
+          this.checkoutList.splice(index, 1)
         }
-      });
+      })
     },
 
     limitChanged() {
-      this.changeFetchLimit();
+      this.changeFetchLimit()
     },
 
     async fetchContractList() {
-      this.showLoading = true;
+      this.showLoading = true
 
-      const { object } = this.$route.params;
-      this.checkAll = false;
+      const { object } = this.$route.params
+      this.checkAll = false
       await api.objectsV2
         .fetchObjectApartments(object, this.query)
-        .then((response) => {
-          this.$emit("counter", response.data.counts);
-          this.pagination = response.data.pagination;
-          this.header.breadcrumbs[1].content.path =
-            response.data?.items[0]?.object?.name;
-          this.showByValue = response.data.pagination.perPage;
-          this.apartments = response.data.items.map((item) => {
-            const isChecked = this.checkoutList.find((ch) => ch.id === item.id);
+        .then(response => {
+          this.$emit('counter', response.data.counts)
+          this.pagination = response.data.pagination
+          this.header.breadcrumbs[1].content.path = response.data?.items[0]?.object?.name
+          this.showByValue = response.data.pagination.perPage
+          this.apartments = response.data.items.map(item => {
+            const isChecked = this.checkoutList.find(ch => ch.id === item.id)
             if (isChecked) {
               return {
                 ...item,
                 checked: true,
-              };
-            } else {
-              return {
-                ...item,
-                checked: false,
-              };
+              }
             }
-          });
-          this.checkAll = this.apartments.every((apm) => apm.checked);
+            return {
+              ...item,
+              checked: false,
+            }
+          })
+          this.checkAll = this.apartments.every(apm => apm.checked)
         })
-        .catch((err) => {
-          this.toastedWithErrorCode(err);
+        .catch(err => {
+          this.toastedWithErrorCode(err)
         })
         .finally(() => {
-          this.showLoading = false;
-        });
+          this.showLoading = false
+        })
     },
 
     async getFilterFields() {
-      const { object } = this.$route.params;
+      const { object } = this.$route.params
 
       await api.objectsV2
         .fetchObjectFields(object)
-        .then((res) => {
-          this.filterOptions = res.data;
-          delete this.filterOptions["blocks"];
+        .then(res => {
+          this.filterOptions = res.data
+          delete this.filterOptions.blocks
           Object.entries(this.filterOptions).forEach(([key, value]) => {
             if (value) {
               value.forEach((ch, index) => {
-                if (ch && ch !== "null") {
-                  this.filterOptions[key][index] = { value: ch, text: ch };
+                if (ch && ch !== 'null') {
+                  this.filterOptions[key][index] = { value: ch, text: ch }
                 }
-              });
+              })
             }
-          });
+          })
         })
-        .catch((err) => {
-          this.toastedWithErrorCode(err);
+        .catch(err => {
+          this.toastedWithErrorCode(err)
         })
         .finally(() => {
-          this.showLoading = false;
-        });
+          this.showLoading = false
+        })
     },
 
     changeFetchLimit() {
       const query = {
         ...this.query,
         page: this.query.page || 1,
-      };
-      const limit = this.showByValue;
-      this.pushRouter({ ...query, limit });
+      }
+      const limit = this.showByValue
+      this.pushRouter({ ...query, limit })
     },
 
     replaceRouter(query) {
-      const sortQuery = sortObjectValues(query);
-      this.$router.replace({ query: sortQuery });
+      const sortQuery = sortObjectValues(query)
+      this.$router.replace({ query: sortQuery })
     },
 
     pushRouter(query) {
-      const sortQuery = sortObjectValues(query);
-      this.$router.push({ query: sortQuery });
+      const sortQuery = sortObjectValues(query)
+      this.$router.push({ query: sortQuery })
     },
 
     changeCurrentPage(page) {
-      const currentPage = this.query.page;
-      if (page === currentPage) return;
-      this.replaceRouter({ ...this.query, page });
+      const currentPage = this.query.page
+      if (page === currentPage) return
+      this.replaceRouter({ ...this.query, page })
     },
 
     async filteredForm() {
       Object.entries(this.filter).forEach(([keyField, value]) => {
-        this.query[keyField] = value;
-      });
-      this.query["page"] = "1";
-      this.pushRouter(this.query);
+        this.query[keyField] = value
+      })
+      this.query.page = '1'
+      this.pushRouter(this.query)
     },
 
     filterItems() {
-      this.filteredForm();
-      this.pushRouter();
+      this.filteredForm()
+      this.pushRouter()
     },
 
     resetFilterFields() {
-      this.filter.rooms = [];
-      this.filter.area = [];
-      this.filter.floors = [];
-      this.pushRouter(this.filter);
+      this.filter.rooms = []
+      this.filter.area = []
+      this.filter.floors = []
+      this.pushRouter(this.filter)
     },
 
     setFilterProperties() {
-      this.filter.rooms = this.query.rooms;
-      this.filter.area = this.query.area;
-      this.filter.floors = this.query.floors;
-      this.filter.number = this.query.number;
+      this.filter.rooms = this.query.rooms
+      this.filter.area = this.query.area
+      this.filter.floors = this.query.floors
+      this.filter.number = this.query.number
     },
 
     openFilterContent() {
-      this.$refs["filter-modal"].show();
+      this.$refs['filter-modal'].show()
     },
 
     filterBySearchContent(event) {
-      this.search = event;
-      event ? (this.query["number"] = [event]) : delete this.query["number"];
-      this.pushRouter(this.query);
+      this.search = event
+      event ? (this.query.number = [event]) : delete this.query.number
+      this.pushRouter(this.query)
     },
 
     inputFilterObject() {},
   },
-};
+}
 </script>
 
 <template>
@@ -519,24 +515,24 @@ export default {
       >
         <div class="filter-modal-content">
           <x-form-select
-            class="mb-4"
             v-model="filter.floors"
+            class="mb-4"
             :multiple="true"
             :options="filterOptions.floors"
             :placeholder="$t('apartments.list.floor')"
             @change="inputFilterObject"
           />
           <x-form-select
-            class="mb-4"
             v-model="filter.area"
+            class="mb-4"
             :multiple="true"
             :options="filterOptions.area"
             :placeholder="$t('apartments.list.area')"
             @change="inputFilterObject"
           />
           <x-form-select
-            class="mb-4"
             v-model="filter.rooms"
+            class="mb-4"
             :multiple="true"
             :options="filterOptions.rooms"
             :placeholder="$t('apartments.list.rooms')"
@@ -547,10 +543,10 @@ export default {
     </div>
 
     <b-table
+      id="my-table"
+      ref="apartment-list-table"
       thead-tr-class="row__head__bottom-border"
       tbody-tr-class="row__body__bottom-border"
-      ref="apartment-list-table"
-      id="my-table"
       class="table__list"
       sticky-header
       borderless
@@ -570,26 +566,41 @@ export default {
         <base-loading />
       </template>
 
-      <template #empty="scope" class="text-center">
+      <template
+        #empty="scope"
+        class="text-center"
+      >
         <span class="d-flex justify-content-center align-items-center">
           {{ scope.emptyText }}
         </span>
       </template>
 
-      <template #head(check)="{ item }" class="p-0">
+      <template
+        #head(check)="{ item }"
+        class="p-0"
+      >
         <span>
-          <base-checkbox :checked="checkAll" @input="chooseAllApartment" />
+          <base-checkbox
+            :checked="checkAll"
+            @input="chooseAllApartment"
+          />
         </span>
       </template>
 
-      <template #cell(check)="data" class="p-0">
+      <template
+        #cell(check)="data"
+        class="p-0"
+      >
         <base-checkbox
           :checked="data.item.checked"
           @input="activateApartment(data, $event)"
         />
       </template>
 
-      <template #cell(number)="data" class="p-0">
+      <template
+        #cell(number)="data"
+        class="p-0"
+      >
         <span>{{ data.item.number }}</span>
       </template>
 
@@ -598,7 +609,10 @@ export default {
       </template>
     </b-table>
 
-    <div v-if="!showLoading && pagination.total" class="pagination__vue">
+    <div
+      v-if="!showLoading && pagination.total"
+      class="pagination__vue"
+    >
       <!--   Pagination   -->
       <vue-paginate
         :page-count="pagination.total"
@@ -628,9 +642,9 @@ export default {
       <!--  Show By Select    -->
       <div class="show__by">
         <x-form-select
+          v-model="showByValue"
           :label="false"
           :options="showByOptions"
-          v-model="showByValue"
           @change="limitChanged"
         >
           <template #output-prefix>
@@ -644,8 +658,8 @@ export default {
 
     <BaseCheckboxModal
       :chosen="checkedApartments.length"
-      @go-to-contract="createDrawing"
       btn-text="Добавить планировку"
+      @go-to-contract="createDrawing"
     />
   </div>
 </template>

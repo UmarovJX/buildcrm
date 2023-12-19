@@ -1,19 +1,9 @@
 <script>
-import ApartmentPrice from "./ApartmentPrice";
+import ApartmentPrice from './ApartmentPrice'
 
 export default {
   components: {
     ApartmentPrice,
-  },
-
-  data() {
-    return {};
-  },
-
-  watch: {
-    apartment: function () {
-      console.log("QuickViewApartments change");
-    },
   },
 
   props: {
@@ -22,12 +12,22 @@ export default {
     index: {},
   },
 
-  methods: {
-    apartmentPrice() {
-      this.$emit("changedApartmentPrice", {});
+  data() {
+    return {}
+  },
+
+  watch: {
+    apartment() {
+      console.log('QuickViewApartments change')
     },
   },
-};
+
+  methods: {
+    apartmentPrice() {
+      this.$emit('changedApartmentPrice', {})
+    },
+  },
+}
 </script>
 
 <template>
@@ -39,7 +39,7 @@ export default {
             <i
               style="width: 20px; text-align: center"
               class="mr-1 far fa-building"
-            ></i>
+            />
             № Дома:
           </td>
           <td class="text-left">
@@ -51,7 +51,7 @@ export default {
             <i
               style="width: 20px; text-align: center"
               class="mr-1 far fa-dollar-sign"
-            ></i>
+            />
             Цена:
           </td>
           <td>
@@ -74,40 +74,48 @@ export default {
               <i
                 style="width: 20px; text-align: center"
                 class="mr-1 far fa-expand"
-              ></i>
+              />
               Площадь:
             </td>
-            <td class="text-left">{{ apartment.plan.area }} m2</td>
+            <td class="text-left">
+              {{ apartment.plan.area }} m2
+            </td>
           </tr>
           <tr>
             <td style="width: 120px">
               <i
                 style="width: 20px; text-align: center"
                 class="mr-1 far fa-inbox"
-              ></i>
+              />
               Балкон:
             </td>
-            <td class="text-left">{{ apartment.plan.balcony_area }} m2</td>
+            <td class="text-left">
+              {{ apartment.plan.balcony_area }} m2
+            </td>
           </tr>
           <tr>
             <td style="width: 120px">
               <i
                 style="width: 20px; text-align: center"
                 class="mr-1 far fa-door-open"
-              ></i>
+              />
               Комнат:
             </td>
-            <td class="text-left">{{ apartment.rooms }}</td>
+            <td class="text-left">
+              {{ apartment.rooms }}
+            </td>
           </tr>
           <tr>
             <td style="width: 120px">
               <i
                 style="width: 20px; text-align: center"
                 class="mr-1 far fa-industry"
-              ></i>
+              />
               Этаж:
             </td>
-            <td class="text-left">{{ apartment.floor }}</td>
+            <td class="text-left">
+              {{ apartment.floor }}
+            </td>
           </tr>
         </tbody>
       </table>
@@ -122,13 +130,13 @@ export default {
       "
     >
       <b-button
+        v-b-toggle="'collapse' + index"
         style="transform: scale(0.6)"
         class="m-0 p-0"
         variant="secondary"
-        v-b-toggle="'collapse' + index"
         size="sm"
       >
-        <i class="fa fa-chevron-down"></i>
+        <i class="fa fa-chevron-down" />
       </b-button>
     </div>
   </div>

@@ -1,14 +1,14 @@
 <script>
-import { mapActions, mapGetters } from "vuex";
-import Filter from "./Components/Filter/All";
-import ReserveAdd from "../Apartment/Components/Reserve";
-import ViewClient from "../Apartment/ViewClient";
+import { mapActions, mapGetters } from 'vuex'
+import Filter from './Components/Filter/All'
+import ReserveAdd from '../Apartment/Components/Reserve'
+import ViewClient from '../Apartment/ViewClient'
 
 export default {
   components: {
-    "filter-form": Filter,
-    "reserve-add": ReserveAdd,
-    "view-client": ViewClient,
+    'filter-form': Filter,
+    'reserve-add': ReserveAdd,
+    'view-client': ViewClient,
   },
 
   data: () => ({
@@ -33,80 +33,80 @@ export default {
   }),
 
   mounted() {
-    this.fetchObjects(this);
-    this.fetchFilterApartments(this);
+    this.fetchObjects(this)
+    this.fetchFilterApartments(this)
   },
 
   computed: mapGetters([
-    "getObjects",
-    "getFilteredApartments",
-    "getPermission",
-    "getMe",
-    "getLoading",
+    'getObjects',
+    'getFilteredApartments',
+    'getPermission',
+    'getMe',
+    'getLoading',
   ]),
 
   methods: {
     ...mapActions([
-      "fetchFilterApartments",
-      "fetchObjects",
-      "fetchReserveClient",
+      'fetchFilterApartments',
+      'fetchObjects',
+      'fetchReserveClient',
     ]),
 
     getPrice(area, price) {
-      return price * area;
+      return price * area
     },
 
-    moment: function () {
-      return this.$moment();
+    moment() {
+      return this.$moment()
     },
 
     Filtered(event) {
-      this.filter = event;
+      this.filter = event
     },
 
     CreateReserve(id) {
-      this.reserve = true;
-      this.apartment_id = id;
+      this.reserve = true
+      this.apartment_id = id
     },
 
     CreateReserveSuccess() {
-      this.fetchFilterApartments(this);
+      this.fetchFilterApartments(this)
     },
 
     ReserveInfo(apartment) {
-      this.info_reserve = true;
-      this.apartment_preview = apartment;
-      this.client_id = apartment.client_id;
-      this.fetchReserveClient(this);
+      this.info_reserve = true
+      this.apartment_preview = apartment
+      this.client_id = apartment.client_id
+      this.fetchReserveClient(this)
       // this.$bvModal.show('modal-view-status');
     },
 
     CloseReserveInfo() {
-      this.info_reserve = false;
-      this.apartment_preview = {};
-      this.fetchApartmentsFilter(this);
+      this.info_reserve = false
+      this.apartment_preview = {}
+      this.fetchApartmentsFilter(this)
     },
   },
 
   filters: {
     getStatus(status, booking_date) {
-      let msg;
+      let msg
       switch (status) {
-        case "sold":
-          msg = "Продано";
-          break;
-        case "booked":
-          msg = "Забронировано до " + booking_date;
-          break;
+        case 'sold':
+          msg = 'Продано'
+          break
+        case 'booked':
+          msg = `Забронировано до ${booking_date}`
+          break
         default:
-          msg = "Свободен";
-          break;
+          msg = 'Свободен'
+          break
       }
 
-      return msg;
+      return msg
     },
   },
-};
+}
 </script>
 
 <template>
@@ -122,35 +122,63 @@ export default {
         <table class="table table-borderless my-table my-table-second">
           <thead>
             <tr>
-              <th scope="col" width="50">
+              <th
+                scope="col"
+                width="50"
+              >
                 {{ $t("apartments.list.number") }}
               </th>
-              <th scope="col">{{ $t("apartments.list.object") }}</th>
-              <th scope="col">{{ $t("apartments.list.building") }}</th>
-              <th scope="col">{{ $t("apartments.list.block") }}</th>
-              <th scope="col" class="text-center">
+              <th scope="col">
+                {{ $t("apartments.list.object") }}
+              </th>
+              <th scope="col">
+                {{ $t("apartments.list.building") }}
+              </th>
+              <th scope="col">
+                {{ $t("apartments.list.block") }}
+              </th>
+              <th
+                scope="col"
+                class="text-center"
+              >
                 {{ $t("apartments.list.rooms") }}
               </th>
-              <th scope="col" class="text-center">
+              <th
+                scope="col"
+                class="text-center"
+              >
                 {{ $t("apartments.list.floor") }}
               </th>
-              <th scope="col" class="text-center">
+              <th
+                scope="col"
+                class="text-center"
+              >
                 {{ $t("apartments.list.area") }}
               </th>
-              <th scope="col">{{ $t("apartments.list.price") }}</th>
-              <th scope="col">{{ $t("apartments.list.status") }}</th>
-              <th scope="col" class="text-right"></th>
+              <th scope="col">
+                {{ $t("apartments.list.price") }}
+              </th>
+              <th scope="col">
+                {{ $t("apartments.list.status") }}
+              </th>
+              <th
+                scope="col"
+                class="text-right"
+              />
             </tr>
           </thead>
           <tbody>
             <tr v-if="getLoading">
-              <td colspan="10" style="">
+              <td
+                colspan="10"
+                style=""
+              >
                 <div class="d-flex justify-content-center w-100">
                   <div class="lds-ellipsis">
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
+                    <div />
+                    <div />
+                    <div />
+                    <div />
                   </div>
                 </div>
               </td>
@@ -220,30 +248,30 @@ export default {
               </td>
               <td>
                 <div
-                  class="dropdown my-dropdown dropleft"
                   v-if="
                     !apartment.status ||
-                    apartment.manager_id === getMe.user.id ||
-                    getMe.role.id === 1
+                      apartment.manager_id === getMe.user.id ||
+                      getMe.role.id === 1
                   "
+                  class="dropdown my-dropdown dropleft"
                 >
                   <button
                     type="button"
                     class="dropdown-toggle"
                     data-toggle="dropdown"
                   >
-                    <i class="far fa-ellipsis-h"></i>
+                    <i class="far fa-ellipsis-h" />
                   </button>
                   <div class="dropdown-menu">
                     <b-link
                       v-if="
                         getPermission.apartments.reserve && !apartment.status
                       "
-                      @click="[(reserve = true), (apartment_id = apartment.id)]"
                       v-b-modal.modal-create
                       class="dropdown-item dropdown-item--inside"
+                      @click="[(reserve = true), (apartment_id = apartment.id)]"
                     >
-                      <i class="far fa-calendar-check"></i>
+                      <i class="far fa-calendar-check" />
                       {{ $t("apartments.list.book") }}
                     </b-link>
 
@@ -251,34 +279,34 @@ export default {
                       v-if="
                         (apartment.status === 2 &&
                           apartment.manager_id === getMe.user.id) ||
-                        (getMe.role.id === 1 && apartment.status === 2)
+                          (getMe.role.id === 1 && apartment.status === 2)
                       "
-                      @click="ReserveInfo(apartment)"
                       v-b-modal.modal-view-client
                       class="dropdown-item dropdown-item--inside"
+                      @click="ReserveInfo(apartment)"
                     >
-                      <i class="far fa-eye"></i>
+                      <i class="far fa-eye" />
                       {{ $t("apartments.list.view_client") }}
                     </b-link>
 
                     <router-link
+                      v-if="apartment.status != 1"
                       :to="{
                         name: 'apartment-view',
                         params: { id: apartment.id },
                       }"
                       :class="'dropdown-item dropdown-item--inside'"
-                      v-if="apartment.status != 1"
                     >
-                      <i class="far fa-ballot-check"></i>
+                      <i class="far fa-ballot-check" />
                       {{ $t("apartments.list.confirm") }}
                     </router-link>
 
                     <a
+                      v-if="apartment.status === 1"
                       class="dropdown-item dropdown-item--inside"
                       href="product-item.html"
-                      v-if="apartment.status === 1"
                     >
-                      <i class="far fa-eye"></i>
+                      <i class="far fa-eye" />
                       {{ $t("apartments.list.more") }}
                     </a>
                   </div>
@@ -290,10 +318,16 @@ export default {
       </div>
     </div>
 
-    <div class="" v-if="getPermission.apartments.filter">
+    <div
+      v-if="getPermission.apartments.filter"
+      class=""
+    >
       <div class="d-flex justify-content-md-end justify-content-center">
-        <b-link class="btn btn-primary mr-0" v-b-modal.modal-filter-all>
-          <i class="far fa-sliders-h mr-2"></i>
+        <b-link
+          v-b-modal.modal-filter-all
+          class="btn btn-primary mr-0"
+        >
+          <i class="far fa-sliders-h mr-2" />
           {{ $t("apartments.list.filter") }}
         </b-link>
       </div>
@@ -303,19 +337,19 @@ export default {
       v-if="reserve || getPermission.apartments.reserve"
       :apartment="apartment_id"
       @CreateReserve="CreateReserveSuccess"
-    ></reserve-add>
+    />
 
     <filter-form
       v-if="getPermission.apartments.filter"
       @Filtered="Filtered"
-    ></filter-form>
+    />
 
     <view-client
       v-if="info_reserve"
-      @CancelReserve="CloseReserveInfo"
       :apartment-data="apartment_preview"
       :client-id="client_id"
-    ></view-client>
+      @CancelReserve="CloseReserveInfo"
+    />
   </div>
 </template>
 

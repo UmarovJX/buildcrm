@@ -1,10 +1,10 @@
 <script>
 export default {
-  name: "BaseSelect",
+  name: 'BaseSelect',
   props: {
     name: {
       type: String,
-      default: "BaseSelect",
+      default: 'BaseSelect',
     },
     options: {
       type: Array,
@@ -28,11 +28,11 @@ export default {
     },
     valueField: {
       type: String,
-      default: "value",
+      default: 'value',
     },
     textField: {
       type: String,
-      default: "text",
+      default: 'text',
     },
     value: {
       type: [String, Object, Array, Number, Boolean],
@@ -43,38 +43,38 @@ export default {
       default: () => false,
     },
   },
-  emits: ["change"],
+  emits: ['change'],
   data() {
     return {
       open: false,
-      inlineValue: Object.assign({}, this.value),
-    };
+      inlineValue: { ...this.value },
+    }
   },
   watch: {
     inlineValue: {
       handler() {
-        this.triggerEvent();
+        this.triggerEvent()
       },
     },
   },
   mounted() {
-    this.settingUp();
+    this.settingUp()
   },
   methods: {
     triggerEvent() {
-      this.$emit("change", this.inlineValue);
-      this.$emit("input", this.inlineValue);
+      this.$emit('change', this.inlineValue)
+      this.$emit('input', this.inlineValue)
     },
     settingUp() {
       if (this.options.length && (!this.placeholder || this.noPlaceholder)) {
-        this.inlineValue = this.options[0][this.valueField];
+        this.inlineValue = this.options[0][this.valueField]
       }
     },
     openSelect() {
-      this.open = true;
+      this.open = true
     },
   },
-};
+}
 </script>
 
 <template>
@@ -84,27 +84,34 @@ export default {
       { error: error, 'justify-content-center align-items-center': !label },
     ]"
   >
-    <div v-if="inlineValue && label" class="input-label">
+    <div
+      v-if="inlineValue && label"
+      class="input-label"
+    >
       <span>
         {{ placeholder }}
       </span>
     </div>
     <!--    <span v-if="value && label" class="input-label">{{ placeholder }}</span>-->
     <select
+      v-model="inlineValue"
       :name="name"
       :disabled="disabled"
-      v-model="inlineValue"
       :class="{ 'base-select-initial': !value, 'not-label': !label }"
       class="base-select"
       @click="openSelect"
     >
-      <option disabled :value="null" v-if="!noPlaceholder && placeholder">
+      <option
+        v-if="!noPlaceholder && placeholder"
+        disabled
+        :value="null"
+      >
         {{ placeholder }}
       </option>
       <option
         v-for="(selectOption, index) in options"
-        :value="selectOption[valueField]"
         :key="index"
+        :value="selectOption[valueField]"
       >
         {{ selectOption[textField] }}
       </option>
@@ -173,14 +180,12 @@ export default {
 //  text-transform: uppercase
 //  color: var(--gray-400)
 
-
 .custom-select
   background: #fff url('../../assets/icons/icon-down.svg') right 0.5rem bottom 6.5px no-repeat
   transition: background .3s ease-in-out
 
   &:focus
     background: #fff url('../../assets/icons/icon-up.svg') right 0.5rem bottom 6.5px no-repeat
-
 
 .filter__inputs
   &-input

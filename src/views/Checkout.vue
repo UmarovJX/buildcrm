@@ -1,24 +1,24 @@
 <script>
-import AppHeader from "@/components/AppHeader";
-import BaseRightIcon from "@/components/icons/BaseRightIcon";
-import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
-import BaseButton from "@/components/Reusable/BaseButton";
-import ClientInformation from "@/views/checkout/ClientInformation";
-import ApartmentItem from "@/views/checkout/ApartmentItem";
-import CheckoutCalculator from "@/components/Checkout/CheckoutCalculator";
-import ErrorNotification from "@/components/Reusable/ErrorNotification";
-import CountDown from "@/components/Reusable/CountDown";
-import DetailsContract from "@/views/checkout/DetailsContract";
-import PaymentMonths from "@/views/checkout/PaymentMonths";
-import SuccessAgree from "@/components/Dashboard/Apartment/Components/SuccessAgree";
-import { mapActions, mapGetters, mapState } from "vuex";
-import api from "@/services/api";
-import { dateProperties } from "@/util/calendar";
-import { startLoading, finishLoading } from "@/util/appLoading";
-import TrashBasket from "@/components/Checkout/TrashBasket";
+import AppHeader from '@/components/AppHeader'
+import BaseRightIcon from '@/components/icons/BaseRightIcon'
+import BaseArrowRightIcon from '@/components/icons/BaseArrowRightIcon'
+import BaseButton from '@/components/Reusable/BaseButton'
+import ClientInformation from '@/views/checkout/ClientInformation'
+import ApartmentItem from '@/views/checkout/ApartmentItem'
+import CheckoutCalculator from '@/components/Checkout/CheckoutCalculator'
+import ErrorNotification from '@/components/Reusable/ErrorNotification'
+import CountDown from '@/components/Reusable/CountDown'
+import DetailsContract from '@/views/checkout/DetailsContract'
+import PaymentMonths from '@/views/checkout/PaymentMonths'
+import SuccessAgree from '@/components/Dashboard/Apartment/Components/SuccessAgree'
+import { mapActions, mapGetters, mapState } from 'vuex'
+import api from '@/services/api'
+import { dateProperties } from '@/util/calendar'
+import { startLoading, finishLoading } from '@/util/appLoading'
+import TrashBasket from '@/components/Checkout/TrashBasket'
 
 export default {
-  name: "Checkout",
+  name: 'Checkout',
   components: {
     CountDown,
     AppHeader,
@@ -34,7 +34,7 @@ export default {
     ClientInformation,
     BaseArrowRightIcon,
   },
-  /*beforeRouteEnter(to, from, next) {
+  /* beforeRouteEnter(to, from, next) {
       const hasIds = to.params.hasOwnProperty('ids')
       if (hasIds && to.params.ids) {
         const {ids} = to.params
@@ -44,7 +44,7 @@ export default {
         }
       }
       next({name: 'not_found'})
-    },*/
+    }, */
   data() {
     return {
       holdList: [],
@@ -52,28 +52,28 @@ export default {
       successContract: {
         contract: null,
       },
-      newContractNumber: "",
+      newContractNumber: '',
       changedContractNumber: false,
-      datePickerIconFill: "var(--violet-600)",
+      datePickerIconFill: 'var(--violet-600)',
       tabIndex: 1,
       discounts: [],
       client: {
         first_name: {
-          lotin: "",
-          kirill: "",
+          lotin: '',
+          kirill: '',
         },
         last_name: {
-          lotin: "",
-          kirill: "",
+          lotin: '',
+          kirill: '',
         },
         second_name: {
-          lotin: "",
-          kirill: "",
+          lotin: '',
+          kirill: '',
         },
         passport_series: null,
         issued_by_whom: null,
         date_of_issue: null,
-        language: "uz",
+        language: 'uz',
         friends: false,
         birth_day: null,
         phone: null,
@@ -82,169 +82,169 @@ export default {
         payment_date: null,
       },
       validationError: {
-        type: "",
-        message: "",
+        type: '',
+        message: '',
         visible: false,
       },
       stepTwoDisable: false,
-    };
+    }
   },
   computed: {
-    ...mapState("checkout", {
-      calc: "calc",
-      apartments: "apartments",
-      discount: "discount",
-      month: "month",
-      created_by: "created_by",
-      contract_number: "contract_number",
-      expiry_at: "expiry_at",
-      uuid: "uuid",
-      order: "order",
-      initial_payments: "initial_payments",
-      credit_months: "credit_months",
-      comment: "comment",
-      edit: "edit",
-      trashStorage: "trashStorage",
+    ...mapState('checkout', {
+      calc: 'calc',
+      apartments: 'apartments',
+      discount: 'discount',
+      month: 'month',
+      created_by: 'created_by',
+      contract_number: 'contract_number',
+      expiry_at: 'expiry_at',
+      uuid: 'uuid',
+      order: 'order',
+      initial_payments: 'initial_payments',
+      credit_months: 'credit_months',
+      comment: 'comment',
+      edit: 'edit',
+      trashStorage: 'trashStorage',
     }),
-    ...mapGetters("checkout", {
-      otherPrice: "isDiscountOtherType",
-      getDiscountAmount: "getDiscount",
+    ...mapGetters('checkout', {
+      otherPrice: 'isDiscountOtherType',
+      getDiscountAmount: 'getDiscount',
     }),
     flexCenter() {
-      return "d-flex justify-content-center align-items-center";
+      return 'd-flex justify-content-center align-items-center'
     },
     paymentOptions() {
       if (this.apartments.length && this.apartments[0]?.discounts) {
         const discounts = this.apartments[0].discounts.map(
           (discount, index) => {
-            let text = this.$t("apartments.view.variant");
-            if (discount.type === "promo") {
-              text += this.$t("promo.by_promo");
+            let text = this.$t('apartments.view.variant')
+            if (discount.type === 'promo') {
+              text += this.$t('promo.by_promo')
             }
-            text += ` ${index + 1} - ${discount.prepay}%`;
+            text += ` ${index + 1} - ${discount.prepay}%`
             return {
               text,
               value: discount.id,
               ...discount,
-            };
-          }
-        );
+            }
+          },
+        )
 
         discounts.push({
-          text: " " + this.$t("apartments.view.other_variant"),
-          value: "other",
-          type: "percent",
+          text: ` ${this.$t('apartments.view.other_variant')}`,
+          value: 'other',
+          type: 'percent',
           currency: null,
           amount: 0,
-          id: "other",
+          id: 'other',
           prepay: 30,
-        });
-        return discounts;
+        })
+        return discounts
       }
-      return [];
+      return []
     },
     header() {
-      const { apartments } = this.order;
+      const { apartments } = this.order
       const h = {
         pageInfo: {
-          title: "",
-          titleHighlight: "",
+          title: '',
+          titleHighlight: '',
         },
         page: {
-          type: "string",
-          path: this.$t("checkout_booking"),
+          type: 'string',
+          path: this.$t('checkout_booking'),
         },
         breadcrumbs: [
           {
             content: {
-              type: "multi_language",
-              path: "objects.title",
+              type: 'multi_language',
+              path: 'objects.title',
             },
             route: {
-              name: "objects",
-              path: "/objects",
+              name: 'objects',
+              path: '/objects',
             },
           },
         ],
-      };
+      }
 
       if (!apartments) {
-        return h;
+        return h
       }
 
       const apmTitles = apartments.reduce((acc, apm, idx, arr) => {
-        let str = apm.number;
+        let str = apm.number
         if (arr.length - 1 !== idx) {
-          str += ",";
+          str += ','
         }
-        return acc + str;
-      }, "");
+        return acc + str
+      }, '')
 
-      const { object } = apartments[0];
+      const { object } = apartments[0]
       if (object) {
         h.breadcrumbs.push({
           content: {
-            type: "string",
+            type: 'string',
             path: object.name,
           },
           route: {
-            name: "apartments",
+            name: 'apartments',
             params: {
               object: object.id,
             },
           },
-        });
+        })
 
         h.breadcrumbs.push({
           content: {
-            type: "string",
-            path: this.$t("apartment") + " №" + apmTitles,
+            type: 'string',
+            path: `${this.$t('apartment')} №${apmTitles}`,
           },
           route: {
-            name: "apartment-view",
+            name: 'apartment-view',
             params: {
               object: object.id,
               id: apartments[0].id,
             },
           },
-        });
+        })
       }
 
       h.pageInfo = {
-        title: this.$t("apartment_make_contract"),
-        titleHighlight: "№" + apmTitles,
-      };
+        title: this.$t('apartment_make_contract'),
+        titleHighlight: `№${apmTitles}`,
+      }
 
-      return h;
+      return h
     },
   },
   watch: {
     newContractNumber(value) {
       this.changedContractNumber = !!(
-        value &&
-        value.length &&
-        !(value === this.order.contract_number)
-      );
+        value
+        && value.length
+        && !(value === this.order.contract_number)
+      )
     },
   },
   created() {
     // this.setIds()
-    this.setHoldApartments();
+    this.setHoldApartments()
   },
   methods: {
-    ...mapActions("checkout", {
-      setup: "setup",
-      updateState: "updateState",
-      updateApartment: "updateApartment",
-      removeApartment: "removeApartment",
-      returnTrashApartments: "returnTrashApartments",
+    ...mapActions('checkout', {
+      setup: 'setup',
+      updateState: 'updateState',
+      updateApartment: 'updateApartment',
+      removeApartment: 'removeApartment',
+      returnTrashApartments: 'returnTrashApartments',
     }),
     startLoading,
     finishLoading,
     updateItem(item) {
-      this.updateApartment(item);
+      this.updateApartment(item)
     },
-    /*setIds() {
+    /* setIds() {
           const {ids} = this.$route.params
           if (typeof ids === 'string') {
             const divideIds = ids.split('/')
@@ -252,11 +252,11 @@ export default {
           } else if (Array.isArray(ids) && ids.length) {
             this.holdList = ids
           }
-        },*/
+        }, */
     async setHoldApartments() {
       try {
-        const orderId = this.$route.params.id;
-        const { data } = await api.orders.fetchHoldOrder(orderId);
+        const orderId = this.$route.params.id
+        const { data } = await api.orders.fetchHoldOrder(orderId)
         if (data) {
           const context = {
             order: data,
@@ -266,131 +266,131 @@ export default {
             contract_number: data.contract_number,
             discounts: data.apartments[0].discounts,
             discount: data.apartments[0].discounts[0],
-          };
-          this.setup(context);
-          this.startCounter();
+          }
+          this.setup(context)
+          this.startCounter()
         }
       } catch (e) {
-        this.toastedWithErrorCode(e);
-        this.redirect(e);
+        this.toastedWithErrorCode(e)
+        this.redirect(e)
       }
     },
     redirect(error) {
       if (error.response.status >= 400 && error.response.status < 600) {
-        this.$router.push({ name: "objects" });
+        this.$router.push({ name: 'objects' })
       }
     },
     setClient(value) {
-      this.client = value;
+      this.client = value
     },
     startCounter() {
       this.expiry_at = this.$moment(this.expiry_at)
-        .utcOffset("+0500")
-        .format("YYYY-MM-DD H:mm:ss");
+        .utcOffset('+0500')
+        .format('YYYY-MM-DD H:mm:ss')
 
       const current = this.$moment(new Date())
-        .utcOffset("+0500")
-        .format("YYYY-MM-DD H:mm:ss");
+        .utcOffset('+0500')
+        .format('YYYY-MM-DD H:mm:ss')
 
       const expired = this.$moment(this.order.expiry_at)
-        .utcOffset("+0500")
-        .format("YYYY-MM-DD H:mm:ss");
+        .utcOffset('+0500')
+        .format('YYYY-MM-DD H:mm:ss')
 
-      const time = new Date(current) - new Date(expired);
+      const time = new Date(current) - new Date(expired)
       if (time > 0) {
-        this.timeElapsedHandler();
+        this.timeElapsedHandler()
       }
     },
     async changeTab() {
       const clientFieldValidation = await this.$refs[
-        "detail-contract"
-      ].validate();
+        'detail-contract'
+      ].validate()
       if (clientFieldValidation) {
         const body = {
           ...this.client,
-          type_client: this.client.friends ? "friends" : "unknown",
-        };
+          type_client: this.client.friends ? 'friends' : 'unknown',
+        }
         api.clientsV2
           .createClient(body)
           .then(() => {
             this.validationError = {
               visible: true,
-              message: "Успешно",
-              type: "success",
-            };
+              message: 'Успешно',
+              type: 'success',
+            }
             if (this.tabIndex === 0) {
-              this.stepTwoDisable = false;
+              this.stepTwoDisable = false
               setTimeout(() => {
-                this.tabIndex = 1;
-              }, 100);
+                this.tabIndex = 1
+              }, 100)
             }
           })
-          .catch((err) => {
-            let error = [];
+          .catch(err => {
+            let error = []
             for (const value of Object.values(err.response.data)) {
-              error = [...error, value];
+              error = [...error, value]
             }
             this.validationError = {
               visible: true,
-              message: error.join(", "),
-              type: "error",
-            };
-            this.stepTwoDisable = true;
-          });
+              message: error.join(', '),
+              type: 'error',
+            }
+            this.stepTwoDisable = true
+          })
       } else {
         this.validationError = {
           visible: true,
           message:
-            "Поля, выделенные красным цветом, не заполнены или заполнены неправильно",
-          type: "error",
-        };
-        this.stepTwoDisable = true;
+            'Поля, выделенные красным цветом, не заполнены или заполнены неправильно',
+          type: 'error',
+        }
+        this.stepTwoDisable = true
       }
     },
     backToView() {
-      if (this.order.status === "sold") {
+      if (this.order.status === 'sold') {
         this.$router.push({
-          name: "contracts-view",
+          name: 'contracts-view',
           params: { id: this.$route.params.id },
-        });
+        })
       }
     },
     timeElapsedHandler() {
-      this.expiredConfirm();
+      this.expiredConfirm()
     },
     async expiredConfirm() {
       try {
-        this.loading = true;
+        this.loading = true
         await api.orders
           .deactivateOrderHold(this.order.uuid)
           .then(() => {
             this.$router.push({
-              name: "apartments",
-            });
+              name: 'apartments',
+            })
           })
-          .catch();
+          .catch()
       } catch (error) {
-        this.toastedWithErrorCode(error);
+        this.toastedWithErrorCode(error)
       } finally {
-        this.loading = false;
+        this.loading = false
       }
     },
     setNewContractNumber(newNumber) {
-      this.changedContractNumber = true;
-      this.newContractNumber = newNumber;
+      this.changedContractNumber = true
+      this.newContractNumber = newNumber
     },
     async submitConcludeContract() {
       const agree = await this.$swal({
-        title: this.$t("sweetAlert.title"),
-        text: this.$t("sweetAlert.text_agree"),
-        icon: "warning",
+        title: this.$t('sweetAlert.title'),
+        text: this.$t('sweetAlert.text_agree'),
+        icon: 'warning',
         showCancelButton: true,
-        cancelButtonText: this.$t("cancel"),
-        confirmButtonText: this.$t("sweetAlert.yes_agree"),
-      });
+        cancelButtonText: this.$t('cancel'),
+        confirmButtonText: this.$t('sweetAlert.yes_agree'),
+      })
 
       if (agree.value) {
-        this.startLoading();
+        this.startLoading()
         const {
           discount,
           client,
@@ -404,76 +404,76 @@ export default {
           changedContractNumber,
           newContractNumber,
           getDiscountAmount,
-        } = this;
+        } = this
 
-        const form = new FormData();
-        form.append("discount_id", discount.id);
-        form.append("type_client", client.friends);
-        form.append("client_id", client.id);
+        const form = new FormData()
+        form.append('discount_id', discount.id)
+        form.append('type_client', client.friends)
+        form.append('client_id', client.id)
 
         if (edit.monthly) {
           for (let i = 0; i < credit_months.length; i++) {
-            const p = credit_months[i];
-            const { ymd } = dateProperties(p.month, "string");
-            form.append(`monthly[${i}][date]`, ymd);
-            form.append(`monthly[${i}][amount]`, p.amount);
-            form.append(`monthly[${i}][edited]`, (+p.edit).toString());
+            const p = credit_months[i]
+            const { ymd } = dateProperties(p.month, 'string')
+            form.append(`monthly[${i}][date]`, ymd)
+            form.append(`monthly[${i}][amount]`, p.amount)
+            form.append(`monthly[${i}][edited]`, (+p.edit).toString())
           }
         }
 
         if (initial_payments.length > 1 || edit.initial_price) {
           for (let i = 0; i < initial_payments.length; i++) {
-            const p = initial_payments[i];
-            const { ymd } = dateProperties(p.month, "string");
-            form.append(`initial_payments[${i}][date]`, ymd);
-            form.append(`initial_payments[${i}][amount]`, p.amount);
-            form.append(`initial_payments[${i}][edited]`, (+p.edit).toString());
+            const p = initial_payments[i]
+            const { ymd } = dateProperties(p.month, 'string')
+            form.append(`initial_payments[${i}][date]`, ymd)
+            form.append(`initial_payments[${i}][amount]`, p.amount)
+            form.append(`initial_payments[${i}][edited]`, (+p.edit).toString())
           }
         }
 
         if (edit.prepay) {
-          form.append("prepay_edited", calc.prepay);
+          form.append('prepay_edited', calc.prepay)
         }
 
-        form.append("comment", comment);
-        form.append("months", calc.monthly_payment_period);
-        form.append("first_payment_date", calc.first_payment_date);
-        form.append("discount_amount", getDiscountAmount);
+        form.append('comment', comment)
+        form.append('months', calc.monthly_payment_period)
+        form.append('first_payment_date', calc.first_payment_date)
+        form.append('discount_amount', getDiscountAmount)
 
-        if (discount.id === "other") {
+        if (discount.id === 'other') {
           for (let i = 0; i < apartments.length; i++) {
-            form.append(`apartments[${i}][id]`, apartments[i].id);
-            form.append(`apartments[${i}][price]`, apartments[i].price);
+            form.append(`apartments[${i}][id]`, apartments[i].id)
+            form.append(`apartments[${i}][price]`, apartments[i].price)
           }
         }
 
         if (client.contract_date) {
-          form.append("contract_date", client.contract_date);
+          form.append('contract_date', client.contract_date)
         }
 
         if (calc.payment_date) {
-          form.append("payment_date", calc.payment_date);
+          form.append('payment_date', calc.payment_date)
         }
 
         if (changedContractNumber) {
-          form.append("contract_number", newContractNumber);
+          form.append('contract_number', newContractNumber)
         }
 
         try {
-          const response = await api.orders.reserveApartment(order.uuid, form);
-          this.successContract = response.data;
-          this.toasted(response.data.message, "success");
-          this.$bvModal.hide("modal-agree");
-          this.$bvModal.show("modal-success-agree");
+          const response = await api.orders.reserveApartment(order.uuid, form)
+          this.successContract = response.data
+          this.toasted(response.data.message, 'success')
+          this.$bvModal.hide('modal-agree')
+          this.$bvModal.show('modal-success-agree')
         } catch (e) {
-          this.toastedWithErrorCode(e);
+          this.toastedWithErrorCode(e)
         } finally {
-          this.finishLoading();
+          this.finishLoading()
         }
       }
     },
   },
-};
+}
 </script>
 
 <template>
@@ -495,8 +495,8 @@ export default {
         >
           <CountDown
             :deadline="expiry_at"
-            :showDays="false"
-            :showHours="false"
+            :show-days="false"
+            :show-hours="false"
             @timeElapsed="timeElapsedHandler"
           />
         </div>
@@ -504,8 +504,8 @@ export default {
     </app-header>
     <div class="app-checkout-main">
       <b-tabs
-        pills
         v-model="tabIndex"
+        pills
         content-class="app-tabs-content"
         nav-class="app-tabs-content-header"
       >
@@ -513,10 +513,21 @@ export default {
         <b-tab active>
           <template #title>
             <div class="app-tab-title d-flex align-items-center">
-              <span :class="flexCenter" class="app-tab-title-number">1</span>
-              <p class="app-tab-title-content">{{ $t("contract_details") }}</p>
-              <span :class="flexCenter" class="app-tab-title-right-icon">
-                <base-right-icon :width="18" :height="18" />
+              <span
+                :class="flexCenter"
+                class="app-tab-title-number"
+              >1</span>
+              <p class="app-tab-title-content">
+                {{ $t("contract_details") }}
+              </p>
+              <span
+                :class="flexCenter"
+                class="app-tab-title-right-icon"
+              >
+                <base-right-icon
+                  :width="18"
+                  :height="18"
+                />
               </span>
             </div>
           </template>
@@ -536,20 +547,33 @@ export default {
         <b-tab :disabled="stepTwoDisable">
           <template #title>
             <div class="app-tab-title d-flex align-items-center">
-              <span :class="flexCenter" class="app-tab-title-number">2</span>
-              <p class="app-tab-title-content">{{ $t("payment_details") }}</p>
+              <span
+                :class="flexCenter"
+                class="app-tab-title-number"
+              >2</span>
+              <p class="app-tab-title-content">
+                {{ $t("payment_details") }}
+              </p>
             </div>
           </template>
 
-          <div v-if="tabIndex === 1" class="app-tab-content">
+          <div
+            v-if="tabIndex === 1"
+            class="app-tab-content"
+          >
             <div>
-              <div class="app-tab__header-collapse" v-b-toggle.accordion-1>
-                <h3 class="section-title">{{ $t("client_info") }}</h3>
+              <div
+                v-b-toggle.accordion-1
+                class="app-tab__header-collapse"
+              >
+                <h3 class="section-title">
+                  {{ $t("client_info") }}
+                </h3>
                 <img
                   class="collapse-icon"
                   :src="require('@/assets/icons/icon-down.svg')"
                   alt=""
-                />
+                >
               </div>
               <b-collapse id="accordion-1">
                 <ClientInformation :client="client" />
@@ -568,7 +592,9 @@ export default {
               </div>
 
               <div class="app-tab__header">
-                <h3 class="section-title">{{ $t("payment_details") }}</h3>
+                <h3 class="section-title">
+                  {{ $t("payment_details") }}
+                </h3>
               </div>
               <div class="app-checkout__calculator">
                 <checkout-calculator
@@ -597,13 +623,16 @@ export default {
 
         <!--        TABS END -->
         <template #tabs-end>
-          <b-nav-item role="presentation" href="#">
+          <b-nav-item
+            role="presentation"
+            href="#"
+          >
             <base-button
               v-if="tabIndex"
-              @click="submitConcludeContract"
               class="violet-gradient"
               :text="`${$t('create_agree')}`"
               :app-loading="appLoading"
+              @click="submitConcludeContract"
             >
               <template #right-icon>
                 <BaseArrowRightIcon fill="var(--white)" />

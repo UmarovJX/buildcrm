@@ -1,18 +1,18 @@
 <script>
-import { formatDateWithDot, formatToPrice } from "@/util/reusable";
-import BaseButton from "@/components/Reusable/BaseButton";
-import BaseEditIcon from "@/components/icons/BaseEditIcon";
-import BasePlusIcon from "@/components/icons/BasePlusIcon";
-import BaseDeleteIcon from "@/components/icons/BaseDeleteIcon";
-import BaseModal from "@/components/Reusable/BaseModal";
-import BaseCloseIcon from "@/components/icons/BaseCloseIcon";
-import BaseDatePicker from "@/components/Reusable/BaseDatePicker";
-import BasePriceInput from "@/components/Reusable/BasePriceInput";
-import { mapActions, mapGetters } from "vuex";
-import { dateProperties } from "@/util/calendar";
+import { formatDateWithDot, formatToPrice } from '@/util/reusable'
+import BaseButton from '@/components/Reusable/BaseButton'
+import BaseEditIcon from '@/components/icons/BaseEditIcon'
+import BasePlusIcon from '@/components/icons/BasePlusIcon'
+import BaseDeleteIcon from '@/components/icons/BaseDeleteIcon'
+import BaseModal from '@/components/Reusable/BaseModal'
+import BaseCloseIcon from '@/components/icons/BaseCloseIcon'
+import BaseDatePicker from '@/components/Reusable/BaseDatePicker'
+import BasePriceInput from '@/components/Reusable/BasePriceInput'
+import { mapActions, mapGetters } from 'vuex'
+import { dateProperties } from '@/util/calendar'
 
 export default {
-  name: "PaymentMonths",
+  name: 'PaymentMonths',
   components: {
     BaseDeleteIcon,
     BasePlusIcon,
@@ -36,76 +36,76 @@ export default {
         amount: null,
         tracker: {},
       },
-    };
+    }
   },
   computed: {
-    ...mapGetters("checkout", {
-      initialPayments: "getInitialPayments",
-      creditMonths: "getCreditMonths",
+    ...mapGetters('checkout', {
+      initialPayments: 'getInitialPayments',
+      creditMonths: 'getCreditMonths',
     }),
     paymentsSchedule() {
-      return [...this.initialPayments, ...this.creditMonths];
+      return [...this.initialPayments, ...this.creditMonths]
     },
     fields() {
       return [
         {
-          key: "month",
-          label: this.$t("date"),
+          key: 'month',
+          label: this.$t('date'),
         },
         {
-          key: "type",
-          label: this.$t("type"),
+          key: 'type',
+          label: this.$t('type'),
         },
         {
-          key: "amount",
-          label: this.$t("sum"),
-          formatter: (value) => formatToPrice(value, 2),
+          key: 'amount',
+          label: this.$t('sum'),
+          formatter: value => formatToPrice(value, 2),
         },
         {
-          key: "actions",
-          label: this.$t("companies.actions"),
+          key: 'actions',
+          label: this.$t('companies.actions'),
         },
-      ];
+      ]
     },
   },
   methods: {
-    ...mapActions("checkout", {
-      addNewPaymentSchedule: "addNewPaymentSchedule",
-      editPaymentSchedule: "editPaymentSchedule",
-      deletePaymentSchedule: "deletePaymentSchedule",
+    ...mapActions('checkout', {
+      addNewPaymentSchedule: 'addNewPaymentSchedule',
+      editPaymentSchedule: 'editPaymentSchedule',
+      deletePaymentSchedule: 'deletePaymentSchedule',
     }),
     formatDate: formatDateWithDot,
     editSelectedPayment(payment) {
-      const { ymd } = dateProperties(payment.month, "string");
+      const { ymd } = dateProperties(payment.month, 'string')
       this.editContext = {
         ...payment,
         month: ymd,
-      };
-      this.editContext.tracker = payment;
-      this.openEditModal();
+      }
+      this.editContext.tracker = payment
+      this.openEditModal()
     },
     openEditModal() {
-      this.$refs["edit-payment-schedule"].openModal();
+      this.$refs['edit-payment-schedule'].openModal()
     },
     closeEditModal() {
-      this.$refs["edit-payment-schedule"].closeModal();
+      this.$refs['edit-payment-schedule'].closeModal()
     },
     addPayment(payment) {
-      this.addNewPaymentSchedule(payment);
+      this.addNewPaymentSchedule(payment)
     },
     deletePayment(payment) {
-      this.deletePaymentSchedule(payment);
+      this.deletePaymentSchedule(payment)
     },
     editPayment() {
-      const { time } = dateProperties(this.editContext.month, "string");
+      const { time } = dateProperties(this.editContext.month, 'string')
       this.editPaymentSchedule({
         ...this.editContext,
         month: time,
-      });
-      this.closeEditModal();
+      })
+      this.closeEditModal()
     },
   },
-};
+}
 </script>
 
 <template>
@@ -122,7 +122,10 @@ export default {
       :items="paymentsSchedule"
       :empty-text="$t('no_data')"
     >
-      <template class="header_label" #head(name)="data">
+      <template
+        #head(name)="data"
+        class="header_label"
+      >
         <span>
           {{ data.label }}
         </span>
@@ -184,14 +187,25 @@ export default {
         </div>
       </template>
     </b-table>
-    <base-modal ref="edit-payment-schedule" design="auto-height">
+    <base-modal
+      ref="edit-payment-schedule"
+      design="auto-height"
+    >
       <template #header>
         <div class="d-flex align-items-center justify-content-between">
           <!--    TITLE      -->
-          <p class="title">{{ $t("apartments.agree.number") }}</p>
+          <p class="title">
+            {{ $t("apartments.agree.number") }}
+          </p>
           <!--   CLOSE    -->
-          <p class="close-btn" @click="closeEditModal">
-            <BaseCloseIcon :width="56" :height="56" />
+          <p
+            class="close-btn"
+            @click="closeEditModal"
+          >
+            <BaseCloseIcon
+              :width="56"
+              :height="56"
+            />
           </p>
         </div>
       </template>
@@ -222,9 +236,9 @@ export default {
       </template>
       <template #footer>
         <base-button
-          @click="editPayment"
           :fixed="true"
           :text="`${$t('apply')}`"
+          @click="editPayment"
         />
       </template>
     </base-modal>

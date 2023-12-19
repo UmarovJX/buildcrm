@@ -1,13 +1,13 @@
-import Converter from "./converter";
+import Converter from './converter'
 
 export default class A extends Converter {
   get tag() {
-    return "a";
+    return 'a'
   }
 
   convert() {
-    super.convert(...arguments);
-    var link = this.wordModel.getLink();
-    link && (this.content.href = link);
+    super.convert(...arguments)
+    const link = this.wordModel.getLink()
+    link && (this.content.href = link)
   }
 }

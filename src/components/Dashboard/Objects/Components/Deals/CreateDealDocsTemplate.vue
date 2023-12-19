@@ -1,135 +1,138 @@
 <script>
-import api from "@/services/api";
-import TemplatesPermission from "@/permission/templates";
+import api from '@/services/api'
+import TemplatesPermission from '@/permission/templates'
 
 export default {
-  name: "CreateDealDocsTemplate",
-  emits: ["update-content"],
+  name: 'CreateDealDocsTemplate',
+  emits: ['update-content'],
   data() {
     return {
       loading: false,
-      selected: "uz",
+      selected: 'uz',
       form: {
         file: null,
         type: null,
-        language: "uz",
+        language: 'uz',
         category: null,
         main: 1,
-        document_type: "physical",
+        document_type: 'physical',
       },
       errors: [],
       categoryOptions: [
-        { value: "sale", text: this.$t("objects.sale") },
-        { value: "reserve", text: this.$t("objects.booking") },
-        { value: "reissue", text: this.$t("contract_regeneration") },
-        { value: "parking", text: this.$t("parking") },
+        { value: 'sale', text: this.$t('objects.sale') },
+        { value: 'reserve', text: this.$t('objects.booking') },
+        { value: 'reissue', text: this.$t('contract_regeneration') },
+        { value: 'parking', text: this.$t('parking') },
       ],
       options: [
-        { text: "uz", value: "uz" },
-        { text: "ru", value: "ru" },
+        { text: 'uz', value: 'uz' },
+        { text: 'ru', value: 'ru' },
       ],
       primaryPermission: TemplatesPermission.getTemplatesPrimaryPermission(),
-    };
+    }
   },
   computed: {
     typeOptions() {
       const option = [
-        { value: "full", text: this.$t("full") },
-        { value: "monthly", text: this.$t("monthly") },
-        { value: "without_initial", text: this.$t("without_initial") },
-      ];
+        { value: 'full', text: this.$t('full') },
+        { value: 'monthly', text: this.$t('monthly') },
+        { value: 'without_initial', text: this.$t('without_initial') },
+      ]
 
-      if (this.form.category === "reissue") {
-        return option.slice(1);
+      if (this.form.category === 'reissue') {
+        return option.slice(1)
       }
 
-      return option;
+      return option
     },
     subjectTypes() {
       return [
-        { value: "physical", text: this.$t("physical_person") },
-        { value: "legal", text: this.$t("legal_entity") },
-      ];
+        { value: 'physical', text: this.$t('physical_person') },
+        { value: 'legal', text: this.$t('legal_entity') },
+      ]
     },
     showPaymentType() {
-      const notShow = ["reserve", "reissue"];
+      const notShow = ['reserve', 'reissue']
       const index = notShow.findIndex(
-        (ctyType) => ctyType === this.form.category
-      );
-      return index === -1;
+        ctyType => ctyType === this.form.category,
+      )
+      return index === -1
     },
   },
   methods: {
     async submitNewDocs() {
       if (!this.loading) {
-        const validation = await this.$refs["validation-observer"].validate();
+        const validation = await this.$refs['validation-observer'].validate()
         if (validation) {
-          const data = Object.assign({}, this.form);
-          const form = new FormData();
+          const data = { ...this.form }
+          const form = new FormData()
 
-          if (data.category === "reserve") {
-            delete data.type;
+          if (data.category === 'reserve') {
+            delete data.type
           }
 
-          for (let [key, value] of Object.entries(data)) {
-            if (data[key] === null && key !== "main") {
-              delete data[key];
+          for (const [key, value] of Object.entries(data)) {
+            if (data[key] === null && key !== 'main') {
+              delete data[key]
             } else {
-              form.append(key, value);
+              form.append(key, value)
             }
           }
 
-          this.loading = true;
-          const { id } = this.$route.params;
+          this.loading = true
+          const { id } = this.$route.params
           await api.objectsV2
             .addNewContract({ id, form })
             .then(() => {
               // console.log(res, 'res');
-              this.$refs["creation-content"].hide();
-              this.$emit("update-content", { category: this.form.category });
-              this.setInitialPropertyForm();
+              this.$refs['creation-content'].hide()
+              this.$emit('update-content', { category: this.form.category })
+              this.setInitialPropertyForm()
             })
-            .catch((error) => {
+            .catch(error => {
               // console.log(error, 'error');
               // error.file.map(item => this.errors.push(item))
               // console.log(error.file, 'error');
               // this.errors.push(error)
-              this.toastedWithErrorCode(error);
+              this.toastedWithErrorCode(error)
             })
             .finally(() => {
-              this.loading = false;
-            });
+              this.loading = false
+            })
         }
       }
     },
     setInitialPropertyForm() {
-      this.form.file = null;
-      this.form.type = null;
-      this.form.category = null;
-      this.form.language = "uz";
-      this.form.main = 0;
+      this.form.file = null
+      this.form.type = null
+      this.form.category = null
+      this.form.language = 'uz'
+      this.form.main = 0
     },
   },
-};
+}
 </script>
 
 <template>
   <b-modal
-    ref="creation-content"
     id="creation-content"
+    ref="creation-content"
     :title="$t('add')"
     size="lg"
   >
-    <ValidationObserver ref="validation-observer" v-slot="{ handleSubmit }">
+    <ValidationObserver
+      ref="validation-observer"
+      v-slot="{ handleSubmit }"
+    >
       <form
         class="form__password"
         @submit.prevent="handleSubmit(submitNewDocs)"
       >
         <!--  FILE UPLOAD  -->
         <ValidationProvider
+          v-slot="{ errors }"
           rules="required"
           :name="`${$t('objects.deal_file')}`"
-          v-slot="{ errors }"
         >
           <b-form-group
             label-cols="6"
@@ -144,16 +147,16 @@ export default {
               value="File"
               placeholder="Choose a file or drop it here..."
               drop-placeholder="Drop file here..."
-            ></b-form-file>
+            />
           </b-form-group>
           <span class="error__provider">{{ errors[0] }}</span>
         </ValidationProvider>
 
         <!--  SELECT CATEGORY  -->
         <ValidationProvider
+          v-slot="{ errors }"
           rules="required"
           :name="`${$t('objects.select_category')}`"
-          v-slot="{ errors }"
         >
           <b-form-group
             label-cols="6"
@@ -162,12 +165,15 @@ export default {
             label-for="form_selection_category"
           >
             <b-form-select
+              id="form_selection_category"
               v-model="form.category"
               :options="categoryOptions"
-              id="form_selection_category"
             >
               <template #first>
-                <b-form-select-option :value="null" disabled>
+                <b-form-select-option
+                  :value="null"
+                  disabled
+                >
                   {{ $t("objects.select_category") }}
                 </b-form-select-option>
               </template>
@@ -185,12 +191,15 @@ export default {
           label-for="form_selection_type"
         >
           <b-form-select
+            id="form_selection_type"
             v-model="form.type"
             :options="typeOptions"
-            id="form_selection_type"
           >
             <template #first>
-              <b-form-select-option :value="null" disabled>
+              <b-form-select-option
+                :value="null"
+                disabled
+              >
                 {{ $t("payment_type") }}
               </b-form-select-option>
             </template>
@@ -200,9 +209,9 @@ export default {
         <!-- MAKE IT THE MAIN CONTRACT  -->
         <b-form-checkbox
           v-if="primaryPermission"
+          v-model="form.main"
           class="d-flex justify-content-end"
           name="checkbox-for-contract"
-          v-model="form.main"
           :value="1"
           :unchecked-value="0"
         >
@@ -213,13 +222,13 @@ export default {
         <div class="d-flex justify-content-end mt-4">
           <b-form-group v-slot="{ ariaDescribedby }">
             <b-form-radio-group
-              size="lg"
               id="radio-group-1"
               v-model="form.language"
+              size="lg"
               :options="options"
               :aria-describedby="ariaDescribedby"
               name="radio-options"
-            ></b-form-radio-group>
+            />
           </b-form-group>
         </div>
 
@@ -227,13 +236,13 @@ export default {
         <div class="d-flex justify-content-end mt-4">
           <b-form-group v-slot="{ ariaDescribedby }">
             <b-form-radio-group
-              size="lg"
               id="radio-group-subject-type"
               v-model="form.document_type"
+              size="lg"
               :options="subjectTypes"
               :aria-describedby="ariaDescribedby"
               name="radio-options-subject-type"
-            ></b-form-radio-group>
+            />
           </b-form-group>
         </div>
       </form>
@@ -241,7 +250,11 @@ export default {
     <!--  MODAL FOOTER    -->
     <template #modal-footer="{ ok, cancel, hide }">
       <div class="d-flex justify-content-end">
-        <b-button class="cancel__button" variant="light" @click="cancel()">
+        <b-button
+          class="cancel__button"
+          variant="light"
+          @click="cancel()"
+        >
           {{ $t("cancel") }}
         </b-button>
 
@@ -254,13 +267,19 @@ export default {
         >
           <b-button
             type="submit"
-            @click="submitNewDocs"
             class="submit__button"
             variant="success"
+            @click="submitNewDocs"
           >
-            <i class="fas fa-save" v-if="!loading"></i>
+            <i
+              v-if="!loading"
+              class="fas fa-save"
+            />
             <span class="save__button">{{ $t("save") }}</span>
-            <i v-if="loading" class="fas fa-spinner fa-spin"></i>
+            <i
+              v-if="loading"
+              class="fas fa-spinner fa-spin"
+            />
           </b-button>
         </b-overlay>
       </div>

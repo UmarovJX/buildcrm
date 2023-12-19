@@ -1,8 +1,9 @@
-export default class text extends require("../model") {
+export default class text extends require('../model') {
   static get type() {
-    return "text";
+    return 'text'
   }
+
   getText() {
-    return this.wXml.textContent;
+    return this.wXml.textContent
   }
 }

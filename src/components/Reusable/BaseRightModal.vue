@@ -1,9 +1,9 @@
 <script>
-import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
-import BaseButton from "@/components/Reusable/BaseButton";
+import BaseArrowLeftIcon from '@/components/icons/BaseArrowLeftIcon'
+import BaseButton from '@/components/Reusable/BaseButton'
 
 export default {
-  name: "BaseRightModal",
+  name: 'BaseRightModal',
   components: {
     BaseButton,
     BaseArrowLeftIcon,
@@ -11,67 +11,73 @@ export default {
   props: {
     title: {
       type: String,
-      default: "contracts.filter_title",
+      default: 'contracts.filter_title',
     },
   },
-  emits: ["show", "reset-fields", "start-filtering"],
+  emits: ['show', 'reset-fields', 'start-filtering'],
   computed: {
     hasModalTitleSlot() {
-      return !!this.$slots["modal-title"];
+      return !!this.$slots['modal-title']
     },
     hasFooterModal() {
-      return !!this.$slots["modal-footer"];
+      return !!this.$slots['modal-footer']
     },
   },
   methods: {
     show() {
-      this.$refs["base-modal"].show();
+      this.$refs['base-modal'].show()
     },
     hide() {
-      this.$refs["base-modal"].hide();
+      this.$refs['base-modal'].hide()
     },
     clearFilter() {
-      this.$emit("reset-fields");
-      this.$refs["base-modal"].hide();
+      this.$emit('reset-fields')
+      this.$refs['base-modal'].hide()
     },
     searchByFilterField() {
-      this.$emit("start-filtering");
-      this.hide();
+      this.$emit('start-filtering')
+      this.hide()
     },
     filterModalOpened() {
-      this.$emit("show");
+      this.$emit('show')
     },
     hideFilterModal() {
-      this.hide();
+      this.hide()
     },
   },
-};
+}
 </script>
 
 <template>
   <div>
     <b-modal
+      id="base-modal"
       ref="base-modal"
       title="Using Component Methods"
       modal-class="filter__modal"
-      id="base-modal"
-      @show="filterModalOpened"
-      @hidden="hideFilterModal"
       hide-header
       hide-footer
+      @show="filterModalOpened"
+      @hidden="hideFilterModal"
     >
       <div class="modal__content">
         <!--   Go Back     -->
         <span class="d-flex align-items-center">
-          <span class="go__back" @click="hideFilterModal">
+          <span
+            class="go__back"
+            @click="hideFilterModal"
+          >
             <base-arrow-left-icon
               :width="32"
               :height="32"
-            ></base-arrow-left-icon>
+            />
           </span>
           <!--    Title      -->
           <slot name="modal-title" />
-          <span v-if="!hasModalTitleSlot" class="title">
+          <span
+            v-if="!hasModalTitleSlot"
+            class="title"
+          >
             {{ $t(title) }}
           </span>
         </span>
@@ -82,18 +88,21 @@ export default {
 
           <!--  Modal Footer    -->
           <slot name="modal-footer" />
-          <div v-if="!hasFooterModal" class="modal__footer">
+          <div
+            v-if="!hasFooterModal"
+            class="modal__footer"
+          >
             <base-button
-              @click="clearFilter"
               :fixed="true"
               design="transparent"
               :text="$t('contracts.reset_filter')"
+              @click="clearFilter"
             />
             <base-button
-              @click="searchByFilterField"
               design="violet-gradient"
               :fixed="true"
               :text="$t('contracts.apply_filter')"
+              @click="searchByFilterField"
             />
           </div>
         </div>

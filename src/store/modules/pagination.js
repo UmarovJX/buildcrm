@@ -7,13 +7,13 @@ export default {
 
   mutations: {
     SET_CURRENT_PAGINATION(state, currentPagination) {
-      state.currentPagination = currentPagination;
+      state.currentPagination = currentPagination
     },
   },
 
   getters: {
     getCurrentPagination(state) {
-      return state.currentPagination;
+      return state.currentPagination
     },
   },
-};
+}

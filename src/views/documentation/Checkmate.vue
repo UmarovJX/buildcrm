@@ -1,9 +1,9 @@
 <script>
-import DocHeader from "@/views/documentation/DocHeader";
-import ApartmentBox from "@/components/Objects/view/Tabs/ApartmentBox";
+import DocHeader from '@/views/documentation/DocHeader'
+import ApartmentBox from '@/components/Objects/view/Tabs/ApartmentBox'
 
 export default {
-  name: "Checkmate",
+  name: 'Checkmate',
   components: {
     ApartmentBox,
     DocHeader,
@@ -17,7 +17,7 @@ export default {
           surface: 166,
           cost: 3000000000,
           cost_m2: 1300000,
-          status: "available",
+          status: 'available',
         },
         {
           number: 200,
@@ -25,7 +25,7 @@ export default {
           surface: 166,
           cost: 3000000000,
           cost_m2: 1300000,
-          status: "sold",
+          status: 'sold',
         },
         {
           number: 200,
@@ -33,7 +33,7 @@ export default {
           surface: 166,
           cost: 3000000000,
           cost_m2: 1300000,
-          status: "decorated",
+          status: 'decorated',
         },
         {
           number: 200,
@@ -41,7 +41,7 @@ export default {
           surface: 166,
           cost: 3000000000,
           cost_m2: 1300000,
-          status: "not_available",
+          status: 'not_available',
         },
         {
           number: 200,
@@ -49,20 +49,23 @@ export default {
           surface: 166,
           cost: 3000000000,
           cost_m2: 1300000,
-          status: "booked",
+          status: 'booked',
         },
       ],
-    };
+    }
   },
   methods: {},
-};
+}
 </script>
 
 <template>
   <main class="checkmate">
     <DocHeader title="checkmate" />
     <div class="checkmate-content">
-      <div v-for="(apartment, index) in apartments" :key="index">
+      <div
+        v-for="(apartment, index) in apartments"
+        :key="index"
+      >
         <ApartmentBox :apartment="apartment" />
       </div>
     </div>

@@ -1,14 +1,14 @@
 <script>
-import BaseLoading from "@/components/Reusable/BaseLoading";
-import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
-import AppHeader from "@/components/Header/AppHeader";
+import BaseLoading from '@/components/Reusable/BaseLoading'
+import BaseArrowLeftIcon from '@/components/icons/BaseArrowLeftIcon'
+import AppHeader from '@/components/Header/AppHeader'
 
-import { v3ServiceApi } from "@/services/v3/v3.service";
+import { v3ServiceApi } from '@/services/v3/v3.service'
 
-import ChClientDetails from "@/views/clients/components/ClientDetails";
+import ChClientDetails from '@/views/clients/components/ClientDetails'
 
 export default {
-  name: "ClientView",
+  name: 'ClientView',
   components: {
     ChClientDetails,
 
@@ -21,80 +21,88 @@ export default {
       showLoading: false,
       showSecondaryLoading: false,
       client: null,
-    };
+    }
   },
-  created() {
-    this.fetchData();
+  computed: {
+    clientName() {
+      if (!this.client) return ''
+      const { locale } = this.$i18n
+      let lang = 'lotin'
+      if (locale === 'ru') {
+        lang = 'kirill'
+      }
+      if (this.client.subject === 'physical') {
+        const { first_name, last_name, middle_name } = this.client.attributes
+        return `${first_name[lang]} ${last_name[lang]} ${middle_name[lang]} `
+      }
+      return (
+        `${this.client.attributes.company.name[locale]
+        } ${
+          this.client.attributes.name}`
+      )
+    },
   },
 
   watch: {},
-  computed: {
-    clientName() {
-      if (!this.client) return "";
-      const locale = this.$i18n.locale;
-      let lang = "lotin";
-      if (locale === "ru") {
-        lang = "kirill";
-      }
-      if (this.client.subject === "physical") {
-        const { first_name, last_name, middle_name } = this.client.attributes;
-        return `${first_name[lang]} ${last_name[lang]} ${middle_name[lang]} `;
-      } else {
-        return (
-          this.client.attributes.company.name[locale] +
-          " " +
-          this.client.attributes.name
-        );
-      }
-    },
+  created() {
+    this.fetchData()
   },
 
   methods: {
     async fetchData() {
-      this.showLoading = true;
-      const { uuid } = this.$route.params;
+      this.showLoading = true
+      const { uuid } = this.$route.params
       await v3ServiceApi.clients
         .findOne({ uuid })
-        .then((response) => {
-          this.client = response.data.result;
+        .then(response => {
+          this.client = response.data.result
           setTimeout(() => {
-            this.$refs["client-details-observer"].fillFormInUpdateMode(
+            this.$refs['client-details-observer'].fillFormInUpdateMode(
               {
                 client: this.client,
               },
-              100
-            );
-          });
+              100,
+            )
+          })
         })
-        .catch((error) => {
-          this.toastedWithErrorCode(error);
+        .catch(error => {
+          this.toastedWithErrorCode(error)
         })
         .finally(() => {
-          this.showLoading = false;
-        });
+          this.showLoading = false
+        })
     },
   },
-};
+}
 </script>
 <template>
   <div>
     <AppHeader>
       <template #header-breadcrumb>
         <div class="d-flex align-items-center">
-          <div class="go__back" @click="$router.go(-1)">
-            <BaseArrowLeftIcon :width="32" :height="32"></BaseArrowLeftIcon>
+          <div
+            class="go__back"
+            @click="$router.go(-1)"
+          >
+            <BaseArrowLeftIcon
+              :width="32"
+              :height="32"
+            />
           </div>
           <div class="breadcrumb__content card-title mb-0">
             {{ clientName }}
           </div>
         </div>
       </template>
-      <template #header-status> </template>
-      <template #header-actions> </template>
+      <template #header-status />
+      <template #header-actions />
     </AppHeader>
 
     <base-loading v-if="showLoading" />
-    <ch-client-details ref="client-details-observer" v-else />
+    <ch-client-details
+      v-else
+      ref="client-details-observer"
+    />
   </div>
 </template>
 

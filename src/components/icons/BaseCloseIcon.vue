@@ -1,10 +1,10 @@
 <script>
 export default {
-  name: "BaseCloseIcon",
+  name: 'BaseCloseIcon',
   props: {
     fill: {
       type: String,
-      default: "#F3F4F6",
+      default: '#F3F4F6',
     },
     width: {
       type: Number,
@@ -15,7 +15,7 @@ export default {
       default: 56,
     },
   },
-};
+}
 </script>
 <template>
   <svg
@@ -26,7 +26,12 @@ export default {
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <circle cx="28" cy="28" r="28" :fill="fill" />
+    <circle
+      cx="28"
+      cy="28"
+      r="28"
+      :fill="fill"
+    />
     <path
       d="M36 20L20 36"
       stroke="#9CA3AF"

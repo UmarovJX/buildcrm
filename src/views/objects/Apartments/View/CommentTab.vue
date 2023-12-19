@@ -1,9 +1,9 @@
 <script>
-import ApartmentComments from "@/components/Objects/view/elements/ApartmentComments";
-import ApartmentsPermission from "@/permission/apartments";
+import ApartmentComments from '@/components/Objects/view/elements/ApartmentComments'
+import ApartmentsPermission from '@/permission/apartments'
 
 export default {
-  name: "CommentTab",
+  name: 'CommentTab',
   components: {
     ApartmentComments,
   },
@@ -29,14 +29,14 @@ export default {
         edit: ApartmentsPermission.getApartmentCommentsEditPermission(),
         delete: ApartmentsPermission.getApartmentCommentsDeletePermission(),
       },
-    };
+    }
   },
   methods: {
     updateComments(data) {
-      this.$emit("update-comments", data);
+      this.$emit('update-comments', data)
     },
   },
-};
+}
 </script>
 
 <template>

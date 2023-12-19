@@ -1,17 +1,17 @@
 <script>
-import { makeProp } from "@/util/props";
-import { isEmptyObject } from "@/util/inspect";
-import { PROP_TYPE_STRING } from "@/constants/props";
-import { XFormInput } from "@/components/ui-components/form-input";
-import { XModalCenter } from "@/components/ui-components/modal-center";
-import api from "@/services/api";
-import { v3ServiceApi } from "@/services/v3/v3.service";
+import { makeProp } from '@/util/props'
+import { isEmptyObject } from '@/util/inspect'
+import { PROP_TYPE_STRING } from '@/constants/props'
+import { XFormInput } from '@/components/ui-components/form-input'
+import { XModalCenter } from '@/components/ui-components/modal-center'
+import api from '@/services/api'
+import { v3ServiceApi } from '@/services/v3/v3.service'
 
-import ImageUploader from "@/components/Reusable/ImageUploader";
-import BaseDeleteIcon from "@/components/icons/BaseDeleteIcon";
+import ImageUploader from '@/components/Reusable/ImageUploader'
+import BaseDeleteIcon from '@/components/icons/BaseDeleteIcon'
 
 export default {
-  name: "SettingsCreateFacility",
+  name: 'SettingsCreateFacility',
   components: {
     ImageUploader,
     BaseDeleteIcon,
@@ -19,21 +19,19 @@ export default {
     XModalCenter,
   },
   props: {
-    upsertType: makeProp(PROP_TYPE_STRING, "create", (type) => {
-      return ["create", "edit"].includes(type);
-    }),
+    upsertType: makeProp(PROP_TYPE_STRING, 'create', type => ['create', 'edit'].includes(type)),
     allLangs: {
       type: Array,
       required: true,
     },
     editItem: { type: Object, required: true },
   },
-  emits: ["client-type-created", "close-creating-modal"],
+  emits: ['client-type-created', 'close-creating-modal'],
   data() {
     const form = {
       name: {},
       img: null,
-    };
+    }
     return {
       applyButtonLoading: false,
       form,
@@ -42,70 +40,69 @@ export default {
       },
       old_upload: null,
       new_upload: null,
-    };
+    }
   },
   created() {
-    if (this.upsertType === "edit") {
-      this.setEditData();
+    if (this.upsertType === 'edit') {
+      this.setEditData()
     }
   },
   methods: {
     createImage() {
       if (this.item.img instanceof File) {
-        let img = URL.createObjectURL(this.item.img);
-        return img || null;
-      } else {
-        return this.item.img;
+        const img = URL.createObjectURL(this.item.img)
+        return img || null
       }
+      return this.item.img
     },
     deleteImg(img) {
       if (!(img.path instanceof File)) {
-        this.old_upload = this.editItem.upload_id;
+        this.old_upload = this.editItem.upload_id
       }
-      this.item.img = null;
+      this.item.img = null
     },
     setImage(img) {
-      this.item.img = img[0];
+      this.item.img = img[0]
     },
 
     setEditData() {
       if (isEmptyObject(this.editItem)) {
-        return;
+        return
       }
 
-      this.item.name = this.editItem.name;
-      this.item.img = this.editItem.img;
-      this.item.value = { ...this.editItem.value };
+      this.item.name = this.editItem.name
+      this.item.img = this.editItem.img
+      this.item.value = { ...this.editItem.value }
     },
     closeCreatingModal() {
-      this.clearForm();
-      this.$emit("close-creating-modal");
+      this.clearForm()
+      this.$emit('close-creating-modal')
     },
     startLoading() {
-      this.applyButtonLoading = true;
+      this.applyButtonLoading = true
     },
     finishLoading() {
-      this.applyButtonLoading = false;
+      this.applyButtonLoading = false
     },
 
     async saveItem() {
-      if (this.applyButtonLoading) return;
-      const isSatisfied = await this.$refs["creating-observer"].validate();
+      if (this.applyButtonLoading) return
+      const isSatisfied = await this.$refs['creating-observer'].validate()
       try {
         if (isSatisfied) {
-          this.startLoading();
+          this.startLoading()
           if (this.old_upload) {
-            const d = new FormData();
-            d.append("id", this.old_upload);
-            await api.uploadsV3.removeUpload(d);
+            const d = new FormData()
+            d.append('id', this.old_upload)
+            await api.uploadsV3.removeUpload(d)
           }
 
           if (this.item.img instanceof File) {
-            const d = new FormData();
-            d.append("type", "file");
-            d.append("attachment", this.item.img);
-            const res = await api.uploadsV3.createUpload(d);
-            this.new_upload = res.data.result.id;
+            const d = new FormData()
+            d.append('type', 'file')
+            d.append('attachment', this.item.img)
+            const res = await api.uploadsV3.createUpload(d)
+            this.new_upload = res.data.result.id
           }
 
           const d = {
@@ -113,32 +110,32 @@ export default {
             upload_id: this.new_upload
               ? this.new_upload
               : !this.old_upload
-              ? this.editItem.upload_id
-              : null,
-          };
-          if (this.upsertType === "edit") {
-            d.id = this.editItem.id;
+                ? this.editItem.upload_id
+                : null,
+          }
+          if (this.upsertType === 'edit') {
+            d.id = this.editItem.id
           }
 
           await v3ServiceApi.facility[
-            this.upsertType === "edit" ? "update" : "create"
-          ](d);
-          this.clearForm();
-          this.$emit("client-type-created");
+            this.upsertType === 'edit' ? 'update' : 'create'
+          ](d)
+          this.clearForm()
+          this.$emit('client-type-created')
         }
       } catch (e) {
-        this.toastedWithErrorCode(e);
+        this.toastedWithErrorCode(e)
       } finally {
-        this.finishLoading();
+        this.finishLoading()
       }
     },
     clearForm() {
-      this.item.key = "";
-      this.item.value = {};
-      this.item.tags = [];
+      this.item.key = ''
+      this.item.value = {}
+      this.item.tags = []
     },
   },
-};
+}
 </script>
 
 <template>
@@ -173,10 +170,16 @@ export default {
       </h3>
       <div class="uploader-container flex-column">
         <div class="row uploader-row ml-0">
-          <div class="col-3" v-if="item.img">
+          <div
+            v-if="item.img"
+            class="col-3"
+          >
             <div class="uploader">
               <div class="action-list">
-                <div @click="deleteImg" class="delete-plan">
+                <div
+                  class="delete-plan"
+                  @click="deleteImg"
+                >
                   <base-delete-icon
                     :width="18"
                     :height="18"
@@ -185,12 +188,21 @@ export default {
                 </div>
               </div>
 
-              <img :src="createImage()" alt="img" />
+              <img
+                :src="createImage()"
+                alt="img"
+              >
             </div>
           </div>
-          <div v-else class="col-3">
+          <div
+            v-else
+            class="col-3"
+          >
             <div class="uploader">
-              <image-uploader :multiple="false" @upload-image="setImage" />
+              <image-uploader
+                :multiple="false"
+                @upload-image="setImage"
+              />
             </div>
           </div>
         </div>
@@ -209,10 +221,10 @@ export default {
           class="title-uz-provider"
         >
           <x-form-input
+            v-model="item.name[lang]"
             type="text"
             :placeholder="lang"
             class="w-100"
-            v-model="item.name[lang]"
           />
         </validation-provider>
       </validation-observer>

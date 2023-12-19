@@ -1,25 +1,25 @@
 <script>
-import AppHeader from "@/components/Header/AppHeader.vue";
-import BaseLoading from "@/components/Reusable/BaseLoading.vue";
-import BaseStarIcon from "@/components/icons/BaseStarIcon.vue";
-import { XIcon } from "@/components/ui-components/material-icons";
-import { XButton } from "@/components/ui-components/button";
-import { mapActions } from "vuex";
-import api from "@/services/api";
+import AppHeader from '@/components/Header/AppHeader.vue'
+import BaseLoading from '@/components/Reusable/BaseLoading.vue'
+import BaseStarIcon from '@/components/icons/BaseStarIcon.vue'
+import { XIcon } from '@/components/ui-components/material-icons'
+import { XButton } from '@/components/ui-components/button'
+import { mapActions } from 'vuex'
+import api from '@/services/api'
 import {
   isNotUndefinedNullEmptyZero,
   isObject,
   isUndefinedOrNullOrEmpty,
-} from "@/util/inspect";
-import ContractsPermission from "@/permission/contract";
+} from '@/util/inspect'
+import ContractsPermission from '@/permission/contract'
 import {
   formatDateWithDot,
   formatToPrice,
   phonePrettier,
-} from "@/util/reusable";
+} from '@/util/reusable'
 
 export default {
-  name: "ContractReview",
+  name: 'ContractReview',
   components: {
     AppHeader,
     BaseLoading,
@@ -36,205 +36,199 @@ export default {
       },
       contractsDownloading: false,
       downloadPermission: ContractsPermission.getContractsDownloadPermission(),
-    };
+    }
   },
   computed: {
     tableFields() {
       return [
         {
-          key: "contract",
-          label: this.$t("contracts.table.contract"),
+          key: 'contract',
+          label: this.$t('contracts.table.contract'),
         },
         {
-          key: "client",
-          label: this.$t("contracts.table.client"),
+          key: 'client',
+          label: this.$t('contracts.table.client'),
         },
         {
-          key: "phone",
-          label: this.$t("contracts.table.phone_number"),
+          key: 'phone',
+          label: this.$t('contracts.table.phone_number'),
         },
         {
-          key: "status",
-          label: this.$t("contracts.table.status"),
+          key: 'status',
+          label: this.$t('contracts.table.status'),
         },
         {
-          key: "payments.transaction_price",
-          label: this.$t("contracts.table.cost"),
-          formatter: (price) => formatToPrice(price) + " " + this.$t("ye"),
+          key: 'payments.transaction_price',
+          label: this.$t('contracts.table.cost'),
+          formatter: price => `${formatToPrice(price)} ${this.$t('ye')}`,
         },
         {
-          key: "object",
-          label: this.$t("contracts.table.object"),
-          formatter: (object) => object.name,
+          key: 'object',
+          label: this.$t('contracts.table.object'),
+          formatter: object => object.name,
         },
         {
-          key: "date",
-          label: this.$t("contracts.table.date"),
+          key: 'date',
+          label: this.$t('contracts.table.date'),
         },
         {
-          key: "actions",
-          label: "",
+          key: 'actions',
+          label: '',
         },
-      ];
+      ]
     },
   },
   created() {
-    this.checkNotification();
-    this.fetchContractList();
+    this.checkNotification()
+    this.fetchContractList()
   },
   methods: {
-    ...mapActions("notify", ["openNotify"]),
-    formattingPhone: (phone) => phonePrettier(phone),
+    ...mapActions('notify', ['openNotify']),
+    formattingPhone: phone => phonePrettier(phone),
     getClientMajorPhone(phones) {
-      phones = phones.filter((p) => {
-        return (
-          isNotUndefinedNullEmptyZero(p.phone) && p.phone.toString().length > 3
-        );
-      });
+      phones = phones.filter(p => (
+        isNotUndefinedNullEmptyZero(p.phone) && p.phone.toString().length > 3
+      ))
 
       if (phones.length > 0) {
-        return this.formattingPhone(phones[0].phone);
+        return this.formattingPhone(phones[0].phone)
       }
 
-      return "";
+      return ''
     },
-    dateReverser: (time) => formatDateWithDot(time),
+    dateReverser: time => formatDateWithDot(time),
     checkNotification() {
-      if (this.$route.query.hasOwnProperty("success")) {
+      if (this.$route.query.hasOwnProperty('success')) {
         this.openNotify({
-          type: "success",
-          message: this.$t("contract_completed_successfully"),
-        });
+          type: 'success',
+          message: this.$t('contract_completed_successfully'),
+        })
       }
     },
 
     async fetchContractList() {
-      this.startLoading();
+      this.startLoading()
       const filterParams = {
         // object_id: [this.$route.params.object],
-        contract_number: this.$route.params.ids.split(","),
+        contract_number: this.$route.params.ids.split(','),
         limit: 50,
-      };
+      }
 
       await api.contractV2
         .fetchContractsList(filterParams)
-        .then((response) => {
-          this.tableData.items = response.data.items;
-          this.tableData.pagination = response.data.pagination;
+        .then(response => {
+          this.tableData.items = response.data.items
+          this.tableData.pagination = response.data.pagination
         })
-        .catch((e) => {
+        .catch(e => {
           this.openNotify({
-            type: "error",
+            type: 'error',
             message: e.response.data.message ?? e.message,
-          });
+          })
         })
-        .finally(() => this.finishLoading());
+        .finally(() => this.finishLoading())
     },
     startLoading() {
-      this.tableData.busy = true;
+      this.tableData.busy = true
     },
     finishLoading() {
-      this.tableData.busy = false;
+      this.tableData.busy = false
     },
     clientName(multiName, language) {
       if (!isObject(multiName)) {
-        return "";
+        return ''
       }
 
-      const lastNameByLang = multiName[language];
+      const lastNameByLang = multiName[language]
       if (lastNameByLang) {
-        return lastNameByLang;
-      } else {
-        const lastNameOtherLang =
-          language === "kirill" ? multiName["lotin"] : multiName["kirill"];
-        if (lastNameOtherLang) return lastNameOtherLang;
+        return lastNameByLang
       }
+      const lastNameOtherLang = language === 'kirill' ? multiName.lotin : multiName.kirill
+      if (lastNameOtherLang) return lastNameOtherLang
 
-      return "";
+      return ''
     },
     getClientName(client) {
       if (isUndefinedOrNullOrEmpty(client.attributes)) {
-        return "";
+        return ''
       }
 
-      let language = "kirill";
+      let language = 'kirill'
 
-      if (this.$i18n.locale === "uz") {
-        language = "lotin";
+      if (this.$i18n.locale === 'uz') {
+        language = 'lotin'
       }
 
-      if (client.subject === "legal") {
+      if (client.subject === 'legal') {
         return (
-          client.attributes.company.name[this.$i18n.locale] +
-          " " +
-          client.attributes.name
-        );
+          `${client.attributes.company.name[this.$i18n.locale]
+          } ${
+            client.attributes.name}`
+        )
       }
 
-      const { first_name, last_name, middle_name } =
-        client.attributes ?? client;
+      const { first_name, last_name, middle_name } = client.attributes ?? client
       return (
-        this.clientName(last_name, language) +
-        " " +
-        this.clientName(first_name, language) +
-        " " +
-        this.clientName(middle_name, language)
-      );
+        `${this.clientName(last_name, language)
+        } ${
+          this.clientName(first_name, language)
+        } ${
+          this.clientName(middle_name, language)}`
+      )
     },
     contractView({ id }, index, event) {
-      const clickedDownloadBtn =
-        event.target.classList.contains("download__icon");
+      const clickedDownloadBtn = event.target.classList.contains('download__icon')
       if (clickedDownloadBtn) {
         if (this.downloadPermission) {
-          this.downloadContractLink(id);
+          this.downloadContractLink(id)
         }
       } else {
         this.$router.push({
-          name: "contracts-view",
+          name: 'contracts-view',
           params: {
             id,
           },
-        });
+        })
       }
     },
     async downloadContractLink(id) {
       await api.contract
         .downloadContract(id)
         .then(({ data, headers }) => {
-          const filename = headers.hasOwnProperty("x-filename")
-            ? headers["x-filename"]
-            : "contract";
-          const fileURL = window.URL.createObjectURL(new Blob([data]));
-          const fileLink = document.createElement("a");
-          fileLink.href = fileURL;
-          fileLink.setAttribute("download", filename);
-          document.body.appendChild(fileLink);
-          fileLink.click();
+          const filename = headers.hasOwnProperty('x-filename')
+            ? headers['x-filename']
+            : 'contract'
+          const fileURL = window.URL.createObjectURL(new Blob([data]))
+          const fileLink = document.createElement('a')
+          fileLink.href = fileURL
+          fileLink.setAttribute('download', filename)
+          document.body.appendChild(fileLink)
+          fileLink.click()
         })
-        .catch((e) => {
+        .catch(e => {
           this.openNotify({
-            type: "error",
+            type: 'error',
             message: e.response.data.message ?? e.message,
-          });
-        });
+          })
+        })
     },
     downloadAllContracts() {
-      this.toggleContractDownloading(true);
+      this.toggleContractDownloading(true)
       Promise.allSettled(
-        this.tableData.items.map(({ id }) => this.downloadContractLink(id))
-      ).then(() => this.toggleContractDownloading(false));
+        this.tableData.items.map(({ id }) => this.downloadContractLink(id)),
+      ).then(() => this.toggleContractDownloading(false))
     },
     toggleContractDownloading(process = false) {
-      this.contractsDownloading = process;
-      return 1;
+      this.contractsDownloading = process
+      return 1
     },
     goToContractsPage() {
       this.$router.push({
-        name: "contracts",
-      });
+        name: 'contracts',
+      })
     },
   },
-};
+}
 </script>
 
 <template>
@@ -275,8 +269,15 @@ export default {
       <!--   Client LFP   -->
       <template #cell(client)="{ item }">
         <span class="d-flex">
-          <span v-if="item.client.friends" class="friends__mark">
-            <base-star-icon :width="14" :height="14" fill="#7C3AED" />
+          <span
+            v-if="item.client.friends"
+            class="friends__mark"
+          >
+            <base-star-icon
+              :width="14"
+              :height="14"
+              fill="#7C3AED"
+            />
           </span>
           <span>{{ getClientName(item.client) }}</span>
         </span>
@@ -284,15 +285,24 @@ export default {
 
       <!--   Status   -->
       <template #cell(status)="{ item }">
-        <span class="current__status" :class="item.status">
+        <span
+          class="current__status"
+          :class="item.status"
+        >
           {{ $t(`contracts.status.${item.status}`) }}
         </span>
       </template>
 
       <!--  Actions    -->
       <template #cell(actions)="data">
-        <span v-if="downloadPermission" class="arrow__down-violet">
-          <x-icon name="download" class="color-white download__icon" />
+        <span
+          v-if="downloadPermission"
+          class="arrow__down-violet"
+        >
+          <x-icon
+            name="download"
+            class="color-white download__icon"
+          />
         </span>
       </template>
 
@@ -301,11 +311,16 @@ export default {
         <base-loading />
       </template>
 
-      <template #empty="scope" class="text-center">
+      <template
+        #empty="scope"
+        class="text-center"
+      >
         <div
           class="d-flex justify-content-center align-items-center flex-column not__found"
         >
-          <p class="head">Договоры не были найдены</p>
+          <p class="head">
+            Договоры не были найдены
+          </p>
           <p>Попробуйте ввести другие данные для поиска</p>
         </div>
       </template>
@@ -322,7 +337,10 @@ export default {
         @click="downloadAllContracts"
       >
         <template #left-icon>
-          <x-icon name="download" class="color-white" />
+          <x-icon
+            name="download"
+            class="color-white"
+          />
         </template>
       </x-button>
 
@@ -333,7 +351,10 @@ export default {
         @click="goToContractsPage"
       >
         <template #right-icon>
-          <x-icon name="arrow_forward" class="gray-400" />
+          <x-icon
+            name="arrow_forward"
+            class="gray-400"
+          />
         </template>
       </x-button>
     </div>

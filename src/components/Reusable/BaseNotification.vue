@@ -1,19 +1,19 @@
 <script>
 export default {
-  name: "Notification",
+  name: 'Notification',
   props: {
     message: {
       type: String,
       required: false,
-      default: () => "",
+      default: () => '',
     },
     status: {
       type: String,
       required: false,
-      default: () => "successful",
+      default: () => 'successful',
     },
   },
-};
+}
 </script>
 
 <template>
@@ -24,15 +24,19 @@ export default {
         status === 'successful'
           ? '#22C55E'
           : status === 'warning'
-          ? 'yellow'
-          : '#EF4444',
+            ? 'yellow'
+            : '#EF4444',
     }"
   >
-    <template v-if="message === '' && status === 'error'"> Ошибка </template>
+    <template v-if="message === '' && status === 'error'">
+      Ошибка
+    </template>
     <template v-if="message === '' && status === 'successful'">
       Успешно
     </template>
-    <template v-if="message === '' && status === 'warning'"> Warning </template>
+    <template v-if="message === '' && status === 'warning'">
+      Warning
+    </template>
     <template v-else>
       {{ message }}
     </template>

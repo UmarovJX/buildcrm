@@ -36,7 +36,6 @@
     "moment": "^2.29.1",
     "read-excel-file": "^5.2.28",
     "routes": "^2.1.0",
-    "sass-loader": "^10",
     "swiper": "5.4.5",
     "text-mask-addons": "^3.8.0",
     "tinycolor2": "^1.6.0",
@@ -72,14 +71,23 @@
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.1.4",
-    "@vue/cli-plugin-babel": "^4.5.12",
-    "@vue/cli-service": "^4.5.12",
     "@vue/eslint-config-prettier": "^7.0.0",
-    "eslint": "^8.22.0",
-    "eslint-plugin-vue": "^9.3.0",
     "prettier": "^2.7.1",
     "sass": "^1.52.0",
-    "vue-template-compiler": "^2.6.12"
+
+    "@vue/cli-plugin-babel": "~4.5.9",
+    "@vue/cli-plugin-eslint": "~4.5.9",
+    "@vue/cli-plugin-router": "~4.5.9",
+    "@vue/cli-plugin-vuex": "~4.5.9",
+    "@vue/cli-service": "~4.5.9",
+    "@vue/eslint-config-airbnb": "^5.3.0",
+    "@vuepress/plugin-medium-zoom": "^1.7.1",
+    "babel-eslint": "^10.0.3",
+    "eslint": "6.8.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-vue": "6.2.2",
+    "sass-loader": "^10.1.0",
+    "vue-template-compiler": "2.6.x"
   },
   "browserslist": [
     "> 1%",

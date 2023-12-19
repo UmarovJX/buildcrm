@@ -1,13 +1,13 @@
 <script>
 export default {
-  name: "DocHeader",
+  name: 'DocHeader',
   props: {
     title: {
       type: String,
       required: true,
     },
   },
-};
+}
 </script>
 
 <template>

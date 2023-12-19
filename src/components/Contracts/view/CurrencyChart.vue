@@ -1,14 +1,14 @@
 <script>
-import {XCircularBackground} from "@/components/ui-components/circular-background";
-import {XIcon} from "@/components/ui-components/material-icons";
-import {XSquareBackground} from "@/components/ui-components/square-background";
+import { XCircularBackground } from '@/components/ui-components/circular-background'
+import { XIcon } from '@/components/ui-components/material-icons'
+import { XSquareBackground } from '@/components/ui-components/square-background'
 
 export default {
-  name: "CurrencyChart",
+  name: 'CurrencyChart',
   components: {
     XSquareBackground,
     XIcon,
-    XCircularBackground
+    XCircularBackground,
   },
   props: {
     context: {
@@ -20,10 +20,10 @@ export default {
     firstChartLineClass() {
       return {
         first__chart: this.context.index === 0,
-      };
+      }
     },
   },
-};
+}
 </script>
 
 <template>
@@ -35,19 +35,22 @@ export default {
         {{ $t("payments.course_name") }}
       </span>
     </span>
-    <span class="d-flex" v-if="context.index < 1 && context.reissue.show">
+    <span
+      v-if="context.index < 1 && context.reissue.show"
+      class="d-flex"
+    >
       <span>
-         +{{ context.reissue.price }} {{ $t("payments.course_name") }}
+        +{{ context.reissue.price }} {{ $t("payments.course_name") }}
       </span>
       <x-square-background
-          :id="`reissue_${context.index}`"
-          class="bg-violet-100 cursor-pointer ml-2"
-          padding="0.2"
+        :id="`reissue_${context.index}`"
+        class="bg-violet-100 cursor-pointer ml-2"
+        padding="0.2"
       >
         <x-icon
-            name="help"
-            color="var(--violet-600)"
-            size="20"
+          name="help"
+          color="var(--violet-600)"
+          size="20"
         />
       </x-square-background>
       <b-tooltip :target="`reissue_${context.index}`">
@@ -55,16 +58,21 @@ export default {
       </b-tooltip>
     </span>
 
-
     <span class="bottom__info">{{ context.bottom }}</span>
-    <span class="chart__list" :class="firstChartLineClass">
+    <span
+      class="chart__list"
+      :class="firstChartLineClass"
+    >
       <span class="d-flex align-items-center">
         <b-progress
-            class="progress"
-            :value="context.progress"
-            :max="100"
-        ></b-progress>
-        <span class="percent__value" v-show="context.index > 0">
+          class="progress"
+          :value="context.progress"
+          :max="100"
+        />
+        <span
+          v-show="context.index > 0"
+          class="percent__value"
+        >
           {{ context.progress }} %
         </span>
       </span>

@@ -1,7 +1,7 @@
 export default {
   mutations: {
     updateLoading(state, type) {
-      state.loading = type;
+      state.loading = type
     },
   },
 
@@ -11,7 +11,7 @@ export default {
 
   getters: {
     getLoading(state) {
-      return state.loading;
+      return state.loading
     },
   },
-};
+}

@@ -1,27 +1,27 @@
 <script>
-import BaseTimesCircleIcon from "@/components/icons/BaseTimesCircleIcon";
-import { isUndefinedOrNullOrEmpty, isUndefinedOrNull } from "@/util/inspect";
-import { debounce } from "@/util/reusable";
+import BaseTimesCircleIcon from '@/components/icons/BaseTimesCircleIcon'
+import { isUndefinedOrNullOrEmpty, isUndefinedOrNull } from '@/util/inspect'
+import { debounce } from '@/util/reusable'
 
 const cssDefaultProperty = {
   type: String,
-  default: "",
-};
+  default: '',
+}
 
 export default {
-  name: "BaseInput",
+  name: 'BaseInput',
 
   components: {
     BaseTimesCircleIcon,
-    BaseNumericInput: () => import("@/components/Reusable/BaseNumericInput"),
+    BaseNumericInput: () => import('@/components/Reusable/BaseNumericInput'),
   },
 
   model: {
-    prop: "value",
-    event: "input",
+    prop: 'value',
+    event: 'input',
   },
 
-  emits: ["input", "blur", "focus"],
+  emits: ['input', 'blur', 'focus'],
 
   props: {
     placeholder: {
@@ -37,7 +37,7 @@ export default {
     },
     type: {
       type: String,
-      default: () => "text",
+      default: () => 'text',
     },
     label: {
       type: Boolean,
@@ -49,11 +49,11 @@ export default {
     },
     currency: {
       type: String,
-      default: " ",
+      default: ' ',
     },
     mask: {
       type: String,
-      default: "",
+      default: '',
     },
     disable: {
       type: Boolean,
@@ -65,7 +65,7 @@ export default {
     },
     autocomplete: {
       type: String,
-      default: "on",
+      default: 'on',
     },
     /**
      * Maximum value allowed.
@@ -101,12 +101,12 @@ export default {
   },
 
   data() {
-    let inputModel = this.value;
+    const inputModel = this.value
 
     return {
       inputModel,
       showClearIcon: !isUndefinedOrNullOrEmpty(inputModel),
-    };
+    }
   },
 
   computed: {
@@ -122,7 +122,7 @@ export default {
         marginBottom,
         marginLeft,
         marginRight,
-      } = this;
+      } = this
       return {
         margin,
         padding,
@@ -134,18 +134,18 @@ export default {
         marginBottom,
         marginLeft,
         marginRight,
-      };
+      }
     },
   },
 
   watch: {
     inputModel: debounce(function () {
-      this.emitValue();
-      this.toggleClearButton();
-    }, 0), //1500
+      this.emitValue()
+      this.toggleClearButton()
+    }, 0), // 1500
     value(valueUpdateByParent) {
       if (valueUpdateByParent !== this.inputModel) {
-        this.inputModel = valueUpdateByParent;
+        this.inputModel = valueUpdateByParent
       }
     },
   },
@@ -154,19 +154,19 @@ export default {
     isUndefinedOrNullOrEmpty,
     isUndefinedOrNull,
     toggleClearButton() {
-      this.showClearIcon = !isUndefinedOrNullOrEmpty(this.inputModel);
+      this.showClearIcon = !isUndefinedOrNullOrEmpty(this.inputModel)
     },
     clearSearchInput() {
-      this.effectModel("");
+      this.effectModel('')
     },
     effectModel(value) {
-      this.inputModel = value;
+      this.inputModel = value
     },
     emitValue() {
-      this.$emit("input", this.inputModel);
+      this.$emit('input', this.inputModel)
     },
   },
-};
+}
 </script>
 
 <template>
@@ -178,13 +178,17 @@ export default {
       'disable-input': disable,
     }"
   >
-    <div v-if="!isUndefinedOrNullOrEmpty(value) && label" class="input-label">
+    <div
+      v-if="!isUndefinedOrNullOrEmpty(value) && label"
+      class="input-label"
+    >
       <span>
         {{ placeholder }}
       </span>
     </div>
     <base-numeric-input
       v-if="type === 'number'"
+      ref="base-input"
       v-model="inputModel"
       :minus="false"
       :value="null"
@@ -197,7 +201,6 @@ export default {
       :currency-symbol="currencySymbol"
       :max="max"
       :min="min"
-      ref="base-input"
       separator="space"
       currency-symbol-position="suffix"
       @blur="$emit('blur', $event)"
@@ -205,32 +208,32 @@ export default {
     />
     <input
       v-else-if="mask !== ''"
-      :type="type"
-      v-model="inputModel"
-      :readonly="readonly"
-      ref="base-input"
       id="base-input-mask"
+      ref="base-input"
+      v-model="inputModel"
       v-mask="mask"
+      :type="type"
+      :readonly="readonly"
       :style="inputFieldStyle"
       :placeholder="placeholder"
       :autocomplete="autocomplete"
+      :disabled="disable"
       @blur="$emit('blur', $event)"
       @focus="$emit('focus', $event)"
-      :disabled="disable"
-    />
+    >
     <input
       v-else
-      :readonly="readonly"
-      :type="type"
-      v-model="inputModel"
       id="base-input"
       ref="base-input"
+      v-model="inputModel"
+      :readonly="readonly"
+      :type="type"
       :style="inputFieldStyle"
       :placeholder="placeholder"
+      :disabled="disable"
       @blur="$emit('blur', $event)"
       @focus="$emit('focus', $event)"
-      :disabled="disable"
-    />
+    >
 
     <span
       v-show="showClearIcon && !disable && !readonly"

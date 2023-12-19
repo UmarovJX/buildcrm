@@ -1,14 +1,14 @@
 <script>
-import { XButton } from "@/components/ui-components/button";
-import BookedItem from "@/views/objects/Apartments/View/BookedItem";
+import { XButton } from '@/components/ui-components/button'
+import BookedItem from '@/views/objects/Apartments/View/BookedItem'
 
 export default {
-  name: "BookedBlock",
+  name: 'BookedBlock',
   components: {
     XButton,
     BookedItem,
   },
-};
+}
 </script>
 
 <template>

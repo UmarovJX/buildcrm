@@ -1,5 +1,5 @@
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   data: () => ({
@@ -16,58 +16,58 @@ export default {
     },
   }),
 
-  mounted() {
-    this.fetchObjects(this);
-    this.fetchApartmentsFloors(this);
-    this.fetchApartmentsRooms(this);
-  },
-
   watch: {
-    "filter.rooms": function () {
-      this.fetchFilterApartments(this);
+    'filter.rooms': function () {
+      this.fetchFilterApartments(this)
     },
 
-    "filter.floors": function () {
-      this.fetchFilterApartments(this);
+    'filter.floors': function () {
+      this.fetchFilterApartments(this)
     },
 
-    "filter.price_from": function () {
-      this.fetchFilterApartments(this);
+    'filter.price_from': function () {
+      this.fetchFilterApartments(this)
     },
 
-    "filter.price_to": function () {
-      this.fetchFilterApartments(this);
+    'filter.price_to': function () {
+      this.fetchFilterApartments(this)
     },
 
-    "filter.area_from": function () {
-      this.fetchFilterApartments(this);
+    'filter.area_from': function () {
+      this.fetchFilterApartments(this)
     },
 
-    "filter.area_to": function () {
-      this.fetchFilterApartments(this);
+    'filter.area_to': function () {
+      this.fetchFilterApartments(this)
     },
 
-    "filter.status": function () {
-      this.fetchFilterApartments(this);
+    'filter.status': function () {
+      this.fetchFilterApartments(this)
     },
 
-    "filter.objects": function () {
-      this.fetchFilterApartments(this);
+    'filter.objects': function () {
+      this.fetchFilterApartments(this)
     },
   },
-  computed: mapGetters(["getObjects", "getFilterRooms", "getFilterFloors"]),
+
+  mounted() {
+    this.fetchObjects(this)
+    this.fetchApartmentsFloors(this)
+    this.fetchApartmentsRooms(this)
+  },
+  computed: mapGetters(['getObjects', 'getFilterRooms', 'getFilterFloors']),
 
   methods: {
     ...mapActions([
-      "fetchFilterApartments",
-      "fetchObjects",
-      "fetchApartmentsFloors",
-      "fetchApartmentsRooms",
+      'fetchFilterApartments',
+      'fetchObjects',
+      'fetchApartmentsFloors',
+      'fetchApartmentsRooms',
     ]),
 
     Filter() {
-      this.$bvModal.hide("modal-filter-all");
-      this.$emit("Filtered", this.filter);
+      this.$bvModal.hide('modal-filter-all')
+      this.$emit('Filtered', this.filter)
     },
 
     filterClear() {
@@ -81,18 +81,18 @@ export default {
 
         area_from: null,
         area_to: null,
-      };
+      }
     },
   },
-};
+}
 </script>
 
 <template>
   <div>
     <b-modal
       id="modal-filter-all"
-      class="py-4"
       ref="modal"
+      class="py-4"
       :title="$t('apartments.list.filter')"
       hide-footer
     >
@@ -102,13 +102,16 @@ export default {
             {{ $t("apartments.filter.apartments") }}
           </label>
           <div class="room">
-            <span v-for="(room, index) in getFilterRooms" :key="index">
+            <span
+              v-for="(room, index) in getFilterRooms"
+              :key="index"
+            >
               <input
-                type="checkbox"
                 :id="'rooms' + index"
-                :value="room"
                 v-model="filter.rooms"
-              />
+                type="checkbox"
+                :value="room"
+              >
               <label :for="'rooms' + index">{{ room }}</label>
             </span>
           </div>
@@ -118,13 +121,16 @@ export default {
             {{ $t("apartments.filter.floor") }}
           </label>
           <div class="room">
-            <span v-for="(floor, index) in getFilterFloors" :key="index">
+            <span
+              v-for="(floor, index) in getFilterFloors"
+              :key="index"
+            >
               <input
+                :id="'floor' + index"
                 v-model="filter.floors"
                 type="checkbox"
-                :id="'floor' + index"
                 :value="floor"
-              />
+              >
               <label :for="'floor' + index">{{ floor }}</label>
             </span>
           </div>
@@ -135,20 +141,22 @@ export default {
           <div class="d-flex justify-content-between align-items-center">
             <div class="">
               <input
+                v-model="filter.price_from"
                 class="my-form__input"
                 type="number"
-                v-model="filter.price_from"
                 :placeholder="$t('objects.create.prepay_from')"
-              />
+              >
             </div>
-            <div class="mx-2 long-horizontal-line">&#8213;</div>
+            <div class="mx-2 long-horizontal-line">
+              &#8213;
+            </div>
             <div class="">
               <input
+                v-model="filter.price_to"
                 class="my-form__input"
                 type="number"
-                v-model="filter.price_to"
                 :placeholder="$t('objects.create.prepay_to')"
-              />
+              >
             </div>
           </div>
         </div>
@@ -162,16 +170,18 @@ export default {
                 class="my-form__input"
                 type="number"
                 :placeholder="$t('objects.create.prepay_from')"
-              />
+              >
             </div>
-            <div class="mx-2 long-horizontal-line">&#8213;</div>
+            <div class="mx-2 long-horizontal-line">
+              &#8213;
+            </div>
             <div class="">
               <input
                 v-model="filter.area_to"
                 class="my-form__input"
                 type="number"
                 :placeholder="$t('objects.create.prepay_to')"
-              />
+              >
             </div>
           </div>
         </div>
@@ -182,18 +192,21 @@ export default {
           </div>
           <div class="d-flex align-items-center">
             <div
-              class="custom-control custom-checkbox mr-4"
               v-for="(object, index) in getObjects"
               :key="index"
+              class="custom-control custom-checkbox mr-4"
             >
               <input
+                :id="'object' + index"
+                v-model="filter.objects"
                 type="checkbox"
                 class="custom-control-input"
-                v-model="filter.objects"
-                :id="'object' + index"
                 :value="object.id"
-              />
-              <label class="custom-control-label" :for="'object' + index">{{
+              >
+              <label
+                class="custom-control-label"
+                :for="'object' + index"
+              >{{
                 object.name
               }}</label>
             </div>
@@ -208,13 +221,16 @@ export default {
           <div class="d-flex align-items-center">
             <div class="custom-control custom-checkbox mr-4">
               <input
+                id="status"
+                v-model="filter.status"
                 type="checkbox"
                 class="custom-control-input"
-                id="status"
                 value="1"
-                v-model="filter.status"
-              />
-              <label class="custom-control-label" for="status">{{
+              >
+              <label
+                class="custom-control-label"
+                for="status"
+              >{{
                 $t("apartments.filter.free")
               }}</label>
             </div>
@@ -230,11 +246,15 @@ export default {
           type="reset"
           @click="filterClear"
         >
-          <i class="far fa-times"></i> {{ $t("apartments.filter.clear") }}
+          <i class="far fa-times" /> {{ $t("apartments.filter.clear") }}
         </button>
 
-        <button type="button" @click="Filter" class="btn btn-success">
-          <i class="far fa-sliders-h"></i> {{ $t("apartments.list.filter") }}
+        <button
+          type="button"
+          class="btn btn-success"
+          @click="Filter"
+        >
+          <i class="far fa-sliders-h" /> {{ $t("apartments.list.filter") }}
         </button>
       </div>
     </b-modal>

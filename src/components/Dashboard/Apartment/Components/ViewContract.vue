@@ -1,15 +1,15 @@
 <script>
 // import Discount from './Discount'
 
-import api from "@/services/api";
+import api from '@/services/api'
 
 export default {
-  props: {
-    apartment: {},
-  },
 
   components: {
     // Discount
+  },
+  props: {
+    apartment: {},
   },
 
   data: () => ({
@@ -22,7 +22,7 @@ export default {
       contract_path: null,
       initial_payment: null,
       payment_status: null,
-      status: "contract",
+      status: 'contract',
       transaction_price: null,
       contract_date: null,
       payments: [],
@@ -42,14 +42,14 @@ export default {
 
       client: {
         id: null,
-        first_name: "",
-        last_name: "",
-        second_name: "",
-        passport_series: "",
-        issued_by_whom: "",
+        first_name: '',
+        last_name: '',
+        second_name: '',
+        passport_series: '',
+        issued_by_whom: '',
         birth_day: null,
-        language: "uz",
-        phone: "",
+        language: 'uz',
+        phone: '',
         other_phone: null,
         date_of_issue: null,
         discount: { id: null },
@@ -63,21 +63,21 @@ export default {
 
     header: {
       headers: {
-        Authorization: "Bearer " + localStorage.token,
+        Authorization: `Bearer ${localStorage.token}`,
       },
     },
   }),
 
   mounted() {
-    this.fetchOrder();
+    this.fetchOrder()
   },
 
   methods: {
     async fetchOrder() {
-      this.getLoading = true;
+      this.getLoading = true
       try {
-        const { data } = await api.orders.fetchOrder(this.apartment.order.id);
-        this.step = 1;
+        const { data } = await api.orders.fetchOrder(this.apartment.order.id)
+        this.step = 1
         this.order = {
           id: data.id,
           contract: data.contract,
@@ -116,87 +116,88 @@ export default {
             other_phone: data.client.other_phone,
             date_of_issue: data.client.date_of_issue,
           },
-        };
+        }
 
-        this.getLoading = false;
+        this.getLoading = false
       } catch (error) {
-        this.getLoading = false;
+        this.getLoading = false
         if (!error.response) {
-          this.toasted("Error: Network Error", "error");
+          this.toasted('Error: Network Error', 'error')
+        } else if (error.response.status === 403) {
+          this.toasted(error.response.data.message, 'error')
+        } else if (error.response.status === 401) {
+          this.toasted(error.response.data.message, 'error')
+        } else if (error.response.status === 500) {
+          this.toasted(error.response.data.message, 'error')
         } else {
-          if (error.response.status === 403) {
-            this.toasted(error.response.data.message, "error");
-          } else if (error.response.status === 401) {
-            this.toasted(error.response.data.message, "error");
-          } else if (error.response.status === 500) {
-            this.toasted(error.response.data.message, "error");
-          } else {
-            this.toasted(error.response.data.message, "error");
-          }
+          this.toasted(error.response.data.message, 'error')
         }
       }
     },
 
     removeBlock() {
-      this.$bvModal.hide("modal-contract-info");
+      this.$bvModal.hide('modal-contract-info')
     },
 
     getPrepay() {
-      let total_discount = this.getDiscount();
+      const total_discount = this.getDiscount()
 
-      let total = this.apartment.price - total_discount;
+      const total = this.apartment.price - total_discount
 
-      return (this.client.discount.prepay_to * total) / 100;
+      return (this.client.discount.prepay_to * total) / 100
     },
 
     getDiscount() {
-      return (this.client.discount.discount * this.apartment.price) / 100;
+      return (this.client.discount.discount * this.apartment.price) / 100
     },
 
     getMonth() {
-      return (this.getTotal() - this.getPrepay()) / this.month;
+      return (this.getTotal() - this.getPrepay()) / this.month
     },
 
     getDebt() {
-      return this.getTotal() - this.getPrepay();
+      return this.getTotal() - this.getPrepay()
     },
 
     getStatusPayment(payment) {
       switch (payment.status) {
-        case "waiting":
-          return "Ожидает оплату";
-        case "paid":
-          return "Оплачено";
+        case 'waiting':
+          return 'Ожидает оплату'
+        case 'paid':
+          return 'Оплачено'
         default:
-          return "Отказано";
+          return 'Отказано'
       }
     },
 
     getTotal() {
-      let total_discount = this.getDiscount();
+      const total_discount = this.getDiscount()
 
       // let total = price * area;
-      let total = this.apartment.price - total_discount;
+      const total = this.apartment.price - total_discount
 
-      return total;
+      return total
     },
   },
-};
+}
 </script>
 
 <template>
   <div>
     <b-modal
       id="modal-contract-info"
-      class="py-4"
       ref="modal"
+      class="py-4"
       :title="$t('apartments.list.contract')"
       size="lg"
       hide-footer
       hide-header-close
     >
       <div class="invoice-box">
-        <table cellpadding="0" cellspacing="0">
+        <table
+          cellpadding="0"
+          cellspacing="0"
+        >
           <tbody>
             <tr class="top">
               <td colspan="3">
@@ -208,7 +209,7 @@ export default {
                       </td>
                       <td>
                         {{ $t("apartments.list.contract") }} #:
-                        {{ order.contract }}<br />
+                        {{ order.contract }}<br>
                         Дата контракта:
                         {{ order.contract_date | moment("DD.MM.YYYY") }}
                       </td>
@@ -225,25 +226,25 @@ export default {
                       <td>
                         {{ order.companies.type }} "{{
                           order.companies.name
-                        }}"<br />
+                        }}"<br>
                         {{ order.companies.first_name }}
                         {{ order.companies.last_name }}
-                        {{ order.companies.second_name }} <br />
-                        р/с: {{ order.companies.payment_account }} <br />
+                        {{ order.companies.second_name }} <br>
+                        р/с: {{ order.companies.payment_account }} <br>
                         ИНН: {{ order.companies.inn }}, МФО:
-                        {{ order.companies.mfo }} <br />
+                        {{ order.companies.mfo }} <br>
                       </td>
                       <td>
                         {{ order.client.first_name }}
                         {{ order.client.last_name }}
-                        {{ order.client.second_name }}<br />
-                        {{ order.client.passport_series }}<br />
-                        {{ order.client.issued_by_whom }}<br />
+                        {{ order.client.second_name }}<br>
+                        {{ order.client.passport_series }}<br>
+                        {{ order.client.issued_by_whom }}<br>
                         {{ order.client.date_of_issue | moment("DD.MM.YYYY") }}
-                        берилган<br />
+                        берилган<br>
                         {{ order.client.birth_day | moment("DD.MM.YYYY") }}
-                        тугилган<br />
-                        {{ order.client.phone }}<br />
+                        тугилган<br>
+                        {{ order.client.phone }}<br>
                         {{ order.client.other_phone }}
                       </td>
                     </tr>
@@ -252,7 +253,9 @@ export default {
               </td>
             </tr>
             <tr class="heading">
-              <td colspan="3">Первоначальный взнос</td>
+              <td colspan="3">
+                Первоначальный взнос
+              </td>
             </tr>
             <tr class="details">
               <td colspan="3">
@@ -269,12 +272,17 @@ export default {
             <tr class="heading">
               <td>Расписание для оплаты</td>
 
-              <td class="text-center">Статус</td>
+              <td class="text-center">
+                Статус
+              </td>
 
               <td>Сумма</td>
             </tr>
 
-            <tr v-for="(month, index) in order.payments" :key="index">
+            <tr
+              v-for="(month, index) in order.payments"
+              :key="index"
+            >
               <td>
                 {{ month.date_payment | moment("DD.MM.YYYY") }}
               </td>
@@ -298,19 +306,27 @@ export default {
         </table>
       </div>
 
-      <a :href="order.contract_path" class="btn btn-success float-right mt-2">
-        <i class="fa fa-download"></i> Скачать договор
+      <a
+        :href="order.contract_path"
+        class="btn btn-success float-right mt-2"
+      >
+        <i class="fa fa-download" /> Скачать договор
       </a>
     </b-modal>
 
-    <b-overlay :show="getLoading" no-wrap opacity="0.5" style="z-index: 2222">
+    <b-overlay
+      :show="getLoading"
+      no-wrap
+      opacity="0.5"
+      style="z-index: 2222"
+    >
       <template #overlay>
         <div class="d-flex justify-content-center w-100">
           <div class="lds-ellipsis">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
+            <div />
+            <div />
+            <div />
+            <div />
           </div>
         </div>
       </template>

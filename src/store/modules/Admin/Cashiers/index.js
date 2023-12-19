@@ -1,26 +1,24 @@
-import api from "@/services/api";
+import api from '@/services/api'
 
 export default {
   actions: {
     async fetchCashiers(ctx, vm) {
       try {
-        const response = await api.home.fetchCashiers();
-        const cashiers = response.data;
+        const response = await api.home.fetchCashiers()
+        const cashiers = response.data
 
-        ctx.commit("updateCashiers", cashiers);
+        ctx.commit('updateCashiers', cashiers)
       } catch (error) {
         if (!error.response) {
-          vm.toasted("Error: Network Error", "error");
+          vm.toasted('Error: Network Error', 'error')
+        } else if (error.response.status === 403) {
+          vm.toasted(error.response.data.message, 'error')
+        } else if (error.response.status === 401) {
+          vm.toasted(error.response.data.message, 'error')
+        } else if (error.response.status === 500) {
+          vm.toasted(error.response.data.message, 'error')
         } else {
-          if (error.response.status === 403) {
-            vm.toasted(error.response.data.message, "error");
-          } else if (error.response.status === 401) {
-            vm.toasted(error.response.data.message, "error");
-          } else if (error.response.status === 500) {
-            vm.toasted(error.response.data.message, "error");
-          } else {
-            vm.toasted(error.response.data.message, "error");
-          }
+          vm.toasted(error.response.data.message, 'error')
         }
       }
     },
@@ -28,7 +26,7 @@ export default {
 
   mutations: {
     updateCashiers(state, cashiers) {
-      state.cashiers = cashiers;
+      state.cashiers = cashiers
     },
   },
 
@@ -38,7 +36,7 @@ export default {
 
   getters: {
     getCashiers(state) {
-      return state.cashiers;
+      return state.cashiers
     },
   },
-};
+}

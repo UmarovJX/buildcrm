@@ -1,41 +1,41 @@
 <script>
-import {computed, onMounted, ref} from "vue";
-import {XFormSelect} from "@/components/ui-components/form-select";
-import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon.vue";
-import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon.vue";
+import { computed, onMounted, ref } from 'vue'
+import { XFormSelect } from '@/components/ui-components/form-select'
+import BaseArrowLeftIcon from '@/components/icons/BaseArrowLeftIcon.vue'
+import BaseArrowRightIcon from '@/components/icons/BaseArrowRightIcon.vue'
 
 export default {
-  name: "PlanPagination",
+  name: 'PlanPagination',
   components: {
     XFormSelect,
     BaseArrowRightIcon,
-    BaseArrowLeftIcon
+    BaseArrowLeftIcon,
   },
   props: {
     total: {
       type: Number,
-      default: 0
+      default: 0,
     },
     current: {
       type: Number,
-      default: 1
+      default: 1,
     },
     perPage: {
       type: Number,
-      default: 20
-    }
+      default: 20,
+    },
   },
   emits: ['change'],
-  setup(props, {emit}) {
-    const perPageOptions = ref([]);
+  setup(props, { emit }) {
+    const perPageOptions = ref([])
 
     const perPageInner = computed({
       get() {
         return props.perPage
       },
       set(perPage) {
-        change({perPage})
-      }
+        change({ perPage })
+      },
     })
 
     function setPerPageOptions() {
@@ -43,15 +43,15 @@ export default {
         perPageOptions.value.push({
           value: number,
           text: number,
-        });
+        })
       }
     }
 
     function changePage(page) {
-      change({page})
+      change({ page })
     }
 
-    function change({page = props.current, perPage = props.perPage}) {
+    function change({ page = props.current, perPage = props.perPage }) {
       const isPageDiffs = props.current !== page
       const isPerPageDiffs = props.perPage !== perPage
       if (isPageDiffs || isPerPageDiffs) {
@@ -61,7 +61,7 @@ export default {
 
         emit('change', {
           page: page ?? props.current,
-          perPage: perPage ?? props.perPage
+          perPage: perPage ?? props.perPage,
         })
       }
     }
@@ -75,7 +75,7 @@ export default {
       perPageOptions,
       changePage,
     }
-  }
+  },
 }
 </script>
 
@@ -83,26 +83,26 @@ export default {
   <div>
     <div class="pagination__vue">
       <vue-paginate
-          :page-count="total"
-          :value="current"
-          :container-class="'container'"
-          :page-class="'page-item'"
-          :page-link-class="'page-link'"
-          :next-class="'page-item'"
-          :prev-class="'page-item'"
-          :prev-link-class="'page-link'"
-          :next-link-class="'page-link'"
-          @change-page="changePage"
+        :page-count="total"
+        :value="current"
+        :container-class="'container'"
+        :page-class="'page-item'"
+        :page-link-class="'page-link'"
+        :next-class="'page-item'"
+        :prev-class="'page-item'"
+        :prev-link-class="'page-link'"
+        :next-link-class="'page-link'"
+        @change-page="changePage"
       >
         <template #next-content>
           <span class="d-flex align-items-center justify-content-center">
-            <base-arrow-right-icon/>
+            <base-arrow-right-icon />
           </span>
         </template>
 
         <template #prev-content>
           <span class="d-flex align-items-center justify-content-center">
-            <base-arrow-left-icon/>
+            <base-arrow-left-icon />
           </span>
         </template>
       </vue-paginate>
@@ -110,9 +110,9 @@ export default {
       <!--  Show By Select    -->
       <div class="show__by">
         <x-form-select
-            :label="false"
-            v-model="perPageInner"
-            :options="perPageOptions"
+          v-model="perPageInner"
+          :label="false"
+          :options="perPageOptions"
         >
           <template #output-prefix>
             <span class="show-by-description">

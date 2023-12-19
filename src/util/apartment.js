@@ -1,8 +1,8 @@
-import api from "@/services/api";
+import api from '@/services/api'
 
-export async function orderApartment(ids, type, name = "checkout-v2") {
+export async function orderApartment(ids, type, name = 'checkout-v2') {
   try {
-    const { data } = await api.orders.holdOrder(ids, type);
+    const { data } = await api.orders.holdOrder(ids, type)
     if (data) {
       // const objectId = data.orders[0].apartment.object.id
       // await this.$router.push({
@@ -18,7 +18,7 @@ export async function orderApartment(ids, type, name = "checkout-v2") {
           id: data.uuid,
           object: data.orders[0][type].object.id,
         },
-      });
+      })
       // await this.$router.push({
       //     name: "checkout",
       //     params: {
@@ -27,6 +27,6 @@ export async function orderApartment(ids, type, name = "checkout-v2") {
       // })
     }
   } catch (e) {
-    this.toastedWithErrorCode(e);
+    this.toastedWithErrorCode(e)
   }
 }

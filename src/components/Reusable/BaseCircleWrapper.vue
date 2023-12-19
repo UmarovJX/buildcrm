@@ -1,13 +1,16 @@
 <script>
 export default {
-  name: "BaseCircleWrapper",
-  emits: ["click"],
-};
+  name: 'BaseCircleWrapper',
+  emits: ['click'],
+}
 </script>
 
 <template>
-  <div class="base-circle-wrapper" @click="$emit('click', $event)">
-    <slot></slot>
+  <div
+    class="base-circle-wrapper"
+    @click="$emit('click', $event)"
+  >
+    <slot />
   </div>
 </template>
 

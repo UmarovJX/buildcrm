@@ -1,49 +1,43 @@
 <script>
-import {computed, getCurrentInstance, onMounted, ref} from "vue";
-import {XIcon} from "@/components/ui-components/material-icons";
-import el from "vue2-datepicker/locale/es/el";
+import {
+  computed, getCurrentInstance, onMounted, ref,
+} from 'vue'
+import { XIcon } from '@/components/ui-components/material-icons'
+import el from 'vue2-datepicker/locale/es/el'
 
 export default {
   name: 'GroupTree',
   components: {
-    XIcon
+    XIcon,
   },
   props: {
     item: {
       type: Object,
-      default: () => {
-        return {
-          name: '',
-          children: []
-        }
-      }
-    }
+      default: () => ({
+        name: '',
+        children: [],
+      }),
+    },
   },
   emits: ['show'],
-  setup(props, {emit}) {
+  setup(props, { emit }) {
     const vm = getCurrentInstance().proxy
     const visible = ref(false)
-    const iconName = computed(() => {
-      return visible.value ? 'expand_more' : 'chevron_right'
-    })
-    const hasChildren = computed(() => {
-      return props.item.children.length
-    })
-    const isActiveItem = computed(() => {
-      return vm.$route.query.tree.toString() === props.item.id.toString()
-    })
+    const iconName = computed(() => (visible.value ? 'expand_more' : 'chevron_right'))
+    const hasChildren = computed(() => props.item.children.length)
+    const isActiveItem = computed(() => vm.$route.query.tree.toString() === props.item.id.toString())
 
     function isChildActive(arr, target) {
       for (let i = 0; i < arr.length; i++) {
-        const element = arr[i];
+        const element = arr[i]
         if (element.id.toString() === target) {
           return true
-        } else if (element.children.length) {
-          const result = isChildActive(element.children, target);
-          if (result) return result;
+        } if (element.children.length) {
+          const result = isChildActive(element.children, target)
+          if (result) return result
         }
       }
-      return false;
+      return false
     }
 
     function toggleTree() {
@@ -55,14 +49,14 @@ export default {
 
       vm.$router.push({
         query: {
-          tree: props.item.id
-        }
+          tree: props.item.id,
+        },
       })
     }
 
     onMounted(() => {
-      const hasActiveChild = isChildActive(props.item.children,vm.$route.query.tree)
-      if(hasActiveChild){
+      const hasActiveChild = isChildActive(props.item.children, vm.$route.query.tree)
+      if (hasActiveChild) {
         visible.value = true
       }
     })
@@ -74,49 +68,51 @@ export default {
       isActiveItem,
       toggleTree,
     }
-  }
+  },
 }
 </script>
-
 
 <template>
   <div class="">
     <div
-        class="group__tree d-flex align-center cursor-pointer"
-        :class="{active:isActiveItem}"
-        @click="toggleTree"
+      class="group__tree d-flex align-center cursor-pointer"
+      :class="{active:isActiveItem}"
+      @click="toggleTree"
     >
       <x-icon
-          v-if="hasChildren"
-          class="gray-400 chevron__icon"
-          size="28"
-          :name="iconName"
-      >
-      </x-icon>
+        v-if="hasChildren"
+        class="gray-400 chevron__icon"
+        size="28"
+        :name="iconName"
+      />
       <div class="ml-1 mt-1 d-flex align-center">
-        <x-icon size="20" v-if="hasChildren" name="folder" class="gray-600"></x-icon>
+        <x-icon
+          v-if="hasChildren"
+          size="20"
+          name="folder"
+          class="gray-600"
+        />
         <div class="ml-1">
           {{ item.name[$i18n.locale] }}
         </div>
       </div>
     </div>
     <b-collapse
-        style="margin-left: 0.75rem"
-        v-if="hasChildren"
-        v-model="visible"
-        :class="{'collapse__border__left':visible}"
+      v-if="hasChildren"
+      v-model="visible"
+      style="margin-left: 0.75rem"
+      :class="{'collapse__border__left':visible}"
     >
       <group-tree
-          v-for="childItem in item.children"
-          :key="childItem.id"
-          :item="childItem"
-          class="ml-1 p-1"
-          @show="$emit('show',$event)"
+        v-for="childItem in item.children"
+        :key="childItem.id"
+        :item="childItem"
+        class="ml-1 p-1"
+        @show="$emit('show',$event)"
       />
     </b-collapse>
   </div>
 </template>
-
 
 <style lang="scss" scoped>
 .group__tree {

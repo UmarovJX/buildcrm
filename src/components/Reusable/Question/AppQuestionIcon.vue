@@ -1,15 +1,15 @@
 <script>
-import BaseCircleWrapper from "@/components/Reusable/BaseCircleWrapper";
-import BaseQuestionsIcon from "@/components/icons/BaseQuestionsIcon";
+import BaseCircleWrapper from '@/components/Reusable/BaseCircleWrapper'
+import BaseQuestionsIcon from '@/components/icons/BaseQuestionsIcon'
 
 export default {
-  name: "AppQuestionIcon",
+  name: 'AppQuestionIcon',
   components: {
     BaseCircleWrapper,
     BaseQuestionsIcon,
   },
-  emits: ["emit"],
-};
+  emits: ['emit'],
+}
 </script>
 
 <template>

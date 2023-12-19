@@ -1,9 +1,9 @@
 <script>
-import { mapGetters } from "vuex";
-import { formatToPrice } from "@/util/reusable";
+import { mapGetters } from 'vuex'
+import { formatToPrice } from '@/util/reusable'
 
 export default {
-  name: "ObjectBlock",
+  name: 'ObjectBlock',
   props: {
     apartments: {
       type: Array,
@@ -18,86 +18,84 @@ export default {
       required: false,
     },
   },
-  emits: ["show-express-sidebar"],
+  emits: ['show-express-sidebar'],
   computed: {
-    ...mapGetters(["getPermission"]),
+    ...mapGetters(['getPermission']),
     query() {
-      return this.$route.query;
+      return this.$route.query
     },
     hasQuery() {
-      return Object.keys(this.query).length > 0;
+      return Object.keys(this.query).length > 0
     },
   },
   methods: {
     status(value) {
       switch (value) {
-        case "available": {
-          return { statusText: "", class: "teal" };
+        case 'available': {
+          return { statusText: '', class: 'teal' }
         }
-        case "hold": {
-          return { statusText: this.$t("object.status.hold"), class: "yellow" };
+        case 'hold': {
+          return { statusText: this.$t('object.status.hold'), class: 'yellow' }
         }
-        case "waiting":
-        case "sold":
-        case "closed": {
-          return { statusText: this.$t("object.status.sold"), class: "gray" };
+        case 'waiting':
+        case 'sold':
+        case 'closed': {
+          return { statusText: this.$t('object.status.sold'), class: 'gray' }
         }
-        case "booked": {
+        case 'booked': {
           return {
-            statusText: this.$t("object.status.booked"),
-            class: "yellow",
-          };
+            statusText: this.$t('object.status.booked'),
+            class: 'yellow',
+          }
         }
-        case "contract": {
+        case 'contract': {
           return {
-            statusText: this.$t("object.status.contract"),
-            class: "blue",
-          };
+            statusText: this.$t('object.status.contract'),
+            class: 'blue',
+          }
         }
         default:
-          return { statusText: "", class: "teal" };
+          return { statusText: '', class: 'teal' }
       }
     },
     price(value, decimalCount = 0) {
-      return formatToPrice(value, decimalCount);
+      return formatToPrice(value, decimalCount)
     },
     levelLarge(index) {
       const apartmentFloorsNumbers = this.apartments[index].blocks.map(
-        (item) => item.floors.length
-      );
+        item => item.floors.length,
+      )
       if (apartmentFloorsNumbers.length) {
-        return Math.max(...apartmentFloorsNumbers);
+        return Math.max(...apartmentFloorsNumbers)
       }
-      return 0;
+      return 0
     },
     showExpressSidebar(item, floorActive, blockActive) {
       const isActive = !this.inactiveApartment(
         item.apartmentActive,
         floorActive,
-        blockActive
-      );
+        blockActive,
+      )
       if (isActive) {
-        this.$emit("show-express-sidebar", item);
+        this.$emit('show-express-sidebar', item)
       }
     },
     inactiveApartment(apartmentActive, floorActive, blockActive) {
       if (
-        apartmentActive === undefined ||
-        floorActive === undefined ||
-        blockActive === undefined
-      )
-        return false;
-      return !(blockActive && floorActive && apartmentActive);
+        apartmentActive === undefined
+        || floorActive === undefined
+        || blockActive === undefined
+      ) return false
+      return !(blockActive && floorActive && apartmentActive)
     },
     showBlock(blockActive) {
       if (blockActive === undefined) {
-        return true;
-      } else {
-        return blockActive;
+        return true
       }
+      return blockActive
     },
   },
-};
+}
 </script>
 
 <template>
@@ -119,7 +117,11 @@ export default {
 
       <div class="block">
         <div class="list-number">
-          <div v-for="level in levelLarge(index)" :key="level" class="counter">
+          <div
+            v-for="level in levelLarge(index)"
+            :key="level"
+            class="counter"
+          >
             {{ level }}
           </div>
         </div>
@@ -134,8 +136,14 @@ export default {
               <div>{{ apartment.name }} / {{ value.name }}</div>
             </div>
 
-            <div class="item" style="margin-right: 30px">
-              <div v-for="item in value.floors" :key="item.name">
+            <div
+              class="item"
+              style="margin-right: 30px"
+            >
+              <div
+                v-for="item in value.floors"
+                :key="item.name"
+              >
                 <div
                   v-if="item.apartments.length"
                   class="d-flex flex-nowrap block-content"
@@ -156,6 +164,10 @@ export default {
                   >
                     <div
                       class="square"
+                      :class="[
+                        status(elem.order.status).class,
+                        elem.is_sold ? '' : 'disable',
+                      ]"
                       @click="
                         showExpressSidebar(
                           elem,
@@ -163,13 +175,11 @@ export default {
                           value.blockActive
                         )
                       "
-                      :class="[
-                        status(elem.order.status).class,
-                        elem.is_sold ? '' : 'disable',
-                      ]"
                     >
                       <div class="square-header">
-                        <p class="apartment-number">Кв. № {{ elem.number }}</p>
+                        <p class="apartment-number">
+                          Кв. № {{ elem.number }}
+                        </p>
                         <div
                           v-if="elem.is_promo"
                           class="h-auto d-flex apartment-promo-icon"
@@ -177,7 +187,7 @@ export default {
                           <img
                             src="../../../../assets/icons/bonuses.svg"
                             alt=""
-                          />
+                          >
                         </div>
                       </div>
                       <div class="square-body">
@@ -195,9 +205,9 @@ export default {
                             </span>
                           </template>
                           <template v-else>
-                            <span class="apartment-price"
-                              >{{ price(elem.prices.price, 2) }} сум</span
-                            >
+                            <span
+                              class="apartment-price"
+                            >{{ price(elem.prices.price, 2) }} сум</span>
                           </template>
                         </h5>
                       </div>
@@ -206,24 +216,25 @@ export default {
                           {{ elem.plan.area }} m<sup>2</sup>
                         </p>
                         <p
-                          class="apartment-square-price"
                           v-if="
                             elem.order.status !== 'sold' &&
-                            elem.is_sold &&
-                            !isHidePrice
+                              elem.is_sold &&
+                              !isHidePrice
                           "
+                          class="apartment-square-price"
                         >
-                          {{ price(elem.prices.price_m2) }} {{ $t("ye") }}/m<sup
-                            >2</sup
-                          >
+                          {{ price(elem.prices.price_m2) }} {{ $t("ye") }}/m<sup>2</sup>
                         </p>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <div v-else class="block-item">
-                  <div class="square"></div>
+                <div
+                  v-else
+                  class="block-item"
+                >
+                  <div class="square" />
                 </div>
               </div>
             </div>
@@ -232,14 +243,19 @@ export default {
       </div>
     </div>
 
-    <b-overlay :show="loading" no-wrap opacity="0" style="z-index: 2222">
+    <b-overlay
+      :show="loading"
+      no-wrap
+      opacity="0"
+      style="z-index: 2222"
+    >
       <template #overlay>
         <div class="d-flex justify-content-center w-100">
           <div class="lds-ellipsis">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
+            <div />
+            <div />
+            <div />
+            <div />
           </div>
         </div>
       </template>

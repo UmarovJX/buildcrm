@@ -1,20 +1,20 @@
 <script>
-import { formatToPrice } from "@/util/reusable";
+import { formatToPrice } from '@/util/reusable'
 // import BaseSelect from "@/components/Reusable/BaseSelect";
-import BasePriceInput from "@/components/Reusable/BasePriceInput";
-import { XFormSelect } from "@/components/ui-components/form-select";
-import { mapGetters } from "vuex";
-import CheckoutPermission from "@/permission/checkout";
-import { useShowPrice } from "@/composables/useShowPrice";
+import BasePriceInput from '@/components/Reusable/BasePriceInput'
+import { XFormSelect } from '@/components/ui-components/form-select'
+import { mapGetters } from 'vuex'
+import CheckoutPermission from '@/permission/checkout'
+import { useShowPrice } from '@/composables/useShowPrice'
 
 export default {
-  name: "Calculator",
+  name: 'Calculator',
   setup() {
-    return useShowPrice();
+    return useShowPrice()
   },
   components: {
     // BaseSelect,
-    XFormSelect: XFormSelect,
+    XFormSelect,
     BasePriceInput,
   },
   props: {
@@ -27,7 +27,7 @@ export default {
       default: true,
     },
   },
-  emits: ["for-print"],
+  emits: ['for-print'],
   data() {
     return {
       monthly_price: 0,
@@ -55,58 +55,55 @@ export default {
       },
       monthlyPaymentDuration: 0,
       monthlyPermission: CheckoutPermission.getMonthlyPaymentPermission(),
-    };
-  },
-  mounted() {
-    this.calc.month = this.apartment?.discounts[0].installment_month || 12;
-    this.monthlyPaymentDuration =
-      this.apartment?.discounts[0].installment_month || 12;
-    this.upHillForPrint();
+    }
   },
   watch: {
     discount() {
-      this.upHillForPrint();
+      this.upHillForPrint()
     },
+  },
+  mounted() {
+    this.calc.month = this.apartment?.discounts[0].installment_month || 12
+    this.monthlyPaymentDuration = this.apartment?.discounts[0].installment_month || 12
+    this.upHillForPrint()
   },
   computed: {
     ...mapGetters({
-      permission: "getPermission",
+      permission: 'getPermission',
     }),
     paymentOption() {
-      const discounts = [...this.apartment.discounts];
-      if (!this.hasApartment) return;
+      const discounts = [...this.apartment.discounts]
+      if (!this.hasApartment) return
       return discounts
         .sort((a, b) => a.prepay - b.prepay)
         .map((discount, index) => {
-          let text = this.$t("apartments.view.variant");
-          if (discount.type === "promo")
-            text += " " + `( ${this.$t("promo.by_promo")} )`;
-          text += " " + (index + 1) + " - " + discount.prepay + "%";
+          let text = this.$t('apartments.view.variant')
+          if (discount.type === 'promo') text += ' ' + `( ${this.$t('promo.by_promo')} )`
+          text += ` ${index + 1} - ${discount.prepay}%`
           return {
             text,
             value: discount,
             id: discount.id,
-          };
-        });
+          }
+        })
     },
     lessPrice() {
-      return this.calc.total - this.calc.prepay;
+      return this.calc.total - this.calc.prepay
     },
     totalDiscount() {
-      const { calc, apartment } = this;
-      const { prices, plan } = apartment;
-      const discountPerSquare = calc.discount_price * plan.area;
-      return (prices.price - calc.base_price + discountPerSquare).toFixed(2);
+      const { calc, apartment } = this
+      const { prices, plan } = apartment
+      const discountPerSquare = calc.discount_price * plan.area
+      return (prices.price - calc.base_price + discountPerSquare).toFixed(2)
     },
     getApartmentDiscounts() {
-      const hasDiscount =
-        this.hasApartment && this.apartment.hasOwnProperty("discounts");
-      if (!hasDiscount) return [];
-      const discounts = [...this.apartment.discounts];
-      return discounts.sort((a, b) => a.prepay - b.prepay);
+      const hasDiscount = this.hasApartment && this.apartment.hasOwnProperty('discounts')
+      if (!hasDiscount) return []
+      const discounts = [...this.apartment.discounts]
+      return discounts.sort((a, b) => a.prepay - b.prepay)
     },
     showMonthlyCalculation() {
-      return this.calc.prepay_percente !== 100;
+      return this.calc.prepay_percente !== 100
     },
   },
   methods: {
@@ -115,241 +112,234 @@ export default {
       if (Object.keys(this.discount).length < 1) {
         this.discount = this.getApartmentDiscounts
           ? this.getApartmentDiscounts[0]
-          : { amount: 0 };
+          : { amount: 0 }
       }
 
-      if (this.discount.type === "percent") {
+      if (this.discount.type === 'percent') {
         if (this.discount.prepay === 100) {
-          this.calc.price_for_m2 = this.apartment.price_m2;
+          this.calc.price_for_m2 = this.apartment.price_m2
         } else {
-          this.calc.price_for_m2 =
-            this.getTotalForPercente() / this.apartment.plan.area;
+          this.calc.price_for_m2 = this.getTotalForPercente() / this.apartment.plan.area
         }
       } else {
-        this.calc.price_for_m2 = this.discount.amount;
+        this.calc.price_for_m2 = this.discount.amount
       }
 
-      this.calc.prepay_percente = this.discount.prepay;
-      this.calc.prepay = this.getPrepay();
-      this.calc.monthly_price = this.getMonth();
+      this.calc.prepay_percente = this.discount.prepay
+      this.calc.prepay = this.getPrepay()
+      this.calc.monthly_price = this.getMonth()
       this.monthly_price = isNaN(this.calc.monthly_price)
         ? 0
-        : this.calc.monthly_price;
-      this.calc.last_month_price = this.getLastMonth();
-      this.calc.debt = this.getDebt();
-      this.calc.total = this.getTotal();
-      this.calc.base_price = this.getBasePrice();
-      this.calc.month = this.discount.installment_month || 12;
-      this.calc.total_discount = this.totalDiscount;
-      this.calc.less_price = this.lessPrice;
+        : this.calc.monthly_price
+      this.calc.last_month_price = this.getLastMonth()
+      this.calc.debt = this.getDebt()
+      this.calc.total = this.getTotal()
+      this.calc.base_price = this.getBasePrice()
+      this.calc.month = this.discount.installment_month || 12
+      this.calc.total_discount = this.totalDiscount
+      this.calc.less_price = this.lessPrice
       if (
-        this.calc.month === 0 ||
-        Number.isNaN(this.calc.month) ||
-        this.calc.month === null
+        this.calc.month === 0
+        || Number.isNaN(this.calc.month)
+        || this.calc.month === null
       ) {
-        this.calc.month = this.monthlyPaymentDuration;
+        this.calc.month = this.monthlyPaymentDuration
       }
-      this.upHillForPrint();
+      this.upHillForPrint()
     },
     async changeDiscount(optSelect) {
       this.discount = this.paymentOption.find(
-        (option) => option.value.id === optSelect.id
-      ).value;
-      this.calc.prepay_percente = this.discount.prepay;
-      if (this.discount.type === "percent" && this.discount.prepay === 100) {
-        this.calc.total = this.apartment.price;
-        this.calc.prepay = 100;
-        this.calc.month = 0;
-        this.calc.price_for_m2 = this.apartment.price_m2;
+        option => option.value.id === optSelect.id,
+      ).value
+      this.calc.prepay_percente = this.discount.prepay
+      if (this.discount.type === 'percent' && this.discount.prepay === 100) {
+        this.calc.total = this.apartment.price
+        this.calc.prepay = 100
+        this.calc.month = 0
+        this.calc.price_for_m2 = this.apartment.price_m2
         if (this.calc.discount_price > 0) {
-          this.calc.price_for_m2 -= this.calc.discount_price;
+          this.calc.price_for_m2 -= this.calc.discount_price
         }
-        this.calc.base_price = this.apartment.price;
+        this.calc.base_price = this.apartment.price
       }
-      await this.initialCalc();
+      await this.initialCalc()
     },
     setTotalDiscountPrice(totalDiscountPrice) {
-      this.calc.discount_price = totalDiscountPrice / this.apartment.plan.area;
-      this.initialCalc();
-      this.discountPerSquare.permissionChange = true;
+      this.calc.discount_price = totalDiscountPrice / this.apartment.plan.area
+      this.initialCalc()
+      this.discountPerSquare.permissionChange = true
       if (this.calc.discount_price) {
-        this.discountPerSquare.value = this.calc.discount_price.toFixed(2);
+        this.discountPerSquare.value = this.calc.discount_price.toFixed(2)
       } else {
-        this.discountPerSquare.value = null;
+        this.discountPerSquare.value = null
       }
     },
     async changeDiscount_price(discountPrice) {
-      const totalDiscount = discountPrice * this.apartment.plan.area;
-      this.calc.discount_price = discountPrice;
-      await this.initialCalc();
-      this.discountSumSquare.permissionChange = true;
+      const totalDiscount = discountPrice * this.apartment.plan.area
+      this.calc.discount_price = discountPrice
+      await this.initialCalc()
+      this.discountSumSquare.permissionChange = true
       if (discountPrice) {
-        this.discountSumSquare.value = totalDiscount.toFixed(2);
+        this.discountSumSquare.value = totalDiscount.toFixed(2)
       } else {
-        this.discountSumSquare.value = null;
+        this.discountSumSquare.value = null
       }
     },
     changeDiscount_month() {
-      this.monthlyPaymentDuration = this.calc.month;
-      this.monthly_price = this.getMonth();
-      this.calc.last_month_price = this.getLastMonth();
-      this.upHillForPrint();
+      this.monthlyPaymentDuration = this.calc.month
+      this.monthly_price = this.getMonth()
+      this.calc.last_month_price = this.getLastMonth()
+      this.upHillForPrint()
     },
     upHillForPrint() {
       if (this.monthlyPaymentDuration === 0) {
-        this.monthlyPaymentDuration = this.calc.month;
+        this.monthlyPaymentDuration = this.calc.month
       }
 
-      this.$emit("for-print", {
+      this.$emit('for-print', {
         ...this.calc,
         monthly_price: this.monthly_price,
         discount: this.discount,
         month: this.monthlyPaymentDuration,
-      });
+      })
     },
     getPrepay() {
       // if (this.discount.type == 'percent')
-      if (this.discount.prepay === 100) return 0;
+      if (this.discount.prepay === 100) return 0
 
-      let total_discount = this.getDiscount();
+      const total_discount = this.getDiscount()
 
-      let total = 0;
+      let total = 0
 
       switch (this.discount.type) {
-        case "promo":
-        case "fixed":
-        case "addition":
+        case 'promo':
+        case 'fixed':
+        case 'addition':
           if (this.calc.discount_price) {
-            total =
-              (this.discount.amount - parseFloat(this.calc.discount_price)) *
-              this.apartment.plan.area;
+            total = (this.discount.amount - parseFloat(this.calc.discount_price))
+              * this.apartment.plan.area
           } else {
-            total = this.discount.amount * this.apartment.plan.area; //(this.discount.amount * this.apartment.plan.area) / total_discount;
+            total = this.discount.amount * this.apartment.plan.area // (this.discount.amount * this.apartment.plan.area) / total_discount;
           }
-          break;
+          break
         default:
-          total = this.getTotalForPercente() / total_discount;
+          total = this.getTotalForPercente() / total_discount
 
-          break;
+          break
       }
 
-      return (this.discount.prepay * total) / 100;
+      return (this.discount.prepay * total) / 100
     },
     getDiscount() {
-      if (this.discount.type === "percent") {
-        if (this.discount.prepay === 100) return 1;
+      if (this.discount.type === 'percent') {
+        if (this.discount.prepay === 100) return 1
       }
 
-      return 1 - this.discount.prepay / 100;
+      return 1 - this.discount.prepay / 100
 
-      /*return 1 - this.discount.amount / 100;*/
+      /* return 1 - this.discount.amount / 100; */
     },
     getMonth() {
       if (this.calc.month) {
-        let degree = Math.floor(
-          parseInt(this.getTotal() - this.getPrepay()).toString().length / 3
-        );
+        const degree = Math.floor(
+          parseInt(this.getTotal() - this.getPrepay()).toString().length / 3,
+        )
 
-        let adjustedMonthlyPayment =
-          Math.ceil(
-            (this.getTotal() - this.getPrepay()) /
-              (Math.pow(10, degree) * this.calc.month)
-          ) * Math.pow(10, degree);
+        const adjustedMonthlyPayment = Math.ceil(
+          (this.getTotal() - this.getPrepay())
+              / (Math.pow(10, degree) * this.calc.month),
+        ) * Math.pow(10, degree)
 
-        return adjustedMonthlyPayment; //(this.getTotal() - this.getPrepay()) / this.calc.month;
+        return adjustedMonthlyPayment // (this.getTotal() - this.getPrepay()) / this.calc.month;
       }
-      return 0;
+      return 0
     },
     getLastMonth() {
       if (this.calc.month) {
         return (
-          this.getTotal() -
-          this.getPrepay() -
-          this.getMonth() * (this.calc.month - 1)
-        );
+          this.getTotal()
+          - this.getPrepay()
+          - this.getMonth() * (this.calc.month - 1)
+        )
       }
-      return 0;
+      return 0
     },
     getDebt() {
-      return this.getTotal() - this.getPrepay();
+      return this.getTotal() - this.getPrepay()
     },
     getBasePrice() {
       // let totalDiscount = this.getDiscount()
       switch (this.discount.type) {
-        case "promo":
-        case "fixed":
-        case "addition":
-          return this.discount.amount * this.apartment.plan.area;
+        case 'promo':
+        case 'fixed':
+        case 'addition':
+          return this.discount.amount * this.apartment.plan.area
         default:
-          return this.apartment.price;
+          return this.apartment.price
         // return totalDiscount
       }
     },
     getTotal() {
-      let total_discount = this.getDiscount();
-      let total = 0;
+      const total_discount = this.getDiscount()
+      let total = 0
 
       switch (this.discount.type) {
-        case "promo":
-        case "fixed":
-        case "addition":
+        case 'promo':
+        case 'fixed':
+        case 'addition':
           if (this.calc.discount_price) {
-            total =
-              (this.discount.amount - parseFloat(this.calc.discount_price)) *
-              this.apartment.plan.area;
+            total = (this.discount.amount - parseFloat(this.calc.discount_price))
+              * this.apartment.plan.area
           } else {
-            total = this.discount.amount * this.apartment.plan.area; //(this.discount.amount * this.apartment.plan.area) / total_discount;
+            total = this.discount.amount * this.apartment.plan.area // (this.discount.amount * this.apartment.plan.area) / total_discount;
           }
-          break;
-        case "percent":
+          break
+        case 'percent':
           if (this.discount.prepay === 100) {
-            total = this.apartment.prices.price - this.totalDiscount;
+            total = this.apartment.prices.price - this.totalDiscount
           } else {
-            total =
-              this.apartment.prices.price / total_discount - this.totalDiscount;
+            total = this.apartment.prices.price / total_discount - this.totalDiscount
             if (this.calc.discount_price) {
-              total -=
-                parseFloat(this.calc.discount_price) * this.apartment.plan.area;
+              total
+                -= parseFloat(this.calc.discount_price) * this.apartment.plan.area
             }
           }
-          break;
+          break
         default:
-          total =
-            this.apartment.prices.price / total_discount - this.totalDiscount;
+          total = this.apartment.prices.price / total_discount - this.totalDiscount
           if (this.calc.discount_price) {
-            total -=
-              parseFloat(this.calc.discount_price) * this.apartment.plan.area;
+            total
+              -= parseFloat(this.calc.discount_price) * this.apartment.plan.area
           }
-          break;
+          break
       }
 
-      return total;
+      return total
     },
     getTotalForPercente() {
-      let total_discount = this.getDiscount();
-      let total = 0;
+      const total_discount = this.getDiscount()
+      let total = 0
 
       switch (this.discount.type) {
-        case "fixed":
-        case "promo":
-        case "addition":
+        case 'fixed':
+        case 'promo':
+        case 'addition':
           if (this.calc.discount_price) {
-            total =
-              (this.discount.amount - parseFloat(this.calc.discount_price)) *
-              this.apartment.plan.area;
+            total = (this.discount.amount - parseFloat(this.calc.discount_price))
+              * this.apartment.plan.area
           } else {
-            total = this.discount.amount * this.apartment.plan.area;
+            total = this.discount.amount * this.apartment.plan.area
           }
-          break;
+          break
         default:
-          total = this.apartment.prices.price / total_discount;
-          break;
+          total = this.apartment.prices.price / total_discount
+          break
       }
 
-      return total;
+      return total
     },
   },
-};
+}
 </script>
 
 <template>
@@ -380,7 +370,10 @@ export default {
       </div>
 
       <!--     INPUT MONTHLY PAYMENT       -->
-      <div class="calc_monthly" v-show="showMonthlyCalculation">
+      <div
+        v-show="showMonthlyCalculation"
+        class="calc_monthly"
+      >
         <div class="placeholder font-weight-600">
           {{ $t("monthly_payment") }}
         </div>
@@ -388,12 +381,15 @@ export default {
           <input
             v-if="discount.amount > 0"
             v-model="calc.month"
-            @input="changeDiscount_month"
             type="number"
             class="input-monthly-payment color-gray-600 w-100"
             :placeholder="$t('monthly_payment')"
-          />
-          <span v-else class="d-block">{{ $t("monthly_payment") }}</span>
+            @input="changeDiscount_month"
+          >
+          <span
+            v-else
+            class="d-block"
+          >{{ $t("monthly_payment") }}</span>
           <div class="font-inter color-gray-600 font-weight-600">
             {{ $t("month") }}
           </div>
@@ -454,8 +450,7 @@ export default {
         </span>
         <span class="price d-block color-gray-600">
           {{ pricePrettier(calc.price_for_m2 - calc.discount_price, 2) }}
-          {{ $t("ye") }}</span
-        >
+          {{ $t("ye") }}</span>
       </div>
 
       <div class="d-flex justify-content-between">
@@ -468,13 +463,19 @@ export default {
         >
           {{ pricePrettier(calc.total, 2) }} {{ $t("ye") }}
         </span>
-        <span v-else class="price d-block color-gray-600">
+        <span
+          v-else
+          class="price d-block color-gray-600"
+        >
           {{ pricePrettier(calc.prepay, 2) }} {{ $t("ye") }}
         </span>
       </div>
 
       <!--       Monthly Payment          -->
-      <div v-if="discount.prepay < 100" class="d-flex justify-content-between">
+      <div
+        v-if="discount.prepay < 100"
+        class="d-flex justify-content-between"
+      >
         <span class="property d-block color-gray-400">
           {{ $t("monthly_pay") }}
         </span>
@@ -483,7 +484,10 @@ export default {
         </span>
       </div>
       <!--       Monthly Payment          -->
-      <div v-if="discount.prepay < 100" class="d-flex justify-content-between">
+      <div
+        v-if="discount.prepay < 100"
+        class="d-flex justify-content-between"
+      >
         <span class="property d-block color-gray-400">
           {{ $t("Последняя") }}
         </span>
@@ -545,7 +549,6 @@ export default {
 
     sup
       color: var(--gray-400)
-
 
 .calc_monthly
   background-color: var(--gray-100)

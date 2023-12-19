@@ -1,7 +1,7 @@
 <script>
 export default {
-  name: "CreateBranchBreadCrumbs",
-};
+  name: 'CreateBranchBreadCrumbs',
+}
 </script>
 
 <template>
@@ -12,7 +12,7 @@ export default {
       <ul class="breadcrumb">
         <li class="breadcrumb-item">
           <router-link :to="{ name: 'home' }">
-            <i class="far fa-home"></i>
+            <i class="far fa-home" />
           </router-link>
         </li>
 

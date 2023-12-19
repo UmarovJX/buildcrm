@@ -1,6 +1,6 @@
 <script>
 export default {
-  name: "ApartmentBox",
+  name: 'ApartmentBox',
   props: {
     apartment: {
       type: Object,
@@ -11,32 +11,32 @@ export default {
     return {
       statusList: {
         booked: {
-          text: "apartments.status.booked",
-          class: "apartment-box-booked",
+          text: 'apartments.status.booked',
+          class: 'apartment-box-booked',
         },
         sold: {
-          text: "apartments.status.sold",
-          class: "apartment-box-sold",
+          text: 'apartments.status.sold',
+          class: 'apartment-box-sold',
         },
         decorated: {
-          text: "apartments.status.decorated",
-          class: "apartment-box-decorated",
+          text: 'apartments.status.decorated',
+          class: 'apartment-box-decorated',
         },
         not_available: {
-          text: "apartments.status.not_available",
-          class: "apartment-box-not-available",
+          text: 'apartments.status.not_available',
+          class: 'apartment-box-not-available',
         },
       },
       clicked: false,
-    };
+    }
   },
-};
+}
 </script>
 
 <template>
   <div
-    @click="() => (this.clicked = !this.clicked)"
     :class="[clicked ? 'bg-clicked' : 'apartment-box']"
+    @click="() => (this.clicked = !this.clicked)"
   >
     <div
       :class="
@@ -53,12 +53,20 @@ export default {
           v-if="apartment.is_promo"
           src="../../../../assets/icons/bonuses.svg"
           alt=""
-        />
+        >
       </div>
-      <p v-if="statusList[apartment.status]" class="apartment-box-content">
+      <p
+        v-if="statusList[apartment.status]"
+        class="apartment-box-content"
+      >
         {{ $t(statusList[apartment.status].text) }}
       </p>
-      <p v-else class="apartment-box-content">{{ apartment.cost }}</p>
+      <p
+        v-else
+        class="apartment-box-content"
+      >
+        {{ apartment.cost }}
+      </p>
       <div class="d-flex apartment-box-footer">
         <p>{{ apartment.surface }} M<sup>2</sup></p>
         <p>{{ apartment.cost_m2 }} сум/M<sup>2</sup></p>

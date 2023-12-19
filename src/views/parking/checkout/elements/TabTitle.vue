@@ -1,39 +1,47 @@
 <script>
-import { XIcon } from "@/components/ui-components/material-icons";
-import { makeProp as p } from "@/util/props";
+import { XIcon } from '@/components/ui-components/material-icons'
+import { makeProp as p } from '@/util/props'
 import {
   PROP_TYPE_BOOLEAN,
   PROP_TYPE_NUMBER_STRING,
   PROP_TYPE_STRING,
-} from "@/constants/props";
+} from '@/constants/props'
 
 export default {
-  name: "TabTitle",
+  name: 'TabTitle',
   components: {
     XIcon,
   },
   props: {
     step: p(PROP_TYPE_NUMBER_STRING, 1),
-    content: p(PROP_TYPE_STRING, ""),
+    content: p(PROP_TYPE_STRING, ''),
     showRightIcon: p(PROP_TYPE_BOOLEAN, true),
   },
   data() {
     return {
-      flexCenter: "d-flex justify-content-center align-items-center",
-    };
+      flexCenter: 'd-flex justify-content-center align-items-center',
+    }
   },
   computed: {
     notHaveSlot() {
-      return !this.$slots.hasOwnProperty("default");
+      return !this.$slots.hasOwnProperty('default')
     },
   },
-};
+}
 </script>
 
 <template>
   <div class="app-tab-title d-flex align-items-center">
-    <span :class="flexCenter" class="app-tab-title-number">{{ step }}</span>
-    <p v-if="notHaveSlot" class="app-tab-title-content">{{ content }}</p>
+    <span
+      :class="flexCenter"
+      class="app-tab-title-number"
+    >{{ step }}</span>
+    <p
+      v-if="notHaveSlot"
+      class="app-tab-title-content"
+    >
+      {{ content }}
+    </p>
     <!--  ?WHEN WANTED TO USE CUSTOM CONTENT  -->
     <slot name="default" />
     <!--  ?BASE RIGHT ICON  -->
@@ -42,7 +50,10 @@ export default {
       :class="flexCenter"
       class="app-tab-title-right-icon"
     >
-      <x-icon name="chevron_right" class="gray-400" />
+      <x-icon
+        name="chevron_right"
+        class="gray-400"
+      />
     </span>
   </div>
 </template>

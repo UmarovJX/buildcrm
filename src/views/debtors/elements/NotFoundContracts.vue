@@ -1,8 +1,9 @@
 <script>
-import api from "@/services/api";
-import BasePagination from "@/components/Reusable/Navigation/BasePagination.vue";
+import api from '@/services/api'
+import BasePagination from '@/components/Reusable/Navigation/BasePagination.vue'
+
 export default {
-  name: "NotFoundContracts",
+  name: 'NotFoundContracts',
   components: {
     BasePagination,
   },
@@ -12,16 +13,16 @@ export default {
       default: () => [],
     },
   },
-  emits: ["update-option"],
+  emits: ['update-option'],
   data() {
     return {
       openListId: null,
       notFoundFields: [
         {
-          key: "key",
-          label: "debtors.contract_file",
-          thClass: "theadKey",
-          tdClass: "tbodyKey",
+          key: 'key',
+          label: 'debtors.contract_file',
+          thClass: 'theadKey',
+          tdClass: 'tbodyKey',
         },
         // {
         //   key: "value",
@@ -34,11 +35,11 @@ export default {
         current: 1,
         perPage: 10,
       },
-    };
+    }
   },
   computed: {
     tableDetails() {
-      const { current, perPage } = this.pagination;
+      const { current, perPage } = this.pagination
 
       if (this.items.length) {
         return {
@@ -46,7 +47,7 @@ export default {
           current,
           count: Math.ceil(this.items.length / perPage),
           items: this.items.slice((current - 1) * perPage, current * perPage),
-        };
+        }
       }
 
       return {
@@ -54,51 +55,51 @@ export default {
         current: 0,
         count: 0,
         items: [],
-      };
+      }
     },
   },
   methods: {
     paginateFoundItems(page) {
-      this.pagination.current = page;
+      this.pagination.current = page
     },
     changePerPage(perPage) {
-      this.pagination.current = 1;
-      this.pagination.perPage = perPage;
+      this.pagination.current = 1
+      this.pagination.perPage = perPage
     },
     async searchContract(item, search) {
-      if (this.timeout) clearTimeout(this.timeout);
+      if (this.timeout) clearTimeout(this.timeout)
 
       this.timeout = setTimeout(async () => {
         try {
           const response = await api.debtorsV2.searchContract({
             contract: search,
-          });
+          })
 
-          this.openListId = item.key;
+          this.openListId = item.key
 
-          const options = response.data.map((r) => ({
+          const options = response.data.map(r => ({
             alias: r.alias || null,
             contract: r.contract_number || null,
             uuid: r.uuid || null,
-          }));
+          }))
 
-          this.$emit("update-option", {
+          this.$emit('update-option', {
             item,
             options,
-          });
+          })
         } catch (e) {
-          this.toastedWithErrorCode(e);
+          this.toastedWithErrorCode(e)
         }
-      }, 350);
+      }, 350)
     },
     async selectOptionSystem(index, option) {
-      this.$emit("update-alias", {
+      this.$emit('update-alias', {
         index,
         option,
-      });
+      })
     },
   },
-};
+}
 </script>
 
 <template>
@@ -130,10 +131,10 @@ export default {
           class="cell position-relative"
         >
           <v-select
+            v-model="data.item.value.alias"
             :options="data.item.option"
             :filterable="false"
             label="contract"
-            v-model="data.item.value.alias"
             @open="openListId = data.item.key"
             @search="searchContract(data.item, $event)"
             @input="selectOptionSystem(data.item.index, $event)"

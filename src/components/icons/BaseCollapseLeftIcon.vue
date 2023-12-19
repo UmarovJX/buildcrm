@@ -1,10 +1,10 @@
 <script>
 export default {
-  name: "BasCollapseLeftIcon",
+  name: 'BasCollapseLeftIcon',
   props: {
     fill: {
       type: String,
-      default: "#9CA3AF",
+      default: '#9CA3AF',
     },
     width: {
       type: Number,
@@ -15,7 +15,7 @@ export default {
       default: 12,
     },
   },
-};
+}
 </script>
 <template>
   <svg

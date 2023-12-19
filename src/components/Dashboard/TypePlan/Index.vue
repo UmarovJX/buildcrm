@@ -1,10 +1,10 @@
 <script>
-import { mapGetters, mapActions } from "vuex";
-import PlansPermission from "@/permission/plans";
-import AppHeader from "@/components/Header/AppHeader";
+import { mapGetters, mapActions } from 'vuex'
+import PlansPermission from '@/permission/plans'
+import AppHeader from '@/components/Header/AppHeader'
 
 export default {
-  name: "TypePlan",
+  name: 'TypePlan',
   components: {
     AppHeader,
   },
@@ -16,45 +16,45 @@ export default {
 
       header: {
         headers: {
-          Authorization: "Bearer " + localStorage.token,
+          Authorization: `Bearer ${localStorage.token}`,
         },
       },
 
-      sortBy: "id",
+      sortBy: 'id',
       sortDesc: false,
       fields: [
         {
-          key: "id",
-          label: "#",
+          key: 'id',
+          label: '#',
         },
         {
-          key: "name",
-          label: this.$t("roles.name"),
+          key: 'name',
+          label: this.$t('roles.name'),
         },
         {
-          key: "actions",
-          label: "",
+          key: 'actions',
+          label: '',
         },
       ],
 
       loading: false,
-    };
+    }
   },
 
-  computed: mapGetters(["getPermission", "getObjects", "getLoading"]),
+  computed: mapGetters(['getPermission', 'getObjects', 'getLoading']),
 
   mounted() {
-    this.fetchObjects(this);
+    this.fetchObjects(this)
   },
 
   methods: {
-    ...mapActions(["fetchObjects"]),
+    ...mapActions(['fetchObjects']),
 
     planView(id) {
-      this.$router.push({ name: "type-plan-view", params: { id: id } });
+      this.$router.push({ name: 'type-plan-view', params: { id } })
     },
   },
-};
+}
 </script>
 
 <template>
@@ -78,7 +78,7 @@ export default {
           <ul class="breadcrumb ml-md-4 ml-md-3 mb-0 mb-md-0">
             <li class="breadcrumb-item">
               <router-link :to="{ name: 'home' }">
-                <i class="far fa-home"></i>
+                <i class="far fa-home" />
               </router-link>
             </li>
 
@@ -96,6 +96,8 @@ export default {
 
       <div class="">
         <b-table
+          v-model:sort-by="sortBy"
+          v-model:sort-desc="sortDesc"
           sticky-header
           borderless
           responsive
@@ -103,13 +105,14 @@ export default {
           :fields="fields"
           :busy="getLoading"
           show-empty
-          v-model:sort-by="sortBy"
-          v-model:sort-desc="sortDesc"
           sort-icon-left
           class="custom-table"
           :empty-text="$t('no_data')"
         >
-          <template #empty="scope" class="text-center">
+          <template
+            #empty="scope"
+            class="text-center"
+          >
             <span class="d-flex justify-content-center align-items-center">{{
               scope.emptyText
             }}</span>
@@ -118,10 +121,10 @@ export default {
           <template #table-busy>
             <div class="d-flex justify-content-center w-100">
               <div class="lds-ellipsis">
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
+                <div />
+                <div />
+                <div />
+                <div />
               </div>
             </div>
           </template>
@@ -134,7 +137,7 @@ export default {
                   class="dropdown-toggle"
                   data-toggle="dropdown"
                 >
-                  <i class="far fa-ellipsis-h"></i>
+                  <i class="far fa-ellipsis-h" />
                 </button>
 
                 <div class="dropdown-menu">
@@ -143,7 +146,7 @@ export default {
                     class="dropdown-item dropdown-item--inside"
                     @click="planView(data.item.id)"
                   >
-                    <i class="fas fa-eye"></i>
+                    <i class="fas fa-eye" />
                     {{ $t("type_plan.plans") }}
                   </b-button>
                 </div>
@@ -154,14 +157,19 @@ export default {
       </div>
     </div>
 
-    <b-overlay :show="loading" no-wrap opacity="0.5" style="z-index: 2222">
+    <b-overlay
+      :show="loading"
+      no-wrap
+      opacity="0.5"
+      style="z-index: 2222"
+    >
       <template #overlay>
         <div class="d-flex justify-content-center w-100">
           <div class="lds-ellipsis">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
+            <div />
+            <div />
+            <div />
+            <div />
           </div>
         </div>
       </template>

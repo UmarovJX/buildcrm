@@ -1,20 +1,20 @@
 <script>
-import { makeProp as p } from "@/util/props";
-import { PROP_TYPE_OBJECT } from "@/constants/props";
+import { makeProp as p } from '@/util/props'
+import { PROP_TYPE_OBJECT } from '@/constants/props'
 
-import SectionTitle from "@/views/checkoutV2/elements/SectionTitle";
-import OutputInformation from "@/components/Elements/Outputs/OutputInformation";
-import BaseDatePicker from "@/components/Reusable/BaseDatePicker";
-import BaseModal from "@/components/Reusable/BaseModal";
-import BaseButton from "@/components/Reusable/BaseButton";
-import BaseInput from "@/components/Reusable/BaseInput";
-import BaseCloseIcon from "@/components/icons/BaseCloseIcon";
-import { XIcon } from "@/components/ui-components/material-icons";
-import { mapActions, mapState } from "vuex";
-import { formatDateToYMD } from "@/util/calendar";
+import SectionTitle from '@/views/checkoutV2/elements/SectionTitle'
+import OutputInformation from '@/components/Elements/Outputs/OutputInformation'
+import BaseDatePicker from '@/components/Reusable/BaseDatePicker'
+import BaseModal from '@/components/Reusable/BaseModal'
+import BaseButton from '@/components/Reusable/BaseButton'
+import BaseInput from '@/components/Reusable/BaseInput'
+import BaseCloseIcon from '@/components/icons/BaseCloseIcon'
+import { XIcon } from '@/components/ui-components/material-icons'
+import { mapActions, mapState } from 'vuex'
+import { formatDateToYMD } from '@/util/calendar'
 
 export default {
-  name: "ChContractDetails",
+  name: 'ChContractDetails',
   components: {
     SectionTitle,
     OutputInformation,
@@ -31,60 +31,60 @@ export default {
   data() {
     return {
       contractDate: formatDateToYMD(this.apartment.calc.contract_date),
-      datePickerIconFill: "var(--violet-600)",
+      datePickerIconFill: 'var(--violet-600)',
       changedContractNumber: false,
-      newContractNumber: "",
-      contractNumber: "",
-    };
+      newContractNumber: '',
+      contractNumber: '',
+    }
   },
   computed: {
-    ...mapState("CheckoutV2", {
-      stateContractNumber: "contract_number",
+    ...mapState('CheckoutV2', {
+      stateContractNumber: 'contract_number',
     }),
   },
   watch: {
     newContractNumber(value) {
       this.changedContractNumber = !!(
-        value &&
-        value.length &&
-        !(value === this.contractNumber)
-      );
+        value
+        && value.length
+        && !(value === this.contractNumber)
+      )
       if (this.changedContractNumber) {
         this.changeContractNumber({
           apmId: this.apartment.id,
           contractNumber: value,
-        });
+        })
       }
     },
     contractDate(ltsValue) {
       this.updateApmContractDate({
         apmId: this.apartment.id,
         contractDate: ltsValue,
-      });
+      })
     },
   },
   mounted() {
-    this.contractNumber = this.apartment.contract_number;
+    this.contractNumber = this.apartment.contract_number
   },
   methods: {
-    ...mapActions("CheckoutV2", [
-      "changeContractNumber",
-      "updateApmContractDate",
+    ...mapActions('CheckoutV2', [
+      'changeContractNumber',
+      'updateApmContractDate',
     ]),
     closeEditNumberModal() {
-      this.$refs["edit-contract-number"].closeModal();
-      this.changedContractNumber = false;
+      this.$refs['edit-contract-number'].closeModal()
+      this.changedContractNumber = false
     },
     setNewContractNumber() {
-      this.contractNumber = this.newContractNumber;
-      this.closeEditNumberModal();
+      this.contractNumber = this.newContractNumber
+      this.closeEditNumberModal()
     },
     openEditNumberModal() {
-      this.newContractNumber = this.contractNumber;
-      this.$refs["edit-contract-number"].openModal();
+      this.newContractNumber = this.contractNumber
+      this.$refs['edit-contract-number'].openModal()
     },
   },
-};
+}
 </script>
 
 <template>
@@ -101,10 +101,20 @@ export default {
         class="cd-number w-100"
       >
         <template #value>
-          <div class="d-flex align-items-center" style="column-gap: 1rem">
+          <div
+            class="d-flex align-items-center"
+            style="column-gap: 1rem"
+          >
             <span>{{ contractNumber }}</span>
-            <span @click="openEditNumberModal" class="edit-icon-wrapper">
-              <x-icon name="edit" size="13.5" class="color-white" />
+            <span
+              class="edit-icon-wrapper"
+              @click="openEditNumberModal"
+            >
+              <x-icon
+                name="edit"
+                size="13.5"
+                class="color-white"
+              />
             </span>
           </div>
         </template>
@@ -119,14 +129,23 @@ export default {
       />
     </div>
 
-    <base-modal ref="edit-contract-number" design="auto-height">
+    <base-modal
+      ref="edit-contract-number"
+      design="auto-height"
+    >
       <template #header>
         <span class="d-flex align-items-center justify-content-between">
           <!--    TITLE      -->
           <span class="title">{{ $t("apartments.agree.number") }}</span>
           <!--   CLOSE    -->
-          <span class="go__back" @click="closeEditNumberModal">
-            <BaseCloseIcon :width="56" :height="56" />
+          <span
+            class="go__back"
+            @click="closeEditNumberModal"
+          >
+            <BaseCloseIcon
+              :width="56"
+              :height="56"
+            />
           </span>
         </span>
       </template>
@@ -134,20 +153,20 @@ export default {
       <template #main>
         <div>
           <base-input
+            v-model="newContractNumber"
             :label="true"
             class="w-100"
             padding-left="2px !important"
-            v-model="newContractNumber"
             :placeholder="`${$t('apartments.agree.number')}`"
           />
         </div>
       </template>
       <template #footer>
         <base-button
-          @click="setNewContractNumber"
           :disabled="!changedContractNumber"
           class="violet-gradient w-100"
           :text="`${$t('apply')}`"
+          @click="setNewContractNumber"
         />
       </template>
     </base-modal>

@@ -1,9 +1,9 @@
 <script>
-import moment from "moment";
+import moment from 'moment'
 
 export default {
-  name: "BaseNote",
-  emits: ["edit-selected-note", "delete-note"],
+  name: 'BaseNote',
+  emits: ['edit-selected-note', 'delete-note'],
   props: {
     detail: {
       type: Object,
@@ -17,29 +17,31 @@ export default {
   },
   computed: {
     getDate() {
-      let date = moment(this.detail.date).format("DD");
-      let month = moment(this.detail.date).format("MMMM");
-      let hour = moment(this.detail.date).format("HH");
-      let minute = moment(this.detail.date).format("m");
-      hour += ":" + minute + ", " + date + " " + month;
-      return hour;
+      const date = moment(this.detail.date).format('DD')
+      const month = moment(this.detail.date).format('MMMM')
+      let hour = moment(this.detail.date).format('HH')
+      const minute = moment(this.detail.date).format('m')
+      hour += `:${minute}, ${date} ${month}`
+      return hour
     },
   },
   methods: {
     deleteCompany() {
-      console.log("delete");
+      console.log('delete')
     },
     editSelectedPayment() {
-      console.log("edit");
+      console.log('edit')
     },
   },
-};
+}
 </script>
 
 <template>
   <div class="base-note">
     <div class="base-note-header">
-      <p class="m-0 base-note-text">{{ detail.text }}</p>
+      <p class="m-0 base-note-text">
+        {{ detail.text }}
+      </p>
       <div class="float-right dropdown my-dropdown">
         <button
           v-if="actions"
@@ -47,9 +49,12 @@ export default {
           class="dropdown-toggle"
           data-toggle="dropdown"
         >
-          <i class="far fa-ellipsis-h"></i>
+          <i class="far fa-ellipsis-h" />
         </button>
-        <div class="dropdown-menu" v-if="actions">
+        <div
+          v-if="actions"
+          class="dropdown-menu"
+        >
           <slot name="delete" />
           <slot name="edit" />
         </div>
@@ -63,7 +68,7 @@ export default {
           :src="require(`@/assets/img/${detail.image}`)"
           class="mr-2 base-note-content-author-image"
           alt="avatar"
-        />
+        >
         <span class="base-note-content-author-info d-flex">
           <p class="m-0 base-note-content-author-info-name">
             {{ detail.author }}
@@ -75,7 +80,9 @@ export default {
         </span>
       </div>
       <div class="base-note-content-date">
-        <p class="m-0">{{ getDate }}</p>
+        <p class="m-0">
+          {{ getDate }}
+        </p>
       </div>
     </div>
   </div>

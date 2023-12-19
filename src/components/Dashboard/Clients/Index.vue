@@ -1,11 +1,11 @@
 <script>
-import { mapActions, mapGetters } from "vuex";
-import ViewClient from "../Apartment/ViewClient";
-import api from "@/services/api";
+import { mapActions, mapGetters } from 'vuex'
+import api from '@/services/api'
+import ViewClient from '../Apartment/ViewClient'
 
 export default {
   components: {
-    "view-client": ViewClient,
+    'view-client': ViewClient,
   },
 
   data: () => ({
@@ -17,187 +17,186 @@ export default {
 
     header: {
       headers: {
-        Authorization: "Bearer " + localStorage.token,
+        Authorization: `Bearer ${localStorage.token}`,
       },
     },
 
-    search: "",
+    search: '',
   }),
 
   computed: mapGetters([
-    "getClients",
-    "getMe",
-    "getPermission",
-    "getClientsPaginate",
-    "getLoading",
+    'getClients',
+    'getMe',
+    'getPermission',
+    'getClientsPaginate',
+    'getLoading',
   ]),
 
   mounted() {
-    this.fetchClients(this);
+    this.fetchClients(this)
   },
 
   methods: {
-    ...mapActions(["fetchClients", "fetchReserveClient", "fetchClientsSearch"]),
+    ...mapActions(['fetchClients', 'fetchReserveClient', 'fetchClientsSearch']),
 
     ReserveInfo(status) {
-      this.info_reserve = true;
+      this.info_reserve = true
       this.apartment_preview = {
         id: client.apartment_id,
         booking_date: client.apartment.booking_date,
-      };
-      this.client_id = client.id;
+      }
+      this.client_id = client.id
 
-      this.fetchReserveClient(this);
+      this.fetchReserveClient(this)
       // this.$bvModal.show('modal-view-status');
     },
 
     PageCallBack(pageNum) {
-      this.page = pageNum;
+      this.page = pageNum
 
       if (this.search.length > 0) {
-        this.fetchClientsSearch(this);
+        this.fetchClientsSearch(this)
       } else {
-        this.fetchClients(this);
+        this.fetchClients(this)
       }
     },
 
     CancelContract(client_id) {
       this.$swal({
-        title: this.$t("sweetAlert.title"),
-        text: this.$t("sweetAlert.text_cancel_contract"),
-        icon: "warning",
+        title: this.$t('sweetAlert.title'),
+        text: this.$t('sweetAlert.text_cancel_contract'),
+        icon: 'warning',
         showCancelButton: true,
-        cancelButtonText: this.$t("cancel"),
-        confirmButtonText: this.$t("sweetAlert.yes_cancel_contract"),
-      }).then((result) => {
+        cancelButtonText: this.$t('cancel'),
+        confirmButtonText: this.$t('sweetAlert.yes_cancel_contract'),
+      }).then(result => {
         if (result.value) {
           api.clients
             .cancelContract(client_id, {})
-            .then((response) => {
-              this.toasted(response.data.message, "success");
+            .then(response => {
+              this.toasted(response.data.message, 'success')
 
               if (this.search.length > 0) {
-                this.fetchClientsSearch(this);
+                this.fetchClientsSearch(this)
               } else {
-                this.fetchClients(this);
+                this.fetchClients(this)
               }
 
               this.$swal(
-                this.$t("sweetAlert.canceled_contract"),
-                "",
-                "success"
-              );
+                this.$t('sweetAlert.canceled_contract'),
+                '',
+                'success',
+              )
             })
-            .catch((error) => {
+            .catch(error => {
               if (!error.response) {
-                this.toasted("Error: Network Error", "error");
+                this.toasted('Error: Network Error', 'error')
+              } else if (error.response.status === 403) {
+                this.toasted(error.response.data.message, 'error')
+              } else if (error.response.status === 401) {
+                this.toasted(error.response.data.message, 'error')
+              } else if (error.response.status === 500) {
+                this.toasted(error.response.data.message, 'error')
               } else {
-                if (error.response.status === 403) {
-                  this.toasted(error.response.data.message, "error");
-                } else if (error.response.status === 401) {
-                  this.toasted(error.response.data.message, "error");
-                } else if (error.response.status === 500) {
-                  this.toasted(error.response.data.message, "error");
-                } else {
-                  this.error = true;
-                  this.errors = error.response.data.errors;
-                }
+                this.error = true
+                this.errors = error.response.data.errors
               }
-            });
+            })
         }
-      });
+      })
     },
 
     DeleteClient(status) {
       this.$swal({
-        title: this.$t("sweetAlert.title"),
-        text: this.$t("sweetAlert.text"),
-        icon: "warning",
+        title: this.$t('sweetAlert.title'),
+        text: this.$t('sweetAlert.text'),
+        icon: 'warning',
         showCancelButton: true,
-        cancelButtonText: this.$t("cancel"),
-        confirmButtonText: this.$t("sweetAlert.yes"),
-      }).then((result) => {
+        cancelButtonText: this.$t('cancel'),
+        confirmButtonText: this.$t('sweetAlert.yes'),
+      }).then(result => {
         if (result.value) {
           api.clients
             .deleteClientFromDB(client)
-            .then((response) => {
-              this.toasted(response.data.message, "success");
+            .then(response => {
+              this.toasted(response.data.message, 'success')
 
               if (this.search.length > 0) {
-                this.fetchClientsSearch(this);
+                this.fetchClientsSearch(this)
               } else {
-                this.fetchClients(this);
+                this.fetchClients(this)
               }
 
-              this.$swal(this.$t("sweetAlert.deleted"), "", "success");
+              this.$swal(this.$t('sweetAlert.deleted'), '', 'success')
             })
-            .catch((error) => {
+            .catch(error => {
               if (!error.response) {
-                this.toasted("Error: Network Error", "error");
+                this.toasted('Error: Network Error', 'error')
+              } else if (error.response.status === 403) {
+                this.toasted(error.response.data.message, 'error')
+              } else if (error.response.status === 401) {
+                this.toasted(error.response.data.message, 'error')
+              } else if (error.response.status === 500) {
+                this.toasted(error.response.data.message, 'error')
               } else {
-                if (error.response.status === 403) {
-                  this.toasted(error.response.data.message, "error");
-                } else if (error.response.status === 401) {
-                  this.toasted(error.response.data.message, "error");
-                } else if (error.response.status === 500) {
-                  this.toasted(error.response.data.message, "error");
-                } else {
-                  this.error = true;
-                  this.errors = error.response.data.errors;
-                }
+                this.error = true
+                this.errors = error.response.data.errors
               }
-            });
+            })
         }
-      });
+      })
     },
 
     CloseReserveInfo() {
-      this.info_reserve = false;
-      this.apartment_preview = {};
-      this.fetchClients(this);
+      this.info_reserve = false
+      this.apartment_preview = {}
+      this.fetchClients(this)
     },
 
     SearchInput(event) {
-      this.page = 1;
-      this.search = event.target.value;
-      this.fetchClientsSearch(this);
+      this.page = 1
+      this.search = event.target.value
+      this.fetchClientsSearch(this)
     },
   },
 
   filters: {
     getStatus(status, buy, book) {
-      let msg;
+      let msg
       switch (status) {
-        case "buy":
-          msg = "Покупал " + buy;
-          break;
-        case "booking":
-          msg = "Забронировал до " + book;
-          break;
+        case 'buy':
+          msg = `Покупал ${buy}`
+          break
+        case 'booking':
+          msg = `Забронировал до ${book}`
+          break
         default:
-          msg = "отказался купить или другое";
-          break;
+          msg = 'отказался купить или другое'
+          break
       }
 
-      return msg;
+      return msg
     },
   },
-};
+}
 </script>
 
 <template>
   <div>
     <div>
-      <form action="" class="my-form">
+      <form
+        action=""
+        class="my-form"
+      >
         <div class="mb-3 searching">
           <input
+            v-model="search"
             class="my-form__input"
             type="text"
-            v-model="search"
-            @input="SearchInput"
             :placeholder="$t('clients.search')"
-          />
-          <button><i class="far fa-search"></i></button>
+            @input="SearchInput"
+          >
+          <button><i class="far fa-search" /></button>
         </div>
       </form>
 
@@ -206,25 +205,28 @@ export default {
           <thead>
             <tr>
               <th class="text-center">
-                <i class="fas fa-sort"></i> {{ $t("clients.number") }}
+                <i class="fas fa-sort" /> {{ $t("clients.number") }}
               </th>
               <th>{{ $t("clients.fio") }}</th>
               <th>{{ $t("clients.phone") }}</th>
               <th>{{ $t("clients.amount") }}</th>
               <th>{{ $t("clients.apartment") }}</th>
               <th>{{ $t("clients.date") }}</th>
-              <th></th>
+              <th />
             </tr>
           </thead>
           <tbody>
             <tr v-if="getLoading">
-              <td colspan="7" style="">
+              <td
+                colspan="7"
+                style=""
+              >
                 <div class="d-flex justify-content-center w-100">
                   <div class="lds-ellipsis">
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
+                    <div />
+                    <div />
+                    <div />
+                    <div />
                   </div>
                 </div>
               </td>
@@ -293,63 +295,63 @@ export default {
                     class="dropdown-toggle"
                     data-toggle="dropdown"
                   >
-                    <i class="far fa-ellipsis-h"></i>
+                    <i class="far fa-ellipsis-h" />
                   </button>
                   <div class="dropdown-menu">
                     <b-link
                       v-if="
                         (client.status === 'booking' &&
                           client.manager_id === getMe.user.id) ||
-                        (getMe.role.id === 1 && client.status === 'booking')
+                          (getMe.role.id === 1 && client.status === 'booking')
                       "
-                      @click="ReserveInfo(client)"
                       v-b-modal.modal-view-client
                       class="dropdown-item dropdown-item--inside"
+                      @click="ReserveInfo(client)"
                     >
-                      <i class="far fa-eye"></i>
+                      <i class="far fa-eye" />
                       {{ $t("apartments.list.view_client") }}
                     </b-link>
 
                     <router-link
+                      v-if="client.status == 'booking'"
                       :to="{
                         name: 'apartment-view',
                         params: { id: client.apartment.id },
                       }"
                       :class="'dropdown-item dropdown-item--inside'"
-                      v-if="client.status == 'booking'"
                     >
-                      <i class="far fa-ballot-check"></i>
+                      <i class="far fa-ballot-check" />
                       {{ $t("apartments.list.confirm") }}
                     </router-link>
 
                     <a
+                      v-if="client.status === 'buy'"
                       class="dropdown-item dropdown-item--inside"
                       href="product-item.html"
-                      v-if="client.status === 'buy'"
                     >
-                      <i class="far fa-eye"></i>
+                      <i class="far fa-eye" />
                       {{ $t("apartments.list.more") }}
                     </a>
 
                     <a
+                      v-if="client.status === 'buy'"
                       class="dropdown-item dropdown-item--inside"
                       href="product-item.html"
-                      v-if="client.status === 'buy'"
                     >
-                      <i class="fas fa-download"></i>
+                      <i class="fas fa-download" />
                       {{ $t("apartments.list.download_contract") }}
                     </a>
 
                     <b-button
-                      class="dropdown-item dropdown-item--inside"
-                      @click="CancelContract(client.id)"
                       v-if="
                         (client.status === 'buy' &&
                           getPermission.clients.cancel_contract) ||
-                        (client.status === 'buy' && getMe.role.id === 1)
+                          (client.status === 'buy' && getMe.role.id === 1)
                       "
+                      class="dropdown-item dropdown-item--inside"
+                      @click="CancelContract(client.id)"
                     >
-                      <i class="fas fa-eraser"></i>
+                      <i class="fas fa-eraser" />
                       {{ $t("apartments.list.cancel_contract") }}
                     </b-button>
 
@@ -362,7 +364,7 @@ export default {
                       v-if="getPermission.clients.delete"
                       class="dropdown-item dropdown-item--inside"
                       @click="DeleteClient(client.id)"
-                      ><i class="far fa-trash"></i> {{ $t("delete") }}
+                    ><i class="far fa-trash" /> {{ $t("delete") }}
                     </b-button>
                   </div>
                 </div>
@@ -372,10 +374,10 @@ export default {
         </table>
 
         <paginate
-          :pageCount="getClientsPaginate.pageCount"
-          :clickHandler="PageCallBack"
-          :prevText="`<i class='fa fa-chevron-left'></i>`"
-          :nextText="`<i class='fa fa-chevron-right'></i>`"
+          :page-count="getClientsPaginate.pageCount"
+          :click-handler="PageCallBack"
+          :prev-text="`<i class='fa fa-chevron-left'></i>`"
+          :next-text="`<i class='fa fa-chevron-right'></i>`"
           :container-class="'pagination'"
           :page-class="'page-item'"
           :page-link-class="'page-link'"
@@ -383,17 +385,16 @@ export default {
           :prev-class="'page-item'"
           :prev-link-class="'page-link'"
           :next-link-class="'page-link'"
-        >
-        </paginate>
+        />
       </div>
     </div>
 
     <view-client
       v-if="info_reserve"
-      @CancelReserve="CloseReserveInfo"
       :apartment-data="apartment_preview"
       :client-id="client_id"
-    ></view-client>
+      @CancelReserve="CloseReserveInfo"
+    />
   </div>
 </template>
 

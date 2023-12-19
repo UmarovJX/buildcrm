@@ -1,6 +1,6 @@
 <script>
 export default {
-  name: "AppDropdown",
+  name: 'AppDropdown',
   props: {
     positionRight: {
       type: Boolean,
@@ -11,12 +11,15 @@ export default {
       default: () => false,
     },
   },
-};
+}
 </script>
 
 <template>
   <div>
-    <b-dropdown :right="positionRight" :class="{ notArrow: collapseArrow }">
+    <b-dropdown
+      :right="positionRight"
+      :class="{ notArrow: collapseArrow }"
+    >
       <template #button-content>
         <slot name="header" />
       </template>

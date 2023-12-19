@@ -1,23 +1,23 @@
 <script>
-import BaseLoading from "@/components/Reusable/BaseLoading";
-import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
-import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
-import AppHeader from "@/components/Header/AppHeader";
-import XFormSelect from "@/components/ui-components/form-select/FormSelect.vue";
-import { XIcon } from "@/components/ui-components/material-icons";
-import { XSquareBackground } from "@/components/ui-components/square-background";
-import { v3ServiceApi } from "@/services/v3/v3.service";
-import api from "@/services/api";
+import BaseLoading from '@/components/Reusable/BaseLoading'
+import BaseArrowLeftIcon from '@/components/icons/BaseArrowLeftIcon'
+import BaseArrowRightIcon from '@/components/icons/BaseArrowRightIcon'
+import AppHeader from '@/components/Header/AppHeader'
+import XFormSelect from '@/components/ui-components/form-select/FormSelect.vue'
+import { XIcon } from '@/components/ui-components/material-icons'
+import { XSquareBackground } from '@/components/ui-components/square-background'
+import { v3ServiceApi } from '@/services/v3/v3.service'
+import api from '@/services/api'
 import {
   phonePrettier,
   formatToPrice,
   formatDateWithDot,
-} from "@/util/reusable";
-import BaseFilterTabsContent from "@/components/Reusable/BaseFilterTabsContent2";
-import BaseButton from "@/components/Reusable/BaseButton.vue";
+} from '@/util/reusable'
+import BaseFilterTabsContent from '@/components/Reusable/BaseFilterTabsContent2'
+import BaseButton from '@/components/Reusable/BaseButton.vue'
 
 export default {
-  name: "ClientView",
+  name: 'ClientView',
   components: {
     BaseButton,
     BaseFilterTabsContent,
@@ -34,94 +34,93 @@ export default {
       showLoading: false,
       showSecondaryLoading: false,
       client: null,
-      currentTab: "orders",
+      currentTab: 'orders',
       pagination: {},
       showByValue: this.$route.query.limit || 10,
-      showByOptions: [10, 20, 30, 40, 50].map((e) => ({ value: e, text: e })),
+      showByOptions: [10, 20, 30, 40, 50].map(e => ({ value: e, text: e })),
       ordersFields: [
         {
-          key: "contract",
-          label: this.$t("contracts.table.contract"),
+          key: 'contract',
+          label: this.$t('contracts.table.contract'),
         },
 
         {
-          key: "apartmentsNumber",
-          label: this.$t("contracts.apartment_number"),
+          key: 'apartmentsNumber',
+          label: this.$t('contracts.apartment_number'),
           formatter: (v, key, item) => {
-            let list = [];
-            if (item.type === "parking") {
-              list = item.parkings;
+            let list = []
+            if (item.type === 'parking') {
+              list = item.parkings
             } else {
-              list = item.apartments;
+              list = item.apartments
             }
 
             return list
-              .reduce((acc, app) => acc + "," + app.number, "")
-              .slice(1);
+              .reduce((acc, app) => `${acc},${app.number}`, '')
+              .slice(1)
           },
-          thStyle: "width: 110px",
+          thStyle: 'width: 110px',
         },
         {
-          key: "status",
-          label: this.$t("contracts.table.status"),
-          thStyle: "width: 90px",
+          key: 'status',
+          label: this.$t('contracts.table.status'),
+          thStyle: 'width: 90px',
         },
         {
-          key: "payments.transaction_prices",
-          label: this.$t("contracts.table.cost"),
-          formatter: (price) => formatToPrice(price) + " " + this.$t("ye"),
+          key: 'payments.transaction_prices',
+          label: this.$t('contracts.table.cost'),
+          formatter: price => `${formatToPrice(price)} ${this.$t('ye')}`,
         },
         {
-          key: "object",
-          label: this.$t("contracts.table.object"),
-          formatter: (object) => object?.name,
+          key: 'object',
+          label: this.$t('contracts.table.object'),
+          formatter: object => object?.name,
         },
         {
-          key: "created",
-          label: this.$t("roles.manager"),
-          formatter: (created) =>
-            created?.first_name + " " + created?.last_name,
+          key: 'created',
+          label: this.$t('roles.manager'),
+          formatter: created => `${created?.first_name} ${created?.last_name}`,
         },
         {
-          key: "date",
-          label: this.$t("contracts.table.date"),
+          key: 'date',
+          label: this.$t('contracts.table.date'),
         },
         {
-          key: "actions",
-          label: "",
+          key: 'actions',
+          label: '',
         },
       ],
       telegramAccountsFields: [
         {
-          key: "id",
-          label: "ID",
+          key: 'id',
+          label: 'ID',
         },
         {
-          key: "phone",
-          label: "Номер телефона",
+          key: 'phone',
+          label: 'Номер телефона',
         },
         {
-          key: "username",
-          label: "Имя пользователя",
+          key: 'username',
+          label: 'Имя пользователя',
         },
         {
-          key: "language",
-          label: "Язык",
+          key: 'language',
+          label: 'Язык',
         },
         {
-          key: "created_at",
-          label: "Дата Создания",
-          formatter: (d) => formatDateWithDot(d),
+          key: 'created_at',
+          label: 'Дата Создания',
+          formatter: d => formatDateWithDot(d),
         },
         {
-          key: "updated_at",
-          label: "Дата Изменения",
-          formatter: (d) => formatDateWithDot(d),
+          key: 'updated_at',
+          label: 'Дата Изменения',
+          formatter: d => formatDateWithDot(d),
         },
         {
-          key: "logged_at",
-          formatter: (d) => (d ? formatDateWithDot(d) : ""),
-          label: "Последняя активность",
+          key: 'logged_at',
+          formatter: d => (d ? formatDateWithDot(d) : ''),
+          label: 'Последняя активность',
         },
       ],
       items: [],
@@ -129,181 +128,186 @@ export default {
       showEditForm: false,
       clientTypesList: [],
       countriesList: [],
-    };
-  },
-  created() {
-    this.fetchData();
-    this.fetchSecondaryData();
-    Promise.all([this.getClientTypesList(), this.getCountriesList()]);
-  },
-
-  watch: {
-    "$route.query": {
-      handler() {
-        this.fetchSecondaryData();
-      },
-    },
-    currentTab() {
-      const currentPage = this.$route.query.page;
-      if (1 === +currentPage) return this.fetchSecondaryData();
-      this.$router.replace({ query: { ...this.$route.query, page: 1 } });
-    },
-    showByValue(n, o) {
-      const isNotUpdate = n === null || n === o;
-      if (isNotUpdate) return;
-      const localQuery = {
-        ...this.$route.query,
-        page: 1,
-      };
-      const limit = n;
-      this.$router.replace({ query: { ...localQuery, limit } });
-    },
+    }
   },
   computed: {
     showEditButton() {
-      return this.clientTypesList.length > 0 && this.countriesList.length > 0;
+      return this.clientTypesList.length > 0 && this.countriesList.length > 0
     },
     fields() {
-      return this[this.currentTab + "Fields"];
+      return this[`${this.currentTab}Fields`]
     },
     clientName() {
-      if (!this.client) return "";
-      const locale = this.$i18n.locale;
-      let lang = "lotin";
-      if (locale === "ru") {
-        lang = "kirill";
+      if (!this.client) return ''
+      const { locale } = this.$i18n
+      let lang = 'lotin'
+      if (locale === 'ru') {
+        lang = 'kirill'
       }
-      if (this.client.subject === "physical") {
-        const { first_name, last_name, middle_name } = this.client.attributes;
-        return `${first_name[lang]} ${last_name[lang]} ${middle_name[lang]} `;
-      } else {
-        return (
-          this.client.attributes.company.name[locale] +
-          " " +
-          this.client.attributes.name
-        );
+      if (this.client.subject === 'physical') {
+        const { first_name, last_name, middle_name } = this.client.attributes
+        return `${first_name[lang]} ${last_name[lang]} ${middle_name[lang]} `
       }
+      return (
+        `${this.client.attributes.company.name[locale]
+        } ${
+          this.client.attributes.name}`
+      )
     },
     tabs() {
       const t = {
-        orders: "Договоры",
-        telegramAccounts: "Телеграм Аккаунты",
-      };
-      return ["orders", "telegramAccounts"].map((el) => ({
+        orders: 'Договоры',
+        telegramAccounts: 'Телеграм Аккаунты',
+      }
+      return ['orders', 'telegramAccounts'].map(el => ({
         name: t[el],
         status: el,
         count: 0,
-      }));
+      }))
     },
   },
 
+  watch: {
+    '$route.query': {
+      handler() {
+        this.fetchSecondaryData()
+      },
+    },
+    currentTab() {
+      const currentPage = this.$route.query.page
+      if (+currentPage === 1) return this.fetchSecondaryData()
+      this.$router.replace({ query: { ...this.$route.query, page: 1 } })
+    },
+    showByValue(n, o) {
+      const isNotUpdate = n === null || n === o
+      if (isNotUpdate) return
+      const localQuery = {
+        ...this.$route.query,
+        page: 1,
+      }
+      const limit = n
+      this.$router.replace({ query: { ...localQuery, limit } })
+    },
+  },
+  created() {
+    this.fetchData()
+    this.fetchSecondaryData()
+    Promise.all([this.getClientTypesList(), this.getCountriesList()])
+  },
+
   methods: {
-    dateReverser: (time) => formatDateWithDot(time),
-    formattingPhone: (phone) => phonePrettier(phone),
-    formatPrice: (e) => formatToPrice(e),
+    dateReverser: time => formatDateWithDot(time),
+    formattingPhone: phone => phonePrettier(phone),
+    formatPrice: e => formatToPrice(e),
     fetchContentByStatus(status) {
-      this.currentTab = status;
+      this.currentTab = status
     },
     changeCurrentPage(page) {
-      const currentPage = this.$route.query.page;
-      if (page === currentPage) return;
-      this.$router.replace({ query: { ...this.$route.query, page } });
+      const currentPage = this.$route.query.page
+      if (page === currentPage) return
+      this.$router.replace({ query: { ...this.$route.query, page } })
     },
     async fetchData() {
-      this.showLoading = true;
-      const { uuid } = this.$route.params;
+      this.showLoading = true
+      const { uuid } = this.$route.params
       await v3ServiceApi.clients
         .findOne({ uuid })
-        .then((response) => {
-          this.client = response.data.result;
-          console.log(this.client);
+        .then(response => {
+          this.client = response.data.result
+          console.log(this.client)
         })
-        .catch((error) => {
-          this.toastedWithErrorCode(error);
+        .catch(error => {
+          this.toastedWithErrorCode(error)
         })
         .finally(() => {
-          this.showLoading = false;
-        });
+          this.showLoading = false
+        })
     },
     async fetchSecondaryData() {
-      const query = this.$route.query;
-      this.showSecondaryLoading = true;
+      const { query } = this.$route
+      this.showSecondaryLoading = true
 
-      this.items = [];
+      this.items = []
       if (!query.page) {
-        query.page = 1;
+        query.page = 1
       }
       if (!query.limit) {
-        query.limit = this.showByValue;
+        query.limit = this.showByValue
       }
-      const newQuery = { ...query, uuid: this.$route.params.uuid };
+      const newQuery = { ...query, uuid: this.$route.params.uuid }
       v3ServiceApi.clients[this.currentTab](newQuery)
-        .then((res) => {
-          this.items = res.data.result;
-          this.pagination = res.data.pagination;
+        .then(res => {
+          this.items = res.data.result
+          this.pagination = res.data.pagination
         })
         .finally(() => {
-          this.showSecondaryLoading = false;
-        });
+          this.showSecondaryLoading = false
+        })
     },
     contractView({ id }) {
-      if (this.currentTab === "telegramAccounts") return;
+      if (this.currentTab === 'telegramAccounts') return
       this.$router.push({
-        name: "contracts-view",
+        name: 'contracts-view',
         params: {
           id,
         },
-      });
+      })
     },
     openEditModal() {
       this.$router.push({
-        name: "client-edit",
-      });
+        name: 'client-edit',
+      })
     },
     async getCountriesList() {
       try {
-        const { data: countriesList } = await api.settingsV2.fetchCountries();
-        this.countriesList = countriesList.map((cty) => ({
+        const { data: countriesList } = await api.settingsV2.fetchCountries()
+        this.countriesList = countriesList.map(cty => ({
           value: cty.id,
           text: cty.name.uz,
-        }));
+        }))
       } catch (e) {
-        this.toastedWithErrorCode(e);
+        this.toastedWithErrorCode(e)
       }
     },
     async getClientTypesList() {
       try {
-        const { data: clientTypesList } = await api.settingsV2.getClientTypes();
+        const { data: clientTypesList } = await api.settingsV2.getClientTypes()
         this.clientTypesList = clientTypesList.map(({ name, id }) => ({
           text: name[this.$i18n.locale],
           value: id,
-        }));
+        }))
       } catch (e) {
-        this.toastedWithErrorCode(e);
+        this.toastedWithErrorCode(e)
       }
     },
   },
-};
+}
 </script>
 <template>
   <div>
     <AppHeader>
       <template #header-breadcrumb>
         <div class="d-flex align-items-center">
-          <div class="go__back" @click="$router.go(-1)">
-            <BaseArrowLeftIcon :width="32" :height="32"></BaseArrowLeftIcon>
+          <div
+            class="go__back"
+            @click="$router.go(-1)"
+          >
+            <BaseArrowLeftIcon
+              :width="32"
+              :height="32"
+            />
           </div>
           <div class="breadcrumb__content card-title mb-0">
             {{ clientName }}
           </div>
         </div>
       </template>
-      <template #header-status> </template>
+      <template #header-status />
       <template #header-actions>
         <base-button
+          v-if="showEditButton"
           text="Редактировать"
           @click="openEditModal"
-          v-if="showEditButton"
         >
           <template #left-icon>
             <x-icon
@@ -334,7 +338,10 @@ export default {
           <div class="row mb-2">
             <span class="bottom__info col-5"> Номера телефонов: </span>
             <span class="price col-7">
-              <div v-for="p in client.phones" :key="p.id">
+              <div
+                v-for="p in client.phones"
+                :key="p.id"
+              >
                 {{ formattingPhone(p.phone) }}
               </div>
             </span>
@@ -358,7 +365,7 @@ export default {
             <span class="bottom__info col-5">Общая сумма договоров </span>
             <span class="price col-7">{{
               formatPrice(client.total_payments.transaction_prices) +
-              ` ${$t("ye")}`
+                ` ${$t("ye")}`
             }}</span>
           </div>
           <!-------------->
@@ -455,14 +462,20 @@ export default {
               padding="0.4"
               class="mr-2 bg-yellow-200"
             >
-              <x-icon name="archive" class="color-yellow-600"></x-icon>
+              <x-icon
+                name="archive"
+                class="color-yellow-600"
+              />
             </x-square-background>
             <x-square-background
               v-if="data.item.type === 'parking'"
               padding="0.4"
               class="mr-2 bg-violet-600"
             >
-              <x-icon name="local_parking" class="color-yellow-400"></x-icon>
+              <x-icon
+                name="local_parking"
+                class="color-yellow-400"
+              />
             </x-square-background>
             <span>
               {{ data.item.contract_number }}
@@ -478,7 +491,10 @@ export default {
 
         <!--   Status   -->
         <template #cell(status)="{ item }">
-          <span class="current__status" :class="item.status">
+          <span
+            class="current__status"
+            :class="item.status"
+          >
             {{ $t(`contracts.status.${item.status}`) }}
           </span>
         </template>
@@ -492,12 +508,17 @@ export default {
           <div
             class="d-flex justify-content-center align-items-center flex-column not__found"
           >
-            <p class="head">{{ $t("contracts_not_found.title") }}</p>
+            <p class="head">
+              {{ $t("contracts_not_found.title") }}
+            </p>
             <p>{{ $t("contracts_not_found.description") }}</p>
           </div>
         </template>
       </b-table>
-      <div v-if="!showLoading && pagination.totalPage" class="pagination__vue">
+      <div
+        v-if="!showLoading && pagination.totalPage"
+        class="pagination__vue"
+      >
         <!--   Pagination   -->
         <vue-paginate
           :page-count="pagination.totalPage"
@@ -527,9 +548,9 @@ export default {
         <!--  Show By Select    -->
         <div class="show__by">
           <x-form-select
+            v-model="showByValue"
             :label="false"
             :options="showByOptions"
-            v-model="showByValue"
           >
             <template #output-prefix>
               <span class="show-by-description">
@@ -546,7 +567,7 @@ export default {
       :client-options="clientTypesList"
       :country-options="countriesList"
       @close-creating-modal="showEditForm = false"
-    ></client-edit>
+    />
   </div>
 </template>
 

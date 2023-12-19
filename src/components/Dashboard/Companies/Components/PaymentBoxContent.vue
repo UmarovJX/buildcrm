@@ -1,10 +1,13 @@
 <script>
-import api from "@/services/api";
-import BaseContractsIcon from "@/components/icons/BaseContractsIcon";
-import PaymentAccount from "@/permission/payment_account";
+import api from '@/services/api'
+import BaseContractsIcon from '@/components/icons/BaseContractsIcon'
+import PaymentAccount from '@/permission/payment_account'
 
 export default {
-  name: "PaymentBoxContent",
+  name: 'PaymentBoxContent',
+  components: {
+    BaseContractsIcon,
+  },
   props: {
     detail: {
       type: Object,
@@ -15,64 +18,60 @@ export default {
       required: true,
     },
   },
-  emits: ["edit-selected-payment", "delete-payment", "update-company"],
-  components: {
-    BaseContractsIcon,
-  },
+  emits: ['edit-selected-payment', 'delete-payment', 'update-company'],
   data() {
     return {
       isPrimary: this.checker(this.detail.is_primary),
       editPermission: PaymentAccount.getPaymentAccountEditPermission(),
       deletePermission: PaymentAccount.getPaymentAccountDeletePermission(),
-    };
+    }
   },
   watch: {
     isPrimary() {
-      this.makePrimaryPayment();
+      this.makePrimaryPayment()
     },
   },
   methods: {
     deleteCompany() {
-      const company_id = this.$route.params.companyId;
-      this.$emit("delete-payment", company_id, this.detail.id);
+      const company_id = this.$route.params.companyId
+      this.$emit('delete-payment', company_id, this.detail.id)
     },
     editSelectedPayment() {
       if (this.$props.detail) {
-        this.$emit("edit-selected-payment", this.$props.detail);
+        this.$emit('edit-selected-payment', this.$props.detail)
       } else {
-        console.log("sorry");
+        console.log('sorry')
       }
     },
     checker(data) {
       if (data === 1) {
-        return 0;
-      } else {
-        return 1;
+        return 0
       }
+      return 1
     },
     makePrimaryPayment() {
       const data = {
         is_primary: this.isPrimary,
-      };
+      }
       api.companies
         .changeStatusCompany(this.company, this.detail.id, data)
-        .then((response) => {
-          const { message } = response.data;
-          this.$emit("update-company", { message });
+        .then(response => {
+          const { message } = response.data
+          this.$emit('update-company', { message })
         })
-        .catch((error) => {
-          this.toastedWithErrorCode(error);
+        .catch(error => {
+          this.toastedWithErrorCode(error)
         })
         .finally(() => {
-          this.loading = false;
-        });
+          this.loading = false
+        })
     },
     getName(name) {
-      if (localStorage.locale) return name[localStorage.locale];
-      else return name["ru"];
+      if (localStorage.locale) return name[localStorage.locale]
+      return name.ru
     },
   },
-};
+}
 </script>
 
 <template>
@@ -87,18 +86,22 @@ export default {
           v-if="editPermission || deletePermission"
           class="float-right dropdown my-dropdown dropleft"
         >
-          <button type="button" class="dropdown-toggle" data-toggle="dropdown">
-            <i class="far fa-ellipsis-h"></i>
+          <button
+            type="button"
+            class="dropdown-toggle"
+            data-toggle="dropdown"
+          >
+            <i class="far fa-ellipsis-h" />
           </button>
 
           <div class="dropdown-menu">
             <b-button
               v-if="editPermission"
-              @click="makePrimaryPayment"
               v-model="isPrimary"
               name="check-button"
               switch
               class="dropdown-item dropdown-item--inside"
+              @click="makePrimaryPayment"
             >
               <span v-if="!detail.is_primary">{{ $t("activate") }}</span>
               <span v-else>{{ $t("deactivate") }}</span>
@@ -121,14 +124,20 @@ export default {
           </div>
         </div>
       </span>
-      <span v-if="detail.is_primary" class="stamp active__payment__content">
+      <span
+        v-if="detail.is_primary"
+        class="stamp active__payment__content"
+      >
         {{ $t("companies.active_payment") }}
       </span>
-      <span v-else class="stamp">
+      <span
+        v-else
+        class="stamp"
+      >
         {{ $t("companies.inactive_payment") }}
       </span>
     </span>
-    <hr />
+    <hr>
     <p>
       <span>{{ $t("companies.payment_account") }}:</span>
       <span>{{ detail.payment_account }}</span>

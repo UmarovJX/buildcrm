@@ -1,18 +1,18 @@
 <script>
-import api from "@/services/api";
-import BaseModal from "@/components/Reusable/BaseModal";
+import api from '@/services/api'
+import BaseModal from '@/components/Reusable/BaseModal'
 // import BaseModal from "@/components/Reusable/BaseModal";
-import BaseCloseIcon from "@/components/icons/BaseCloseIcon";
-import BaseButton from "@/components/Reusable/BaseButton";
-import BaseInput from "@/components/Reusable/BaseInput";
-import BasePlusIcon from "@/components/icons/BasePlusIcon";
-import BaseNumericInput from "@/components/Reusable/BaseNumericInput";
+import BaseCloseIcon from '@/components/icons/BaseCloseIcon'
+import BaseButton from '@/components/Reusable/BaseButton'
+import BaseInput from '@/components/Reusable/BaseInput'
+import BasePlusIcon from '@/components/icons/BasePlusIcon'
+import BaseNumericInput from '@/components/Reusable/BaseNumericInput'
 // import BaseSelect from "@/components/Reusable/BaseSelect";
 
 export default {
   components: {
     BaseCloseIcon,
-    "base-modal": BaseModal,
+    'base-modal': BaseModal,
     BaseButton,
     BaseInput,
     BasePlusIcon,
@@ -40,44 +40,54 @@ export default {
     error: false,
     errors: [],
     type_sort: 0,
-    typeSortOptions: ["apartment", "parking"],
+    typeSortOptions: ['apartment', 'parking'],
 
     tariffIndex: 0,
     floors: [],
     price: null,
-    currencyOptions: ["uzs", "usd"],
-    currency: "uzs",
+    currencyOptions: ['uzs', 'usd'],
+    currency: 'uzs',
     tariff: {
-      prepay: "",
-      type: "",
+      prepay: '',
+      type: '',
       discount: 0,
       defaultTariff: [
         {
-          type: "default",
+          type: 'default',
           amount: null,
-          currency: "usd",
+          currency: 'usd',
           floors: [],
         },
       ],
       otherTariff: [
         {
-          type: "other_price",
+          type: 'other_price',
           amount: null,
-          currency: "usd",
+          currency: 'usd',
           floors: [],
         },
       ],
     },
     header: {
       headers: {
-        Authorization: "Bearer " + localStorage.token,
+        Authorization: `Bearer ${localStorage.token}`,
       },
     },
-    planName: "",
+    planName: '',
   }),
-  mounted() {
-    this.$refs["create"].openModal();
-    this.getFloors();
+  computed: {
+    checkStatus() {
+      if (Object.keys(this.discount).length) {
+        return 'update'
+      }
+      return 'create'
+    },
+    tariffType() {
+      if (this.tariffIndex === 0) return 'fixed'
+      if (this.tariffIndex === 1) return 'percent'
+      if (this.tariffIndex === 2) return 'addition'
+      return 'percent'
+    },
   },
   watch: {
     // discount: {
@@ -92,185 +102,171 @@ export default {
       immediate: true,
       handler(val) {
         if (val) {
-          this.editDiscount();
+          this.editDiscount()
         }
       },
     },
   },
-  computed: {
-    checkStatus() {
-      if (Object.keys(this.discount).length) {
-        return "update";
-      }
-      return "create";
-    },
-    tariffType() {
-      if (this.tariffIndex === 0) return "fixed";
-      if (this.tariffIndex === 1) return "percent";
-      if (this.tariffIndex === 2) return "addition";
-      return "percent";
-    },
+  mounted() {
+    this.$refs.create.openModal()
+    this.getFloors()
   },
   methods: {
     editDiscount() {
       if (Object.keys(this.discount).length) {
-        const { prepay, type, amount, prices, type_sort } = this.discount;
-        this.tariff.prepay = prepay;
+        const {
+          prepay, type, amount, prices, type_sort,
+        } = this.discount
+        this.tariff.prepay = prepay
 
-        if (type === "percent") {
-          this.tariffIndex = 1;
-          this.tariff.discount = amount;
-        } else if (type === "fixed") {
-          this.tariffIndex = 0;
+        if (type === 'percent') {
+          this.tariffIndex = 1
+          this.tariff.discount = amount
+        } else if (type === 'fixed') {
+          this.tariffIndex = 0
         } else {
-          this.tariffIndex = 2;
+          this.tariffIndex = 2
         }
-        const i = this.typeSortOptions.findIndex((el) => el === type_sort);
-        this.type_sort = i === -1 ? 0 : i;
+        const i = this.typeSortOptions.findIndex(el => el === type_sort)
+        this.type_sort = i === -1 ? 0 : i
         if (prices.length) {
-          prices.forEach((item) => {
-            if (item.type === "default") {
-              this.tariff.defaultTariff.unshift(item);
+          prices.forEach(item => {
+            if (item.type === 'default') {
+              this.tariff.defaultTariff.unshift(item)
             } else {
-              this.tariff.otherTariff.unshift(item);
+              this.tariff.otherTariff.unshift(item)
             }
-          });
+          })
         }
       }
     },
     getFloors() {
       api.objectsV2
         .fetchObjectFields(this.$route.params.id)
-        .then((res) => {
-          const { floors } = res.data;
-          this.floors = floors;
+        .then(res => {
+          const { floors } = res.data
+          this.floors = floors
         })
-        .catch((err) => {
-          return err;
-        });
+        .catch(err => err)
     },
     deleteOtherPrice(index) {
-      this.tariff.otherTariff.splice(index, 1);
+      this.tariff.otherTariff.splice(index, 1)
     },
     deleteDefaultPrice(index) {
-      this.tariff.defaultTariff.splice(index, 1);
+      this.tariff.defaultTariff.splice(index, 1)
     },
     addDefaultPrice() {
       this.tariff.defaultTariff.push({
-        type: "default",
+        type: 'default',
         amount: null,
-        currency: "usd",
+        currency: 'usd',
         floors: [],
-      });
+      })
     },
     addOtherPrice() {
       this.tariff.otherTariff.push({
-        type: "other_price",
+        type: 'other_price',
         amount: null,
-        currency: "usd",
+        currency: 'usd',
         floors: [],
-      });
+      })
     },
     closeModal() {
       this.tariff = {
-        prepay: "",
-        type: "",
+        prepay: '',
+        type: '',
         discount: 0,
         defaultTariff: [
           {
-            type: "default",
+            type: 'default',
             amount: null,
-            currency: "usd",
+            currency: 'usd',
             floors: [],
           },
         ],
         otherTariff: [
           {
-            type: "other_price",
+            type: 'other_price',
             amount: null,
-            currency: "usd",
+            currency: 'usd',
             floors: [],
           },
         ],
-      };
-      this.$emit("RemoveDiscount");
-      this.$refs["create"].closeModal();
+      }
+      this.$emit('RemoveDiscount')
+      this.$refs.create.closeModal()
     },
     openModal() {
-      this.$refs["create"].openModal();
+      this.$refs.create.openModal()
     },
     discountTrash() {
-      this.$emit("RemoveDiscount");
-      this.$bvModal.hide("modal-create-discount");
-      this.clearDiscount();
+      this.$emit('RemoveDiscount')
+      this.$bvModal.hide('modal-create-discount')
+      this.clearDiscount()
     },
 
     clearDiscount() {
       this.tariff = {
-        prepay: "",
-        type: "",
+        prepay: '',
+        type: '',
         discount: 0,
         defaultTariff: [
           {
-            type: "default",
+            type: 'default',
             amount: null,
-            currency: "usd",
+            currency: 'usd',
             floors: [],
           },
         ],
         otherTariff: [
           {
-            type: "other_price",
+            type: 'other_price',
             amount: null,
-            currency: "usd",
+            currency: 'usd',
             floors: [],
           },
         ],
-      };
+      }
     },
 
     async saveDiscount() {
-      const checkTariff = await this.$refs["tariff-name"]
+      const checkTariff = await this.$refs['tariff-name']
         .validate()
-        .then((res) => {
-          this.errors = res.errors;
-          return res.valid && this.tariff.prepay.length > 0;
-        });
+        .then(res => {
+          this.errors = res.errors
+          return res.valid && this.tariff.prepay.length > 0
+        })
 
-      const { discount, prepay } = this.tariff;
+      const { discount, prepay } = this.tariff
 
-      let filteredData = {};
-      if (this.tariffType !== "percent") {
-        const otherFilter = this.tariff.otherTariff.filter((item) => {
-          return item.floors.length > 0 && item.amount > 0;
-        });
-        const defaultFilter = this.tariff.defaultTariff.filter((item) => {
-          return item.floors.length > 0 && item.amount > 0;
-        });
+      let filteredData = {}
+      if (this.tariffType !== 'percent') {
+        const otherFilter = this.tariff.otherTariff.filter(item => item.floors.length > 0 && item.amount > 0)
+        const defaultFilter = this.tariff.defaultTariff.filter(item => item.floors.length > 0 && item.amount > 0)
         if (otherFilter.length && defaultFilter.length) {
           filteredData = {
             type: this.tariffType,
-            prepay: prepay,
+            prepay,
             prices: [...otherFilter, ...defaultFilter],
-          };
+          }
         } else if (otherFilter.length) {
           filteredData = {
             type: this.tariffType,
-            prepay: prepay,
+            prepay,
             prices: [...otherFilter],
-          };
+          }
         } else if (defaultFilter.length > 0) {
           filteredData = {
             type: this.tariffType,
-            prepay: prepay,
+            prepay,
             prices: [...defaultFilter],
-          };
+          }
         } else {
           filteredData = {
             type: this.tariffType,
-            prepay: prepay,
+            prepay,
             prices: [],
-          };
+          }
         }
 
         // filteredData = {
@@ -283,130 +279,145 @@ export default {
       } else {
         filteredData = {
           type: this.tariffType,
-          prepay: prepay,
+          prepay,
           amount: discount,
-        };
+        }
       }
-      filteredData.type_sort = this.typeSortOptions[this.type_sort];
+      filteredData.type_sort = this.typeSortOptions[this.type_sort]
       if (checkTariff && !Object.keys(this.discount).length) {
         try {
           await api.objects
             .createDiscount(this.object.id, filteredData)
-            .then((res) => {
+            .then(res => {
               if (res.status === 200 || res.status === 201) {
-                this.$emit("SaveDiscount", res.data);
-                this.$refs["create"].closeModal();
+                this.$emit('SaveDiscount', res.data)
+                this.$refs.create.closeModal()
                 // this.$bvModal.hide("modal-create-discount");
-                this.clearDiscount();
-                this.toasted("discount created", "success");
+                this.clearDiscount()
+                this.toasted('discount created', 'success')
               }
             })
-            .catch((error) => {
+            .catch(error => {
               if (error.status === 422) {
-                this.error = true;
-                this.errors = error.response.data;
-                this.toastedWithErrorCode(error);
+                this.error = true
+                this.errors = error.response.data
+                this.toastedWithErrorCode(error)
               }
-            });
+            })
         } catch {
-          this.toastedWithErrorCode(this.error);
+          this.toastedWithErrorCode(this.error)
         }
       } else {
         // filteredData = {...filteredData, id: this.discount.id}
         try {
           await api.objects
             .updateDiscount(this.object.id, this.discount.id, filteredData)
-            .then((res) => {
+            .then(res => {
               if (res.status === 200 || res.status === 201) {
-                this.$emit("SaveDiscount", res.data);
-                this.$refs["create"].closeModal();
+                this.$emit('SaveDiscount', res.data)
+                this.$refs.create.closeModal()
                 // this.$bvModal.hide("modal-create-discount");
-                this.clearDiscount();
-                this.toasted("discount update", "success");
+                this.clearDiscount()
+                this.toasted('discount update', 'success')
               }
             })
-            .catch((error) => {
+            .catch(error => {
               if (error.status === 422) {
-                this.error = true;
-                this.errors = error.response.data;
-                this.toastedWithErrorCode(error);
+                this.error = true
+                this.errors = error.response.data
+                this.toastedWithErrorCode(error)
               }
-            });
+            })
         } catch {
-          this.toastedWithErrorCode(this.error);
+          this.toastedWithErrorCode(this.error)
         }
       }
     },
 
     formatSelectPlaceholder(array) {
-      const items = [...array].sort((a, b) => a - b);
-      let s = "";
+      const items = [...array].sort((a, b) => a - b)
+      let s = ''
       for (let i = 0; i < items.length; i++) {
-        const distinctWithNext = Math.abs(items[i + 1] - items[i]);
-        const distinctWithPrevious = Math.abs(items[i] - items[i - 1]);
+        const distinctWithNext = Math.abs(items[i + 1] - items[i])
+        const distinctWithPrevious = Math.abs(items[i] - items[i - 1])
         if (distinctWithNext === 1) {
           if (distinctWithPrevious === 1) {
             if (i === 0) {
-              s += "-";
+              s += '-'
             }
           } else {
-            s += items[i] + "-";
+            s += `${items[i]}-`
           }
         } else if (distinctWithPrevious === 1) {
           if (i === 0) {
-            s += "-";
+            s += '-'
           }
-          s += items[i] + ",";
+          s += `${items[i]},`
         } else {
-          s += items[i] + ",";
+          s += `${items[i]},`
         }
       }
 
-      if (s.slice(-1) === ",") {
-        s = s.slice(0, -1);
+      if (s.slice(-1) === ',') {
+        s = s.slice(0, -1)
       }
 
-      return s;
+      return s
     },
   },
-};
+}
 </script>
 
 <template>
   <div>
-    <base-modal ref="create" id="modal-create-discount" design="large-modal">
+    <base-modal
+      id="modal-create-discount"
+      ref="create"
+      design="large-modal"
+    >
       <template #header>
         <span class="d-flex align-items-center justify-content-between">
           <!--    TITLE      -->
           <span class="title">{{ $t("apartments.add_tariff") }}</span>
 
           <!--   CLOSE    -->
-          <span class="go__back" @click="closeModal">
-            <BaseCloseIcon :width="56" :height="56" />
+          <span
+            class="go__back"
+            @click="closeModal"
+          >
+            <BaseCloseIcon
+              :width="56"
+              :height="56"
+            />
           </span>
         </span>
       </template>
 
       <template #main>
         <div class="create">
-          <h5 class="create-title">{{ $t("objects.create.tariff.main") }}</h5>
+          <h5 class="create-title">
+            {{ $t("objects.create.tariff.main") }}
+          </h5>
           <ValidationProvider
-            :name="$t('objects.create.tariff.type_name')"
             ref="tariff-name"
-            rules="required"
             v-slot="{ errors }"
+            :name="$t('objects.create.tariff.type_name')"
+            rules="required"
             class="w-100 create-input"
             tag="div"
           >
             <base-input
+              v-model="tariff.prepay"
               type="text"
               class="w-100"
-              v-model="tariff.prepay"
               :placeholder="$t('objects.create.tariff.type_name')"
               required
               :label="true"
             />
-            <span class="error__provider" v-if="errors[0]">
+            <span
+              v-if="errors[0]"
+              class="error__provider"
+            >
               {{ errors[0] }}
             </span>
           </ValidationProvider>
@@ -416,25 +427,25 @@ export default {
           {{ $t("objects.create.tariff.type") }}
         </p>
         <b-tabs
+          id="tariff"
           v-model="type_sort"
           pills
           nav-class="tariff-header"
           content-class="tariff-item"
-          id="tariff"
         >
-          <b-tab :title="$t('apartment')"> </b-tab>
-          <b-tab :title="$t('parking')"> </b-tab>
+          <b-tab :title="$t('apartment')" />
+          <b-tab :title="$t('parking')" />
         </b-tabs>
 
         <p class="create-tab__name">
           {{ $t("objects.create.tariff.type") }}
         </p>
         <b-tabs
+          id="tariff"
           v-model="tariffIndex"
           pills
           nav-class="tariff-header"
           content-class="tariff-item"
-          id="tariff"
         >
           <b-tab :title="$t('objects.create.tariff.fixed')">
             <div class="price-block">
@@ -449,7 +460,10 @@ export default {
                   class="add-inputs__row"
                 >
                   <b-dropdown left>
-                    <template v-if="true" #button-content>
+                    <template
+                      v-if="true"
+                      #button-content
+                    >
                       <div class="input-block">
                         <span class="input-label">{{
                           $t("objects.create.tariff.floor_placeholder")
@@ -460,7 +474,10 @@ export default {
                         </p>
                       </div>
                     </template>
-                    <template v-else #button-content>
+                    <template
+                      v-else
+                      #button-content
+                    >
                       <p class="default-label">
                         {{ $t("object.level") }}
                       </p>
@@ -505,18 +522,24 @@ export default {
                       separator="space"
                       :placeholder="$t('objects.create.price_m2')"
                       class="filter__price"
-                    ></base-numeric-input>
+                    />
                   </div>
 
-                  <div @click="deleteDefaultPrice(index)" class="price-delete">
-                    <img :src="require('@/assets/icons/delete.svg')" alt="" />
+                  <div
+                    class="price-delete"
+                    @click="deleteDefaultPrice(index)"
+                  >
+                    <img
+                      :src="require('@/assets/icons/delete.svg')"
+                      alt=""
+                    >
                   </div>
                 </div>
               </div>
 
               <base-button
-                @click="addDefaultPrice"
                 :text="$t('objects.create.tariff.add_price')"
+                @click="addDefaultPrice"
               >
                 <template #left-icon>
                   <base-plus-icon fill="var(--violet-600)" />
@@ -536,7 +559,10 @@ export default {
                   class="add-inputs__row"
                 >
                   <b-dropdown left>
-                    <template v-if="true" #button-content>
+                    <template
+                      v-if="true"
+                      #button-content
+                    >
                       <div class="input-block">
                         <span class="input-label">{{
                           $t("objects.create.tariff.floor_placeholder")
@@ -547,7 +573,10 @@ export default {
                         </p>
                       </div>
                     </template>
-                    <template v-else #button-content>
+                    <template
+                      v-else
+                      #button-content
+                    >
                       <p class="default-label">
                         {{ $t("object.level") }}
                       </p>
@@ -591,18 +620,24 @@ export default {
                       separator="space"
                       :placeholder="$t('objects.create.price_m2')"
                       class="filter__price"
-                    ></base-numeric-input>
+                    />
                   </div>
 
-                  <div @click="deleteOtherPrice(index)" class="price-delete">
-                    <img :src="require('@/assets/icons/delete.svg')" alt="" />
+                  <div
+                    class="price-delete"
+                    @click="deleteOtherPrice(index)"
+                  >
+                    <img
+                      :src="require('@/assets/icons/delete.svg')"
+                      alt=""
+                    >
                   </div>
                 </div>
               </div>
 
               <base-button
-                @click="addOtherPrice"
                 :text="$t('objects.create.tariff.add_price')"
+                @click="addOtherPrice"
               >
                 <template #left-icon>
                   <base-plus-icon fill="var(--violet-600)" />
@@ -621,10 +656,10 @@ export default {
                 <div class="add-inputs__row">
                   <div class="filter__apartment__price">
                     <ValidationProvider
-                      name="Добавичный процент"
                       ref="percent"
-                      rules="required|max_value:100|min_value:0"
                       v-slot="{ errors }"
+                      name="Добавичный процент"
+                      rules="required|max_value:100|min_value:0"
                       class="w-100"
                       tag="div"
                     >
@@ -661,7 +696,10 @@ export default {
                   class="add-inputs__row"
                 >
                   <b-dropdown left>
-                    <template v-if="true" #button-content>
+                    <template
+                      v-if="true"
+                      #button-content
+                    >
                       <div class="input-block">
                         <span class="input-label">{{
                           $t("objects.create.tariff.floor_placeholder")
@@ -672,7 +710,10 @@ export default {
                         </p>
                       </div>
                     </template>
-                    <template v-else #button-content>
+                    <template
+                      v-else
+                      #button-content
+                    >
                       <p class="default-label">
                         {{ $t("object.level") }}
                       </p>
@@ -717,18 +758,24 @@ export default {
                       separator="space"
                       :placeholder="$t('objects.create.price_m2')"
                       class="filter__price"
-                    ></base-numeric-input>
+                    />
                   </div>
 
-                  <div @click="deleteDefaultPrice(index)" class="price-delete">
-                    <img :src="require('@/assets/icons/delete.svg')" alt="" />
+                  <div
+                    class="price-delete"
+                    @click="deleteDefaultPrice(index)"
+                  >
+                    <img
+                      :src="require('@/assets/icons/delete.svg')"
+                      alt=""
+                    >
                   </div>
                 </div>
               </div>
 
               <base-button
-                @click="addDefaultPrice"
                 :text="$t('objects.create.tariff.add_price')"
+                @click="addDefaultPrice"
               >
                 <template #left-icon>
                   <base-plus-icon fill="var(--violet-600)" />
@@ -748,7 +795,10 @@ export default {
                   class="add-inputs__row"
                 >
                   <b-dropdown left>
-                    <template v-if="true" #button-content>
+                    <template
+                      v-if="true"
+                      #button-content
+                    >
                       <div class="input-block">
                         <span class="input-label">{{
                           $t("objects.create.tariff.floor_placeholder")
@@ -759,7 +809,10 @@ export default {
                         </p>
                       </div>
                     </template>
-                    <template v-else #button-content>
+                    <template
+                      v-else
+                      #button-content
+                    >
                       <p class="default-label">
                         {{ $t("object.level") }}
                       </p>
@@ -803,18 +856,24 @@ export default {
                       separator="space"
                       :placeholder="$t('objects.create.price_m2')"
                       class="filter__price"
-                    ></base-numeric-input>
+                    />
                   </div>
 
-                  <div @click="deleteOtherPrice(index)" class="price-delete">
-                    <img :src="require('@/assets/icons/delete.svg')" alt="" />
+                  <div
+                    class="price-delete"
+                    @click="deleteOtherPrice(index)"
+                  >
+                    <img
+                      :src="require('@/assets/icons/delete.svg')"
+                      alt=""
+                    >
                   </div>
                 </div>
               </div>
 
               <base-button
-                @click="addOtherPrice"
                 :text="$t('objects.create.tariff.add_price')"
+                @click="addOtherPrice"
               >
                 <template #left-icon>
                   <base-plus-icon fill="var(--violet-600)" />
@@ -827,18 +886,21 @@ export default {
 
       <template #footer>
         <div class="footer-btn">
-          <base-button @click="closeModal" :text="$t('cancel')" />
+          <base-button
+            :text="$t('cancel')"
+            @click="closeModal"
+          />
           <base-button
             v-if="checkStatus === 'create'"
-            @click="saveDiscount"
             design="violet-gradient"
             :text="$t('add')"
+            @click="saveDiscount"
           />
           <base-button
             v-else
-            @click="saveDiscount"
             design="violet-gradient"
             :text="$t('save')"
+            @click="saveDiscount"
           />
         </div>
       </template>

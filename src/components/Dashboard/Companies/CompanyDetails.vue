@@ -1,18 +1,18 @@
 <script>
-import api from "@/services/api";
-import PaymentBoxContent from "@/components/Dashboard/Companies/Components/PaymentBoxContent";
-import AddPayment from "@/components/Dashboard/Companies/Components/AddPayment";
-import CompanyInformation from "@/components/Company/CompanyInformation";
-import BaseButton from "@/components/Reusable/BaseButton";
-import BasePlusIcon from "@/components/icons/BasePlusIcon";
-import BaseDeleteIcon from "@/components/icons/BaseDeleteIcon";
-import PaymentAccount from "@/permission/payment_account";
-import CompaniesPermission from "@/permission/companies";
-import AppHeader from "@/components/Header/AppHeader";
-import AppDropdown from "@/components/Reusable/Dropdown/AppDropdown";
+import api from '@/services/api'
+import PaymentBoxContent from '@/components/Dashboard/Companies/Components/PaymentBoxContent'
+import AddPayment from '@/components/Dashboard/Companies/Components/AddPayment'
+import CompanyInformation from '@/components/Company/CompanyInformation'
+import BaseButton from '@/components/Reusable/BaseButton'
+import BasePlusIcon from '@/components/icons/BasePlusIcon'
+import BaseDeleteIcon from '@/components/icons/BaseDeleteIcon'
+import PaymentAccount from '@/permission/payment_account'
+import CompaniesPermission from '@/permission/companies'
+import AppHeader from '@/components/Header/AppHeader'
+import AppDropdown from '@/components/Reusable/Dropdown/AppDropdown'
 
 export default {
-  name: "CompanyDetails",
+  name: 'CompanyDetails',
   components: {
     BaseDeleteIcon,
     BasePlusIcon,
@@ -23,20 +23,20 @@ export default {
     AppHeader,
     AppDropdown,
   },
-  emits: ["delete-company"],
+  emits: ['delete-company'],
   data() {
     return {
       order: {},
       editedItem: {},
-      activeContent: this.$t("list"),
+      activeContent: this.$t('list'),
       modalProperties: {
-        position: "create",
-        title: this.$t("add"),
+        position: 'create',
+        title: this.$t('add'),
       },
       breadCrumbs: [
         {
           routeName: this.$route.name,
-          textContent: this.$t("companies.title"),
+          textContent: this.$t('companies.title'),
         },
       ],
       loading: false,
@@ -47,116 +47,116 @@ export default {
         PaymentAccount.getPaymentAccountCreatePermission(),
       deleteCompanyPermission:
         CompaniesPermission.getCompaniesDeletePermission(),
-    };
+    }
   },
   async created() {
-    await this.getPaymentList();
+    await this.getPaymentList()
   },
   methods: {
     async deleteCompany() {
       this.$swal({
-        title: this.$t("sweetAlert.title"),
-        text: this.$t("sweetAlert.text"),
-        icon: "warning",
+        title: this.$t('sweetAlert.title'),
+        text: this.$t('sweetAlert.text'),
+        icon: 'warning',
         showCancelButton: true,
-        cancelButtonText: this.$t("cancel"),
-        confirmButtonText: this.$t("sweetAlert.yes"),
-      }).then(async (result) => {
+        cancelButtonText: this.$t('cancel'),
+        confirmButtonText: this.$t('sweetAlert.yes'),
+      }).then(async result => {
         if (result.value) {
           await api.companies
             .deleteCompany(this.companyId)
-            .then((res) => {
-              this.$emit("delete-company", res);
+            .then(res => {
+              this.$emit('delete-company', res)
             })
-            .catch((error) => {
-              this.toastedWithErrorCode(error);
+            .catch(error => {
+              this.toastedWithErrorCode(error)
             })
             .finally(() => {
-              this.loading = false;
-              this.$router.push("/companies");
-            });
+              this.loading = false
+              this.$router.push('/companies')
+            })
         }
-      });
+      })
     },
     async deletePayment(companyId, paymentId) {
       this.$swal({
-        title: this.$t("sweetAlert.title"),
-        text: this.$t("sweetAlert.text"),
-        icon: "warning",
+        title: this.$t('sweetAlert.title'),
+        text: this.$t('sweetAlert.text'),
+        icon: 'warning',
         showCancelButton: true,
-        cancelButtonText: this.$t("cancel"),
-        confirmButtonText: this.$t("sweetAlert.yes"),
-      }).then(async (result) => {
+        cancelButtonText: this.$t('cancel'),
+        confirmButtonText: this.$t('sweetAlert.yes'),
+      }).then(async result => {
         if (result.value) {
           await api.companies
             .deletePayment(companyId, paymentId)
             // .then((res) => {
             //   this.payments = res.data
             // })
-            .catch((error) => {
-              this.toastedWithErrorCode(error);
+            .catch(error => {
+              this.toastedWithErrorCode(error)
             })
             .finally(() => {
-              this.loading = false;
-              this.getPaymentList();
-            });
+              this.loading = false
+              this.getPaymentList()
+            })
         }
-      });
+      })
     },
     openEditingModal(item) {
       this.modalProperties = {
-        title: this.$t("edit"),
-        position: "edit",
-      };
-      this.$bvModal.show("modal-create");
-      this.editedItem = { ...item };
+        title: this.$t('edit'),
+        position: 'edit',
+      }
+      this.$bvModal.show('modal-create')
+      this.editedItem = { ...item }
     },
     async getPaymentList() {
-      this.loading = true;
-      const id = this.$route.params.companyId;
+      this.loading = true
+      const id = this.$route.params.companyId
       await api.companies
         .getPaymentsList(id)
-        .then((res) => {
-          this.payments = res.data;
+        .then(res => {
+          this.payments = res.data
         })
-        .catch((error) => {
-          this.toastedWithErrorCode(error);
+        .catch(error => {
+          this.toastedWithErrorCode(error)
         })
         .finally(() => {
-          this.loading = false;
-        });
+          this.loading = false
+        })
     },
     createdPayment({ message }) {
-      this.getPaymentList();
+      this.getPaymentList()
       this.$swal({
-        title: this.$t("sweetAlert.success_create_payment"),
+        title: this.$t('sweetAlert.success_create_payment'),
         text: message,
-        icon: "success",
+        icon: 'success',
         showCancelButton: false,
-        confirmButtonText: this.$t("next"),
-      });
+        confirmButtonText: this.$t('next'),
+      })
     },
 
     updatedPayments() {
-      this.getPaymentList();
+      this.getPaymentList()
       this.$swal({
-        title: this.$t("sweetAlert.success_update_payment"),
-        icon: "success",
+        title: this.$t('sweetAlert.success_update_payment'),
+        icon: 'success',
         showCancelButton: false,
-        confirmButtonText: this.$t("next"),
-      });
+        confirmButtonText: this.$t('next'),
+      })
     },
 
     addPayment() {
       this.modalProperties = {
-        title: this.$t("add"),
-        position: "create",
-      };
-      this.editedItem = {};
-      this.$bvModal.show("modal-create");
+        title: this.$t('add'),
+        position: 'create',
+      }
+      this.editedItem = {}
+      this.$bvModal.show('modal-create')
     },
   },
-};
+}
 </script>
 
 <template>
@@ -182,7 +182,10 @@ export default {
         {{ $t("roles_permission.titles.companies") }}
       </template>
       <template #header-actions>
-        <app-dropdown :position-right="true" v-if="deleteCompanyPermission">
+        <app-dropdown
+          v-if="deleteCompanyPermission"
+          :position-right="true"
+        >
           <template #header>
             {{ $t("companies.actions") }}
           </template>
@@ -200,12 +203,14 @@ export default {
       </template>
     </app-header>
 
-    <CompanyInformation :companyId="companyId" />
-    <hr />
+    <CompanyInformation :company-id="companyId" />
+    <hr>
     <div
       class="pt-4 d-flex flex-row flex-wrap justify-content-between align-items-center"
     >
-      <h3 class="color-gray-700">{{ $t("companies.counted_payment") }}</h3>
+      <h3 class="color-gray-700">
+        {{ $t("companies.counted_payment") }}
+      </h3>
       <BaseButton
         v-if="createPaymentPermission"
         class="bg-gray-150 color-gray-800 button"
@@ -217,7 +222,10 @@ export default {
         </template>
       </BaseButton>
     </div>
-    <div v-if="viewPaymentPermission" class="payment__content">
+    <div
+      v-if="viewPaymentPermission"
+      class="payment__content"
+    >
       <PaymentBoxContent
         v-for="detail in payments"
         :key="detail.created_at"
@@ -230,21 +238,26 @@ export default {
     </div>
     <AddPayment
       v-if="createPaymentPermission"
-      @created-payment="createdPayment"
-      @edit-selected-payment="updatedPayments"
       :payment-data="editedItem"
       :modal-properties="modalProperties"
+      @created-payment="createdPayment"
+      @edit-selected-payment="updatedPayments"
       @update-company="getPaymentList"
     />
 
-    <b-overlay :show="loading" no-wrap opacity="0.5" class="loading__overlay">
+    <b-overlay
+      :show="loading"
+      no-wrap
+      opacity="0.5"
+      class="loading__overlay"
+    >
       <template #overlay>
         <div class="d-flex justify-content-center w-100">
           <div class="lds-ellipsis">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
+            <div />
+            <div />
+            <div />
+            <div />
           </div>
         </div>
       </template>

@@ -1,6 +1,6 @@
 <script>
 export default {
-  name: "OutputInformation",
+  name: 'OutputInformation',
   props: {
     property: {
       type: [String, Number],
@@ -8,7 +8,7 @@ export default {
     },
     value: {
       type: [String, Number],
-      default: "",
+      default: '',
     },
     translate: {
       type: Boolean,
@@ -22,29 +22,29 @@ export default {
   data() {
     return {
       localProperty: null,
-    };
+    }
   },
   computed: {
     hasPropertySlot() {
-      return !!this.$slots.property;
+      return !!this.$slots.property
     },
     hasValueSlot() {
-      return !!this.$slots.value;
+      return !!this.$slots.value
     },
   },
   created() {
-    this.establishProperty();
+    this.establishProperty()
   },
   methods: {
     establishProperty() {
       if (this.translate) {
-        this.localProperty = this.$t(this.property);
+        this.localProperty = this.$t(this.property)
       } else {
-        this.localProperty = this.property;
+        this.localProperty = this.property
       }
     },
   },
-};
+}
 </script>
 
 <template>
@@ -55,7 +55,10 @@ export default {
     <div class="d-flex align-items-center info-row">
       <slot name="left-icon" />
       <slot name="property" />
-      <span v-if="!hasPropertySlot" class="d-block property">
+      <span
+        v-if="!hasPropertySlot"
+        class="d-block property"
+      >
         {{ localProperty }}
       </span>
     </div>
@@ -70,7 +73,10 @@ export default {
       >
         <span>{{ value }}</span>
         <span v-if="price"> {{ $t("ye") }}</span>
-        <slot class="info-row-icon" name="right-icon" />
+        <slot
+          class="info-row-icon"
+          name="right-icon"
+        />
       </span>
     </div>
     <!--  END OF VALUE CONTENT  -->

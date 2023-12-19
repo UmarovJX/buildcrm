@@ -1,8 +1,8 @@
 <script>
-import AppHeader from "@/components/Header/AppHeader.vue";
-import BaseArrowRight from "@/components/icons/BaseArrowRightIcon.vue";
-import BaseArrowLeft from "@/components/icons/BaseArrowLeftIcon.vue";
-import {computed, getCurrentInstance} from "vue";
+import AppHeader from '@/components/Header/AppHeader.vue'
+import BaseArrowRight from '@/components/icons/BaseArrowRightIcon.vue'
+import BaseArrowLeft from '@/components/icons/BaseArrowLeftIcon.vue'
+import { computed, getCurrentInstance } from 'vue'
 
 export default {
   components: {
@@ -13,21 +13,19 @@ export default {
   setup() {
     const vm = getCurrentInstance().proxy
 
-    const isUpdatePage = computed(() => {
-      return vm.$route.name === 'role-v2-edit'
-    })
+    const isUpdatePage = computed(() => vm.$route.name === 'role-v2-edit')
 
     function goBack() {
       vm.$router.push({
-        name: "roles"
+        name: 'roles',
       })
     }
 
     return {
       isUpdatePage,
-      goBack
+      goBack,
     }
-  }
+  },
 }
 </script>
 
@@ -35,18 +33,27 @@ export default {
   <app-header>
     <template #header-breadcrumb>
       <div class="d-flex navigation__content">
-        <div class="go__back" @click="goBack">
-          <BaseArrowLeft :width="32" :height="32"></BaseArrowLeft>
+        <div
+          class="go__back"
+          @click="goBack"
+        >
+          <BaseArrowLeft
+            :width="32"
+            :height="32"
+          />
         </div>
         <div class="breadcrumb__content">
           <div>
             {{ $t("roles.title") }}
-            <BaseArrowRight :width="18" :height="18"/>
+            <BaseArrowRight
+              :width="18"
+              :height="18"
+            />
             <span>{{ isUpdatePage ? $t('edit') : $t('create') }}</span>
           </div>
           <span class="head">
-                {{ isUpdatePage ? $t("common.update_role") : $t("common.create_role") }}
-            </span>
+            {{ isUpdatePage ? $t("common.update_role") : $t("common.create_role") }}
+          </span>
         </div>
       </div>
     </template>
@@ -64,7 +71,6 @@ export default {
   align-items: center;
   cursor: pointer;
 }
-
 
 .navigation__content {
   display: flex;
@@ -91,4 +97,3 @@ export default {
   }
 }
 </style>
-

@@ -1,12 +1,12 @@
 <script>
-import AppBreadcrumb from "@/components/AppBreadcrumb";
+import AppBreadcrumb from '@/components/AppBreadcrumb'
 // import BaseLeftIcon from "@/components/icons/BaseLeftIcon";
-import AppDropdown from "@/components/Reusable/Dropdown/AppDropdown";
-import AppNotificationIcon from "@/components/Reusable/Notification/AppNotificationIcon";
-import AppQuestionIcon from "@/components/Reusable/Question/AppQuestionIcon";
+import AppDropdown from '@/components/Reusable/Dropdown/AppDropdown'
+import AppNotificationIcon from '@/components/Reusable/Notification/AppNotificationIcon'
+import AppQuestionIcon from '@/components/Reusable/Question/AppQuestionIcon'
 
 export default {
-  name: "AppHeader",
+  name: 'AppHeader',
 
   components: {
     AppDropdown,
@@ -32,9 +32,9 @@ export default {
   },
 
   data() {
-    return {};
+    return {}
   },
-};
+}
 </script>
 
 <template>
@@ -60,13 +60,15 @@ export default {
           <!--                        </span>-->
           <!--                    </div>-->
         </div>
-        <slot name="header-status"></slot>
+        <slot name="header-status" />
       </div>
       <div class="d-flex align-items-center">
         <!--   Slot For Addition Actions     -->
-        <slot name="header-right"></slot>
+        <slot name="header-right" />
         <app-dropdown :position-right="true">
-          <template #header> {{ $t('actions')  }} </template>
+          <template #header>
+            {{ $t('actions') }}
+          </template>
 
           <!--          <template>-->
           <!--            <b-dropdown-item> Action </b-dropdown-item>-->

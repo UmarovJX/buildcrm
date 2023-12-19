@@ -1,12 +1,12 @@
 <script>
-import BaseModal from "@/components/Reusable/BaseModal";
-import BaseButton from "@/components/Reusable/BaseButton";
-import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
-import BaseNumericInput from "@/components/Reusable/BaseNumericInput";
-import api from "@/services/api";
+import BaseModal from '@/components/Reusable/BaseModal'
+import BaseButton from '@/components/Reusable/BaseButton'
+import BaseArrowLeftIcon from '@/components/icons/BaseArrowLeftIcon'
+import BaseNumericInput from '@/components/Reusable/BaseNumericInput'
+import api from '@/services/api'
 
 export default {
-  name: "ModifyPaymentTransaction",
+  name: 'ModifyPaymentTransaction',
   components: {
     BaseModal,
     BaseButton,
@@ -31,7 +31,7 @@ export default {
       required: true,
     },
   },
-  emits: ["hide-modal", "update-content"],
+  emits: ['hide-modal', 'update-content'],
   data() {
     return {
       buttonLoading: false,
@@ -42,47 +42,49 @@ export default {
         payment_type: null,
         comment: null,
       },
-    };
+    }
   },
   watch: {
     toggleModal(last) {
-      if (last) this.openModifyModal();
-      else this.closeModifyModal();
+      if (last) this.openModifyModal()
+      else this.closeModifyModal()
     },
   },
   methods: {
     closeModifyModal() {
-      this.$refs["modify-transaction-modal"].closeModal();
+      this.$refs['modify-transaction-modal'].closeModal()
     },
     openModifyModal() {
-      this.$refs["modify-transaction-modal"].openModal();
+      this.$refs['modify-transaction-modal'].openModal()
     },
     setFormProperties(property, value) {
-      this.form[property] = value;
+      this.form[property] = value
     },
     showModal() {
-      for (let key in this.form) {
-        const hasProperty = this.properties.hasOwnProperty(key);
+      for (const key in this.form) {
+        const hasProperty = this.properties.hasOwnProperty(key)
         if (hasProperty) {
-          this.form[key] = this.properties[key];
+          this.form[key] = this.properties[key]
         }
       }
     },
     hideModal() {
-      this.$emit("hide-modal");
+      this.$emit('hide-modal')
     },
     updateContent() {
-      this.$emit("update-content");
+      this.$emit('update-content')
     },
     async submitModifyTransaction() {
-      const formCompleted = await this.$refs["modify-payment"].validate();
+      const formCompleted = await this.$refs['modify-payment'].validate()
       if (formCompleted) {
-        const body = Object.assign({}, this.form);
-        const { id: contractId } = this.$route.params;
-        const { id: transactionId } = this.properties;
-        this.buttonLoading = true;
-        body.amount *= 100;
-        const { amount, comment, date_paid, payment_type, type } = body;
+        const body = { ...this.form }
+        const { id: contractId } = this.$route.params
+        const { id: transactionId } = this.properties
+        this.buttonLoading = true
+        body.amount *= 100
+        const {
+          amount, comment, date_paid, payment_type, type,
+        } = body
         await api.contractV2
           .editPaymentTransaction({
             contractId,
@@ -96,31 +98,31 @@ export default {
             },
           })
           .then(() => {
-            this.hideModal();
-            this.updateContent();
+            this.hideModal()
+            this.updateContent()
             this.$swal({
-              title: this.$t("successfully"),
-              text: this.$t("payment_change"),
-              icon: "success",
-            });
+              title: this.$t('successfully'),
+              text: this.$t('payment_change'),
+              icon: 'success',
+            })
           })
-          .catch((error) => {
-            const { data } = error.response;
-            const index = Object.keys(data)[0];
-            const text = data[index];
+          .catch(error => {
+            const { data } = error.response
+            const index = Object.keys(data)[0]
+            const text = data[index]
             this.$swal({
               text,
-              icon: "error",
-              title: this.$t("error"),
-            });
+              icon: 'error',
+              title: this.$t('error'),
+            })
           })
           .finally(() => {
-            this.buttonLoading = false;
-          });
+            this.buttonLoading = false
+          })
       }
     },
   },
-};
+}
 </script>
 
 <template>
@@ -133,8 +135,14 @@ export default {
     <template #header>
       <!--   GO BACK     -->
       <span class="d-flex align-items-center">
-        <span class="go__back" @click="closeModifyModal">
-          <base-arrow-left-icon :width="32" :height="32"></base-arrow-left-icon>
+        <span
+          class="go__back"
+          @click="closeModifyModal"
+        >
+          <base-arrow-left-icon
+            :width="32"
+            :height="32"
+          />
         </span>
         <!--    TITLE      -->
         <span class="title">{{ $t("contracts.edit_payment") }}</span>
@@ -149,7 +157,11 @@ export default {
             rules="required"
             class="w-50 mr-3"
           >
-            <input type="date" v-model="form.date_paid" class="w-100" />
+            <input
+              v-model="form.date_paid"
+              type="date"
+              class="w-100"
+            >
           </ValidationProvider>
           <ValidationProvider
             name="type"
@@ -162,7 +174,10 @@ export default {
               :options="paymentTypeOptions"
             >
               <template #first>
-                <b-form-select-option :value="null" disabled>
+                <b-form-select-option
+                  :value="null"
+                  disabled
+                >
                   <span class="disabled__option"> Тип </span>
                 </b-form-select-option>
               </template>
@@ -170,7 +185,11 @@ export default {
           </ValidationProvider>
         </div>
         <div class="d-flex justify-content-between mb-3">
-          <ValidationProvider name="amount" rules="required" class="w-50 mr-3">
+          <ValidationProvider
+            name="amount"
+            rules="required"
+            class="w-50 mr-3"
+          >
             <base-numeric-input
               v-model.number="form.amount"
               :currency="`${$t('ye')}`"
@@ -180,7 +199,7 @@ export default {
               separator="space"
               placeholder="Сумма"
               class="w-100"
-            ></base-numeric-input>
+            />
           </ValidationProvider>
           <ValidationProvider
             name="payment_type"
@@ -193,7 +212,10 @@ export default {
               :options="paymentMethodOptions"
             >
               <template #first>
-                <b-form-select-option :value="null" disabled>
+                <b-form-select-option
+                  :value="null"
+                  disabled
+                >
                   <span class="disabled__option"> Способ </span>
                 </b-form-select-option>
               </template>
@@ -201,11 +223,11 @@ export default {
           </ValidationProvider>
         </div>
         <input
-          type="text"
           v-model="form.comment"
+          type="text"
           placeholder="Комментарий"
           class="w-100"
-        />
+        >
       </ValidationObserver>
     </template>
 
@@ -220,9 +242,9 @@ export default {
       >
         <base-button
           text="Применить"
-          @click="submitModifyTransaction"
           :fixed="true"
           design="violet-gradient"
+          @click="submitModifyTransaction"
         />
       </b-overlay>
     </template>

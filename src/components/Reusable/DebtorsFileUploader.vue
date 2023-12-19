@@ -1,66 +1,66 @@
 <script>
-import BaseArrowDownIcon from "@/components/icons/BaseArrowDownIcon";
-import BaseButton from "@/components/Reusable/BaseButton";
-import readExcelFile from "read-excel-file";
-import { mapMutations } from "vuex";
+import BaseArrowDownIcon from '@/components/icons/BaseArrowDownIcon'
+import BaseButton from '@/components/Reusable/BaseButton'
+import readExcelFile from 'read-excel-file'
+import { mapMutations } from 'vuex'
 
 export default {
-  name: "DebtorsFileUploader",
+  name: 'DebtorsFileUploader',
   components: { BaseArrowDownIcon, BaseButton },
   beforeRouteLeave(to, from, next) {
-    this.excelFile = null;
-    next();
+    this.excelFile = null
+    next()
   },
   data() {
     return {
       excelFile: null,
-    };
+    }
   },
   computed: {
     size() {
       if (this.excelFile) {
-        const kilobyte = this.excelFile.size / 1024;
+        const kilobyte = this.excelFile.size / 1024
         if (kilobyte > 10) {
-          return Math.round(kilobyte / 1024) + " МБ";
+          return `${Math.round(kilobyte / 1024)} МБ`
         }
 
-        return Math.round(kilobyte) + " КБ";
+        return `${Math.round(kilobyte)} КБ`
       }
-      return 0;
+      return 0
     },
   },
   methods: {
     ...mapMutations({
-      updateDebtorsExcel: "updateDebtorsExcel",
+      updateDebtorsExcel: 'updateDebtorsExcel',
     }),
     triggerUploadEvent() {
-      this.excelFile = this.$refs["file-input"].files[0];
-      readExcelFile(this.excelFile).then((rows) => {
-        const head = rows[0];
-        const sortRows = rows.slice(1).map((row) => {
-          const loopPackage = {};
+      this.excelFile = this.$refs['file-input'].files[0]
+      readExcelFile(this.excelFile).then(rows => {
+        const head = rows[0]
+        const sortRows = rows.slice(1).map(row => {
+          const loopPackage = {}
           head.forEach((headCell, index) => {
-            loopPackage[headCell] = row[index];
-          });
-          return loopPackage;
-        });
-        sortRows.unshift(head);
+            loopPackage[headCell] = row[index]
+          })
+          return loopPackage
+        })
+        sortRows.unshift(head)
         this.updateDebtorsExcel({
           rows: sortRows,
           file: this.excelFile,
-        });
-      });
+        })
+      })
     },
   },
-};
+}
 </script>
 
 <template>
   <div class="upload__content">
     <!--   IF FILE UPLOAD     -->
     <div
-      class="d-flex justify-content-between w-100 mr-4 ml-4"
       v-if="excelFile"
+      class="d-flex justify-content-between w-100 mr-4 ml-4"
     >
       <div class="d-flex">
         <span class="xls__logo">.XLS</span>
@@ -72,21 +72,31 @@ export default {
 
       <div class="edit__content">
         <input
+          ref="file-input"
           type="file"
           accept=".xlsx, .xls, .csv"
           name="upload-excel"
           class="upload__content-input"
           @change="triggerUploadEvent"
-          ref="file-input"
+        >
+        <base-button
+          text="Заменить"
+          class="edit__upload"
         />
-        <base-button text="Заменить" class="edit__upload" />
       </div>
     </div>
 
     <!--   FILE NOT UPLOAD YET     -->
-    <span v-else class="d-flex justify-content-center align-items-center">
+    <span
+      v-else
+      class="d-flex justify-content-center align-items-center"
+    >
       <span class="arrow__down">
-        <base-arrow-down-icon :width="56" :height="56" fill="#9CA3AF" />
+        <base-arrow-down-icon
+          :width="56"
+          :height="56"
+          fill="#9CA3AF"
+        />
       </span>
       <span class="max-width-16">
         {{ $t("payments.drag_file") }}
@@ -96,13 +106,13 @@ export default {
 
     <input
       v-if="!excelFile"
+      ref="file-input"
       type="file"
       accept=".xlsx, .xls, .csv"
       name="upload-excel"
       class="upload__content-input"
       @change="triggerUploadEvent"
-      ref="file-input"
-    />
+    >
   </div>
 </template>
 
@@ -133,7 +143,6 @@ export default {
 
     .arrow__down
         margin-right: 2.5rem
-
 
     &-input
         outline: none

@@ -1,3 +1,3 @@
-import ChipInputGroup from "@/components/ui-components/chip-input-group/ChipInputGroup";
+import ChipInputGroup from '@/components/ui-components/chip-input-group/ChipInputGroup'
 
-export { ChipInputGroup as KChipInputGroup };
+export { ChipInputGroup as KChipInputGroup }

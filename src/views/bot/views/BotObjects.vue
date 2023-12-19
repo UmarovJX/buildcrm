@@ -1,20 +1,21 @@
 <script>
-import api from "@/services/api";
-import { v3ServiceApi } from "@/services/v3/v3.service";
+import api from '@/services/api'
+import { v3ServiceApi } from '@/services/v3/v3.service'
 
-import Permission from "@/permission";
-import { XButton } from "@/components/ui-components/button";
-import BaseLoading from "@/components/Reusable/BaseLoading.vue";
-import { XIcon } from "@/components/ui-components/material-icons";
-import { XCircularBackground } from "@/components/ui-components/circular-background";
-import CreateBotObject from "@/views/bot/components/CreateBotObject.vue";
-import BaseTabPicker from "@/components/Reusable/BaseTabPicker.vue";
-import { XFormInput } from "@/components/ui-components/form-input";
+import Permission from '@/permission'
+import { XButton } from '@/components/ui-components/button'
+import BaseLoading from '@/components/Reusable/BaseLoading.vue'
+import { XIcon } from '@/components/ui-components/material-icons'
+import { XCircularBackground } from '@/components/ui-components/circular-background'
+import CreateBotObject from '@/views/bot/components/CreateBotObject.vue'
+import BaseTabPicker from '@/components/Reusable/BaseTabPicker.vue'
+import { XFormInput } from '@/components/ui-components/form-input'
 
-import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
-import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
+import BaseArrowLeftIcon from '@/components/icons/BaseArrowLeftIcon'
+import BaseArrowRightIcon from '@/components/icons/BaseArrowRightIcon'
+
 export default {
-  name: "SettingsStatuses",
+  name: 'SettingsStatuses',
   components: {
     BaseArrowLeftIcon,
     BaseArrowRightIcon,
@@ -29,8 +30,8 @@ export default {
   data() {
     return {
       allLangs: [],
-      currentLang: "",
-      upsertType: "create",
+      currentLang: '',
+      upsertType: 'create',
       showCreateModal: false,
       editStorage: {},
       editTags: {},
@@ -48,125 +49,123 @@ export default {
         loading: false,
       },
       permission: {
-        create: Permission.getUserPermission("bot.create"),
-        update: Permission.getUserPermission("bot.update"),
+        create: Permission.getUserPermission('bot.create'),
+        update: Permission.getUserPermission('bot.update'),
       },
-    };
+    }
   },
   computed: {
     tableFields() {
       return [
         {
-          key: "title",
-          label: this.$t("bot.table_title"),
-          thStyle: "width: 25%",
+          key: 'title',
+          label: this.$t('bot.table_title'),
+          thStyle: 'width: 25%',
         },
         {
-          key: "description",
-          label: this.$t("bot.description"),
+          key: 'description',
+          label: this.$t('bot.description'),
         },
         {
-          key: "position",
-          label: this.$t("bot.position"),
-          thStyle: "width: 25%",
+          key: 'position',
+          label: this.$t('bot.position'),
+          thStyle: 'width: 25%',
         },
-      ];
+      ]
     },
   },
   created() {
-    api.languagesV3.getAllLanguages().then((res) => {
-      this.allLangs.push(...res.data.result);
-      this.currentLang = this.allLangs[0];
-    });
-    this.fetchItems();
+    api.languagesV3.getAllLanguages().then(res => {
+      this.allLangs.push(...res.data.result)
+      this.currentLang = this.allLangs[0]
+    })
+    this.fetchItems()
   },
   methods: {
     setTab(e) {
-      this.currentLang = e;
+      this.currentLang = e
     },
     startLoading() {
-      this.table.loading = true;
+      this.table.loading = true
     },
     finishLoading() {
-      this.table.loading = false;
+      this.table.loading = false
     },
     create() {
-      this.openCreateModal();
+      this.openCreateModal()
     },
     async fetchItems() {
       try {
-        this.startLoading();
+        this.startLoading()
         const response = await v3ServiceApi.botObjects.fetchObjects({
           page: this.$route.query.page || 1,
           limit: 20,
-        });
-        this.table.items = response.data.result;
-        this.table.pagination = response.data.pagination;
+        })
+        this.table.items = response.data.result
+        this.table.pagination = response.data.pagination
       } catch (e) {
-        this.toastedWithErrorCode(e);
+        this.toastedWithErrorCode(e)
       } finally {
-        this.finishLoading();
+        this.finishLoading()
       }
     },
 
     openCreateModal() {
-      this.showCreateModal = true;
+      this.showCreateModal = true
     },
     closeCreateModal() {
-      this.showCreateModal = false;
+      this.showCreateModal = false
     },
 
     botPageCreated() {
-      this.closeCreateModal();
-      this.fetchItems();
+      this.closeCreateModal()
+      this.fetchItems()
     },
 
     async deleteItem(typeId) {
       this.$swal({
-        title: this.$t("sweetAlert.title"),
-        text: this.$t("sweetAlert.text"),
-        icon: "warning",
+        title: this.$t('sweetAlert.title'),
+        text: this.$t('sweetAlert.text'),
+        icon: 'warning',
         showCancelButton: true,
-        cancelButtonText: this.$t("cancel"),
-        confirmButtonText: this.$t("sweetAlert.yes"),
-      }).then(async (result) => {
+        cancelButtonText: this.$t('cancel'),
+        confirmButtonText: this.$t('sweetAlert.yes'),
+      }).then(async result => {
         if (result.value) {
           try {
-            this.startLoading();
+            this.startLoading()
             await api.translationsV3.removeTranslation({
               id: typeId,
-            });
-            await this.fetchItems();
+            })
+            await this.fetchItems()
           } catch (e) {
-            this.toastedWithErrorCode(e);
+            this.toastedWithErrorCode(e)
           } finally {
-            this.finishLoading();
+            this.finishLoading()
           }
         }
-      });
+      })
     },
     updateTags(item) {
-      this.editTags = item;
-      this.showEditTagModal = true;
+      this.editTags = item
+      this.showEditTagModal = true
     },
     async update(item) {
-      if (this.loadings[item.id]) return;
-      this.$set(this.loadings, item.id, true);
+      if (this.loadings[item.id]) return
+      this.$set(this.loadings, item.id, true)
       v3ServiceApi.botObjects
         .update(item)
-        .then(() =>
-          this.$toasted.show(
-            `Bot Object for ID "${item.id}" succesfully updated`,
-            {
-              type: "success",
-            }
-          )
-        )
-        .catch((err) => this.toastedWithErrorCode(err))
-        .finally(() => this.$set(this.loadings, item.id, false));
+        .then(() => this.$toasted.show(
+          `Bot Object for ID "${item.id}" succesfully updated`,
+          {
+            type: 'success',
+          },
+        ))
+        .catch(err => this.toastedWithErrorCode(err))
+        .finally(() => this.$set(this.loadings, item.id, false))
     },
   },
-};
+}
 </script>
 
 <template>
@@ -180,10 +179,10 @@ export default {
       </h3> -->
       <base-tab-picker
         :options="allLangs"
-        noAll
+        no-all
         :current="currentLang"
         @tab-selected="setTab"
-      ></base-tab-picker>
+      />
       <x-button
         v-if="permission.create"
         variant="secondary"
@@ -192,7 +191,10 @@ export default {
         @click="create"
       >
         <template #left-icon>
-          <x-icon name="add" class="violet-600" />
+          <x-icon
+            name="add"
+            class="violet-600"
+          />
         </template>
       </x-button>
     </div>
@@ -226,33 +228,33 @@ export default {
       <template #cell(title)="{ index }">
         <div class="d-flex align-items-center">
           <x-form-input
+            v-model="table.items[index].title[currentLang]"
             :readonly="!permission.update"
             type="text"
             :placeholder="$t('bot.table_title')"
             class="w-100"
-            v-model="table.items[index].title[currentLang]"
           />
         </div>
       </template>
       <template #cell(description)="{ index }">
         <div class="d-flex align-items-center">
           <x-form-input
+            v-model="table.items[index].description[currentLang]"
             :readonly="!permission.update"
             type="text"
             :placeholder="$t('bot.description')"
             class="w-100"
-            v-model="table.items[index].description[currentLang]"
           />
         </div>
       </template>
       <template #cell(position)="{ item, index }">
         <div class="d-flex align-items-center">
           <x-form-input
+            v-model="table.items[index].position"
             :readonly="!permission.update"
             type="number"
             :placeholder="$t('bot.position')"
             class="w-100"
-            v-model="table.items[index].position"
           />
           <div
             :style="loadings[item.id] ? 'opacity: 0.5' : ''"
@@ -260,11 +262,14 @@ export default {
             class="ml-1 cursor-pointer"
           >
             <x-circular-background
-              @click="update(item)"
-              class="bg-violet-600"
               v-if="permission.update"
+              class="bg-violet-600"
+              @click="update(item)"
             >
-              <x-icon name="edit" class="color-white" />
+              <x-icon
+                name="edit"
+                class="color-white"
+              />
             </x-circular-background>
           </div>
         </div>
@@ -315,11 +320,11 @@ export default {
       </div> -->
     </div>
     <create-bot-object
-      :all-languages="allLangs"
       v-if="showCreateModal"
+      :all-languages="allLangs"
       @bot-page-created="botPageCreated"
       @close-modal="closeCreateModal"
-    ></create-bot-object>
+    />
   </div>
 </template>
 

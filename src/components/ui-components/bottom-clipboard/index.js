@@ -1,3 +1,3 @@
-import BClipboard from "@/components/ui-components/bottom-clipboard/BClipboard";
+import BClipboard from '@/components/ui-components/bottom-clipboard/BClipboard'
 
-export { BClipboard as XBottomClipboard };
+export { BClipboard as XBottomClipboard }

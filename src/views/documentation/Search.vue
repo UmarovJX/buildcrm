@@ -1,10 +1,11 @@
 <script>
-import BaseSearchInput from "@/components/Reusable/BaseSearchInput";
-import DocHeader from "@/views/documentation/DocHeader";
+import BaseSearchInput from '@/components/Reusable/BaseSearchInput'
+import DocHeader from '@/views/documentation/DocHeader'
+
 export default {
-  name: "search",
+  name: 'Search',
   components: { DocHeader, BaseSearchInput },
-};
+}
 </script>
 <template>
   <main class="search">

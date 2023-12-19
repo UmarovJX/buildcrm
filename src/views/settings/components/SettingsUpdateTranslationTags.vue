@@ -1,11 +1,11 @@
 <script>
-import { XFormInput } from "@/components/ui-components/form-input";
-import { XModalCenter } from "@/components/ui-components/modal-center";
-import api from "@/services/api";
-import BaseFormTagInput from "@/components/Reusable/BaseFormTagInput";
+import { XFormInput } from '@/components/ui-components/form-input'
+import { XModalCenter } from '@/components/ui-components/modal-center'
+import api from '@/services/api'
+import BaseFormTagInput from '@/components/Reusable/BaseFormTagInput'
 
 export default {
-  name: "SettingsCreateLanguage",
+  name: 'SettingsCreateLanguage',
   components: {
     BaseFormTagInput,
     XFormInput,
@@ -14,63 +14,63 @@ export default {
   props: {
     editItem: { type: Object, required: true },
   },
-  emits: ["tags-updated", "close-modal"],
+  emits: ['tags-updated', 'close-modal'],
   data() {
     return {
       applyButtonLoading: false,
       item: {
         tags: [],
       },
-    };
+    }
   },
 
   created() {
-    this.setEditData();
+    this.setEditData()
   },
   methods: {
     setTags(ts) {
-      this.item.tags = ts;
+      this.item.tags = ts
     },
     setEditData() {
-      this.item.tags = [...this.editItem.tags];
+      this.item.tags = [...this.editItem.tags]
     },
     closeModal() {
-      this.clearForm();
-      this.$emit("close-modal");
+      this.clearForm()
+      this.$emit('close-modal')
     },
     startLoading() {
-      this.applyButtonLoading = true;
+      this.applyButtonLoading = true
     },
     finishLoading() {
-      this.applyButtonLoading = false;
+      this.applyButtonLoading = false
     },
 
     async saveItem() {
-      const isSatisfied = await this.$refs["creating-observer"].validate();
+      const isSatisfied = await this.$refs['creating-observer'].validate()
       if (isSatisfied) {
-        this.startLoading();
+        this.startLoading()
         const d = {
           key: this.editItem.key,
           value: this.editItem.value,
           tags: this.item.tags,
           id: this.editItem.id,
-        };
+        }
         try {
-          await api.translationsV3.updateTranslation(d);
-          this.clearForm();
-          this.$emit("tags-updated");
+          await api.translationsV3.updateTranslation(d)
+          this.clearForm()
+          this.$emit('tags-updated')
         } catch (e) {
-          this.toastedWithErrorCode(e);
+          this.toastedWithErrorCode(e)
         } finally {
-          this.finishLoading();
+          this.finishLoading()
         }
       }
     },
     clearForm() {
-      this.item.tags = [];
+      this.item.tags = []
     },
   },
-};
+}
 </script>
 
 <template>
@@ -107,9 +107,9 @@ export default {
         <!--  ? STATUS TITLE UZ     -->
         <validation-provider
           ref="clientTypeNameVProvider"
+          v-slot="{ errors }"
           name="last-name-uz-provider"
           rules="required"
-          v-slot="{ errors }"
           class="title-uz-provider"
         >
           <x-form-input
@@ -119,7 +119,10 @@ export default {
             class="w-100"
             :value="editItem.key"
           />
-          <span class="error__provider" v-if="errors[0]">
+          <span
+            v-if="errors[0]"
+            class="error__provider"
+          >
             {{ errors[0].replace("last-name-uz-provider", $t("title")) }}
           </span>
         </validation-provider>
@@ -129,10 +132,10 @@ export default {
           class="filter__inputs-input"
         >
           <base-form-tag-input
-            @set-tags="setTags"
-            :default-tags="item.tags"
             ref="base-form-tag-input"
+            :default-tags="item.tags"
             :placeholder="`${$t('tags')}`"
+            @set-tags="setTags"
           >
             <template #delete-content>
               <svg
@@ -142,7 +145,12 @@ export default {
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >
-                <circle cx="10" cy="10" r="10" fill="#9CA3AF" />
+                <circle
+                  cx="10"
+                  cy="10"
+                  r="10"
+                  fill="#9CA3AF"
+                />
                 <path
                   d="M13.125 6.875L6.875 13.125"
                   stroke="white"

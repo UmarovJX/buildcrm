@@ -1,37 +1,35 @@
-import api from "@/services/api";
+import api from '@/services/api'
 
 export default {
   actions: {
     async fetchUsers(ctx, vm) {
-      ctx.commit("updateLoading", true, { root: true });
+      ctx.commit('updateLoading', true, { root: true })
       try {
-        const response = await api.user.getUsersList();
-        const managers = response.data;
-        ctx.commit("updateUsers", managers);
+        const response = await api.user.getUsersList()
+        const managers = response.data
+        ctx.commit('updateUsers', managers)
       } catch (error) {
         if (!error.response) {
-          vm.toasted("Error: Network Error", "error");
+          vm.toasted('Error: Network Error', 'error')
+        } else if (error.response.status === 403) {
+          vm.toasted(error.response.data.message, 'error')
+        } else if (error.response.status === 401) {
+          vm.toasted(error.response.data.message, 'error')
+        } else if (error.response.status === 500) {
+          vm.toasted(error.response.data.message, 'error')
         } else {
-          if (error.response.status === 403) {
-            vm.toasted(error.response.data.message, "error");
-          } else if (error.response.status === 401) {
-            vm.toasted(error.response.data.message, "error");
-          } else if (error.response.status === 500) {
-            vm.toasted(error.response.data.message, "error");
-          } else {
-            vm.toasted(error.response.data.message, "error");
-          }
+          vm.toasted(error.response.data.message, 'error')
         }
-        ctx.commit("updateLoading", false, { root: true });
+        ctx.commit('updateLoading', false, { root: true })
       } finally {
-        ctx.commit("updateLoading", false, { root: true });
+        ctx.commit('updateLoading', false, { root: true })
       }
     },
   },
 
   mutations: {
     updateUsers(state, managers) {
-      state.users = managers;
+      state.users = managers
     },
   },
 
@@ -41,7 +39,7 @@ export default {
 
   getters: {
     getUsers(state) {
-      return state.users;
+      return state.users
     },
   },
-};
+}

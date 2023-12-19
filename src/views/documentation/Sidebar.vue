@@ -1,19 +1,19 @@
 <script>
-import BaseHomeIcon from "@/components/icons/BaseHomeIcon";
-import BaseObjectsIcon from "@/components/icons/BaseObjectsIcon";
-import BaseUsersIcon from "@/components/icons/BaseUsersIcon";
-import BaseSettingsIcon from "@/components/icons/BaseSettingsIcon";
-import BaseButton from "@/components/Reusable/BaseButton";
-import BaseDocumentIcon from "@/components/icons/BaseDocumentIcon";
-import BaseCollapseLeftIcon from "@/components/icons/BaseCollapseLeftIcon";
-import BaseRightIcon from "@/components/icons/BaseRightIcon";
-import BaseDownIcon from "@/components/icons/BaseDownIcon";
-import BaseUpIcon from "@/components/icons/BaseUpIcon";
-import BaseCollapseRightIcon from "@/components/icons/BaseCollapseRightIcon";
-import DocHeader from "@/views/documentation/DocHeader";
+import BaseHomeIcon from '@/components/icons/BaseHomeIcon'
+import BaseObjectsIcon from '@/components/icons/BaseObjectsIcon'
+import BaseUsersIcon from '@/components/icons/BaseUsersIcon'
+import BaseSettingsIcon from '@/components/icons/BaseSettingsIcon'
+import BaseButton from '@/components/Reusable/BaseButton'
+import BaseDocumentIcon from '@/components/icons/BaseDocumentIcon'
+import BaseCollapseLeftIcon from '@/components/icons/BaseCollapseLeftIcon'
+import BaseRightIcon from '@/components/icons/BaseRightIcon'
+import BaseDownIcon from '@/components/icons/BaseDownIcon'
+import BaseUpIcon from '@/components/icons/BaseUpIcon'
+import BaseCollapseRightIcon from '@/components/icons/BaseCollapseRightIcon'
+import DocHeader from '@/views/documentation/DocHeader'
 
 export default {
-  name: "Sidebar",
+  name: 'Sidebar',
   components: {
     DocHeader,
     BaseCollapseRightIcon,
@@ -26,7 +26,7 @@ export default {
   props: {
     theme: {
       type: String,
-      default: "",
+      default: '',
     },
   },
   data() {
@@ -35,105 +35,105 @@ export default {
       items: [
         {
           icon: BaseHomeIcon,
-          name: "home.title",
-          route: "home",
+          name: 'home.title',
+          route: 'home',
           items: 0,
           collapse: true,
         },
         {
           icon: BaseObjectsIcon,
-          name: "objects.title",
+          name: 'objects.title',
           collapse: true,
           items: [
             {
               icon: null,
-              name: "contracts.list_contracts",
-              route: "contracts-list",
-              collapsed_view: "contracts.collapsed_contracts_list",
+              name: 'contracts.list_contracts',
+              route: 'contracts-list',
+              collapsed_view: 'contracts.collapsed_contracts_list',
             },
             {
               icon: null,
-              name: "debtors.new_title",
-              route: "debtors",
-              collapsed_view: "debtors.collapsed_new_title",
+              name: 'debtors.new_title',
+              route: 'debtors',
+              collapsed_view: 'debtors.collapsed_new_title',
             },
             {
               icon: null,
-              name: "payments.payment_list",
-              route: "payments",
-              collapsed_view: "payments.collapsed_payment_list",
+              name: 'payments.payment_list',
+              route: 'payments',
+              collapsed_view: 'payments.collapsed_payment_list',
             },
           ],
         },
         {
           icon: BaseDocumentIcon,
-          name: "contracts.title",
+          name: 'contracts.title',
           collapse: true,
           items: [
             {
               icon: null,
-              name: "contracts.list_contracts",
-              route: "contracts-list",
-              collapsed_view: "contracts.collapsed_contracts_list",
+              name: 'contracts.list_contracts',
+              route: 'contracts-list',
+              collapsed_view: 'contracts.collapsed_contracts_list',
             },
             {
               icon: null,
-              name: "debtors.new_title",
-              route: "debtors",
-              collapsed_view: "debtors.collapsed_new_title",
+              name: 'debtors.new_title',
+              route: 'debtors',
+              collapsed_view: 'debtors.collapsed_new_title',
             },
             {
               icon: null,
-              name: "payments.payment_list",
-              route: "payments",
-              collapsed_view: "payments.collapsed_payment_list",
+              name: 'payments.payment_list',
+              route: 'payments',
+              collapsed_view: 'payments.collapsed_payment_list',
             },
           ],
         },
         {
           icon: BaseUsersIcon,
-          name: "roles.users",
+          name: 'roles.users',
           collapse: true,
           items: [
             {
               icon: null,
-              name: "contracts.list_contracts",
-              route: "contracts-list",
-              collapsed_view: "contracts.collapsed_contracts_list",
+              name: 'contracts.list_contracts',
+              route: 'contracts-list',
+              collapsed_view: 'contracts.collapsed_contracts_list',
             },
             {
               icon: null,
-              name: "debtors.new_title",
-              route: "debtors",
-              collapsed_view: "debtors.collapsed_new_title",
+              name: 'debtors.new_title',
+              route: 'debtors',
+              collapsed_view: 'debtors.collapsed_new_title',
             },
             {
               icon: null,
-              name: "payments.payment_list",
-              route: "payments",
-              collapsed_view: "payments.collapsed_payment_list",
+              name: 'payments.payment_list',
+              route: 'payments',
+              collapsed_view: 'payments.collapsed_payment_list',
             },
           ],
         },
         {
           icon: BaseSettingsIcon,
-          name: "settings.title",
-          route: "profile",
+          name: 'settings.title',
+          route: 'profile',
           items: 0,
           collapse: true,
         },
       ],
-    };
+    }
   },
   methods: {
     collapseMenu() {
-      this.menu_collapse = !this.menu_collapse;
+      this.menu_collapse = !this.menu_collapse
     },
     collapseItems(index) {
-      this.items[index].collapse = !this.items[index].collapse;
+      this.items[index].collapse = !this.items[index].collapse
     },
   },
-};
+}
 </script>
 
 <template>
@@ -149,13 +149,16 @@ export default {
       >
         <div class="sidebar-container-top">
           <router-link :to="{ name: 'home' }">
-            <img src="@/assets/img/object__img1.png" alt="Xonsaroy" />
+            <img
+              src="@/assets/img/object__img1.png"
+              alt="Xonsaroy"
+            >
           </router-link>
           <div class="items">
             <div
-              class="item"
               v-for="({ icon, name, route, items, collapse }, index) in items"
-              v-bind:key="index"
+              :key="index"
+              class="item"
             >
               <template v-if="items">
                 <div
@@ -166,26 +169,35 @@ export default {
                     <div class="icon">
                       <component :is="icon" />
                     </div>
-                    <div class="text" v-if="!menu_collapse">
+                    <div
+                      v-if="!menu_collapse"
+                      class="text"
+                    >
                       <p>{{ $t(name) }}</p>
                     </div>
                   </div>
-                  <div class="icon down-icon" v-if="!menu_collapse && collapse">
+                  <div
+                    v-if="!menu_collapse && collapse"
+                    class="icon down-icon"
+                  >
                     <BaseDownIcon />
                   </div>
                   <div
-                    class="icon down-icon"
                     v-if="!collapse && !menu_collapse"
+                    class="icon down-icon"
                   >
                     <BaseUpIcon />
                   </div>
                 </div>
-                <p class="sub-items" v-if="collapse === false">
+                <p
+                  v-if="collapse === false"
+                  class="sub-items"
+                >
                   <span
                     v-for="(
                       { icon, name, route, collapsed_view }, index
                     ) in items"
-                    v-bind:key="index"
+                    :key="index"
                   >
                     <router-link :to="{ name: route }">
                       <template v-if="!menu_collapse">
@@ -214,11 +226,17 @@ export default {
                   :to="{ name: route }"
                   :class="!collapse ? 'item-row purple-bg' : 'item-row'"
                 >
-                  <div class="item-row-left" @click="collapseItems(index)">
+                  <div
+                    class="item-row-left"
+                    @click="collapseItems(index)"
+                  >
                     <div class="icon">
                       <component :is="icon" />
                     </div>
-                    <div class="text" v-if="!menu_collapse">
+                    <div
+                      v-if="!menu_collapse"
+                      class="text"
+                    >
                       <p>{{ $t(name) }}</p>
                     </div>
                   </div>
@@ -227,10 +245,18 @@ export default {
             </div>
           </div>
         </div>
-        <div class="hide" @click="collapseMenu" v-if="menu_collapse">
+        <div
+          v-if="menu_collapse"
+          class="hide"
+          @click="collapseMenu"
+        >
           <BaseCollapseRightIcon />
         </div>
-        <div class="hide" @click="collapseMenu" v-else>
+        <div
+          v-else
+          class="hide"
+          @click="collapseMenu"
+        >
           <BaseCollapseLeftIcon />
           {{ $t("hide_menu") }}
         </div>
