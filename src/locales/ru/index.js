@@ -36,6 +36,13 @@ export default {
   reissue_percentage: 'Процент перевыпуска',
   percentage_of_recontract: 'Процент переоформление',
   common: {
+    sales_by_managers: 'Продажи по менеджеров',
+    branch_reports: 'Отчеты по Филиалам',
+    sales_receipts: 'Поступления по продажам',
+    sold_area: 'Проданная площадь',
+    sales: 'Продажи',
+    loose: 'Свободные',
+    overall: 'Общее',
     revenue_report: 'Отчет по выручке',
     object_report: 'Отчет поступления по объектам',
     unpaid: 'Неоплаченный',

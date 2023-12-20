@@ -1,18 +1,14 @@
 <script>
 import { keys } from '@/util/object'
-import { computed, getCurrentInstance, ref } from 'vue'
+import { computed, getCurrentInstance } from 'vue'
 import { formatToPrice } from '@/util/reusable'
 
-import { XIcon } from '@/components/ui-components/material-icons'
 import BaseLoading from '@/components/Reusable/BaseLoading.vue'
-import { XCircularBackground } from '@/components/ui-components/circular-background'
 
 export default {
   name: 'ObjectsIncomeByPeriod',
   components: {
-    XIcon,
     BaseLoading,
-    XCircularBackground,
   },
   props: {
     data: {

@@ -110,9 +110,12 @@ class V3Service extends Core {
       getBranchesData: b => this.post('statistics/branches', b),
       objectsByPeriod: b => this.post('statistics/objects-by-period', b),
       objectPayments: b => this.post('statistics/object-payments', b),
+      main: b => this.post('statistics/main', b),
+      total: b => this.post('statistics/total', b),
     };
 
     managerStats = {
+      getManagersPie: b => this.post('statistics/managers', b),
       getTotal: b => this.post('statistics/manager/total', b),
       getSales: b => this.post('statistics/manager/orders', b),
       getSalesPie: b => this.post('statistics/manager/objects', b),

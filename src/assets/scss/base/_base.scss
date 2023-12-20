@@ -332,11 +332,11 @@ body {
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
-  font-family: "MuseoSansCyrl", Arial, Helvetica, sans-serif;
+  font-family: Inter, sans-serif;
   background-color: var(--gray-100) !important;
 }
 
-main {
+.main-content {
   margin-left: 304px;
   position: relative;
   transition: all 0.3s ease;
@@ -353,12 +353,12 @@ main {
   }
 }
 
-main > div.d-flex.justify-content-between > div {
+.main-content > div.d-flex.justify-content-between > div {
   margin-top: 15px !important;
   padding-left: 15px;
 }
 
-main > div.d-flex.justify-content-between > div .title__big {
+.main-content > div.d-flex.justify-content-between > div .title__big {
   -webkit-box-ordinal-group: 1 !important;
   -ms-flex-order: 0 !important;
   order: 0 !important;

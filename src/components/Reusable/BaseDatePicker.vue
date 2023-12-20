@@ -1,9 +1,11 @@
 <script>
 import 'vue2-datepicker/index.css'
 
+// eslint-disable-next-line import/extensions
 import BaseCalendarIcon from '@/components/icons/BaseCalendarIcon'
 import DatePicker from 'vue2-datepicker'
 import 'vue2-datepicker/locale/en'
+import { isNUNEZ } from '@/util/inspect'
 
 export default {
   name: 'BaseDatePicker',
@@ -47,15 +49,19 @@ export default {
     },
     error: {
       type: Boolean,
-      default: () => false,
+      default: false,
     },
     label: {
       type: Boolean,
-      default: () => true,
+      default: true,
     },
     type: {
       type: String,
       default: 'date',
+    },
+    showBorder: {
+      type: Boolean,
+      default: true,
     },
   },
   data() {
@@ -65,7 +71,7 @@ export default {
   },
   computed: {
     hasLabel() {
-      return this.value && this.value.length && this.label
+      return isNUNEZ(this.dateValue) && this.label
     },
   },
   watch: {
@@ -132,7 +138,7 @@ export default {
       lang="en"
       :placeholder="placeholder"
       class="date-picker"
-      :class="{ error: error, label: hasLabel }"
+      :class="{ error: error, label: hasLabel,'remove__border':!showBorder }"
       :range="range"
       :popup-style="{zIndex:9999}"
     >
@@ -227,6 +233,13 @@ export default {
         font-size: 24px;
         right: 1.25rem;
         //display: none;
+      }
+    }
+
+    &.remove__border{
+      ::v-deep .mx-input-wrapper{
+        border: none;
+        border-radius: 0;
       }
     }
   }

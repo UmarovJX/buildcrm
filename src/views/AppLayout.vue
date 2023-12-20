@@ -1,5 +1,6 @@
 <script>
 import ErrorNotification from '@/components/Reusable/ErrorNotification'
+import { computed, getCurrentInstance } from 'vue'
 
 export default {
   name: 'AppLayout',
@@ -28,6 +29,14 @@ export default {
       immediate: true,
     },
   },
+  setup() {
+    const vm = getCurrentInstance().proxy
+    const isHomePage = computed(() => vm.$route.name === 'home')
+
+    return {
+      isHomePage,
+    }
+  },
 }
 </script>
 
@@ -40,6 +49,7 @@ export default {
     <main
       v-if="showHeaderContent"
       class="main-content"
+      :class="{'padding__reset':isHomePage}"
     >
       <ErrorNotification />
       <div class="app-content">
@@ -51,3 +61,9 @@ export default {
     </template>
   </div>
 </template>
+
+<style lang="scss" scoped>
+.padding__reset{
+  padding: 0;
+}
+</style>

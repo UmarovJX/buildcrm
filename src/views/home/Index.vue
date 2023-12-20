@@ -1,18 +1,25 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import AppHeader from '@/components/Header/AppHeader.vue'
-import ApartmentsPermission from '@/permission/apartments'
-// import home from '../../services/home'
-import { v3ServiceApi, v3ServiceApi as api } from '@/services/v3/v3.service'
-import { XIcon } from '@/components/ui-components/material-icons'
+import { isNull } from '@/util/inspect'
 import { formatToPrice, formatDateWithDot } from '@/util/reusable'
-import BaseLoading from '@/components/Reusable/BaseLoading2.vue'
-import DateRangePicker from 'vue2-daterange-picker'
-import 'vue2-daterange-picker/dist/vue2-daterange-picker.css'
-import Permission from '@/permission'
+import useStatistics from '@/views/home/useStatistics'
+import { v3ServiceApi as api } from '@/services/v3/v3.service'
 
+import Permission from '@/permission'
+import ApartmentsPermission from '@/permission/apartments'
+
+import 'vue2-daterange-picker/dist/vue2-daterange-picker.css'
+
+import DateRangePicker from 'vue2-daterange-picker'
+import { XIcon } from '@/components/ui-components/material-icons'
+import AppHeader from '@/components/Header/AppHeader.vue'
+import BaseLoading from '@/components/Reusable/BaseLoading2.vue'
 import ObjectsIncomeByPeriod from '@/views/home/components/ObjectsIncomeByPeriod.vue'
 import ObjectPayments from '@/views/home/components/ObjectPayments.vue'
+import HomePrimaryCards from '@/views/home/components/HomePrimaryCards.vue'
+import HomeSecondaryCards from '@/views/home/components/HomeSecondaryCards.vue'
+import HomeBranchReports from '@/views/home/components/HomeBranchReports.vue'
+import HomeFilterBy from '@/views/home/components/HomeFilterBy.vue'
 
 export default {
   components: {
@@ -23,11 +30,16 @@ export default {
 
     ObjectsIncomeByPeriod,
     ObjectPayments,
+    HomePrimaryCards,
+    HomeSecondaryCards,
+    HomeBranchReports,
+    HomeFilterBy,
   },
   data: () => {
     const e = new Date()
     const s = new Date()
-    s.setMonth(s.getMonth() - 3)
+    s.setDate(1)
+    // s.setMonth(s.getMonth() - 3)
     s.setHours(0, 0, 0, 0)
 
     return {
@@ -66,14 +78,6 @@ export default {
         endDate: e,
       },
     }
-  },
-
-  mounted() {
-    this.fetchCounts(this)
-  },
-
-  created() {
-    this.fetchStats()
   },
 
   computed: {
@@ -133,9 +137,9 @@ export default {
         ...el,
         variant: el.value === this.type ? 'primary' : 'info',
         cls:
-            el.value === this.type
-              ? `${el.cls} background-violet-600`
-              : `${el.cls} background-violet-100`,
+          el.value === this.type
+            ? `${el.cls} background-violet-600`
+            : `${el.cls} background-violet-100`,
       }))
     },
     paymentTypeOptions() {
@@ -159,9 +163,9 @@ export default {
         ...el,
         variant: el.value === this.type ? 'primary' : 'info',
         cls:
-            el.value === this.paymentType
-              ? `${el.cls} background-violet-600`
-              : `${el.cls} background-violet-100`,
+          el.value === this.paymentType
+            ? `${el.cls} background-violet-600`
+            : `${el.cls} background-violet-100`,
       }))
     },
   },
@@ -179,6 +183,60 @@ export default {
     paymentType() {
       this.fetchStats()
     },
+  },
+
+  mounted() {
+    this.fetchCounts(this)
+  },
+
+  created() {
+    this.fetchStats()
+  },
+
+  setup() {
+    const {
+      main, fetchMainData,
+      total, fetchTotalData,
+      managersPie, fetchManagersPieData,
+      branchReports, fetchBranchReportsData,
+    } = useStatistics()
+
+    async function fetchData() {
+      await Promise.allSettled([
+        fetchMainData(),
+        fetchTotalData(),
+        fetchManagersPieData(),
+        fetchBranchReportsData(),
+      ])
+      console.log('branchReports', branchReports)
+    }
+
+    function filterCharts(filter) {
+      const body = {}
+
+      Object.entries(filter).forEach(([key, value]) => {
+        if (!isNull(value)) {
+          body[key] = value
+        }
+      })
+
+      Promise.allSettled([
+        fetchTotalData(body),
+        fetchManagersPieData(body),
+        fetchBranchReportsData(body),
+      ])
+    }
+
+    fetchData()
+
+    return {
+      main,
+      total,
+      managersPie,
+      branchReports,
+      fetchTotalData,
+      filterCharts,
+    }
   },
 
   methods: {
@@ -216,7 +274,6 @@ export default {
         this.fetchObjectPieData(),
         this.fetchTariffsPieData(),
         this.fetchOrders(),
-        this.fetchBranches(),
         this.fetchManagerWidgets(),
         this.fetchManagerSales(),
         this.fetchManagerObjectsPie(),
@@ -244,10 +301,12 @@ export default {
           curve: 'smooth',
         },
         xaxis: {
+          // range: 40,
           categories: d.label,
         },
         series: d.data.map(el => ({ name: el.label, data: el.data })),
         yaxis: {
+          tickAmount: 15,
           labels: {
             formatter(v) {
               return formatToPrice(v, 2)
@@ -313,33 +372,6 @@ export default {
       const ordersRsp = await api.stats.getOrdersData(this.getQuery())
       const d = ordersRsp.data.result
       this.ordersOptions = {
-        chart: {
-          type: 'line',
-        },
-        stroke: {
-          curve: 'smooth',
-        },
-        xaxis: {
-          categories: d.label,
-        },
-        series: d.data.map(el => ({ name: el.label, data: el.data })),
-        yaxis: {
-          labels: {
-            formatter(v) {
-              return formatToPrice(v, 2)
-            },
-          },
-        },
-        legend: {
-          show: false,
-        },
-      }
-    },
-    async fetchBranches() {
-      this.branchesOptions = null
-      const branchesRsp = await api.stats.getBranchesData(this.getQuery())
-      const d = branchesRsp.data.result
-      this.branchesOptions = {
         chart: {
           type: 'line',
         },
@@ -470,7 +502,7 @@ export default {
     async fetchObjectsIncomeByPeriod() {
       try {
         this.objectsIncome.busy = true
-        const { data: { result } } = await v3ServiceApi.stats.objectsByPeriod()
+        const { data: { result } } = await api.stats.objectsByPeriod()
         this.objectsIncome.result = result
       } catch (e) {
         this.toastedWithErrorCode(e)
@@ -481,7 +513,7 @@ export default {
     async fetchObjectPayments() {
       try {
         this.objectPayments.busy = true
-        const { data: { result } } = await v3ServiceApi.stats.objectPayments()
+        const { data: { result } } = await api.stats.objectPayments()
         this.objectPayments.result = result
       } catch (e) {
         this.toastedWithErrorCode(e)
@@ -512,100 +544,52 @@ export default {
 
 <template>
   <div>
-    <app-header>
+    <app-header class="home__section">
       <template #header-title>
         {{ $t("home.title") }}
       </template>
     </app-header>
-    <!--    <div class="container-fluid px-0 mx-0 mb-4">-->
-    <!--      <div class="row">-->
-    <!--        <div class="col-md-12">-->
-    <!--          <div class="row">-->
-    <!--            <div-->
-    <!--                class="col-lg-3 col-md-6 mb-md-0 mb-3"-->
-    <!--            >-->
-    <!--              <router-link :to="{ name: 'objects' }">-->
-    <!--                <div class="card-counter primary">-->
-    <!--                  <i class="far fa-building"></i>-->
-    <!--                  <span-->
-    <!--                      class="count-numbers"-->
-    <!--                      v-if="getHomeCounts.counts && getHomeCounts"-->
-    <!--                  >{{ getHomeCounts.counts.objects }}</span-->
-    <!--                  >-->
-    <!--                  <span class="count-name">{{ $t("objects.title") }}</span>-->
-    <!--                </div>-->
-    <!--              </router-link>-->
-    <!--            </div>-->
 
-    <!--            &lt;!&ndash; <div class="col-lg-3 col-md-6 mb-md-0 mb-3" v-if="getPermission.clients.view">-->
-    <!--                    <router-link :to="{name: 'clients'}">-->
-    <!--                      <div class="card-counter danger">-->
-    <!--                        <i class="far fa-users-class"></i>-->
-    <!--                        <span class="count-numbers">{{-->
-    <!--                          getHomeCounts.counts.clients-->
-    <!--                        }}</span>-->
-    <!--                        <span class="count-name">{{ $t("clients.title") }}</span>-->
-    <!--                      </div>-->
-    <!--                    </router-link>-->
-    <!--                  </div> &ndash;&gt;-->
+    <home-primary-cards
+      :data="main.result"
+      :busy="main.busy"
+    />
 
-    <!--            <div-->
-    <!--                class="col-lg-3 col-md-6 mb-md-0 mb-3"-->
-    <!--            >-->
-    <!--              <router-link :to="{ name: 'users' }">-->
-    <!--                <div class="card-counter success">-->
-    <!--                  <i class="far fa-users"></i>-->
-    <!--                  <span class="count-numbers" v-if="getHomeCounts.counts">{{-->
-    <!--                      getHomeCounts.counts.users-->
-    <!--                    }}</span>-->
-    <!--                  <span class="count-name">{{ $t("users.title") }}</span>-->
-    <!--                </div>-->
-    <!--              </router-link>-->
-    <!--            </div>-->
+    <section class="home__section">
+      <home-filter-by
+        @filter-by="filterCharts"
+      />
 
-    <!--            &lt;!&ndash;                <div class="col-lg-3 col-md-6 mb-md-0 mb-3">&ndash;&gt;-->
-    <!--            &lt;!&ndash;                    <div class="card-counter info">&ndash;&gt;-->
-    <!--            &lt;!&ndash;                        <i class="far fa-cogs"></i>&ndash;&gt;-->
-    <!--            &lt;!&ndash;                        <span class="count-numbers"></span>&ndash;&gt;-->
-    <!--            &lt;!&ndash;                        <span class="count-name">{{ $t('settings.title') }}</span>&ndash;&gt;-->
-    <!--            &lt;!&ndash;                    </div>&ndash;&gt;-->
-    <!--            &lt;!&ndash;                </div>&ndash;&gt;-->
+      <home-secondary-cards
+        :data="total.result"
+        :busy="total.busy"
+        :manager-busy="managersPie.busy"
+        :manager-data="managersPie.data"
+      />
 
-    <!--            <div-->
-    <!--                class="col-lg-3 col-md-6 mb-md-0 mb-3"-->
-    <!--                v-if="apartmentsViewPermission"-->
-    <!--            >-->
-    <!--              <router-link :to="{ name: 'objects-filter' }">-->
-    <!--                <div class="card-counter apartments">-->
-    <!--                  <i class="far fa-home"></i>-->
-    <!--                  <span class="count-numbers" v-if="getHomeCounts.counts">{{-->
-    <!--                      getHomeCounts.counts.apartments-->
-    <!--                    }}</span>-->
-    <!--                  <span class="count-name">{{ $t("objects.apartments") }}</span>-->
-    <!--                </div>-->
-    <!--              </router-link>-->
-    <!--            </div>-->
-    <!--          </div>-->
-    <!--        </div>-->
-    <!--      </div>-->
-    <!--    </div>-->
+      <home-branch-reports
+        :busy="branchReports.busy"
+        :data="branchReports.data"
+        class="mt-4"
+      />
+    </section>
 
     <template v-if="mainPermission">
       <objects-income-by-period
         :busy="objectsIncome.busy"
         :data="objectsIncome.result"
-        class="home__table"
+        class="home__table home__section"
       />
       <object-payments
         :busy="objectPayments.busy"
         :data="objectPayments.result"
-        class="home__table"
+        class="home__table home__section"
       />
     </template>
 
     <div
       v-if="mainPermission || managerPermission"
-      class="row"
+      class="row home__section"
     >
       <div class="col-12">
         <div class="d-flex align-items-center justify-content-end mb-3">
@@ -657,7 +641,10 @@ export default {
     </div>
 
     <!-- Common stats -->
-    <div v-if="mainPermission">
+    <div
+      v-if="mainPermission"
+      class="home__section"
+    >
       <!-- WIDGETS -->
       <div class="row">
         <!--  -->
@@ -816,7 +803,7 @@ export default {
               type="line"
               :options="salesOptions"
               :series="salesOptions.series"
-              :height="300"
+              :height="500"
             />
             <base-loading
               v-else
@@ -905,29 +892,13 @@ export default {
           />
         </div>
       </div>
-      <div class="mt-5">
-        Отчеты по Филиалам
-      </div>
-      <!-- Orders -->
-      <div class="row mt-2 mb-5">
-        <div class="col-12">
-          <apexchart
-            v-if="branchesOptions"
-            type="line"
-            :options="branchesOptions"
-            :series="branchesOptions.series"
-            :height="300"
-          />
-          <base-loading
-            v-else
-            :container-height="315"
-            class="bg-white"
-          />
-        </div>
-      </div>
     </div>
+
     <!-- MANAGER -->
-    <div v-if="managerPermission">
+    <div
+      v-if="managerPermission"
+      class="home__section"
+    >
       <!-- WIDGETS -->
       <div class="row">
         <!--  -->
@@ -1138,6 +1109,10 @@ export default {
 </template>
 
 <style>
+.home__section {
+  padding: 3rem 3rem 0 3rem;
+}
+
 .card-counter {
   /*box-shadow: 2px 2px 10px #dadada;*/
   padding: 25px 16px;
@@ -1204,6 +1179,6 @@ export default {
 }
 
 .home__table {
-  margin: 4rem 0;
+  //margin: 4rem 0;
 }
 </style>
