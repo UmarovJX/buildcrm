@@ -28,7 +28,7 @@ export default {
     </div>
     <apexchart
       height="600"
-      type="line"
+      type="bar"
       class="mt-2 mb-1"
       :options="data.options"
       :series="data.series"

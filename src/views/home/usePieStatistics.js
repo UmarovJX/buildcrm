@@ -1,7 +1,6 @@
 import { ref } from 'vue'
 import { v3ServiceApi } from '@/services/v3/v3.service'
 import { useToastError } from '@/composables/useToastError'
-import { formatToPrice } from '@/util/reusable'
 
 const pieChartOptions = {
   // colors: chartColors,
@@ -16,9 +15,10 @@ const pieChartOptions = {
     type: 'donut',
   },
   dataLabels: {
-    formatter(val) {
-      return `${formatToPrice(val)}`
-    },
+    enabled: true,
+    // formatter(val) {
+    //   return `${formatToPrice(val)}`
+    // },
   },
   legend: {
     show: false,

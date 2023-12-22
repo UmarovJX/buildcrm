@@ -5,6 +5,7 @@ import { isNull } from '@/util/inspect'
 import { v3ServiceApi as api } from '@/services/v3/v3.service'
 import { formatToPrice, formatDateWithDot } from '@/util/reusable'
 
+import useHome from '@/views/home/useHome'
 import useStatistics from '@/views/home/useStatistics'
 import usePieStatistics from '@/views/home/usePieStatistics'
 
@@ -26,7 +27,6 @@ import HomeFilterBy from '@/views/home/components/HomeFilterBy.vue'
 import HomeIncomeReports from '@/views/home/components/HomeIncomeReports.vue'
 import HomeOrderReports from '@/views/home/components/HomeOrderReports.vue'
 import HomePieChart from '@/views/home/components/HomePieChart.vue'
-import useHome from '@/views/home/useHome'
 
 export default {
   components: {
@@ -58,7 +58,6 @@ export default {
         'general.view_manager_statistics',
       ),
       widgetData: null,
-
       managerWidget: null,
       managerSales: null,
       managerSalesCount: null,
@@ -211,10 +210,16 @@ export default {
     } = usePieStatistics()
 
     async function updateIncomeReports(periodType) {
-      await fetchIncomeReportsData({
+      const payload = {
         ...filter.value,
         type: periodType,
-      })
+      }
+      await Promise.allSettled([
+        fetchIncomeReportsData(payload),
+        fetchObjectSalesData(payload),
+        fetchTariffsPieData(payload),
+        fetchManagersPieData(payload),
+      ])
     }
 
     async function fetchData(b = {}) {

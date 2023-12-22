@@ -105,19 +105,17 @@ export default function useStatistics() {
 
       branchReports.value.data.options = {
         colors: chartColors,
-        chart: {
-          height: 600,
-          type: 'line',
-          zoom: {
-            enabled: true,
-          },
-        },
         dataLabels: {
-          // enabled: true,
+          enabled: false,
         },
         stroke: {
-          width: 2,
-          // curve: 'straight',
+          show: true,
+          width: 12,
+          colors: ['transparent'],
+        },
+        chart: {
+          height: 600,
+          type: 'bar',
         },
         markers: {
           radius: 2,
@@ -125,32 +123,8 @@ export default function useStatistics() {
         },
         grid: {
           show: true,
-          // xaxis: {
-          //   lines: {
-          //     show: true,
-          //   },
-          // },
-          // yaxis: {
-          //   lines: {
-          //     show: true,
-          //   },
-          // },
-          row: {
-            colors: undefined,
-            opacity: 0.5,
-          },
-          column: {
-            colors: undefined,
-            opacity: 0.5,
-          },
-          // row: {
-          // colors: chartColors,
-          // opacity: 0.5,
-          // },
         },
         xaxis: {
-          tickPlacement: 'on',
-          tickAmount: 20,
           categories: result.label,
           labels: {
             colors: chartColors,
@@ -166,6 +140,7 @@ export default function useStatistics() {
         },
         yaxis: {
           tickAmount: 15,
+
           labels: {
             style: {
               fontSize: '12px',
@@ -179,6 +154,11 @@ export default function useStatistics() {
           },
           // min: 5,
           // max: 40,
+        },
+        tooltip: {
+          enabled: true,
+          intersect: false,
+          shared: true,
         },
       }
     } catch (e) {
@@ -274,6 +254,7 @@ export default function useStatistics() {
           // min: 5,
           // max: 40,
         },
+
       }
     } catch (e) {
       toastError(e)
@@ -293,19 +274,17 @@ export default function useStatistics() {
 
       orderReports.value.data.options = {
         colors: chartColors,
-        chart: {
-          height: 600,
-          type: 'line',
-          zoom: {
-            enabled: true,
-          },
-        },
         dataLabels: {
-          // enabled: true,
+          enabled: false,
         },
         stroke: {
-          width: 2,
-          // curve: 'straight',
+          show: true,
+          width: 12,
+          colors: ['transparent'],
+        },
+        chart: {
+          height: 600,
+          type: 'bar',
         },
         markers: {
           radius: 2,
@@ -313,32 +292,8 @@ export default function useStatistics() {
         },
         grid: {
           show: true,
-          // xaxis: {
-          //   lines: {
-          //     show: true,
-          //   },
-          // },
-          // yaxis: {
-          //   lines: {
-          //     show: true,
-          //   },
-          // },
-          row: {
-            colors: undefined,
-            opacity: 0.5,
-          },
-          column: {
-            colors: undefined,
-            opacity: 0.5,
-          },
-          // row: {
-          // colors: chartColors,
-          // opacity: 0.5,
-          // },
         },
         xaxis: {
-          tickPlacement: 'on',
-          tickAmount: 20,
           categories: result.label,
           labels: {
             colors: chartColors,
@@ -354,6 +309,7 @@ export default function useStatistics() {
         },
         yaxis: {
           tickAmount: 15,
+
           labels: {
             style: {
               fontSize: '12px',
@@ -367,6 +323,12 @@ export default function useStatistics() {
           },
           // min: 5,
           // max: 40,
+        },
+        tooltip: {
+          enabled: true,
+          intersect: false,
+          shared: true,
+
         },
       }
     } catch (e) {
