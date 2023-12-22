@@ -1,6 +1,6 @@
 <script>
 export default {
-  name: 'HomeBranchReports',
+  name: 'HomeOrderReports',
   props: {
     data: {
       type: Object,
@@ -18,7 +18,7 @@ export default {
   <div>
     <div class="d-flex justify-content-between mb-4">
       <h3 class="chart__title">
-        {{ $t('common.branch_reports') }}
+        {{ $t('common.report_on_contracts') }}
         <b-spinner
           v-if="busy"
           class="chart__loading__spinner"

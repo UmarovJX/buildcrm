@@ -71,7 +71,7 @@ export default {
   flex-wrap: wrap;
   gap: 2rem 1rem;
   border-bottom: 6px solid var(--gray-100);
-  padding: 0 3rem 3rem;
+  padding: 0 3rem 2rem;
 }
 
 .base__card__multiple {

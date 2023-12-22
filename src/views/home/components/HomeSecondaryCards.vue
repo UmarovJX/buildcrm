@@ -1,14 +1,11 @@
 <script>
 import { formatToPrice } from '@/util/reusable'
-
 import BaseCard from '@/views/home/elements/BaseCard.vue'
-import ManagersPieChart from '@/views/home/components/ManagersPieChart.vue'
 
 export default {
   name: 'PrimaryCards',
   components: {
     BaseCard,
-    ManagersPieChart,
   },
   props: {
     data: {
@@ -16,14 +13,6 @@ export default {
       required: true,
     },
     busy: {
-      type: Boolean,
-      required: true,
-    },
-    managerData: {
-      type: Object,
-      required: true,
-    },
-    managerBusy: {
       type: Boolean,
       required: true,
     },
@@ -99,24 +88,16 @@ export default {
           </span>
         </template>
       </base-card>
-
-      <managers-pie-chart
-        class="manager__pie__chart"
-        :busy="managerBusy"
-        :data="managerData"
-      />
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .secondary__cards {
-  //padding: 2rem 3rem 0 3rem;
-
   &__wrapper {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1rem;
+    gap: 2rem 1rem;
   }
 
   &__spinner{
@@ -124,9 +105,5 @@ export default {
     height: 2rem;
     //border: 20px solid var(--violet-600);
   }
-}
-
-.manager__pie__chart{
-  grid-column: 1/3;
 }
 </style>

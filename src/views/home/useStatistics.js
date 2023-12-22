@@ -1,13 +1,13 @@
 import { ref } from 'vue'
 import { v3ServiceApi } from '@/services/v3/v3.service'
 import { useToastError } from '@/composables/useToastError'
-import { formatToPrice } from '@/util/reusable'
+import { abbreviateNumber } from '@/util/numberHelper'
 
-const chartColors = [
-  '#60A5FA',
-  '#FACC15',
+export const chartColors = [
   '#7C3AED',
   '#0D9488',
+  '#60A5FA',
+  '#FACC15',
   '#4ADE80',
   '#CA8A04',
   '#FCA5A5',
@@ -16,6 +16,7 @@ const chartColors = [
 ]
 export default function useStatistics() {
   const { toastError } = useToastError()
+
   const main = ref({
     busy: false,
     result: {
@@ -44,7 +45,7 @@ export default function useStatistics() {
     },
   })
 
-  const managersPie = ref({
+  const branchReports = ref({
     busy: false,
     data: {
       series: [],
@@ -52,7 +53,15 @@ export default function useStatistics() {
     },
   })
 
-  const branchReports = ref({
+  const incomeReports = ref({
+    busy: false,
+    data: {
+      series: [],
+      options: {},
+    },
+  })
+
+  const orderReports = ref({
     busy: false,
     data: {
       series: [],
@@ -84,42 +93,6 @@ export default function useStatistics() {
     }
   }
 
-  async function fetchManagersPieData(b = {}) {
-    try {
-      managersPie.value.busy = true
-      const { data: { result } } = await v3ServiceApi.managerStats.getManagersPie(b)
-      managersPie.value.data.options = {
-        colors: chartColors,
-        chart: {
-          height: 500,
-          type: 'pie',
-        },
-        dataLabels: {
-          formatter(val) {
-            return `${formatToPrice(val)}`
-          },
-        },
-        legend: {
-          fontFamily: 'Inter, san-serif',
-          fontSize: 16,
-          position: 'bottom',
-          onItemHover: {
-            highlightDataSeries: true,
-          },
-          onItemClick: {
-            toggleDataSeries: true,
-          },
-        },
-        labels: result.label,
-      }
-      managersPie.value.data.series = result.data
-    } catch (e) {
-      toastError(e)
-    } finally {
-      managersPie.value.busy = false
-    }
-  }
-
   async function fetchBranchReportsData(b) {
     try {
       branchReports.value.busy = true
@@ -131,73 +104,275 @@ export default function useStatistics() {
       }))
 
       branchReports.value.data.options = {
+        colors: chartColors,
         chart: {
-          toolbar: {
-            show: true,
-            tools: {
-              enabled: true,
-              zoom: true,
-              zoomin: true,
-              zoomout: true,
-            },
-          },
-          type: 'bar',
-          height: 350,
+          height: 600,
+          type: 'line',
           zoom: {
             enabled: true,
           },
-          autoSelected: 'zoom',
-        },
-        plotOptions: {
-          bar: {
-            horizontal: false,
-            // columnWidth: '55%',
-            endingShape: 'rounded',
-            borderRadius: 4,
-          },
         },
         dataLabels: {
-          enabled: false,
+          // enabled: true,
         },
         stroke: {
+          width: 2,
+          // curve: 'straight',
+        },
+        markers: {
+          radius: 2,
+          colors: chartColors,
+        },
+        grid: {
           show: true,
-          width: 5,
-          stroke: {
-            curve: 'smooth',
+          // xaxis: {
+          //   lines: {
+          //     show: true,
+          //   },
+          // },
+          // yaxis: {
+          //   lines: {
+          //     show: true,
+          //   },
+          // },
+          row: {
+            colors: undefined,
+            opacity: 0.5,
           },
-          // colors: ['transparent'],
+          column: {
+            colors: undefined,
+            opacity: 0.5,
+          },
+          // row: {
+          // colors: chartColors,
+          // opacity: 0.5,
+          // },
         },
         xaxis: {
+          tickPlacement: 'on',
+          tickAmount: 20,
           categories: result.label,
-          tickPlacement: 'on',
-          tickAmount: 40,
-
-        },
-        yaxis: {
-          // title: {
-          //   text: '$ (thousands)',
-          // },
-          tickAmount: 15,
-
-          tickPlacement: 'on',
-        },
-        fill: {
-          opacity: 1,
-        },
-        tooltip: {
-          y: {
-            // formatter(val) {
-            //   return `$ ${val} thousands`
-            // },
+          labels: {
+            colors: chartColors,
+            style: {
+              fontSize: '12px',
+              fontFamily: 'Inter, sans-serif',
+              fontWeight: 500,
+              lineHeight: '20px',
+              fontStyle: 'normal',
+              colors: ['#4B5563'],
+            },
           },
         },
+        yaxis: {
+          tickAmount: 15,
+          labels: {
+            style: {
+              fontSize: '12px',
+              fontFamily: 'Inter, sans-serif',
+              fontWeight: 500,
+              lineHeight: '20px',
+              fontStyle: 'normal',
+              colors: ['#4B5563'],
+            },
+            formatter: x => abbreviateNumber(x),
+          },
+          // min: 5,
+          // max: 40,
+        },
       }
-
-      console.log('result', result)
     } catch (e) {
       toastError(e)
     } finally {
       branchReports.value.busy = false
+    }
+  }
+
+  async function fetchIncomeReportsData(b) {
+    try {
+      incomeReports.value.busy = true
+      const { data: { result } } = await v3ServiceApi.stats.getSalesData(b)
+      incomeReports.value.data.series = result.data.map(item => ({
+        name: item.label,
+        data: item.data,
+      }))
+
+      incomeReports.value.data.options = {
+        colors: chartColors,
+        chart: {
+          height: 600,
+          type: 'line',
+          zoom: {
+            enabled: true,
+          },
+        },
+        dataLabels: {
+          // enabled: true,
+        },
+        stroke: {
+          width: 2,
+          // curve: 'straight',
+        },
+        markers: {
+          radius: 2,
+          colors: chartColors,
+        },
+        grid: {
+          show: true,
+          // xaxis: {
+          //   lines: {
+          //     show: true,
+          //   },
+          // },
+          // yaxis: {
+          //   lines: {
+          //     show: true,
+          //   },
+          // },
+          row: {
+            colors: undefined,
+            opacity: 0.5,
+          },
+          column: {
+            colors: undefined,
+            opacity: 0.5,
+          },
+          // row: {
+          // colors: chartColors,
+          // opacity: 0.5,
+          // },
+        },
+        xaxis: {
+          tickPlacement: 'on',
+          tickAmount: 20,
+          categories: result.label,
+          labels: {
+            colors: chartColors,
+            style: {
+              fontSize: '12px',
+              fontFamily: 'Inter, sans-serif',
+              fontWeight: 500,
+              lineHeight: '20px',
+              fontStyle: 'normal',
+              colors: ['#4B5563'],
+            },
+          },
+        },
+        yaxis: {
+          tickAmount: 15,
+          labels: {
+            style: {
+              fontSize: '12px',
+              fontFamily: 'Inter, sans-serif',
+              fontWeight: 500,
+              lineHeight: '20px',
+              fontStyle: 'normal',
+              colors: ['#4B5563'],
+            },
+            formatter: x => abbreviateNumber(x),
+          },
+          // min: 5,
+          // max: 40,
+        },
+      }
+    } catch (e) {
+      toastError(e)
+    } finally {
+      incomeReports.value.busy = false
+    }
+  }
+
+  async function fetchOrderReportsData(b) {
+    try {
+      orderReports.value.busy = true
+      const { data: { result } } = await v3ServiceApi.stats.getOrdersData(b)
+      orderReports.value.data.series = result.data.map(item => ({
+        name: item.label,
+        data: item.data,
+      }))
+
+      orderReports.value.data.options = {
+        colors: chartColors,
+        chart: {
+          height: 600,
+          type: 'line',
+          zoom: {
+            enabled: true,
+          },
+        },
+        dataLabels: {
+          // enabled: true,
+        },
+        stroke: {
+          width: 2,
+          // curve: 'straight',
+        },
+        markers: {
+          radius: 2,
+          colors: chartColors,
+        },
+        grid: {
+          show: true,
+          // xaxis: {
+          //   lines: {
+          //     show: true,
+          //   },
+          // },
+          // yaxis: {
+          //   lines: {
+          //     show: true,
+          //   },
+          // },
+          row: {
+            colors: undefined,
+            opacity: 0.5,
+          },
+          column: {
+            colors: undefined,
+            opacity: 0.5,
+          },
+          // row: {
+          // colors: chartColors,
+          // opacity: 0.5,
+          // },
+        },
+        xaxis: {
+          tickPlacement: 'on',
+          tickAmount: 20,
+          categories: result.label,
+          labels: {
+            colors: chartColors,
+            style: {
+              fontSize: '12px',
+              fontFamily: 'Inter, sans-serif',
+              fontWeight: 500,
+              lineHeight: '20px',
+              fontStyle: 'normal',
+              colors: ['#4B5563'],
+            },
+          },
+        },
+        yaxis: {
+          tickAmount: 15,
+          labels: {
+            style: {
+              fontSize: '12px',
+              fontFamily: 'Inter, sans-serif',
+              fontWeight: 500,
+              lineHeight: '20px',
+              fontStyle: 'normal',
+              colors: ['#4B5563'],
+            },
+            formatter: x => abbreviateNumber(x),
+          },
+          // min: 5,
+          // max: 40,
+        },
+      }
+    } catch (e) {
+      toastError(e)
+    } finally {
+      orderReports.value.busy = false
     }
   }
 
@@ -208,10 +383,13 @@ export default function useStatistics() {
     total,
     fetchTotalData,
 
-    managersPie,
-    fetchManagersPieData,
-
     branchReports,
     fetchBranchReportsData,
+
+    incomeReports,
+    fetchIncomeReportsData,
+
+    orderReports,
+    fetchOrderReportsData,
   }
 }
