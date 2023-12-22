@@ -14,7 +14,7 @@ export default {
       default: 'location_city',
     },
     title: {
-      type: String,
+      type: [String, Object],
       default: 'Title',
     },
     bottom: {

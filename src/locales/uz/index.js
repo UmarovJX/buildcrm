@@ -36,6 +36,9 @@ export default {
   reissue_percentage: 'Qayta rasmiylashtirish foizi',
   percentage_of_recontract: "Qayta ro'yxatdan o'tish foizi",
   common: {
+    chart: 'Diagramma',
+    table: 'Jadval',
+    apartments: 'Kvartiralar',
     sales_by_objects: "Obyekt bo'yicha savdo",
     sales_by_tariffs: 'Tariflar bo\'yicha savdo',
     income_reports: 'Daromad hisobotlari',

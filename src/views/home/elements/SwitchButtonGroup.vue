@@ -68,7 +68,7 @@ export default {
 
     .switch__button {
       height: 100%;
-      padding: 0 1rem;
+      padding: 0.25rem 1rem;
       margin: 0;
       border-radius: 0;
       outline: none;

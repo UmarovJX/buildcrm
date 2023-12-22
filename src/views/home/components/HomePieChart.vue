@@ -39,7 +39,7 @@ export default {
         label: vm.$t('sum'),
       },
       {
-        key: 'percent',
+        key: 'objectPercent',
         label: '%',
       },
     ])
@@ -129,7 +129,6 @@ export default {
 
   &__body {
     display: flex;
-    justify-content: space-between;
     flex-wrap: wrap;
     gap: 3rem;
     margin: 1.5rem 1.5rem 2rem 2rem;

@@ -38,7 +38,7 @@ export default {
     <base-card
       class="base__card__multiple"
       icon="door_open"
-      title="Квартиры"
+      :title="$t('common.apartments')"
       :bottom-left="{
         title: $t('common.overall'),
         value: data.apartments.total
@@ -52,7 +52,7 @@ export default {
     <base-card
       class="base__card__multiple"
       icon="directions_car"
-      title="Парковки"
+      :title="$t('parkings')"
       :bottom-left="{
         title: $t('common.overall'),
         value: data.parking.total

@@ -14,6 +14,70 @@ export const chartColors = [
   '#F472B6',
   '#9CA3AF',
 ]
+
+const barChartOptions = {
+  colors: chartColors,
+  chart: {
+    type: 'bar',
+    height: 600,
+    chart: {
+      type: 'bar',
+    },
+  },
+  dataLabels: {
+    enabled: false,
+  },
+  stroke: {
+    show: true,
+    width: 24,
+    colors: ['transparent'],
+  },
+  markers: {
+    radius: 2,
+    colors: chartColors,
+  },
+  grid: {
+    show: true,
+  },
+  xaxis: {
+    axisTicks: {
+      show: true,
+    },
+    categories: [],
+    labels: {
+      colors: chartColors,
+      style: {
+        fontSize: '12px',
+        fontFamily: 'Inter, sans-serif',
+        fontWeight: 500,
+        lineHeight: '20px',
+        fontStyle: 'normal',
+        colors: ['#4B5563'],
+      },
+    },
+  },
+  yaxis: {
+    axisTicks: {
+      show: true,
+    },
+    tickAmount: 15,
+    labels: {
+      style: {
+        fontSize: '12px',
+        fontFamily: 'Inter, sans-serif',
+        fontWeight: 500,
+        lineHeight: '20px',
+        fontStyle: 'normal',
+        colors: ['#4B5563'],
+      },
+      formatter: x => abbreviateNumber(x),
+    },
+  },
+  tooltip: {
+    shared: true,
+    intersect: false,
+  },
+}
 export default function useStatistics() {
   const { toastError } = useToastError()
 
@@ -93,81 +157,6 @@ export default function useStatistics() {
     }
   }
 
-  async function fetchBranchReportsData(b) {
-    try {
-      branchReports.value.busy = true
-      const { data: { result } } = await v3ServiceApi.stats.getBranchesData(b)
-
-      branchReports.value.data.series = result.data.map(item => ({
-        name: item.label,
-        data: item.data,
-      }))
-
-      branchReports.value.data.options = {
-        colors: chartColors,
-        dataLabels: {
-          enabled: false,
-        },
-        stroke: {
-          show: true,
-          width: 12,
-          colors: ['transparent'],
-        },
-        chart: {
-          height: 600,
-          type: 'bar',
-        },
-        markers: {
-          radius: 2,
-          colors: chartColors,
-        },
-        grid: {
-          show: true,
-        },
-        xaxis: {
-          categories: result.label,
-          labels: {
-            colors: chartColors,
-            style: {
-              fontSize: '12px',
-              fontFamily: 'Inter, sans-serif',
-              fontWeight: 500,
-              lineHeight: '20px',
-              fontStyle: 'normal',
-              colors: ['#4B5563'],
-            },
-          },
-        },
-        yaxis: {
-          tickAmount: 15,
-
-          labels: {
-            style: {
-              fontSize: '12px',
-              fontFamily: 'Inter, sans-serif',
-              fontWeight: 500,
-              lineHeight: '20px',
-              fontStyle: 'normal',
-              colors: ['#4B5563'],
-            },
-            formatter: x => abbreviateNumber(x),
-          },
-          // min: 5,
-          // max: 40,
-        },
-        tooltip: {
-          enabled: true,
-          intersect: false,
-          shared: true,
-        },
-      }
-    } catch (e) {
-      toastError(e)
-    } finally {
-      branchReports.value.busy = false
-    }
-  }
-
   async function fetchIncomeReportsData(b) {
     try {
       incomeReports.value.busy = true
@@ -191,7 +180,7 @@ export default function useStatistics() {
         },
         stroke: {
           width: 2,
-          // curve: 'straight',
+          curve: 'smooth',
         },
         markers: {
           radius: 2,
@@ -263,6 +252,30 @@ export default function useStatistics() {
     }
   }
 
+  async function fetchBranchReportsData(b) {
+    try {
+      branchReports.value.busy = true
+      const { data: { result } } = await v3ServiceApi.stats.getBranchesData(b)
+
+      branchReports.value.data.series = result.data.map(item => ({
+        name: item.label,
+        data: item.data,
+      }))
+
+      branchReports.value.data.options = {
+        ...barChartOptions,
+        xaxis: {
+          ...barChartOptions.xaxis,
+          categories: result.label,
+        },
+      }
+    } catch (e) {
+      toastError(e)
+    } finally {
+      branchReports.value.busy = false
+    }
+  }
+
   async function fetchOrderReportsData(b) {
     try {
       orderReports.value.busy = true
@@ -273,62 +286,10 @@ export default function useStatistics() {
       }))
 
       orderReports.value.data.options = {
-        colors: chartColors,
-        dataLabels: {
-          enabled: false,
-        },
-        stroke: {
-          show: true,
-          width: 12,
-          colors: ['transparent'],
-        },
-        chart: {
-          height: 600,
-          type: 'bar',
-        },
-        markers: {
-          radius: 2,
-          colors: chartColors,
-        },
-        grid: {
-          show: true,
-        },
+        ...barChartOptions,
         xaxis: {
+          ...barChartOptions.xaxis,
           categories: result.label,
-          labels: {
-            colors: chartColors,
-            style: {
-              fontSize: '12px',
-              fontFamily: 'Inter, sans-serif',
-              fontWeight: 500,
-              lineHeight: '20px',
-              fontStyle: 'normal',
-              colors: ['#4B5563'],
-            },
-          },
-        },
-        yaxis: {
-          tickAmount: 15,
-
-          labels: {
-            style: {
-              fontSize: '12px',
-              fontFamily: 'Inter, sans-serif',
-              fontWeight: 500,
-              lineHeight: '20px',
-              fontStyle: 'normal',
-              colors: ['#4B5563'],
-            },
-            formatter: x => abbreviateNumber(x),
-          },
-          // min: 5,
-          // max: 40,
-        },
-        tooltip: {
-          enabled: true,
-          intersect: false,
-          shared: true,
-
         },
       }
     } catch (e) {

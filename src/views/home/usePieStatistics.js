@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 import { v3ServiceApi } from '@/services/v3/v3.service'
 import { useToastError } from '@/composables/useToastError'
+import { formatToPrice } from '@/util/reusable'
 
 const pieChartOptions = {
   // colors: chartColors,
@@ -65,6 +66,10 @@ export default function usePieStatistics() {
     items: [],
   })
 
+  function getPercent(a, b) {
+    return `${formatToPrice((a / b) * 100)}%`
+  }
+
   async function fetchObjectSalesData(body = {}) {
     try {
       objectSales.value.busy = true
@@ -74,10 +79,12 @@ export default function usePieStatistics() {
           ...body,
         },
       )
+      const sum = result.data.reduce((acc, a) => acc + a, 0)
 
       objectSales.value.items = result.label.map((label, labelIndex) => ({
         objectName: label,
         objectData: result.data[labelIndex],
+        objectPercent: getPercent(result.data[labelIndex], sum),
       }))
 
       objectSales.value.data.options = {
@@ -98,9 +105,12 @@ export default function usePieStatistics() {
       tariffsPie.value.busy = true
       const { data: { result } } = await v3ServiceApi.stats.getTariffsPie(body)
 
+      const sum = result.data.reduce((acc, a) => acc + a, 0)
+
       tariffsPie.value.items = result.label.map((label, labelIndex) => ({
         objectName: label,
         objectData: result.data[labelIndex],
+        objectPercent: getPercent(result.data[labelIndex], sum),
       }))
 
       tariffsPie.value.data.options = {
@@ -121,9 +131,12 @@ export default function usePieStatistics() {
       managersPie.value.busy = true
       const { data: { result } } = await v3ServiceApi.stats.getManagersPie(body)
 
+      const sum = result.data.reduce((acc, a) => acc + a, 0)
+
       managersPie.value.items = result.label.map((label, labelIndex) => ({
         objectName: label,
         objectData: result.data[labelIndex],
+        objectPercent: getPercent(result.data[labelIndex], sum),
       }))
 
       managersPie.value.data.options = {

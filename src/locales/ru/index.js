@@ -36,6 +36,9 @@ export default {
   reissue_percentage: 'Процент перевыпуска',
   percentage_of_recontract: 'Процент переоформление',
   common: {
+    chart: 'Диаграмма',
+    table: 'Таблица',
+    apartments: 'Квартиры',
     sales_by_objects: 'Продажа по объектам',
     sales_by_tariffs: 'Продажи по тарифам',
     income_reports: 'Отчёты по поступлениям',
