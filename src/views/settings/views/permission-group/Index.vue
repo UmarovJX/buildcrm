@@ -6,18 +6,10 @@ import SettingsPermission from '@/permission/settings.permission'
 
 import { XButton } from '@/components/ui-components/button'
 import { XIcon } from '@/components/ui-components/material-icons'
-import { XCircularBackground } from '@/components/ui-components/circular-background'
-import AppHeader from '@/components/Header/AppHeader.vue'
-import BaseLoading from '@/components/Reusable/BaseLoading.vue'
-import PlanPagination from '@/views/plan/components/PlanPagination.vue'
-import PlanUpsert from '@/views/plan/components/PlanUpsert.vue'
-import PlanFilter from '@/views/plan/components/PlanFilter.vue'
-
 import GroupUpsert from '@/views/settings/views/permission-group/components/GroupUpsert.vue'
 import GroupTable from '@/views/settings/views/permission-group/components/GroupTable.vue'
 import GroupTree from '@/views/settings/views/permission-group/components/GroupTree.vue'
 import PermissionUpsert from '@/views/settings/views/permission-group/components/PermissionUpsert.vue'
-import XPagination from '@/components/ui-components/pagination/XPagination.vue'
 import { usePermissionUpsert } from '@/views/settings/views/permission-group/usePermissionUpsert'
 
 export default {
@@ -25,17 +17,10 @@ export default {
   components: {
     XIcon,
     XButton,
-    AppHeader,
-    BaseLoading,
-    XCircularBackground,
-    PlanUpsert,
-    PlanPagination,
-    PlanFilter,
 
     GroupTable,
     GroupTree,
     GroupUpsert,
-    XPagination,
     PermissionUpsert,
   },
   setup() {
@@ -102,7 +87,6 @@ export default {
 
     function activateFirstItem() {
       const result = findTreeElement(tableData.value.items, parseInt(vm.$route.query.tree))
-      console.log('result', result)
       if (result) {
         tableItems.value = result.element.permissions
       } else if (tableData.value.items.length) {

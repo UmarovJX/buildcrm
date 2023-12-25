@@ -91,14 +91,14 @@ export default {
       }
     }
 
-    async function create() {
-      return await v3ServiceApi.role.create(
+    function create() {
+      return v3ServiceApi.role.create(
         makeBody(),
       )
     }
 
-    async function update() {
-      return await v3ServiceApi.role.update({
+    function update() {
+      return v3ServiceApi.role.update({
         id: vm.$route.params.id,
         ...makeBody(),
       })

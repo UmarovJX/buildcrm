@@ -16,7 +16,7 @@ export const chartColors = [
   '#9CA3AF',
 ]
 
-const barChartOptions = {
+export const barChartOptions = {
   colors: chartColors,
   chart: {
     type: 'bar',

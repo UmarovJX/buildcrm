@@ -1,14 +1,46 @@
 import { computed, ref } from 'vue'
 import { formatToPrice } from '@/util/reusable'
 import { v3ServiceApi as api } from '@/services/v3/v3.service'
+import { useToastError } from '@/composables/useToastError'
+import { getPercent, lineChartOptions, pieChartOptions } from '@/views/home/chartOptions'
 
 export default function useWidgets() {
+  const { toastError } = useToastError()
+
   const widgetData = ref(null)
   const managerWidget = ref(null)
-  const managerSales = ref(null)
-  const managerObjectsPie = ref(null)
-  const managerSalesCount = ref(null)
-  const managerStatusPie = ref(null)
+  const managerStatusPie = ref({
+    busy: false,
+    data: {
+      series: [],
+      options: {},
+    },
+    items: [],
+  })
+
+  const managerObjectsPie = ref({
+    busy: false,
+    data: {
+      series: [],
+      options: {},
+    },
+    items: [],
+  })
+
+  const managerSales = ref({
+    busy: false,
+    data: {
+      series: [],
+      options: {},
+    },
+  })
+  const managerSalesCount = ref({
+    busy: false,
+    data: {
+      series: [],
+      options: {},
+    },
+  })
 
   const paymentType = ref('')
   const paymentTypeOptions = computed(() => [
@@ -49,78 +81,89 @@ export default function useWidgets() {
   }
 
   async function fetchManagerSales(b = {}) {
-    managerSales.value = null
-    const salesRsp = await api.managerStats.getSales({ ...b, filter_type: 'sum' })
-    const d = salesRsp.data.result
-    managerSales.value = {
-      chart: {
-        type: 'line',
-      },
-      stroke: {
-        curve: 'smooth',
-      },
-      xaxis: {
-        categories: d.label,
-      },
-      series: d.data.map(el => ({ name: el.label, data: el.data })),
-      yaxis: {
-        labels: {
-          formatter(v) {
-            return formatToPrice(v, 2)
-          },
-        },
-      },
-      legend: {
-        show: false,
-      },
-    }
-  }
+    try {
+      managerSales.value.busy = true
+      const { data: { result } } = await api.managerStats.getSales({ ...b, filter_type: 'sum' })
 
-  async function fetchManagerObjectsPie(b = {}) {
-    managerObjectsPie.value = null
-    const salesPieRsp = await api.managerStats.getSalesPie({ ...b, filter_type: 'sum' })
+      managerSales.value.data.series = result.data.map(item => ({
+        name: item.label,
+        data: item.data,
+      }))
 
-    const d = salesPieRsp.data.result
-    managerObjectsPie.value = {
-      chart: {
-        height: 300,
-        type: 'pie',
-      },
-      dataLabels: {
-        formatter(val, opts) {
-          return opts.w.config.series[opts.seriesIndex]
+      managerSales.value.data.options = {
+        ...lineChartOptions,
+        xaxis: {
+          ...lineChartOptions.xaxis,
+          categories: result.label,
         },
-      },
-      labels: d.label,
-      series: d.data,
-      legend: { position: 'bottom' },
+        legend: {
+          show: true,
+        },
+      }
+    } catch (e) {
+      toastError(e)
+    } finally {
+      managerSales.value.busy = false
     }
   }
 
   async function fetchManagerSalesCount(b = {}) {
-    managerSalesCount.value = null
-    const salesRsp = await api.managerStats.getSales({ ...b, filter_type: 'count' })
+    try {
+      managerSalesCount.value.busy = true
 
-    const d = salesRsp.data.result
-    managerSalesCount.value = {
-      chart: {
-        type: 'line',
-      },
-      stroke: {
-        curve: 'smooth',
-      },
-      xaxis: {
-        categories: d.label,
-      },
-      series: d.data.map(el => ({ name: el.label, data: el.data })),
-      yaxis: {
-        labels: {
-          minWidth: 60,
+      const { data: { result } } = await api.managerStats.getSales({ ...b, filter_type: 'count' })
+
+      managerSalesCount.value.data.series = result.data.map(item => ({
+        name: item.label,
+        data: item.data,
+      }))
+
+      managerSalesCount.value.data.options = {
+        ...lineChartOptions,
+        xaxis: {
+          ...lineChartOptions.xaxis,
+          categories: result.label,
         },
-      },
-      legend: {
-        show: false,
-      },
+        legend: {
+          show: true,
+        },
+      }
+    } catch (e) {
+      toastError(e)
+    } finally {
+      managerSalesCount.value.busy = false
+    }
+  }
+
+  async function fetchManagerObjectsPie(b = {}) {
+    try {
+      managerObjectsPie.value.busy = true
+      const { data: { result } } = await api.managerStats.getSalesPie({ ...b, filter_type: 'sum' })
+
+      const sum = result.data.reduce((acc, a) => acc + a, 0)
+
+      managerObjectsPie.value.items = result.label.map((label, labelIndex) => ({
+        objectName: label ?? `N/A (${labelIndex + 1})`,
+        objectData: result.data[labelIndex],
+        objectPercent: getPercent(result.data[labelIndex], sum),
+      }))
+
+      managerObjectsPie.value.data.options = {
+        ...pieChartOptions,
+        labels: result.label.map((label, index) => {
+          if (label) {
+            return label
+          }
+
+          return `N/A (${index + 1})`
+        }),
+      }
+
+      managerObjectsPie.value.data.series = result.data
+    } catch (e) {
+      toastError(e)
+    } finally {
+      managerObjectsPie.value.busy = false
     }
   }
 
@@ -141,23 +184,34 @@ export default function useWidgets() {
   }
 
   async function fetchManagerStatusPie(b = {}) {
-    managerStatusPie.value = null
-    const managerStatusRsp = await api.managerStats.getStatusPie({ ...b, filter_type: 'sum' })
-    const d = managerStatusRsp.data.result
-    managerStatusPie.value = {
-      chart: {
-        height: 300,
+    try {
+      managerStatusPie.value.busy = true
+      const { data: { result } } = await api.managerStats.getStatusPie({ ...b, filter_type: 'sum' })
 
-        type: 'pie',
-      },
-      dataLabels: {
-        formatter(val, opts) {
-          return opts.w.config.series[opts.seriesIndex]
-        },
-      },
-      labels: d.label,
-      series: d.data,
-      legend: { position: 'bottom' },
+      const sum = result.data.reduce((acc, a) => acc + a, 0)
+
+      managerStatusPie.value.items = result.label.map((label, labelIndex) => ({
+        objectName: label ?? `N/A (${labelIndex + 1})`,
+        objectData: result.data[labelIndex],
+        objectPercent: getPercent(result.data[labelIndex], sum),
+      }))
+
+      managerStatusPie.value.data.options = {
+        ...pieChartOptions,
+        labels: result.label.map((label, index) => {
+          if (label) {
+            return label
+          }
+
+          return `N/A (${index + 1})`
+        }),
+      }
+
+      managerStatusPie.value.data.series = result.data
+    } catch (e) {
+      toastError(e)
+    } finally {
+      managerStatusPie.value.busy = false
     }
   }
 

@@ -36,6 +36,8 @@ export default {
   reissue_percentage: 'Процент перевыпуска',
   percentage_of_recontract: 'Процент переоформление',
   common: {
+    sales_reports: 'Отчеты по продажам',
+    report_on_receipts: 'Отчеты по поступлениям',
     receipts: 'Поступления',
     sold: 'Продано',
     all: 'Все',

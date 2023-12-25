@@ -2,6 +2,7 @@
 import { computed, getCurrentInstance, ref } from 'vue'
 
 import BaseLoading from '@/components/Reusable/BaseLoading.vue'
+import { formatToPrice } from '@/util/reusable'
 
 export default {
   name: 'HomePieChart',
@@ -11,7 +12,7 @@ export default {
   props: {
     title: {
       type: [String, Object],
-      default: 'Pie chart title',
+      default: '',
     },
     data: {
       type: Object,
@@ -41,6 +42,7 @@ export default {
       {
         key: 'objectData',
         label: vm.$t('sum'),
+        formatter: x => formatToPrice(x, 2),
       },
       {
         key: 'objectPercent',
@@ -140,7 +142,8 @@ export default {
     //flex-direction: column;
     //justify-content: center;
     gap: 3rem;
-    margin: 1.5rem 1.5rem 2rem 2rem;
+    margin: 2rem;
+    //margin: 1.5rem 1.5rem 2rem 2rem;
   }
 }
 

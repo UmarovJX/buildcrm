@@ -36,6 +36,8 @@ export default {
   reissue_percentage: 'Qayta rasmiylashtirish foizi',
   percentage_of_recontract: "Qayta ro'yxatdan o'tish foizi",
   common: {
+    sales_reports: "Sotuv bo'yicha daromad",
+    report_on_receipts: "Daromad bo'yicha hisobot",
     receipts: 'Daromad',
     sold: 'Sotilgan',
     all: 'Barchasi',

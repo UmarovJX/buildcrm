@@ -13,9 +13,7 @@ import useStatistics from '@/views/home/useStatistics'
 import usePieStatistics from '@/views/home/usePieStatistics'
 import useWidgets from '@/views/home/useWidgets'
 
-import { XIcon } from '@/components/ui-components/material-icons'
 import AppHeader from '@/components/Header/AppHeader.vue'
-import BaseLoading from '@/components/Reusable/BaseLoading2.vue'
 import ObjectsIncomeByPeriod from '@/views/home/components/ObjectsIncomeByPeriod.vue'
 import ObjectPayments from '@/views/home/components/ObjectPayments.vue'
 import HomePrimaryCards from '@/views/home/components/HomePrimaryCards.vue'
@@ -31,10 +29,7 @@ import Manager from '@/views/home/components/manager/Manager.vue'
 export default {
   components: {
     SwitchButtonGroup,
-    BaseLoading,
     AppHeader,
-    XIcon,
-
     ObjectsIncomeByPeriod,
     ObjectPayments,
     HomePrimaryCards,
@@ -110,7 +105,6 @@ export default {
       managerObjectsPie,
       managerSalesCount,
       managerStatusPie,
-      shortSum,
       fetchAll: widgetsFetchAll,
     } = useWidgets()
 
@@ -222,7 +216,6 @@ export default {
       fetchTotalData,
       filterCharts,
       fetchByPeriod,
-      shortSum,
     }
   },
 
@@ -344,217 +337,11 @@ export default {
       v-if="!showTables && managerPermission"
       class="home__section"
       :manager-widgets="managerWidget"
+      :manager-sales="managerSales"
+      :manager-sales-count="managerSalesCount"
+      :manager-objects-pie="managerObjectsPie"
+      :manager-status-pie="managerStatusPie"
     />
-
-    <div
-      v-if="!showTables && managerPermission"
-      class="home__section"
-    >
-      <!-- WIDGETS -->
-      <div class="row">
-        <!--  -->
-        <div class="col-sm-6 col-md-3 col-12">
-          <div class="h-100">
-            <div class="card border-0 rounded pb-1 bg-primary shadow h-100">
-              <div
-                v-if="managerWidget"
-                class="bg-white p-3 h-100 d-flex flex-column justify-content-between"
-              >
-                <div class="d-flex align-items-center mb-3">
-                  <div
-                    class="d-flex mr-4 p-1 rounded"
-                    style="background-color: var(--violet-100)"
-                  >
-                    <x-icon
-                      name="apartment"
-                      :size="28"
-                      class="violet-600"
-                      color="var(--violet-600)"
-                    />
-                  </div>
-                  <div>Объекты</div>
-                </div>
-                <div>{{ managerWidget.objects_count }}</div>
-              </div>
-              <base-loading
-                v-else
-                :container-height="108"
-                class="bg-white"
-              />
-            </div>
-          </div>
-        </div>
-        <div class="col-sm-6 col-md-3 col-12">
-          <div class="h-100">
-            <div class="card border-0 rounded pb-1 bg-info shadow h-100">
-              <div
-                v-if="managerWidget"
-                class="bg-white p-3 h-100 d-flex flex-column justify-content-between"
-              >
-                <div class="d-flex align-items-center mb-3">
-                  <div
-                    class="d-flex mr-4 p-1 rounded"
-                    style="background-color: var(--violet-100)"
-                  >
-                    <x-icon
-                      name="description"
-                      :size="28"
-                      class="violet-600"
-                      color="var(--violet-600)"
-                    />
-                  </div>
-                  <div>Договоры</div>
-                </div>
-                <div>
-                  {{ managerWidget.contracts_count }}
-                </div>
-              </div>
-              <base-loading
-                v-else
-                :container-height="108"
-                class="bg-white"
-              />
-            </div>
-          </div>
-        </div>
-        <div class="col-sm-6 col-md-3 col-12">
-          <div class="h-100">
-            <div class="card border-0 rounded pb-1 bg-danger shadow h-100">
-              <div
-                v-if="managerWidget"
-                class="bg-white p-3 h-100 d-flex flex-column justify-content-between"
-              >
-                <div class="d-flex align-items-center mb-3">
-                  <div
-                    class="d-flex mr-4 p-1 rounded"
-                    style="background-color: var(--violet-100)"
-                  >
-                    <x-icon
-                      name="price_check"
-                      :size="28"
-                      class="violet-600"
-                      color="var(--violet-600)"
-                    />
-                  </div>
-                  <div>Поступления</div>
-                </div>
-                <div>
-                  {{ shortSum(managerWidget.sales_sum) }} {{ $t("ye") }}
-                </div>
-                <div>План:{{ managerWidget.plan_percentage.toFixed(2) }} %</div>
-              </div>
-              <base-loading
-                v-else
-                :container-height="108"
-                class="bg-white"
-              />
-            </div>
-          </div>
-        </div>
-        <div class="col-sm-6 col-md-3 col-12">
-          <div class="h-100">
-            <div class="card border-0 rounded pb-1 bg-warning shadow h-100">
-              <div
-                v-if="managerWidget"
-                class="bg-white p-3 h-100 d-flex flex-column justify-content-between"
-              >
-                <div class="d-flex align-items-center mb-3">
-                  <div
-                    class="d-flex mr-4 p-1 rounded"
-                    style="background-color: var(--violet-100)"
-                  >
-                    <x-icon
-                      name="event_available"
-                      :size="28"
-                      class="violet-600"
-                      color="var(--violet-600)"
-                    />
-                  </div>
-                  <div>Свободные</div>
-                </div>
-                <div>
-                  Квартиры: {{ managerWidget.available_apartments_count }}
-                </div>
-                <div>Парковки: {{ managerWidget.available_parking_count }}</div>
-              </div>
-              <base-loading
-                v-else
-                :container-height="108"
-                class="bg-white"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="mt-5">
-        Отчеты по Поступлениям
-      </div>
-      <div class="row">
-        <div class="col-9">
-          <apexchart
-            v-if="managerSales"
-            type="line"
-            :options="managerSales"
-            :series="managerSales.series"
-            :height="300"
-          />
-          <base-loading
-            v-else
-            :container-height="315"
-            class="bg-white"
-          />
-        </div>
-        <div class="col-3">
-          <div class="mr-3 shadow p-3">
-            <apexchart
-              v-if="managerObjectsPie"
-              :options="managerObjectsPie"
-              :series="managerObjectsPie.series"
-              :height="250"
-            />
-            <base-loading
-              v-else
-              :container-height="218"
-              class="bg-white"
-            />
-          </div>
-        </div>
-      </div>
-      <div class="mt-5">
-        Отчеты по Продажам
-      </div>
-      <div class="row">
-        <div class="col-9">
-          <apexchart
-            v-if="managerSalesCount"
-            type="line"
-            :options="managerSalesCount"
-            :series="managerSalesCount.series"
-            :height="300"
-          />
-          <base-loading
-            v-else
-            :container-height="315"
-            class="bg-white"
-          />
-        </div>
-        <div class="col-3">
-          <div class="mr-3 shadow p-3">
-            <apexchart
-              v-if="managerStatusPie"
-              :options="managerStatusPie"
-              :series="managerStatusPie.series"
-              :height="250"
-            />
-            <base-loading
-              v-else
-              :container-height="218"
-              class="bg-white"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 

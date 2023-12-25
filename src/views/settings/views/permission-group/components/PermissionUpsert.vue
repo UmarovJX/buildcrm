@@ -72,7 +72,7 @@ export default {
 
     function makeBody() {
       return {
-        name: form.value.name,
+        key: form.value.name,
         translation: {
           uz: form.value.uz,
           ru: form.value.ru,
