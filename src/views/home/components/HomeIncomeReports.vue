@@ -24,6 +24,10 @@ export default {
     const vm = getCurrentInstance().proxy
     const periodType = ref('daily')
     const periods = computed(() => [
+      // {
+      //   title: vm.$t('common.all'),
+      //   value: 'all',
+      // },
       {
         title: vm.$t('day'),
         value: 'daily',

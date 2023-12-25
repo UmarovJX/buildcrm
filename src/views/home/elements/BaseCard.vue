@@ -1,6 +1,7 @@
 <script>
 import { XIcon } from '@/components/ui-components/material-icons'
 import { XCircularBackground } from '@/components/ui-components/circular-background'
+import { computed } from 'vue'
 
 export default {
   name: 'HomeBaseCard',
@@ -35,10 +36,24 @@ export default {
         value: 'bottom_right_value',
       }),
     },
+    bottomCenter: {
+      type: Object,
+      default: () => ({
+        title: 'bottom_center_title',
+        value: 'bottom_center_value',
+      }),
+    },
     multiple: {
       type: Boolean,
       default: true,
     },
+  },
+  setup(props) {
+    const hasBottomCenter = computed(() => props.bottomCenter.title !== 'bottom_center_title')
+
+    return {
+      hasBottomCenter,
+    }
   },
 }
 </script>
@@ -72,7 +87,10 @@ export default {
         <div class="base__card__bottom">
           <b-card-text class="">
             <slot name="bottom-left">
-              <span class="base__card__bottom__title">
+              <span
+                v-if="bottomLeft.title"
+                class="base__card__bottom__title"
+              >
                 <slot name="bottom-left-title">
                   {{ bottomLeft.title }}:
                 </slot>
@@ -80,6 +98,21 @@ export default {
               <span class="base__card__bottom__value">
                 <slot name="bottom-left-value">
                   {{ bottomLeft.value }}
+                </slot>
+              </span>
+            </slot>
+          </b-card-text>
+
+          <b-card-text v-if="hasBottomCenter">
+            <slot name="bottom-center">
+              <span class="base__card__bottom__title">
+                <slot name="bottom-left-title">
+                  {{ bottomCenter.title }}:
+                </slot>
+              </span>
+              <span class="base__card__bottom__value">
+                <slot name="bottom-left-value">
+                  {{ bottomCenter.value }}
                 </slot>
               </span>
             </slot>
@@ -124,6 +157,7 @@ export default {
   border: none;
   font-style: normal;
   font-family: Inter, sans-serif;
+  max-width: 30rem;
 
   &__body {
     border: 2px solid var(--gray-200);
@@ -149,6 +183,7 @@ export default {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
+    gap: 0.25rem;
 
     &__title {
       color: var(--gray-400);

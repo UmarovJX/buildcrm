@@ -1,9 +1,11 @@
 <script>
 import { formatToPrice } from '@/util/reusable'
+import { abbreviateNumber } from '@/util/numberHelper'
+
 import BaseCard from '@/views/home/elements/BaseCard.vue'
 
 export default {
-  name: 'PrimaryCards',
+  name: 'ManagerWidgets',
   components: {
     BaseCard,
   },
@@ -17,7 +19,7 @@ export default {
       required: true,
     },
   },
-  methods: { formatToPrice },
+  methods: { abbreviateNumber, formatToPrice },
 }
 </script>
 
@@ -25,8 +27,8 @@ export default {
   <div class="secondary__cards">
     <div class="secondary__cards__wrapper">
       <base-card
-        icon="task"
-        :title="`${ $t('report.orders') }`"
+        icon="apartment"
+        :title="`${ $t('objects.title') }`"
         :multiple="false"
       >
         <template #bottom>
@@ -36,13 +38,14 @@ export default {
             small
           />
           <span v-else>
-            {{ data.orders_count }}
+            {{ data.objects_count }}
           </span>
         </template>
       </base-card>
+
       <base-card
-        icon="finance_mode"
-        :title="`${ $t('common.sales') }`"
+        icon="description"
+        :title="`${ $t('contracts.name') }`"
         :multiple="false"
       >
         <template #bottom>
@@ -52,42 +55,38 @@ export default {
             small
           />
           <span v-else>
-            {{ formatToPrice(data.sales_sum) }}
+            {{ formatToPrice(data.contracts_count) }}
           </span>
         </template>
       </base-card>
+
       <base-card
-        icon="payments"
-        :title="`${ $t('common.sold_area') }`"
-        :multiple="false"
-      >
-        <template #bottom>
-          <b-spinner
-            v-if="busy"
-            class="secondary__cards__spinner"
-            small
-          />
-          <span v-else>
-            {{ formatToPrice(data.area_sum) }} M<sup>2</sup>
-          </span>
-        </template>
-      </base-card>
+        icon="price_check"
+        class="widget__grow__2"
+        :title="`${ $t('common.receipts') }`"
+        :bottom-left="{
+          title: '',
+          value:abbreviateNumber(data.sales_sum)
+        }"
+        :bottom-right="{
+          title: $t('plan.title'),
+          value: `${ data.plan_percentage.toFixed(2) }%`
+        }"
+      />
+
       <base-card
-        icon="database"
-        :title="`${ $t('common.sales_receipts') }`"
-        :multiple="false"
-      >
-        <template #bottom>
-          <b-spinner
-            v-if="busy"
-            class="secondary__cards__spinner"
-            small
-          />
-          <span v-else>
-            {{ formatToPrice(data.paid_percentage,2) }} %
-          </span>
-        </template>
-      </base-card>
+        icon="event_available"
+        class="widget__grow__2"
+        :title="`${ $t('common.loose') }`"
+        :bottom-left="{
+          title: $t('common.apartments'),
+          value:data.available_apartments_count
+        }"
+        :bottom-right="{
+          title: $t('parkings'),
+          value:data.available_parking_count
+        }"
+      />
     </div>
   </div>
 </template>
@@ -95,17 +94,19 @@ export default {
 <style lang="scss" scoped>
 .secondary__cards {
   &__wrapper {
-    //display: flex;
-    //flex-wrap: wrap;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    display: flex;
+    flex-wrap: wrap;
     gap: 2rem 1rem;
   }
 
-  &__spinner{
+  &__spinner {
     width: 2rem;
     height: 2rem;
     //border: 20px solid var(--violet-600);
   }
+}
+
+.widget__grow__2{
+  flex-grow: 2;
 }
 </style>

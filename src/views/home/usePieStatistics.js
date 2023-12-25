@@ -67,7 +67,7 @@ export default function usePieStatistics() {
   })
 
   function getPercent(a, b) {
-    return `${formatToPrice((a / b) * 100)}%`
+    return `${formatToPrice((a / b) * 100, 1)}%`
   }
 
   async function fetchObjectSalesData(body = {}) {
@@ -152,6 +152,14 @@ export default function usePieStatistics() {
     }
   }
 
+  async function fetchAll(body = {}) {
+    await Promise.allSettled([
+      fetchObjectSalesData(body),
+      fetchTariffsPieData(body),
+      fetchManagersPieData(body),
+    ])
+  }
+
   return {
     objectSales,
     fetchObjectSalesData,
@@ -161,5 +169,7 @@ export default function usePieStatistics() {
 
     managersPie,
     fetchManagersPieData,
+
+    fetchAll,
   }
 }

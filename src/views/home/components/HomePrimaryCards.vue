@@ -43,6 +43,10 @@ export default {
         title: $t('common.overall'),
         value: data.apartments.total
       }"
+      :bottom-center="{
+        title: $t('common.sold'),
+        value: data.apartments.sold
+      }"
       :bottom-right="{
         title: $t('common.loose'),
         value: data.apartments.available
@@ -56,6 +60,10 @@ export default {
       :bottom-left="{
         title: $t('common.overall'),
         value: data.parking.total
+      }"
+      :bottom-center="{
+        title: $t('common.sold'),
+        value: data.parking.sold
       }"
       :bottom-right="{
         title: $t('common.loose'),

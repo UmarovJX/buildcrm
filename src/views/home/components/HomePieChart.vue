@@ -25,6 +25,10 @@ export default {
       type: Boolean,
       required: true,
     },
+    bodyClass: {
+      type: [String, Object, Array],
+      default: '',
+    },
   },
   setup() {
     const vm = getCurrentInstance().proxy
@@ -66,7 +70,10 @@ export default {
       />
     </b-card-title>
 
-    <b-card-body class="p-0 home__pie__card__body">
+    <b-card-body
+      class="p-0 home__pie__card__body"
+      :class="bodyClass"
+    >
       <apexchart
         id="apexChartSales"
         ref="pieChartRef"
@@ -129,7 +136,9 @@ export default {
 
   &__body {
     display: flex;
-    flex-wrap: wrap;
+    //flex-wrap: wrap;
+    //flex-direction: column;
+    //justify-content: center;
     gap: 3rem;
     margin: 1.5rem 1.5rem 2rem 2rem;
   }
@@ -152,7 +161,8 @@ export default {
 }
 
 ::v-deep .home__table__list {
-  max-width: 30rem;
+  //max-width: 30rem;
+  width: 100%;
   overflow-y: hidden;
 
   .table__head__tr {
@@ -165,6 +175,15 @@ export default {
 
   .table__body__tr {
     @include th__base
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .home__pie__card {
+    &__body {
+      flex-direction: column;
+      align-items: center;
+    }
   }
 }
 </style>

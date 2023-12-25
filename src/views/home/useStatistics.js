@@ -2,6 +2,7 @@ import { ref } from 'vue'
 import { v3ServiceApi } from '@/services/v3/v3.service'
 import { useToastError } from '@/composables/useToastError'
 import { abbreviateNumber } from '@/util/numberHelper'
+import { formatToPrice } from '@/util/reusable'
 
 export const chartColors = [
   '#7C3AED',
@@ -40,6 +41,9 @@ const barChartOptions = {
     show: true,
   },
   xaxis: {
+    tooltip: {
+      enabledOnSeries: true,
+    },
     axisTicks: {
       show: true,
     },
@@ -74,6 +78,15 @@ const barChartOptions = {
     },
   },
   tooltip: {
+    y: {
+      formatter: item => {
+        if (item) {
+          return formatToPrice(item, 0)
+        }
+
+        return '\0 0'
+      },
+    },
     shared: true,
     intersect: false,
   },
@@ -132,6 +145,8 @@ export default function useStatistics() {
       options: {},
     },
   })
+
+  const periodType = ref('daily')
 
   async function fetchMainData() {
     try {
@@ -243,7 +258,19 @@ export default function useStatistics() {
           // min: 5,
           // max: 40,
         },
+        tooltip: {
+          y: {
+            formatter: item => {
+              if (item) {
+                return formatToPrice(item, 0)
+              }
 
+              return '\0 0'
+            },
+          },
+          shared: true,
+          intersect: false,
+        },
       }
     } catch (e) {
       toastError(e)
@@ -299,7 +326,22 @@ export default function useStatistics() {
     }
   }
 
+  async function fetchAll(body = {}) {
+    const lineChartBody = {
+      type: periodType.value,
+      ...body,
+    }
+    await Promise.allSettled([
+      fetchTotalData(body),
+      fetchBranchReportsData(lineChartBody),
+      fetchIncomeReportsData(lineChartBody),
+      fetchOrderReportsData(lineChartBody),
+    ])
+  }
+
   return {
+    periodType,
+
     main,
     fetchMainData,
 
@@ -314,5 +356,7 @@ export default function useStatistics() {
 
     orderReports,
     fetchOrderReportsData,
+
+    fetchAll,
   }
 }
