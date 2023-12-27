@@ -11,7 +11,6 @@ import i18n from '@/locales'
 
 export function useReport({ immediate = false } = { immediate: false }) {
   const vm = getCurrentInstance()
-  console.log('test', i18n.locale)
   const pm = Permission.getUserPermission('reports')
 
   const hasViewPermission = Permission.hasAdminRole() || (isObject(pm) ? pm.create : false)

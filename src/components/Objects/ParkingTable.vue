@@ -819,29 +819,19 @@ export default {
             v-if="!data.item.is_sold || data.item.order.status === 'available'"
             class="float-right"
           >
-            <x-dropdown>
-              <button
-                type="button"
-                class="dropdown-toggle"
-                data-toggle="dropdown"
-              >
-                <i class="far fa-ellipsis-h" />
-              </button>
+            <x-dropdown v-if="hasPermission">
+                <!-- Редактировать -->
+                <!-- <b-link
+                  v-if="editPermission"
+                  class="dropdown-item dropdown-item--inside"
+                  @click="[(edit = true), (apartment_id = data.item.id)]"
+                  v-b-modal.modal-edit
+                >
+                  <i class="far fa-pencil"></i> {{ $t("edit") }}
+                </b-link> -->
 
-              <div class="dropdown-menu">
-                <template v-if="hasPermission">
-                  <!-- Редактировать -->
-                  <!-- <b-link
-                    v-if="editPermission"
-                    class="dropdown-item dropdown-item--inside"
-                    @click="[(edit = true), (apartment_id = data.item.id)]"
-                    v-b-modal.modal-edit
-                  >
-                    <i class="far fa-pencil"></i> {{ $t("edit") }}
-                  </b-link> -->
-
-                  <!--        Вернуть к продаже          -->
-                  <b-link
+                <!--        Вернуть к продаже          -->
+                <b-link
                     v-if="
                       isSoldPermission &&
                         data.item.is_sold &&
@@ -849,11 +839,11 @@ export default {
                     "
                     class="dropdown-item dropdown-item--inside"
                     @click="openSoldModal(data.item)"
-                  >
-                    <i class="far fa-unlock" /> {{ $t("remove_from_sale") }}
-                  </b-link>
+                >
+                  <i class="far fa-unlock" /> {{ $t("remove_from_sale") }}
+                </b-link>
 
-                  <b-link
+                <b-link
                     v-if="
                       isSoldPermission &&
                         !data.item.is_sold &&
@@ -861,46 +851,44 @@ export default {
                     "
                     class="dropdown-item dropdown-item--inside"
                     @click="openSoldModal(data.item)"
-                  >
-                    <i class="far fa-lock" /> {{ $t("return_to_sale") }}
-                  </b-link>
-                </template>
-                <!-- <router-link
-                  :to="{
-                    name: 'apartment-view',
-                    params: {
-                      object: $route.params.object,
-                      id: data.item.id,
-                    },
-                  }"
-                  :class="'dropdown-item dropdown-item--inside'"
                 >
-                  <i class="far fa-eye"></i>
-                  {{ $t("apartments.list.more") }}
-                </router-link> -->
+                  <i class="far fa-lock" /> {{ $t("return_to_sale") }}
+                </b-link>
+              <!-- <router-link
+                :to="{
+                  name: 'apartment-view',
+                  params: {
+                    object: $route.params.object,
+                    id: data.item.id,
+                  },
+                }"
+                :class="'dropdown-item dropdown-item--inside'"
+              >
+                <i class="far fa-eye"></i>
+                {{ $t("apartments.list.more") }}
+              </router-link> -->
 
-                <!-- <b-link
-                  v-if="holderEditPms"
-                  @click="setHolder(data.item)"
-                  class="dropdown-item dropdown-item--inside"
-                >
-                  <x-icon name="person" size="24" class="dropdown-icon-color" />
-                  <span class="ml-2"> {{ $t("holders.change") }} </span>
-                </b-link> -->
+              <!-- <b-link
+                v-if="holderEditPms"
+                @click="setHolder(data.item)"
+                class="dropdown-item dropdown-item--inside"
+              >
+                <x-icon name="person" size="24" class="dropdown-icon-color" />
+                <span class="ml-2"> {{ $t("holders.change") }} </span>
+              </b-link> -->
 
-                <!-- <b-link
-                  v-if="statusEditPms"
-                  @click="setStatus(data.item)"
-                  class="dropdown-item dropdown-item--inside"
-                >
-                  <x-icon
-                    name="pending_actions"
-                    size="24"
-                    class="dropdown-icon-color"
-                  />
-                  <span class="ml-2">{{ $t("statuses.change") }} </span>
-                </b-link> -->
-              </div>
+              <!-- <b-link
+                v-if="statusEditPms"
+                @click="setStatus(data.item)"
+                class="dropdown-item dropdown-item--inside"
+              >
+                <x-icon
+                  name="pending_actions"
+                  size="24"
+                  class="dropdown-icon-color"
+                />
+                <span class="ml-2">{{ $t("statuses.change") }} </span>
+              </b-link> -->
             </x-dropdown>
           </div>
         </template>

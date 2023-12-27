@@ -25,7 +25,6 @@ export default class Permission {
   }
 
   static getUserPermission(property) {
-    console.log('this', this.permission)
     if (this.hasAdminRole()) {
       return true
     }

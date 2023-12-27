@@ -72,27 +72,27 @@ export default class ContractsPermission extends Permission {
   }
 
   static getContractsInitialCreatePermission() {
-    return this.getContractsPermission('payments.initial_type.create')
+    return this.getContractsPermission('payments.create')
   }
 
   static getContractsInitialEditPermission() {
-    return this.getContractsPermission('payments.initial_type.edit')
+    return this.getContractsPermission('payments.edit')
   }
 
   static getContractsInitialDeletePermission() {
-    return this.getContractsPermission('payments.initial_type.delete')
+    return this.getContractsPermission('payments.delete')
   }
 
   static getContractsMonthlyCreatePermission() {
-    return this.getContractsPermission('payments.monthly_type.create')
+    return this.getContractsPermission('payments.create')
   }
 
   static getContractsMonthlyEditPermission() {
-    return this.getContractsPermission('payments.monthly_type.edit')
+    return this.getContractsPermission('payments.edit')
   }
 
   static getContractsMonthlyDeletePermission() {
-    return this.getContractsPermission('payments.monthly_type.delete')
+    return this.getContractsPermission('payments.delete')
   }
 
   static getContractsViewCommentPermission() {

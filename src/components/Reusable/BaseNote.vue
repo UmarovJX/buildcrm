@@ -44,22 +44,10 @@ export default {
       <p class="m-0 base-note-text">
         {{ detail.text }}
       </p>
-      <x-dropdown>
-        <button
-            v-if="actions"
-            type="button"
-            class="dropdown-toggle"
-            data-toggle="dropdown"
-        >
-          <i class="far fa-ellipsis-h" />
-        </button>
-        <div
-            v-if="actions"
-            class="dropdown-menu"
-        >
-          <slot name="delete" />
-          <slot name="edit" />
-        </div>
+
+      <x-dropdown v-if="actions">
+        <slot name="delete" />
+        <slot name="edit" />
       </x-dropdown>
     </div>
     <div

@@ -562,54 +562,44 @@ export default {
           <div class="float-right">
             <x-dropdown v-if="deletePermission || editPermission">
               <!--user.role.id != 1 &&-->
-              <button
-                type="button"
-                class="dropdown-toggle"
-                data-toggle="dropdown"
-              >
-                <i class="far fa-ellipsis-h" />
-              </button>
-
-              <div class="dropdown-menu">
-                <b-button
+              <b-button
                   v-if="editPermission"
                   v-b-modal.modal-edit
                   class="dropdown-item dropdown-item--inside"
                   @click="clickManager(data)"
-                >
-                  <i class="far fa-pen" />
-                  {{ $t("edit") }}
-                </b-button>
-                <b-button
+              >
+                <i class="far fa-pen" />
+                {{ $t("edit") }}
+              </b-button>
+              <b-button
                   v-if="unblockPermission && data.item.blocked_at"
                   v-b-modal.modal-edit
                   class="dropdown-item dropdown-item--inside"
                   @click="unblockUser(data.item)"
-                >
-                  <i class="far fa-unlock" />
-                  Разблокировать
-                </b-button>
+              >
+                <i class="far fa-unlock" />
+                Разблокировать
+              </b-button>
 
-                <b-button
+              <b-button
                   v-if="deletePermission"
                   class="dropdown-item dropdown-item--inside"
                   @click="deleteUser(data.item.uuid)"
-                >
-                  <i
+              >
+                <i
                     v-if="query.status === 'deactivated'"
                     class="far fa-trash-undo"
-                  />
-                  <i
+                />
+                <i
                     v-else
                     class="far fa-trash"
-                  />
-                  {{
-                    query.status === "deactivated"
+                />
+                {{
+                  query.status === "deactivated"
                       ? $t("undelete")
                       : $t("delete")
-                  }}
-                </b-button>
-              </div>
+                }}
+              </b-button>
             </x-dropdown>
           </div>
         </template>

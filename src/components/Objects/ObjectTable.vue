@@ -860,28 +860,19 @@ export default {
         <template #cell(actions)="data">
           <div class="float-right">
             <x-dropdown>
-              <button
-                type="button"
-                class="dropdown-toggle"
-                data-toggle="dropdown"
-              >
-                <i class="far fa-ellipsis-h" />
-              </button>
-
-              <div class="dropdown-menu">
-                <template v-if="hasPermission">
-                  <!-- Редактировать -->
-                  <b-link
+              <template v-if="hasPermission">
+                <!-- Редактировать -->
+                <b-link
                     v-if="editPermission"
                     v-b-modal.modal-edit
                     class="dropdown-item dropdown-item--inside"
                     @click="[(edit = true), (apartment_id = data.item.id)]"
-                  >
-                    <i class="far fa-pencil" /> {{ $t("edit") }}
-                  </b-link>
+                >
+                  <i class="far fa-pencil" /> {{ $t("edit") }}
+                </b-link>
 
-                  <!--        Вернуть к продаже          -->
-                  <b-link
+                <!--        Вернуть к продаже          -->
+                <b-link
                     v-if="
                       isSoldPermission &&
                         data.item.is_sold &&
@@ -889,11 +880,11 @@ export default {
                     "
                     class="dropdown-item dropdown-item--inside"
                     @click="openSoldModal(data.item)"
-                  >
-                    <i class="far fa-unlock" /> {{ $t("remove_from_sale") }}
-                  </b-link>
+                >
+                  <i class="far fa-unlock" /> {{ $t("remove_from_sale") }}
+                </b-link>
 
-                  <b-link
+                <b-link
                     v-if="
                       isSoldPermission &&
                         !data.item.is_sold &&
@@ -901,11 +892,11 @@ export default {
                     "
                     class="dropdown-item dropdown-item--inside"
                     @click="openSoldModal(data.item)"
-                  >
-                    <i class="far fa-lock" /> {{ $t("return_to_sale") }}
-                  </b-link>
-                </template>
-                <router-link
+                >
+                  <i class="far fa-lock" /> {{ $t("return_to_sale") }}
+                </b-link>
+              </template>
+              <router-link
                   :to="{
                     name: 'apartment-view',
                     params: {
@@ -914,37 +905,36 @@ export default {
                     },
                   }"
                   :class="'dropdown-item dropdown-item--inside'"
-                >
-                  <i class="far fa-eye" />
-                  {{ $t("apartments.list.more") }}
-                </router-link>
+              >
+                <i class="far fa-eye" />
+                {{ $t("apartments.list.more") }}
+              </router-link>
 
-                <b-link
+              <b-link
                   v-if="holderEditPms"
                   class="dropdown-item dropdown-item--inside"
                   @click="setHolder(data.item)"
-                >
-                  <x-icon
+              >
+                <x-icon
                     name="person"
                     size="24"
                     class="dropdown-icon-color"
-                  />
-                  <span class="ml-2"> {{ $t("holders.change") }} </span>
-                </b-link>
+                />
+                <span class="ml-2"> {{ $t("holders.change") }} </span>
+              </b-link>
 
-                <b-link
+              <b-link
                   v-if="statusEditPms"
                   class="dropdown-item dropdown-item--inside"
                   @click="setStatus(data.item)"
-                >
-                  <x-icon
+              >
+                <x-icon
                     name="pending_actions"
                     size="24"
                     class="dropdown-icon-color"
-                  />
-                  <span class="ml-2">{{ $t("statuses.change") }} </span>
-                </b-link>
-              </div>
+                />
+                <span class="ml-2">{{ $t("statuses.change") }} </span>
+              </b-link>
             </x-dropdown>
           </div>
         </template>
