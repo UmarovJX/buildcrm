@@ -448,7 +448,7 @@ export default {
       }
     },
     '$route.query': {
-      async handler(query, oq) {
+      async handler(query) {
         this.compareStatus(query)
         if (this.accessToFilter) {
           this.chessApartments = this.filterItems(query, this.chessApartments)

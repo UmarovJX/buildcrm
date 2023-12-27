@@ -1,17 +1,18 @@
 <script>
-import BaseButton from '@/components/Reusable/BaseButton'
-import BasePlusIcon from '@/components/icons/BasePlusIcon'
-import BaseDotsIcon from '@/components/icons/BaseDotsIcon'
-import BaseEditIcon from '@/components/icons/BaseEditIcon'
-import BaseModal from '@/components/Reusable/BaseModal'
-import BaseCloseIcon from '@/components/icons/BaseCloseIcon'
-import BaseArrowLeftIcon from '@/components/icons/BaseArrowLeftIcon'
-import BaseArrowRightIcon from '@/components/icons/BaseArrowRightIcon'
+import BaseButton from '@/components/Reusable/BaseButton.vue'
+import BasePlusIcon from '@/components/icons/BasePlusIcon.vue'
+import BaseDotsIcon from '@/components/icons/BaseDotsIcon.vue'
+import BaseEditIcon from '@/components/icons/BaseEditIcon.vue'
+import BaseModal from '@/components/Reusable/BaseModal.vue'
+import BaseCloseIcon from '@/components/icons/BaseCloseIcon.vue'
+import BaseArrowLeftIcon from '@/components/icons/BaseArrowLeftIcon.vue'
+import BaseArrowRightIcon from '@/components/icons/BaseArrowRightIcon.vue'
 import api from '@/services/api'
-import BaseDeleteIcon from '@/components/icons/BaseDeleteIcon'
+import BaseDeleteIcon from '@/components/icons/BaseDeleteIcon.vue'
 import { XFormSelect } from '@/components/ui-components/form-select'
 import { sortInFirstRelationship, sortObjectValues } from '@/util/reusable'
-import AppDropdown from '@/components/Reusable/Dropdown/AppDropdown'
+import AppDropdown from '@/components/Reusable/Dropdown/AppDropdown.vue'
+import { isNull } from '@/util/inspect'
 
 export default {
   name: 'ApartmentComments',
@@ -35,7 +36,7 @@ export default {
     },
     apartmentUuid: {
       type: String,
-      required: '',
+      required: true,
     },
     commentsData: {
       type: Object,
@@ -212,6 +213,10 @@ export default {
       return `${hours}:${minutes}, ${day} ${month}`
     },
     checkLocales(name) {
+      if (isNull(name)) {
+        return ''
+      }
+
       if (localStorage.locale) return name[localStorage.locale]
       return name.ru
     },
@@ -266,7 +271,7 @@ export default {
         })
     },
     async saveComment() {
-      await this.$refs['comment-area'].validate().then(async res => {
+      await this.$refs.commentProviderRef.validate().then(async res => {
         this.errors = res.errors
         if (res.valid) {
           const data = {
@@ -367,7 +372,7 @@ export default {
       >
         <div
           v-for="userComment in comments"
-          :key="comment.id"
+          :key="userComment.id"
           class="comment"
         >
           <div class="comment-content">
@@ -387,7 +392,7 @@ export default {
                   <b-dropdown-item
                     v-if="permissions && permissions.edit"
                     href="#"
-                    @click="openEditModal(comment)"
+                    @click="openEditModal(userComment)"
                   >
                     <BaseEditIcon
                       fill="var(--violet-600)"
@@ -399,7 +404,7 @@ export default {
                   <b-dropdown-item
                     v-if="permissions && permissions.delete"
                     href="#"
-                    @click="warnBeforeDelete(comment.id)"
+                    @click="warnBeforeDelete(userComment.id)"
                   >
                     <BaseDeleteIcon
                       fill="var(--violet-600)"
@@ -578,7 +583,7 @@ export default {
             {{ $t("contracts.note_text") }}
           </h5>
           <ValidationProvider
-            ref="userComment-area"
+            ref="commentProviderRef"
             v-slot="{ errors }"
             :name="$t('objects.create.tariff.type_name')"
             rules="required|min:2"

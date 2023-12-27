@@ -36,6 +36,10 @@ export default {
         formatter: name => name[vm.$i18n.locale],
       },
       {
+        key: 'key',
+        label: vm.$t('common.key'),
+      },
+      {
         key: 'actions',
       },
     ])

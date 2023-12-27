@@ -43,7 +43,7 @@ export default {
       form.value.uz = props.editItem.name.uz
       form.value.ru = props.editItem.name.ru
       form.value.en = props.editItem.name.en
-      form.value.name = props.editItem.slug
+      form.value.name = props.editItem.key
     }
 
     function closeCreatingModal() {

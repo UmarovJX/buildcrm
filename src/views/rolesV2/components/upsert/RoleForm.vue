@@ -64,7 +64,20 @@ export default {
 
           pInnerList.forEach(pInner => {
             pInner.forEach(pInnerItem => {
-              b.push(pInnerItem)
+              let { parentName } = pInnerItem
+              if (parentName) {
+                parentName = {
+                  uz: `${element.name.uz} > ${pInnerItem.parentName.uz}`,
+                  ru: `${element.name.ru} > ${pInnerItem.parentName.ru}`,
+                  en: `${element.name.en} > ${pInnerItem.parentName.en}`,
+                }
+              } else {
+                parentName = element.name
+              }
+              b.push({
+                ...pInnerItem,
+                parentName,
+              })
             })
           })
 
@@ -84,6 +97,7 @@ export default {
             name: element.name,
             permissions: element.permissions.map(p => ({
               ...p,
+              parentName: element.name,
               selected: isUpdatePage.value
                 ? isSelectedItem(p.id)
                 : false,
@@ -344,9 +358,19 @@ export default {
             <template v-for="(permission) in groupItem.permissions">
               <b-list-group-item
                 v-if="permission.name"
+                :key="permission.name"
                 class="role__list__item d-flex justify-content-between"
               >
-                <div>{{ permission.name[$i18n.locale] }}</div>
+                <div>
+                  <span
+                    v-if="permission.parentName && hasOwnProperty(permission.parentName,$i18n.locale)"
+                    class="gray-400 mr-2"
+                  >
+                    {{ permission.parentName[$i18n.locale] }}
+                  </span>
+                  <span>{{ permission.name[$i18n.locale] }}</span>
+                </div>
+
                 <div>
                   <b-form-checkbox
                     :checked="permission.selected"

@@ -95,9 +95,11 @@ export default function useWidgets() {
         xaxis: {
           ...lineChartOptions.xaxis,
           categories: result.label,
+          tickAmount: 12,
         },
         legend: {
           show: true,
+          showForSingleSeries: true,
         },
       }
     } catch (e) {
@@ -120,12 +122,18 @@ export default function useWidgets() {
 
       managerSalesCount.value.data.options = {
         ...lineChartOptions,
+        yaxis: {
+          ...lineChartOptions.yaxis,
+          tickAmount: 12,
+        },
         xaxis: {
           ...lineChartOptions.xaxis,
           categories: result.label,
+          tickAmount: 12,
         },
         legend: {
           show: true,
+          showForSingleSeries: true,
         },
       }
     } catch (e) {
