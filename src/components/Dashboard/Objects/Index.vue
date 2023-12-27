@@ -13,6 +13,7 @@ import BaseButton from '@/components/Reusable/BaseButton.vue'
 import { XIcon } from '@/components/ui-components/material-icons'
 import { XCircularBackground } from '@/components/ui-components/circular-background'
 import HidePriceButton from '@/components/Reusable/HidePriceButton.vue'
+import XDropdown from "@/components/ui-components/dropdown/XDropdown.vue";
 
 import { useShowPrice } from '@/composables/useShowPrice'
 import UploadLogo from './Components/UploadLogo'
@@ -20,6 +21,7 @@ import UploadLogo from './Components/UploadLogo'
 export default {
   name: 'Objects',
   components: {
+    XDropdown,
     HidePriceButton,
     XCircularBackground,
     XIcon,
@@ -226,102 +228,94 @@ export default {
             "
             class="object__more-info"
           >
-            <div class="my-dropdown dropleft">
-              <button
-                type="button"
-                class="dropdown-toggle card-link"
-                data-toggle="dropdown"
-                style="background-color: transparent"
-              >
-                <!-- <base-edit-icon fill="#7C3AED"/>-->
-                <base-dots-icon fill="#7C3AED" />
-              </button>
-              <div class="dropdown-menu">
+            <x-dropdown>
+              <b-dropdown-item v-if="editPermission">
                 <router-link
-                  v-if="editPermission"
-                  :class="'dropdown-item'"
-                  :to="{ name: 'objectsEdit', params: { id: object.id } }"
+                    :class="'dropdown-item'"
+                    :to="{ name: 'objectsEdit', params: { id: object.id } }"
                 >
                   <i class="fas fa-pen" /> {{ $t("edit") }}
                 </router-link>
+              </b-dropdown-item>
 
+              <b-dropdown-item>
                 <b-link
-                  class="dropdown-item"
-                  @click="archiveObject(object)"
+                    class="dropdown-item"
+                    @click="archiveObject(object)"
                 >
                   <i class="fas fa-archive" />
                   {{ archived ? $t("unarchiveV") : $t("archiveV") }}
                 </b-link>
+              </b-dropdown-item>
 
-                <!--                <router-link-->
-                <!--                    v-if="getPermission.objects.update"-->
-                <!--                    :to="{name:'object-deal-template',params:{id:object.id}}"-->
-                <!--                    :class="'dropdown-item'"-->
-                <!--                >-->
-                <!--                  <i class="far fa-file-alt"></i> {{ $t('objects.deal_template.name') }}-->
-                <!--                </router-link>-->
-
+              <b-dropdown-item v-if="promosViewPermission">
                 <router-link
-                  v-if="promosViewPermission"
-                  :to="{ name: 'objects-promo', params: { id: object.id } }"
-                  :class="'dropdown-item'"
+                    :to="{ name: 'objects-promo', params: { id: object.id } }"
+                    :class="'dropdown-item'"
                 >
                   <i class="fas fa-gift" />
                   <span>
                     {{ $t("promo.promos") }}
                   </span>
                 </router-link>
+              </b-dropdown-item>
 
+              <b-dropdown-item v-if="plansViewPermission">
                 <router-link
-                  v-if="plansViewPermission"
-                  :to="{ name: 'type-plan-view', params: { id: object.id } }"
-                  :class="'dropdown-item'"
+                    :to="{ name: 'type-plan-view', params: { id: object.id } }"
+                    :class="'dropdown-item'"
                 >
                   <i class="fal fa-credit-card" />
                   <span>
                     {{ $t("type_plan.title") }}
                   </span>
                 </router-link>
+              </b-dropdown-item>
 
+              <b-dropdown-item v-if="plansViewPermission">
                 <router-link
-                  :to="{ name: 'type-parking-view', params: { id: object.id } }"
-                  :class="'dropdown-item'"
+                    :to="{ name: 'type-parking-view', params: { id: object.id } }"
+                    :class="'dropdown-item'"
                 >
                   <i class="fal fa-parking" />
                   <span>
                     {{ $t("parkings") }}
                   </span>
                 </router-link>
+              </b-dropdown-item>
+
+              <b-dropdown-item v-if="manageFacilitiesPermission">
                 <router-link
-                  v-if="manageFacilitiesPermission"
-                  :to="{ name: 'facilities', params: { object: object.id } }"
-                  :class="'dropdown-item'"
+                    :to="{ name: 'facilities', params: { object: object.id } }"
+                    :class="'dropdown-item'"
                 >
                   <i class="fal fa-map-marker-alt" />
                   <span>
                     {{ $t("Facilities") }}
                   </span>
                 </router-link>
+              </b-dropdown-item>
 
+              <b-dropdown-item v-if="logoUploadPermission">
                 <b-link
-                  v-if="logoUploadPermission"
-                  v-b-modal.modal-upload-logo
-                  class="dropdown-item"
-                  @click="object_id = object.id"
+                    v-b-modal.modal-upload-logo
+                    class="dropdown-item"
+                    @click="object_id = object.id"
                 >
                   <i class="fas fa-image" /> {{ $t("upload_logo") }}
                 </b-link>
+              </b-dropdown-item>
 
+              <b-dropdown-item v-if="deletePermission">
                 <a
-                  v-if="deletePermission"
-                  class="dropdown-item"
-                  href="#"
-                  @click="deleteObject(object.id)"
+                    class="dropdown-item"
+                    href="#"
+                    @click="deleteObject(object.id)"
                 >
                   <i class="fas fa-trash" /> {{ $t("delete") }}
                 </a>
-              </div>
-            </div>
+              </b-dropdown-item>
+            </x-dropdown>
           </div>
           <router-link
             class="card-body"

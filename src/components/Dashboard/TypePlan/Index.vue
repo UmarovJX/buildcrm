@@ -2,10 +2,12 @@
 import { mapGetters, mapActions } from 'vuex'
 import PlansPermission from '@/permission/plans'
 import AppHeader from '@/components/Header/AppHeader'
+import XDropdown from "@/components/ui-components/dropdown/XDropdown.vue";
 
 export default {
   name: 'TypePlan',
   components: {
+    XDropdown,
     AppHeader,
   },
   data() {
@@ -131,26 +133,16 @@ export default {
 
           <template #cell(actions)="data">
             <div class="float-right">
-              <div class="dropdown my-dropdown dropleft">
-                <button
-                  type="button"
-                  class="dropdown-toggle"
-                  data-toggle="dropdown"
-                >
-                  <i class="far fa-ellipsis-h" />
-                </button>
-
-                <div class="dropdown-menu">
-                  <b-button
+              <x-dropdown>
+                <b-button
                     v-if="planViewPermission"
                     class="dropdown-item dropdown-item--inside"
                     @click="planView(data.item.id)"
-                  >
-                    <i class="fas fa-eye" />
-                    {{ $t("type_plan.plans") }}
-                  </b-button>
-                </div>
-              </div>
+                >
+                  <i class="fas fa-eye" />
+                  {{ $t("type_plan.plans") }}
+                </b-button>
+              </x-dropdown>
             </div>
           </template>
         </b-table>

@@ -29,10 +29,12 @@ import HolderUpsert from '@/components/Objects/elements/HolderUpsert.vue'
 import SettingsPermission from '@/permission/settings.permission'
 import { isNull, isNUNEZ } from '@/util/inspect'
 import { keys } from '@/util/object'
+import XDropdown from "@/components/ui-components/dropdown/XDropdown.vue";
 
 export default {
   name: 'ParkingTable',
   components: {
+    XDropdown,
     BaseCheckboxModal,
     BaseCheckbox,
     BaseArrowRightIcon,
@@ -817,7 +819,7 @@ export default {
             v-if="!data.item.is_sold || data.item.order.status === 'available'"
             class="float-right"
           >
-            <div class="dropdown my-dropdown dropleft">
+            <x-dropdown>
               <button
                 type="button"
                 class="dropdown-toggle"
@@ -899,7 +901,7 @@ export default {
                   <span class="ml-2">{{ $t("statuses.change") }} </span>
                 </b-link> -->
               </div>
-            </div>
+            </x-dropdown>
           </div>
         </template>
       </b-table>

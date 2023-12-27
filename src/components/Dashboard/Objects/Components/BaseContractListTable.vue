@@ -2,9 +2,11 @@
 import api from '@/services/api'
 import { mapGetters } from 'vuex'
 import TemplatesPermission from '@/permission/templates'
+import XDropdown from "@/components/ui-components/dropdown/XDropdown.vue";
 
 export default {
   name: 'ContractListTable',
+  components: {XDropdown},
   props: {
     contracts: {
       type: Array,
@@ -239,59 +241,46 @@ export default {
 
       <template #cell(actions)="data">
         <div class="float-right">
-          <div
-            v-if="primaryPermission || downloadPermission || deletePermission"
-            class="dropdown my-dropdown dropleft"
-          >
-            <button
-              type="button"
-              class="dropdown-toggle"
-              data-toggle="dropdown"
-            >
-              <i class="far fa-ellipsis-h" />
-            </button>
-
-            <div class="dropdown-menu">
-              <a
+          <x-dropdown v-if="primaryPermission || downloadPermission || deletePermission">
+            <a
                 v-if="!data.item.main && primaryPermission"
                 href="#"
                 class="dropdown-item dropdown-item--inside"
                 @click="makeItMain(data.item.id)"
-              >
+            >
                 <span>
                   <i class="fas fa-pen" />
                 </span>
-                <span class="ml-2">
+              <span class="ml-2">
                   {{ $t("objects.make_it_main_contract") }}
                 </span>
-              </a>
+            </a>
 
-              <a
+            <a
                 v-if="downloadPermission"
                 class="dropdown-item dropdown-item--inside"
                 :href="downloadDocumentURl(data.item.path)"
-              >
+            >
                 <span class="download__icon">
                   <i class="fas fa-download" />
                 </span>
-                <span class="ml-2">{{ $t("contracts.download") }}</span>
-              </a>
+              <span class="ml-2">{{ $t("contracts.download") }}</span>
+            </a>
 
-              <a
+            <a
                 v-if="deletePermission"
                 href="#"
                 class="dropdown-item dropdown-item--inside"
                 @click="deleteContract(data.item.id)"
-              >
+            >
                 <span>
                   <i class="far fa-trash" />
                 </span>
-                <span class="ml-3">
+              <span class="ml-3">
                   {{ $t("delete") }}
                 </span>
-              </a>
-            </div>
-          </div>
+            </a>
+          </x-dropdown>
         </div>
       </template>
     </b-table>

@@ -3,9 +3,11 @@ import { mapActions, mapGetters } from 'vuex'
 // import SuccessAgree from "./Components/SuccessAgree";
 import BaseBreadCrumb from '@/components/BaseBreadCrumb'
 import api from '@/services/api'
+import XDropdown from "@/components/ui-components/dropdown/XDropdown.vue";
 
 export default {
   components: {
+    XDropdown,
     // "success-agree": SuccessAgree,
     BaseBreadCrumb,
   },
@@ -187,18 +189,9 @@ export default {
 
         <template #cell(actions)="data">
           <div class="float-right">
-            <div class="dropdown my-dropdown dropleft">
-              <button
-                type="button"
-                class="dropdown-toggle"
-                data-toggle="dropdown"
-              >
-                <i class="far fa-ellipsis-h" />
-              </button>
-
-              <div class="dropdown-menu">
-                <!--  Продолжить оформление -->
-                <router-link
+            <x-dropdown>
+              <!--  Продолжить оформление -->
+              <router-link
                   :to="{
                     name: 'confirm-apartment',
                     params: {
@@ -207,20 +200,19 @@ export default {
                     },
                   }"
                   :class="'dropdown-item dropdown-item--inside'"
-                >
-                  <i class="far fa-eye" />
-                  Продолжить оформление
-                </router-link>
+              >
+                <i class="far fa-eye" />
+                Продолжить оформление
+              </router-link>
 
-                <!-- Отменить -->
-                <b-link
+              <!-- Отменить -->
+              <b-link
                   class="dropdown-item dropdown-item--inside"
                   @click="cancelContract(data.item.uuid)"
-                >
-                  <i class="far fa-trash text-danger" /> Отменить оформление
-                </b-link>
-              </div>
-            </div>
+              >
+                <i class="far fa-trash text-danger" /> Отменить оформление
+              </b-link>
+            </x-dropdown>
           </div>
         </template>
       </b-table>

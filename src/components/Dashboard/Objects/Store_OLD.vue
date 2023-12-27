@@ -4,9 +4,11 @@ import EditBlock from "./Components/Block/Edit";
 import TypePlanCreateModal from "./Components/Store/TypePlanCreateModal";
 import { mapGetters, mapActions } from "vuex";
 import api from "@/services/api";
+import XDropdown from "@/components/ui-components/dropdown/XDropdown.vue";
 
 export default {
   components: {
+    XDropdown,
     "create-block": CreateBlock,
     "edit-block": EditBlock,
     "type-plan-create": TypePlanCreateModal,
@@ -536,15 +538,7 @@ export default {
                     {{ $t("objects.create.blocks_apartment") }}
                   </h3>
                   <div>
-                    <div class="dropdown my-dropdown dropleft">
-                      <button
-                        type="button"
-                        class="dropdown-toggle"
-                        data-toggle="dropdown"
-                      >
-                        <i class="far fa-ellipsis-h"></i>
-                      </button>
-                      <div class="dropdown-menu">
+                      <x-dropdown>
                         <a
                           class="dropdown-item dropdown-item--inside"
                           href="#"
@@ -570,8 +564,7 @@ export default {
                         >
                           <i class="far fa-trash"></i> {{ $t("delete") }}
                         </a>
-                      </div>
-                    </div>
+                      </x-dropdown>
                   </div>
                 </div>
                 <div class="object">
@@ -582,15 +575,7 @@ export default {
                     :key="indexx"
                   >
                     <div class="object__more-info">
-                      <div class="dropdown my-dropdown dropleft">
-                        <button
-                          type="button"
-                          class="dropdown-toggle"
-                          data-toggle="dropdown"
-                        >
-                          <i class="far fa-ellipsis-h"></i>
-                        </button>
-                        <div class="dropdown-menu">
+                        <x-dropdown>
                           <b-link
                             class="dropdown-item dropdown-item--inside"
                             href="#"
@@ -614,8 +599,7 @@ export default {
                           >
                             <i class="far fa-trash"></i> {{ $t("delete") }}
                           </a>
-                        </div>
-                      </div>
+                        </x-dropdown>
                     </div>
                     <a href="#" class="object__link">
                       <div

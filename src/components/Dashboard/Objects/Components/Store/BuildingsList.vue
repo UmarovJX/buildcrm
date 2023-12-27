@@ -4,6 +4,7 @@ import EditBlock from "../Block/Edit";
 import api from "@/services/api";
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
+import XDropdown from "@/components/ui-components/dropdown/XDropdown.vue";
 
 export default {
   name: "BuildingList",
@@ -14,6 +15,7 @@ export default {
   },
 
   components: {
+    XDropdown,
     "create-block": CreateBlock,
     "edit-block": EditBlock,
     "date-picker": DatePicker,
@@ -319,36 +321,27 @@ export default {
             {{ $t("objects.create.blocks_apartment") }}
           </h3>
           <div>
-            <div class="dropdown my-dropdown dropleft">
-              <button
-                type="button"
-                class="dropdown-toggle"
-                data-toggle="dropdown"
-              >
-                <i class="far fa-ellipsis-h"></i>
-              </button>
-              <div class="dropdown-menu">
-                <a
+            <x-dropdown>
+              <a
                   class="dropdown-item dropdown-item--inside"
                   href="#"
                   @click="building.edit = true"
-                >
-                  <i class="fas fa-pen"></i> {{ $t("edit") }}
-                </a>
+              >
+                <i class="fas fa-pen"></i> {{ $t("edit") }}
+              </a>
 
-                <!--                                <a class="dropdown-item dropdown-item&#45;&#45;inside" href="#" >-->
-                <!--                                    <i class="fas fa-copy"></i> {{ $t('objects.create.copy_building') }}-->
-                <!--                                </a>-->
+              <!--                                <a class="dropdown-item dropdown-item&#45;&#45;inside" href="#" >-->
+              <!--                                    <i class="fas fa-copy"></i> {{ $t('objects.create.copy_building') }}-->
+              <!--                                </a>-->
 
-                <a
+              <a
                   @click="DeleteBuild(building, index)"
                   class="dropdown-item dropdown-item--inside"
                   href="#"
-                >
-                  <i class="far fa-trash"></i> {{ $t("delete") }}
-                </a>
-              </div>
-            </div>
+              >
+                <i class="far fa-trash"></i> {{ $t("delete") }}
+              </a>
+            </x-dropdown>
           </div>
         </div>
 
@@ -360,35 +353,22 @@ export default {
             :key="block_index"
           >
             <div class="object__more-info">
-              <div class="dropdown my-dropdown dropleft">
-                <button
-                  type="button"
-                  class="dropdown-toggle"
-                  data-toggle="dropdown"
-                >
-                  <i class="far fa-ellipsis-h"></i>
-                </button>
-                <div class="dropdown-menu">
-                  <b-link
+              <x-dropdown>
+                <b-link
                     class="dropdown-item dropdown-item--inside"
                     href="#"
                     @click="editBlock(building, block, index, block_index)"
-                  >
-                    <i class="fas fa-pen"></i> {{ $t("edit") }}
-                  </b-link>
+                >
+                  <i class="fas fa-pen"></i> {{ $t("edit") }}
+                </b-link>
 
-                  <!--                                    <a class="dropdown-item dropdown-item&#45;&#45;inside" >-->
-                  <!--                                        <i class="far fa-copy"></i>{{ $t('objects.create.copy_block') }}-->
-                  <!--                                    </a>-->
-
-                  <a
+                <a
                     class="dropdown-item dropdown-item--inside"
                     @click="DeleteBlock(block, block_index, index)"
-                  >
-                    <i class="far fa-trash"></i> {{ $t("delete") }}
-                  </a>
-                </div>
-              </div>
+                >
+                  <i class="far fa-trash"></i> {{ $t("delete") }}
+                </a>
+              </x-dropdown>
             </div>
 
             <a href="#" class="object__link">

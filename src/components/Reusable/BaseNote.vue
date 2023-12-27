@@ -1,8 +1,10 @@
 <script>
 import moment from 'moment'
+import XDropdown from "@/components/ui-components/dropdown/XDropdown.vue";
 
 export default {
   name: 'BaseNote',
+  components: {XDropdown},
   emits: ['edit-selected-note', 'delete-note'],
   props: {
     detail: {
@@ -42,23 +44,23 @@ export default {
       <p class="m-0 base-note-text">
         {{ detail.text }}
       </p>
-      <div class="float-right dropdown my-dropdown">
+      <x-dropdown>
         <button
-          v-if="actions"
-          type="button"
-          class="dropdown-toggle"
-          data-toggle="dropdown"
+            v-if="actions"
+            type="button"
+            class="dropdown-toggle"
+            data-toggle="dropdown"
         >
           <i class="far fa-ellipsis-h" />
         </button>
         <div
-          v-if="actions"
-          class="dropdown-menu"
+            v-if="actions"
+            class="dropdown-menu"
         >
           <slot name="delete" />
           <slot name="edit" />
         </div>
-      </div>
+      </x-dropdown>
     </div>
     <div
       class="d-flex justify-content-between base-note-content align-items-center"

@@ -4,9 +4,11 @@ import { mapActions, mapGetters } from 'vuex'
 import BaseBreadCrumb from '@/components/BaseBreadCrumb'
 import DatePicker from 'vue2-datepicker'
 import 'vue2-datepicker/index.css'
+import XDropdown from "@/components/ui-components/dropdown/XDropdown.vue";
 
 export default {
   components: {
+    XDropdown,
     DatePicker,
     BaseBreadCrumb,
     // 'view-status': ViewClient
@@ -309,28 +311,18 @@ export default {
 
       <template #cell(actions)="data">
         <div class="float-right">
-          <div class="dropdown my-dropdown dropleft">
-            <button
-              type="button"
-              class="dropdown-toggle"
-              data-toggle="dropdown"
-            >
-              <i class="far fa-ellipsis-h" />
-            </button>
-
-            <div class="dropdown-menu">
-              <router-link
+          <x-dropdown>
+            <router-link
                 :to="{
                   name: 'contracts-view',
                   params: { id: data.item.order.id },
                 }"
                 :class="'dropdown-item dropdown-item--inside'"
-              >
-                <i class="far fa-eye" />
-                {{ $t("apartments.list.more") }}
-              </router-link>
-            </div>
-          </div>
+            >
+              <i class="far fa-eye" />
+              {{ $t("apartments.list.more") }}
+            </router-link>
+          </x-dropdown>
         </div>
       </template>
     </b-table>

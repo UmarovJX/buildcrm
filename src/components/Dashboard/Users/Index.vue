@@ -20,10 +20,12 @@ import { hasOwnProperty } from '@/util/object'
 import { isNull } from '@/util/inspect'
 import Edit from './Modal/Edit'
 import Create from './Modal/Create'
+import XDropdown from "@/components/ui-components/dropdown/XDropdown.vue";
 
 export default {
   name: 'UsersPage',
   components: {
+    XDropdown,
     XFormSelectOption,
     XIcon,
     XCircularBackground,
@@ -558,10 +560,7 @@ export default {
 
         <template #cell(actions)="data">
           <div class="float-right">
-            <div
-              v-if="deletePermission || editPermission"
-              class="dropdown my-dropdown dropleft"
-            >
+            <x-dropdown v-if="deletePermission || editPermission">
               <!--user.role.id != 1 &&-->
               <button
                 type="button"
@@ -611,7 +610,7 @@ export default {
                   }}
                 </b-button>
               </div>
-            </div>
+            </x-dropdown>
           </div>
         </template>
       </b-table>

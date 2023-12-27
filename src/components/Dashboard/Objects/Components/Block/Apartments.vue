@@ -3,10 +3,12 @@ import { mapGetters } from 'vuex'
 import api from '@/services/api'
 import DatePicker from 'vue2-datepicker'
 import 'vue2-datepicker/index.css'
+import XDropdown from "@/components/ui-components/dropdown/XDropdown.vue";
 
 export default {
 
   components: {
+    XDropdown,
     'date-picker': DatePicker,
   },
   props: {
@@ -249,16 +251,18 @@ export default {
             {{ $t("objects.create.apartment") }} <span>{{ index + 1 }}</span>
           </div>
           <div class="apartment__info">
-            <div class="dropdown my-dropdown__two">
-              {{ $t("objects.create.plan.name") }}
+            <x-dropdown>
+              <template #button-content>
+                {{ $t("objects.create.plan.name") }}
+              </template>
               <select
-                v-model="apartment.plan"
-                class="custom-select"
-                @change="ApartmentUpdate(apartment, 'plan')"
+                  v-model="apartment.plan"
+                  class="custom-select"
+                  @change="ApartmentUpdate(apartment, 'plan')"
               >
                 <option
-                  disabled
-                  :value="{
+                    disabled
+                    :value="{
                     id: null,
                     name: null,
                     area: null,
@@ -270,9 +274,9 @@ export default {
                   {{ $t("objects.create.choose_plan") }}
                 </option>
                 <option
-                  v-for="(plan, index) in typePlans"
-                  :key="index"
-                  :value="{
+                    v-for="(plan, index) in typePlans"
+                    :key="index"
+                    :value="{
                     id: plan.id,
                     name: plan.name,
                     area: plan.area,
@@ -284,7 +288,7 @@ export default {
                   {{ plan.name }}
                 </option>
               </select>
-            </div>
+            </x-dropdown>
           </div>
           <div class="apartment__info">
             {{ $t("objects.create.rooms") }}:

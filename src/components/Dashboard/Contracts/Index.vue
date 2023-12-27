@@ -5,10 +5,12 @@ import { mapActions, mapGetters } from 'vuex'
 import BaseBreadCrumb from '@/components/BaseBreadCrumb'
 import api from '@/services/api'
 import SideBarFilter from './SideBarFilter.vue'
+import XDropdown from "@/components/ui-components/dropdown/XDropdown.vue";
 
 export default {
   name: 'Contracts',
   components: {
+    XDropdown,
     // BaseFilterTabsContent,
     BaseBreadCrumb,
     SideBarFilter,
@@ -378,16 +380,8 @@ export default {
 
         <template #cell(actions)="data">
           <div class="float-right">
-            <div class="dropdown my-dropdown dropleft">
-              <button
-                type="button"
-                class="dropdown-toggle"
-                data-toggle="dropdown"
-              >
-                <i class="far fa-ellipsis-h" />
-              </button>
-              <div class="dropdown-menu">
-                <a
+            <x-dropdown>
+              <a
                   v-if="
                     data.item.status === 'contract' ||
                       data.item.status === 'sold'
@@ -395,24 +389,23 @@ export default {
                   class="dropdown-item dropdown-item--inside"
                   href="#"
                   @click="downloadContractLink(data.item.id)"
-                >
-                  <i class="fa fa-download" />
-                  {{ $t("contracts.download") }}
-                </a>
+              >
+                <i class="fa fa-download" />
+                {{ $t("contracts.download") }}
+              </a>
 
-                <!--                    :href="downloadContractLink(data.item.id)"-->
-                <!--                    target="_blank"-->
-                <!--                    download-->
+              <!--                    :href="downloadContractLink(data.item.id)"-->
+              <!--                    target="_blank"-->
+              <!--                    download-->
 
-                <router-link
+              <router-link
                   :to="{ name: 'contracts-view', params: { id: data.item.id } }"
                   :class="'dropdown-item dropdown-item--inside'"
-                >
-                  <i class="far fa-eye" />
-                  {{ $t("apartments.list.more") }}
-                </router-link>
-              </div>
-            </div>
+              >
+                <i class="far fa-eye" />
+                {{ $t("apartments.list.more") }}
+              </router-link>
+            </x-dropdown>
           </div>
         </template>
 

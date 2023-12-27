@@ -2,9 +2,11 @@
 import { mapGetters } from 'vuex'
 import api from '@/services/api'
 import PromosPermission from '@/permission/promos'
+import XDropdown from "@/components/ui-components/dropdown/XDropdown.vue";
 
 export default {
   name: 'ListContent',
+  components: {XDropdown},
   props: {
     promos: {
       type: Array,
@@ -187,19 +189,7 @@ export default {
       <!--   ACTION   -->
       <template #cell(actions)="data">
         <div class="float-right">
-          <div
-            v-if="hasPermission"
-            class="dropdown my-dropdown dropleft"
-          >
-            <button
-              type="button"
-              class="dropdown-toggle"
-              data-toggle="dropdown"
-            >
-              <i class="far fa-ellipsis-h" />
-            </button>
-
-            <div class="dropdown-menu">
+            <x-dropdown v-if="hasPermission">
               <b-button
                 v-if="!data.item.status && editPromoPermission"
                 class="dropdown-item dropdown-item--inside"
@@ -235,8 +225,7 @@ export default {
                 <i class="fas fa-trash" />
                 {{ $t("delete") }}
               </b-button>
-            </div>
-          </div>
+            </x-dropdown>
         </div>
       </template>
     </b-table>

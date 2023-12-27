@@ -1,5 +1,8 @@
 <script>
+import XDropdown from "@/components/ui-components/dropdown/XDropdown.vue";
+
 export default {
+  components: {XDropdown},
   props: {
     dataObject: {},
     currency: {},
@@ -465,36 +468,33 @@ export default {
                 </div>
 
                 <div class="apartment__info">
-                  <div class="dropdown my-dropdown__two">
-                    <button
-                      type="button"
-                      class="dropdown-toggle"
-                      data-toggle="dropdown"
-                    >
+                  <x-dropdown>
+                    <template #button-content>
                       {{ $t("objects.create.plan.name") }}
-                    </button>
+                    </template>
+
                     <select
-                      v-model="apartment.type_plan"
-                      class="custom-select"
-                      required
+                        v-model="apartment.type_plan"
+                        class="custom-select"
+                        required
                     >
                       <option
-                        disabled
-                        selected
-                        value="null"
+                          disabled
+                          selected
+                          value="null"
                       >
                         {{ $t("objects.create.choose_plan") }}
                       </option>
 
                       <option
-                        v-for="(plan, index) in dataObject.type_plan"
-                        :key="index"
-                        :value="index"
+                          v-for="(plan, index) in dataObject.type_plan"
+                          :key="index"
+                          :value="index"
                       >
                         {{ plan.name }}
                       </option>
                     </select>
-                  </div>
+                  </x-dropdown>
                 </div>
                 <div class="apartment__info">
                   {{ $t("objects.create.rooms") }}:

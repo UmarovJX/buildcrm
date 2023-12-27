@@ -8,10 +8,12 @@ import AppHeader from '@/components/Header/AppHeader'
 import BaseButton from '@/components/Reusable/BaseButton'
 import BasePlusIcon from '@/components/icons/BasePlusIcon'
 import BaseTabPicker from '@/components/Reusable/BaseTabPicker'
+import XDropdown from "@/components/ui-components/dropdown/XDropdown.vue";
 
 export default {
   name: 'BranchesPage',
   components: {
+    XDropdown,
     BaseTabPicker,
     AppHeader,
     BaseButton,
@@ -217,21 +219,11 @@ export default {
 
           <template #cell(actions)="data">
             <div class="float-right">
-              <div
+              <x-dropdown
                 v-if="
                   deletePermission || viewTemplatesPermission || editPermission
                 "
-                class="dropdown my-dropdown dropleft"
               >
-                <button
-                  type="button"
-                  class="dropdown-toggle"
-                  data-toggle="dropdown"
-                >
-                  <i class="far fa-ellipsis-h" />
-                </button>
-
-                <div class="dropdown-menu">
                   <router-link
                     v-if="editPermission"
                     :to="{
@@ -277,8 +269,7 @@ export default {
                       {{ $t("undelete") }}
                     </span>
                   </button>
-                </div>
-              </div>
+              </x-dropdown>
             </div>
           </template>
         </b-table>

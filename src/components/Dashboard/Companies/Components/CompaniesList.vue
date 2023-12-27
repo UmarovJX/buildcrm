@@ -4,10 +4,12 @@ import BaseEditIcon from '@/components/icons/BaseEditIcon'
 import BaseButton from '@/components/Reusable/BaseButton'
 import { sortObjectValues } from '@/util/reusable'
 import CompaniesPermission from '@/permission/companies'
+import XDropdown from "@/components/ui-components/dropdown/XDropdown.vue";
 
 export default {
   name: 'CompaniesList',
   components: {
+    XDropdown,
     BaseButton,
     BaseEditIcon,
   },
@@ -158,18 +160,18 @@ export default {
       <!--   ACTION   -->
       <template #cell(actions)="data">
         <div class="float-right">
-          <div class="dropdown my-dropdown dropleft">
+          <x-dropdown>
             <BaseButton
-              v-if="editPermission"
-              text=""
-              class="violet button rounded-circle]"
-              @click="editSelectedCompany(data.item)"
+                v-if="editPermission"
+                text=""
+                class="violet button rounded-circle]"
+                @click="editSelectedCompany(data.item)"
             >
               <template #right-icon>
                 <BaseEditIcon fill="var(--white)" />
               </template>
             </BaseButton>
-          </div>
+          </x-dropdown>
         </div>
       </template>
     </b-table>
