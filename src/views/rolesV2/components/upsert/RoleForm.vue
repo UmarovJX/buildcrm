@@ -57,13 +57,24 @@ export default {
       for (let i = 0; i < list.length; i++) {
         const element = list[i]
         if (element.children.length) {
+          const pInnerList = joinChildPermission(element.children)
+            .map(e => e.permissions)
+
+          const b = []
+
+          pInnerList.forEach(pInner => {
+            pInner.forEach(pInnerItem => {
+              b.push(pInnerItem)
+            })
+          })
+
           newList.push({
             id: element.id,
             slug: element.slug,
             name: element.name,
             permissions: [
               ...element.permissions,
-              ...joinChildPermission(element.children).map(e => e.permissions),
+              ...b,
             ],
           })
         } else {
@@ -80,7 +91,6 @@ export default {
           })
         }
       }
-
       return newList
     }
 
@@ -144,6 +154,7 @@ export default {
         isMounting.value = true
 
         if (isUpdatePage.value) {
+          // eslint-disable-next-line no-use-before-define
           await fetchEditItem()
         }
 
@@ -153,6 +164,7 @@ export default {
         })
 
         groups.value = joinChildPermission(result)
+        console.log('groups.value', groups.value)
       } catch (e) {
         toastError(e)
       } finally {
