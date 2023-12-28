@@ -7,7 +7,7 @@ import BasePlusIcon from '@/components/icons/BasePlusIcon.vue'
 // import BaseSearchInput from "@/components/Reusable/BaseSearchInput";
 import AppHeader from '@/components/Header/AppHeader.vue'
 import { XIcon } from '@/components/ui-components/material-icons'
-import XDropdown from "@/components/ui-components/dropdown/XDropdown.vue";
+import XDropdown from '@/components/ui-components/dropdown/XDropdown.vue'
 
 export default {
   name: 'Roles',
@@ -175,27 +175,28 @@ export default {
         <template #cell(actions)="data">
           <div class="float-right">
             <div class="d-flex align-items-center">
-              <x-dropdown v-if="
+              <x-dropdown
+                v-if="
                   data.item.id !== 1 && (editPermission || deletePermission)
                 "
               >
                 <template
-                    v-if="editPermission || deletePermission"
+                  v-if="editPermission || deletePermission"
                 >
                   <router-link
-                      v-if="data.item.id !== 1 && editPermission"
-                      :to="{ name: 'roles-update', params: { id: data.item.id } }"
-                      :class="'dropdown-item dropdown-item--inside'"
+                    v-if="data.item.id !== 1 && editPermission"
+                    :to="{ name: 'roles-update', params: { id: data.item.id } }"
+                    :class="'dropdown-item dropdown-item--inside'"
                   >
                     <i class="fas fa-pen" />
                     {{ $t("edit") }}
                   </router-link>
 
                   <a
-                      v-if="data.item.id !== 1 && deletePermission"
-                      class="dropdown-item dropdown-item--inside"
-                      href="#"
-                      @click="deleteRole(data.item.id)"
+                    v-if="data.item.id !== 1 && deletePermission"
+                    class="dropdown-item dropdown-item--inside"
+                    href="#"
+                    @click="deleteRole(data.item.id)"
                   >
                     <i class="far fa-trash" /> {{ $t("delete") }}
                   </a>

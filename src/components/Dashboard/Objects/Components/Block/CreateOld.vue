@@ -1,8 +1,8 @@
 <script>
-import XDropdown from "@/components/ui-components/dropdown/XDropdown.vue";
+import XDropdown from '@/components/ui-components/dropdown/XDropdown.vue'
 
 export default {
-  components: {XDropdown},
+  components: { XDropdown },
   props: {
     dataObject: {},
     currency: {},
@@ -474,22 +474,22 @@ export default {
                     </template>
 
                     <select
-                        v-model="apartment.type_plan"
-                        class="custom-select"
-                        required
+                      v-model="apartment.type_plan"
+                      class="custom-select"
+                      required
                     >
                       <option
-                          disabled
-                          selected
-                          value="null"
+                        disabled
+                        selected
+                        value="null"
                       >
                         {{ $t("objects.create.choose_plan") }}
                       </option>
 
                       <option
-                          v-for="(plan, index) in dataObject.type_plan"
-                          :key="index"
-                          :value="index"
+                        v-for="(plan, index) in dataObject.type_plan"
+                        :key="index"
+                        :value="index"
                       >
                         {{ plan.name }}
                       </option>

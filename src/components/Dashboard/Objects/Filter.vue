@@ -248,54 +248,54 @@ export default {
               </td>
               <td>
                 <div
-                    v-if="
-                        !apartment.status ||
-                          apartment.manager_id === getMe.user.id ||
-                          getMe.role.id === 1
-                      "
+                  v-if="
+                    !apartment.status ||
+                      apartment.manager_id === getMe.user.id ||
+                      getMe.role.id === 1
+                  "
                 >
                   <b-link
-                      v-if="
-                        getPermission.apartments.reserve && !apartment.status
-                      "
-                      v-b-modal.modal-create
-                      class="dropdown-item dropdown-item--inside"
-                      @click="[(reserve = true), (apartment_id = apartment.id)]"
+                    v-if="
+                      getPermission.apartments.reserve && !apartment.status
+                    "
+                    v-b-modal.modal-create
+                    class="dropdown-item dropdown-item--inside"
+                    @click="[(reserve = true), (apartment_id = apartment.id)]"
                   >
                     <i class="far fa-calendar-check" />
                     {{ $t("apartments.list.book") }}
                   </b-link>
 
                   <b-link
-                      v-if="
-                        (apartment.status === 2 &&
-                          apartment.manager_id === getMe.user.id) ||
-                          (getMe.role.id === 1 && apartment.status === 2)
-                      "
-                      v-b-modal.modal-view-client
-                      class="dropdown-item dropdown-item--inside"
-                      @click="ReserveInfo(apartment)"
+                    v-if="
+                      (apartment.status === 2 &&
+                        apartment.manager_id === getMe.user.id) ||
+                        (getMe.role.id === 1 && apartment.status === 2)
+                    "
+                    v-b-modal.modal-view-client
+                    class="dropdown-item dropdown-item--inside"
+                    @click="ReserveInfo(apartment)"
                   >
                     <i class="far fa-eye" />
                     {{ $t("apartments.list.view_client") }}
                   </b-link>
 
                   <router-link
-                      v-if="apartment.status != 1"
-                      :to="{
-                        name: 'apartment-view',
-                        params: { id: apartment.id },
-                      }"
-                      :class="'dropdown-item dropdown-item--inside'"
+                    v-if="apartment.status != 1"
+                    :to="{
+                      name: 'apartment-view',
+                      params: { id: apartment.id },
+                    }"
+                    :class="'dropdown-item dropdown-item--inside'"
                   >
                     <i class="far fa-ballot-check" />
                     {{ $t("apartments.list.confirm") }}
                   </router-link>
 
                   <a
-                      v-if="apartment.status === 1"
-                      class="dropdown-item dropdown-item--inside"
-                      href="product-item.html"
+                    v-if="apartment.status === 1"
+                    class="dropdown-item dropdown-item--inside"
+                    href="product-item.html"
                   >
                     <i class="far fa-eye" />
                     {{ $t("apartments.list.more") }}

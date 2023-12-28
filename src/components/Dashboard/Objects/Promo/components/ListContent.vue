@@ -2,11 +2,11 @@
 import { mapGetters } from 'vuex'
 import api from '@/services/api'
 import PromosPermission from '@/permission/promos'
-import XDropdown from "@/components/ui-components/dropdown/XDropdown.vue";
+import XDropdown from '@/components/ui-components/dropdown/XDropdown.vue'
 
 export default {
   name: 'ListContent',
-  components: {XDropdown},
+  components: { XDropdown },
   props: {
     promos: {
       type: Array,
@@ -189,43 +189,43 @@ export default {
       <!--   ACTION   -->
       <template #cell(actions)="data">
         <div class="float-right">
-            <x-dropdown v-if="hasPermission">
-              <b-button
-                v-if="!data.item.status && editPromoPermission"
-                class="dropdown-item dropdown-item--inside"
-                @click="activatePromo(data.item)"
-              >
-                <i class="fas fa-check" />
-                {{ $t("activate") }}
-              </b-button>
+          <x-dropdown v-if="hasPermission">
+            <b-button
+              v-if="!data.item.status && editPromoPermission"
+              class="dropdown-item dropdown-item--inside"
+              @click="activatePromo(data.item)"
+            >
+              <i class="fas fa-check" />
+              {{ $t("activate") }}
+            </b-button>
 
-              <b-button
-                v-if="data.item.status && editPromoPermission"
-                class="dropdown-item dropdown-item--inside"
-                @click="deactivatePromo(data.item)"
-              >
-                <i class="fas fa-times" />
-                {{ $t("deactivate") }}
-              </b-button>
+            <b-button
+              v-if="data.item.status && editPromoPermission"
+              class="dropdown-item dropdown-item--inside"
+              @click="deactivatePromo(data.item)"
+            >
+              <i class="fas fa-times" />
+              {{ $t("deactivate") }}
+            </b-button>
 
-              <b-button
-                v-if="editPromoPermission"
-                class="dropdown-item dropdown-item--inside"
-                @click="editPromoItem(data.item)"
-              >
-                <i class="fas fa-edit" />
-                {{ $t("edit") }}
-              </b-button>
+            <b-button
+              v-if="editPromoPermission"
+              class="dropdown-item dropdown-item--inside"
+              @click="editPromoItem(data.item)"
+            >
+              <i class="fas fa-edit" />
+              {{ $t("edit") }}
+            </b-button>
 
-              <b-button
-                v-if="deletePromoPermission"
-                class="dropdown-item dropdown-item--inside"
-                @click="deletePromoItem(data.item)"
-              >
-                <i class="fas fa-trash" />
-                {{ $t("delete") }}
-              </b-button>
-            </x-dropdown>
+            <b-button
+              v-if="deletePromoPermission"
+              class="dropdown-item dropdown-item--inside"
+              @click="deletePromoItem(data.item)"
+            >
+              <i class="fas fa-trash" />
+              {{ $t("delete") }}
+            </b-button>
+          </x-dropdown>
         </div>
       </template>
     </b-table>

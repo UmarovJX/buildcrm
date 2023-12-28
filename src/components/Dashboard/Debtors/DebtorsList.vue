@@ -4,7 +4,7 @@ import { mapActions, mapGetters } from 'vuex'
 import BaseBreadCrumb from '@/components/BaseBreadCrumb'
 import DatePicker from 'vue2-datepicker'
 import 'vue2-datepicker/index.css'
-import XDropdown from "@/components/ui-components/dropdown/XDropdown.vue";
+import XDropdown from '@/components/ui-components/dropdown/XDropdown.vue'
 
 export default {
   components: {
@@ -313,11 +313,11 @@ export default {
         <div class="float-right">
           <x-dropdown>
             <router-link
-                :to="{
-                  name: 'contracts-view',
-                  params: { id: data.item.order.id },
-                }"
-                :class="'dropdown-item dropdown-item--inside'"
+              :to="{
+                name: 'contracts-view',
+                params: { id: data.item.order.id },
+              }"
+              :class="'dropdown-item dropdown-item--inside'"
             >
               <i class="far fa-eye" />
               {{ $t("apartments.list.more") }}

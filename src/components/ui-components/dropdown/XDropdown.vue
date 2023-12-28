@@ -1,21 +1,27 @@
 <script>
-import {XIcon} from "@/components/ui-components/material-icons";
+import { XIcon } from '@/components/ui-components/material-icons'
 
 export default {
-  components:{
-    XIcon
-  }
+  components: {
+    XIcon,
+  },
 }
 </script>
 
 <template>
-  <b-dropdown no-caret class="b__dropdown__group">
+  <b-dropdown
+    no-caret
+    class="b__dropdown__group"
+  >
     <template #button-content>
-      <slot name="button-content"></slot>
-      <x-icon name="more_horiz" class="violet-600"/>
+      <slot name="button-content" />
+      <x-icon
+        name="more_horiz"
+        class="violet-600"
+      />
     </template>
 
-    <slot/>
+    <slot />
   </b-dropdown>
 </template>
 
@@ -33,4 +39,3 @@ export default {
   }
 }
 </style>
-

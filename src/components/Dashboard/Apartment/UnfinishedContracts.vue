@@ -3,7 +3,7 @@ import { mapActions, mapGetters } from 'vuex'
 // import SuccessAgree from "./Components/SuccessAgree";
 import BaseBreadCrumb from '@/components/BaseBreadCrumb'
 import api from '@/services/api'
-import XDropdown from "@/components/ui-components/dropdown/XDropdown.vue";
+import XDropdown from '@/components/ui-components/dropdown/XDropdown.vue'
 
 export default {
   components: {
@@ -192,14 +192,14 @@ export default {
             <x-dropdown>
               <!--  Продолжить оформление -->
               <router-link
-                  :to="{
-                    name: 'confirm-apartment',
-                    params: {
-                      id: data.item.uuid,
-                      object: data.item.apartments[0].object.id,
-                    },
-                  }"
-                  :class="'dropdown-item dropdown-item--inside'"
+                :to="{
+                  name: 'confirm-apartment',
+                  params: {
+                    id: data.item.uuid,
+                    object: data.item.apartments[0].object.id,
+                  },
+                }"
+                :class="'dropdown-item dropdown-item--inside'"
               >
                 <i class="far fa-eye" />
                 Продолжить оформление
@@ -207,8 +207,8 @@ export default {
 
               <!-- Отменить -->
               <b-link
-                  class="dropdown-item dropdown-item--inside"
-                  @click="cancelContract(data.item.uuid)"
+                class="dropdown-item dropdown-item--inside"
+                @click="cancelContract(data.item.uuid)"
               >
                 <i class="far fa-trash text-danger" /> Отменить оформление
               </b-link>

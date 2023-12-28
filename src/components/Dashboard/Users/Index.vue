@@ -18,9 +18,9 @@ import { XIcon } from '@/components/ui-components/material-icons'
 
 import { hasOwnProperty } from '@/util/object'
 import { isNull } from '@/util/inspect'
+import XDropdown from '@/components/ui-components/dropdown/XDropdown.vue'
 import Edit from './Modal/Edit'
 import Create from './Modal/Create'
-import XDropdown from "@/components/ui-components/dropdown/XDropdown.vue";
 
 export default {
   name: 'UsersPage',
@@ -563,41 +563,41 @@ export default {
             <x-dropdown v-if="deletePermission || editPermission">
               <!--user.role.id != 1 &&-->
               <b-button
-                  v-if="editPermission"
-                  v-b-modal.modal-edit
-                  class="dropdown-item dropdown-item--inside"
-                  @click="clickManager(data)"
+                v-if="editPermission"
+                v-b-modal.modal-edit
+                class="dropdown-item dropdown-item--inside"
+                @click="clickManager(data)"
               >
                 <i class="far fa-pen" />
                 {{ $t("edit") }}
               </b-button>
               <b-button
-                  v-if="unblockPermission && data.item.blocked_at"
-                  v-b-modal.modal-edit
-                  class="dropdown-item dropdown-item--inside"
-                  @click="unblockUser(data.item)"
+                v-if="unblockPermission && data.item.blocked_at"
+                v-b-modal.modal-edit
+                class="dropdown-item dropdown-item--inside"
+                @click="unblockUser(data.item)"
               >
                 <i class="far fa-unlock" />
                 Разблокировать
               </b-button>
 
               <b-button
-                  v-if="deletePermission"
-                  class="dropdown-item dropdown-item--inside"
-                  @click="deleteUser(data.item.uuid)"
+                v-if="deletePermission"
+                class="dropdown-item dropdown-item--inside"
+                @click="deleteUser(data.item.uuid)"
               >
                 <i
-                    v-if="query.status === 'deactivated'"
-                    class="far fa-trash-undo"
+                  v-if="query.status === 'deactivated'"
+                  class="far fa-trash-undo"
                 />
                 <i
-                    v-else
-                    class="far fa-trash"
+                  v-else
+                  class="far fa-trash"
                 />
                 {{
                   query.status === "deactivated"
-                      ? $t("undelete")
-                      : $t("delete")
+                    ? $t("undelete")
+                    : $t("delete")
                 }}
               </b-button>
             </x-dropdown>

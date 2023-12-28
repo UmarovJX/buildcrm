@@ -1,13 +1,13 @@
 <script>
-import {XIcon} from '@/components/ui-components/material-icons'
-import {XButton} from '@/components/ui-components/button'
-import {hasOwnProperty} from '@/util/object'
-import {computed, getCurrentInstance, ref} from 'vue'
-import {XFormInput} from '@/components/ui-components/form-input'
+import { XIcon } from '@/components/ui-components/material-icons'
+import { XButton } from '@/components/ui-components/button'
+import { hasOwnProperty } from '@/util/object'
+import { computed, getCurrentInstance, ref } from 'vue'
+import { XFormInput } from '@/components/ui-components/form-input'
 import GroupParentSelect from '@/views/settings/views/permission-group/components/GroupParentSelect.vue'
-import {useToastError} from '@/composables/useToastError'
-import {v3ServiceApi} from '@/services/v3/v3.service'
-import {useLoading} from '@/composables/useLoading'
+import { useToastError } from '@/composables/useToastError'
+import { v3ServiceApi } from '@/services/v3/v3.service'
+import { useLoading } from '@/composables/useLoading'
 
 export default {
   name: 'RoleForm',
@@ -17,9 +17,9 @@ export default {
     XIcon,
     XButton,
   },
-  methods: {hasOwnProperty},
+  methods: { hasOwnProperty },
   setup() {
-    const {toastError} = useToastError()
+    const { toastError } = useToastError()
     const vm = getCurrentInstance().proxy
     const {
       isFetching,
@@ -58,13 +58,13 @@ export default {
         const element = list[i]
         if (element.children.length) {
           const pInnerList = joinChildPermission(element.children)
-              .map(e => e.permissions)
+            .map(e => e.permissions)
 
           const b = []
 
           pInnerList.forEach(pInner => {
             pInner.forEach(pInnerItem => {
-              let {parentName} = pInnerItem
+              let { parentName } = pInnerItem
               if (parentName) {
                 parentName = {
                   uz: `${element.name.uz} > ${pInnerItem.parentName.uz}`,
@@ -78,8 +78,8 @@ export default {
                 ...pInnerItem,
                 parentName,
                 selected: isUpdatePage.value
-                    ? isSelectedItem(pInnerItem.id)
-                    : false,
+                  ? isSelectedItem(pInnerItem.id)
+                  : false,
               })
             })
           })
@@ -89,14 +89,12 @@ export default {
             slug: element.slug,
             name: element.name,
             permissions: [
-              ...element.permissions.map(permission => {
-                return {
-                  ...permission,
-                  selected: isUpdatePage.value
-                      ? isSelectedItem(permission.id)
-                      : false,
-                }
-              }),
+              ...element.permissions.map(permission => ({
+                ...permission,
+                selected: isUpdatePage.value
+                  ? isSelectedItem(permission.id)
+                  : false,
+              })),
               ...b,
             ],
           })
@@ -109,8 +107,8 @@ export default {
               ...permission,
               parentName: element.name,
               selected: isUpdatePage.value
-                  ? isSelectedItem(permission.id)
-                  : false,
+                ? isSelectedItem(permission.id)
+                : false,
             })),
           })
         }
@@ -127,7 +125,7 @@ export default {
 
     function create() {
       return v3ServiceApi.role.create(
-          makeBody(),
+        makeBody(),
       )
     }
 
@@ -182,7 +180,7 @@ export default {
           await fetchEditItem()
         }
 
-        const {data: {result}} = await v3ServiceApi.permission.group.index({
+        const { data: { result } } = await v3ServiceApi.permission.group.index({
           page: 1,
           limit: 200,
         })
@@ -222,7 +220,7 @@ export default {
     }
 
     async function fetchEditItem() {
-      const {data: {result}} = await v3ServiceApi.role.show({
+      const { data: { result } } = await v3ServiceApi.role.show({
         id: vm.$route.params.id,
       })
 
@@ -253,10 +251,10 @@ export default {
 <template>
   <b-card no-body>
     <b-tabs
-        v-model="tabIndex"
-        pills
-        card
-        content-class="role__tab__content"
+      v-model="tabIndex"
+      pills
+      card
+      content-class="role__tab__content"
     >
       <b-tab>
         <template #title>
@@ -264,26 +262,26 @@ export default {
         </template>
 
         <validation-observer
-            ref="formObserverRef"
-            class="role__observer"
+          ref="formObserverRef"
+          class="role__observer"
         >
           <!--   ? NAME UZ     -->
           <validation-provider
-              ref="clientTypeNameVProvider"
-              v-slot="{ errors }"
-              name="name-uz-provider"
-              rules="required|min:3"
-              class="name-provider"
+            ref="clientTypeNameVProvider"
+            v-slot="{ errors }"
+            name="name-uz-provider"
+            rules="required|min:3"
+            class="name-provider"
           >
             <x-form-input
-                v-model="form.uz"
-                type="text"
-                :placeholder="`${$t('name')} (${$t('placeholder_uz')})`"
-                class="w-75 "
+              v-model="form.uz"
+              type="text"
+              :placeholder="`${$t('name')} (${$t('placeholder_uz')})`"
+              class="w-75 "
             />
             <span
-                v-if="errors[0]"
-                class="error__provider"
+              v-if="errors[0]"
+              class="error__provider"
             >
               {{ errors[0].replace("name-uz-provider", $t("name")) }}
             </span>
@@ -291,21 +289,21 @@ export default {
 
           <!--   ? NAME RU     -->
           <validation-provider
-              ref="clientTypeNameVProvider"
-              v-slot="{ errors }"
-              name="name-ru-provider"
-              rules="required|min:3"
-              class="name-provider"
+            ref="clientTypeNameVProvider"
+            v-slot="{ errors }"
+            name="name-ru-provider"
+            rules="required|min:3"
+            class="name-provider"
           >
             <x-form-input
-                v-model="form.ru"
-                type="text"
-                :placeholder="`${$t('name')} (${$t('placeholder_ru')})`"
-                class="w-75"
+              v-model="form.ru"
+              type="text"
+              :placeholder="`${$t('name')} (${$t('placeholder_ru')})`"
+              class="w-75"
             />
             <span
-                v-if="errors[0]"
-                class="error__provider "
+              v-if="errors[0]"
+              class="error__provider "
             >
               {{ errors[0].replace("name-ru-provider", $t("name")) }}
             </span>
@@ -313,21 +311,21 @@ export default {
 
           <!--   ? NAME EN     -->
           <validation-provider
-              ref="clientTypeNameVProvider"
-              v-slot="{ errors }"
-              name="name-en-provider"
-              rules="required|min:3"
-              class="name-provider"
+            ref="clientTypeNameVProvider"
+            v-slot="{ errors }"
+            name="name-en-provider"
+            rules="required|min:3"
+            class="name-provider"
           >
             <x-form-input
-                v-model="form.en"
-                type="text"
-                :placeholder="`${$t('name')} (${$t('placeholder_eng')})`"
-                class="w-75"
+              v-model="form.en"
+              type="text"
+              :placeholder="`${$t('name')} (${$t('placeholder_eng')})`"
+              class="w-75"
             />
             <span
-                v-if="errors[0]"
-                class="error__provider"
+              v-if="errors[0]"
+              class="error__provider"
             >
               {{ errors[0].replace("name-en-provider", $t("name")) }}
             </span>
@@ -337,20 +335,20 @@ export default {
 
       <template v-if="isMounting">
         <b-tab
-            v-for="skeletonItem in skeletonLength"
-            :key="skeletonItem"
+          v-for="skeletonItem in skeletonLength"
+          :key="skeletonItem"
         >
           <template #title>
             <div style="width: 100px;margin-top:-0.45rem">
-              <b-skeleton type="input"/>
+              <b-skeleton type="input" />
             </div>
           </template>
         </b-tab>
       </template>
 
       <b-tab
-          v-for="groupItem in groups"
-          :key="groupItem.id"
+        v-for="groupItem in groups"
+        :key="groupItem.id"
       >
         <template #title>
           {{ groupItem.name[$i18n.locale] }}
@@ -369,14 +367,14 @@ export default {
 
             <template v-for="(permission) in groupItem.permissions">
               <b-list-group-item
-                  v-if="permission.name"
-                  :key="permission.id"
-                  class="role__list__item d-flex justify-content-between"
+                v-if="permission.name"
+                :key="permission.id"
+                class="role__list__item d-flex justify-content-between"
               >
                 <div>
                   <span
-                      v-if="permission.parentName && hasOwnProperty(permission.parentName,$i18n.locale)"
-                      class="gray-400 mr-2"
+                    v-if="permission.parentName && hasOwnProperty(permission.parentName,$i18n.locale)"
+                    class="gray-400 mr-2"
                   >
                     {{ permission.parentName[$i18n.locale] }}
                   </span>
@@ -385,9 +383,9 @@ export default {
 
                 <div>
                   <b-form-checkbox
-                      :checked="permission.selected"
-                      size="lg"
-                      @change="toggleCheckbox(permission.id,$event)"
+                    :checked="permission.selected"
+                    size="lg"
+                    @change="toggleCheckbox(permission.id,$event)"
                   />
                 </div>
               </b-list-group-item>
@@ -400,34 +398,34 @@ export default {
     <template #footer>
       <div class="d-flex justify-content-end x-gap-1">
         <x-button
-            variant="secondary"
-            text="cancel"
-            :bilingual="true"
-            class="bg-gray-300"
-            style="border-radius: 0.25rem;padding: 0.75rem 1rem"
-            @click="cancel"
+          variant="secondary"
+          text="cancel"
+          :bilingual="true"
+          class="bg-gray-300"
+          style="border-radius: 0.25rem;padding: 0.75rem 1rem"
+          @click="cancel"
         >
           <template #left-icon>
             <x-icon
-                name="tab_close_right"
-                class="red-600"
+              name="tab_close_right"
+              class="red-600"
             />
           </template>
         </x-button>
 
         <x-button
-            variant="primary"
-            text="save"
-            :bilingual="true"
-            class="bg-gray-300"
-            :loading="isFetching"
-            style="border-radius: 0.25rem;padding: 0.75rem 1rem"
-            @click="send"
+          variant="primary"
+          text="save"
+          :bilingual="true"
+          class="bg-gray-300"
+          :loading="isFetching"
+          style="border-radius: 0.25rem;padding: 0.75rem 1rem"
+          @click="send"
         >
           <template #left-icon>
             <x-icon
-                name="save"
-                class="text-white"
+              name="save"
+              class="text-white"
             />
           </template>
         </x-button>

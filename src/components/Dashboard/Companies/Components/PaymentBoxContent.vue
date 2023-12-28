@@ -2,7 +2,7 @@
 import api from '@/services/api'
 import BaseContractsIcon from '@/components/icons/BaseContractsIcon'
 import PaymentAccount from '@/permission/payment_account'
-import XDropdown from "@/components/ui-components/dropdown/XDropdown.vue";
+import XDropdown from '@/components/ui-components/dropdown/XDropdown.vue'
 
 export default {
   name: 'PaymentBoxContent',
@@ -84,33 +84,33 @@ export default {
           <base-contracts-icon fill="#A78BFA" />
           <p>{{ getName(detail.bank_name) }}</p>
         </span>
-        <x-dropdown  v-if="editPermission || deletePermission">
+        <x-dropdown v-if="editPermission || deletePermission">
           <b-button
-              v-if="editPermission"
-              v-model="isPrimary"
-              name="check-button"
-              switch
-              class="dropdown-item dropdown-item--inside"
-              @click="makePrimaryPayment"
+            v-if="editPermission"
+            v-model="isPrimary"
+            name="check-button"
+            switch
+            class="dropdown-item dropdown-item--inside"
+            @click="makePrimaryPayment"
           >
-              <span v-if="!detail.is_primary">{{ $t("activate") }}</span>
-              <span v-else>{{ $t("deactivate") }}</span>
-            </b-button>
-            <b-button
-                v-if="editPermission"
-                class="dropdown-item dropdown-item--inside"
-                @click="editSelectedPayment()"
-            >
-              {{ $t("edit") }}
-            </b-button>
+            <span v-if="!detail.is_primary">{{ $t("activate") }}</span>
+            <span v-else>{{ $t("deactivate") }}</span>
+          </b-button>
+          <b-button
+            v-if="editPermission"
+            class="dropdown-item dropdown-item--inside"
+            @click="editSelectedPayment()"
+          >
+            {{ $t("edit") }}
+          </b-button>
 
-            <b-button
-                v-if="deletePermission"
-                class="dropdown-item dropdown-item--inside"
-                @click="deleteCompany()"
-            >
-              {{ $t("delete") }}
-            </b-button>
+          <b-button
+            v-if="deletePermission"
+            class="dropdown-item dropdown-item--inside"
+            @click="deleteCompany()"
+          >
+            {{ $t("delete") }}
+          </b-button>
         </x-dropdown>
       </span>
       <span

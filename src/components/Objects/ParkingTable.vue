@@ -29,7 +29,7 @@ import HolderUpsert from '@/components/Objects/elements/HolderUpsert.vue'
 import SettingsPermission from '@/permission/settings.permission'
 import { isNull, isNUNEZ } from '@/util/inspect'
 import { keys } from '@/util/object'
-import XDropdown from "@/components/ui-components/dropdown/XDropdown.vue";
+import XDropdown from '@/components/ui-components/dropdown/XDropdown.vue'
 
 export default {
   name: 'ParkingTable',
@@ -820,8 +820,8 @@ export default {
             class="float-right"
           >
             <x-dropdown v-if="hasPermission">
-                <!-- Редактировать -->
-                <!-- <b-link
+              <!-- Редактировать -->
+              <!-- <b-link
                   v-if="editPermission"
                   class="dropdown-item dropdown-item--inside"
                   @click="[(edit = true), (apartment_id = data.item.id)]"
@@ -830,30 +830,30 @@ export default {
                   <i class="far fa-pencil"></i> {{ $t("edit") }}
                 </b-link> -->
 
-                <!--        Вернуть к продаже          -->
-                <b-link
-                    v-if="
-                      isSoldPermission &&
-                        data.item.is_sold &&
-                        data.item.order.status === 'available'
-                    "
-                    class="dropdown-item dropdown-item--inside"
-                    @click="openSoldModal(data.item)"
-                >
-                  <i class="far fa-unlock" /> {{ $t("remove_from_sale") }}
-                </b-link>
+              <!--        Вернуть к продаже          -->
+              <b-link
+                v-if="
+                  isSoldPermission &&
+                    data.item.is_sold &&
+                    data.item.order.status === 'available'
+                "
+                class="dropdown-item dropdown-item--inside"
+                @click="openSoldModal(data.item)"
+              >
+                <i class="far fa-unlock" /> {{ $t("remove_from_sale") }}
+              </b-link>
 
-                <b-link
-                    v-if="
-                      isSoldPermission &&
-                        !data.item.is_sold &&
-                        data.item.order.status === 'available'
-                    "
-                    class="dropdown-item dropdown-item--inside"
-                    @click="openSoldModal(data.item)"
-                >
-                  <i class="far fa-lock" /> {{ $t("return_to_sale") }}
-                </b-link>
+              <b-link
+                v-if="
+                  isSoldPermission &&
+                    !data.item.is_sold &&
+                    data.item.order.status === 'available'
+                "
+                class="dropdown-item dropdown-item--inside"
+                @click="openSoldModal(data.item)"
+              >
+                <i class="far fa-lock" /> {{ $t("return_to_sale") }}
+              </b-link>
               <!-- <router-link
                 :to="{
                   name: 'apartment-view',

@@ -1,8 +1,8 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import api from '@/services/api'
+import XDropdown from '@/components/ui-components/dropdown/XDropdown.vue'
 import ViewClient from '../Apartment/ViewClient'
-import XDropdown from "@/components/ui-components/dropdown/XDropdown.vue";
 
 export default {
   components: {
@@ -293,57 +293,57 @@ export default {
               <td>
                 <x-dropdown>
                   <b-link
-                      v-if="
-                        (client.status === 'booking' &&
-                          client.manager_id === getMe.user.id) ||
-                          (getMe.role.id === 1 && client.status === 'booking')
-                      "
-                      v-b-modal.modal-view-client
-                      class="dropdown-item dropdown-item--inside"
-                      @click="ReserveInfo(client)"
+                    v-if="
+                      (client.status === 'booking' &&
+                        client.manager_id === getMe.user.id) ||
+                        (getMe.role.id === 1 && client.status === 'booking')
+                    "
+                    v-b-modal.modal-view-client
+                    class="dropdown-item dropdown-item--inside"
+                    @click="ReserveInfo(client)"
                   >
                     <i class="far fa-eye" />
                     {{ $t("apartments.list.view_client") }}
                   </b-link>
 
                   <router-link
-                      v-if="client.status == 'booking'"
-                      :to="{
-                        name: 'apartment-view',
-                        params: { id: client.apartment.id },
-                      }"
-                      :class="'dropdown-item dropdown-item--inside'"
+                    v-if="client.status == 'booking'"
+                    :to="{
+                      name: 'apartment-view',
+                      params: { id: client.apartment.id },
+                    }"
+                    :class="'dropdown-item dropdown-item--inside'"
                   >
                     <i class="far fa-ballot-check" />
                     {{ $t("apartments.list.confirm") }}
                   </router-link>
 
                   <a
-                      v-if="client.status === 'buy'"
-                      class="dropdown-item dropdown-item--inside"
-                      href="product-item.html"
+                    v-if="client.status === 'buy'"
+                    class="dropdown-item dropdown-item--inside"
+                    href="product-item.html"
                   >
                     <i class="far fa-eye" />
                     {{ $t("apartments.list.more") }}
                   </a>
 
                   <a
-                      v-if="client.status === 'buy'"
-                      class="dropdown-item dropdown-item--inside"
-                      href="product-item.html"
+                    v-if="client.status === 'buy'"
+                    class="dropdown-item dropdown-item--inside"
+                    href="product-item.html"
                   >
                     <i class="fas fa-download" />
                     {{ $t("apartments.list.download_contract") }}
                   </a>
 
                   <b-button
-                      v-if="
-                        (client.status === 'buy' &&
-                          getPermission.clients.cancel_contract) ||
-                          (client.status === 'buy' && getMe.role.id === 1)
-                      "
-                      class="dropdown-item dropdown-item--inside"
-                      @click="CancelContract(client.id)"
+                    v-if="
+                      (client.status === 'buy' &&
+                        getPermission.clients.cancel_contract) ||
+                        (client.status === 'buy' && getMe.role.id === 1)
+                    "
+                    class="dropdown-item dropdown-item--inside"
+                    @click="CancelContract(client.id)"
                   >
                     <i class="fas fa-eraser" />
                     {{ $t("apartments.list.cancel_contract") }}
@@ -355,9 +355,9 @@ export default {
                   <!--                                    </a>-->
 
                   <b-button
-                      v-if="getPermission.clients.delete"
-                      class="dropdown-item dropdown-item--inside"
-                      @click="DeleteClient(client.id)"
+                    v-if="getPermission.clients.delete"
+                    class="dropdown-item dropdown-item--inside"
+                    @click="DeleteClient(client.id)"
                   ><i class="far fa-trash" /> {{ $t("delete") }}
                   </b-button>
                 </x-dropdown>

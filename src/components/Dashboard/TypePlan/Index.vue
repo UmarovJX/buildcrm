@@ -2,7 +2,7 @@
 import { mapGetters, mapActions } from 'vuex'
 import PlansPermission from '@/permission/plans'
 import AppHeader from '@/components/Header/AppHeader'
-import XDropdown from "@/components/ui-components/dropdown/XDropdown.vue";
+import XDropdown from '@/components/ui-components/dropdown/XDropdown.vue'
 
 export default {
   name: 'TypePlan',
@@ -135,9 +135,9 @@ export default {
             <div class="float-right">
               <x-dropdown>
                 <b-button
-                    v-if="planViewPermission"
-                    class="dropdown-item dropdown-item--inside"
-                    @click="planView(data.item.id)"
+                  v-if="planViewPermission"
+                  class="dropdown-item dropdown-item--inside"
+                  @click="planView(data.item.id)"
                 >
                   <i class="fas fa-eye" />
                   {{ $t("type_plan.plans") }}

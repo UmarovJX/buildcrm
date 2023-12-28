@@ -48,6 +48,20 @@ export default {
     ),
   }),
   setup() {
+    const permissionFounderGraph = Permission.getUserPermission('statistics.view-founder-graph')
+    const permissionFounderTable = Permission.getUserPermission('statistics.view-founder-table')
+    const permissionManagerGraph = Permission.getUserPermission('statistics.view-manager-graph')
+
+    let defaultTypeOfView = 'table'
+    if (!permissionFounderTable) {
+      if (permissionFounderGraph) {
+        defaultTypeOfView = 'chart'
+      } else {
+        defaultTypeOfView = 'manager'
+      }
+    }
+
+    const typeOfView = ref(defaultTypeOfView)
     const vm = getCurrentInstance().proxy
     const tableLoaded = ref(false)
     const chartLoaded = ref(false)
@@ -62,7 +76,6 @@ export default {
       payment_type: null,
     })
 
-    const typeOfView = ref('table')
     const views = computed(() => [
       {
         title: vm.$t('common.table'),
@@ -160,6 +173,17 @@ export default {
         return
       }
 
+      // const pList = []
+      //
+      // if (permissionFounderGraph) {
+      //   pList.push(
+      //     statisticsFetchAll(b),
+      //   )
+      //   pList.push(
+      //     pieFetchAll(b),
+      //   )
+      // }
+
       await Promise.allSettled([
         statisticsFetchAll(b),
         pieFetchAll(b),
@@ -191,6 +215,10 @@ export default {
     fetchData(getBody())
 
     return {
+      permissionFounderGraph,
+      permissionFounderTable,
+      permissionManagerGraph,
+
       views,
       typeOfView,
 
@@ -238,6 +266,7 @@ export default {
     <app-header class="home__section">
       <template #header-actions>
         <switch-button-group
+          v-if="permissionFounderGraph && permissionFounderTable"
           v-model="typeOfView"
           class="mr-4"
           :items="views"
@@ -250,20 +279,36 @@ export default {
     </app-header>
 
     <home-primary-cards
-      v-if="mainPermission"
+      v-if="permissionFounderGraph || permissionFounderTable"
       :data="main.result"
       :busy="main.busy"
     />
 
     <home-filter-by
-      v-if="!showTables && (mainPermission || managerPermission)"
+      v-if="!showTables && (permissionFounderGraph || permissionManagerGraph)"
       class="home__filter__section"
+      :class="{'home__manager__filter': permissionManagerGraph && !permissionFounderGraph}"
       @filter-by="filterCharts"
     />
 
-    <template v-if="mainPermission">
+    <template v-if="permissionFounderGraph || permissionFounderTable">
       <section
-        v-if="!showTables"
+        v-if="showTables && permissionFounderTable"
+        class="home__section"
+      >
+        <objects-income-by-period
+          :busy="objectsIncome.busy"
+          :data="objectsIncome.result"
+        />
+
+        <object-payments
+          :busy="objectPayments.busy"
+          :data="objectPayments.result"
+        />
+      </section>
+
+      <section
+        v-else-if="permissionFounderGraph"
         class="home__section"
       >
 
@@ -316,25 +361,11 @@ export default {
           :data="branchReports.data"
         />
       </section>
-      <section
-        v-else
-        class="home__section"
-      >
-        <objects-income-by-period
-          :busy="objectsIncome.busy"
-          :data="objectsIncome.result"
-        />
-
-        <object-payments
-          :busy="objectPayments.busy"
-          :data="objectPayments.result"
-        />
-      </section>
     </template>
 
     <!-- MANAGER -->
     <manager
-      v-if="!showTables && managerPermission"
+      v-if="!showTables && permissionManagerGraph"
       class="home__section"
       :manager-widgets="managerWidget"
       :manager-sales="managerSales"
@@ -353,8 +384,12 @@ export default {
   gap: 2rem;
 }
 
-.home__filter__section{
+.home__filter__section {
   padding: 2rem 3rem 0;
+}
+
+.home__manager__filter{
+  padding: 0 3rem 0;
 }
 
 .home__pie__section {
@@ -365,15 +400,15 @@ export default {
   gap: 2rem;
 }
 
-.home__pie__section__objects{
+.home__pie__section__objects {
   grid-area: objects;
 }
 
-.home__pie__section__tariffs{
+.home__pie__section__tariffs {
   grid-area: tariffs;
 }
 
-.home__pie__section__tariffs{
+.home__pie__section__tariffs {
   grid-area: managers;
 }
 
@@ -404,7 +439,7 @@ export default {
 }
 
 @media screen and (max-width: 960px) {
-  .home__pie__section{
+  .home__pie__section {
     grid-template-areas:
     "objects"
     "tariffs"

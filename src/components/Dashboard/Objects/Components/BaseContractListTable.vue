@@ -2,11 +2,11 @@
 import api from '@/services/api'
 import { mapGetters } from 'vuex'
 import TemplatesPermission from '@/permission/templates'
-import XDropdown from "@/components/ui-components/dropdown/XDropdown.vue";
+import XDropdown from '@/components/ui-components/dropdown/XDropdown.vue'
 
 export default {
   name: 'ContractListTable',
-  components: {XDropdown},
+  components: { XDropdown },
   props: {
     contracts: {
       type: Array,
@@ -243,42 +243,42 @@ export default {
         <div class="float-right">
           <x-dropdown v-if="primaryPermission || downloadPermission || deletePermission">
             <a
-                v-if="!data.item.main && primaryPermission"
-                href="#"
-                class="dropdown-item dropdown-item--inside"
-                @click="makeItMain(data.item.id)"
+              v-if="!data.item.main && primaryPermission"
+              href="#"
+              class="dropdown-item dropdown-item--inside"
+              @click="makeItMain(data.item.id)"
             >
-                <span>
-                  <i class="fas fa-pen" />
-                </span>
+              <span>
+                <i class="fas fa-pen" />
+              </span>
               <span class="ml-2">
-                  {{ $t("objects.make_it_main_contract") }}
-                </span>
+                {{ $t("objects.make_it_main_contract") }}
+              </span>
             </a>
 
             <a
-                v-if="downloadPermission"
-                class="dropdown-item dropdown-item--inside"
-                :href="downloadDocumentURl(data.item.path)"
+              v-if="downloadPermission"
+              class="dropdown-item dropdown-item--inside"
+              :href="downloadDocumentURl(data.item.path)"
             >
-                <span class="download__icon">
-                  <i class="fas fa-download" />
-                </span>
+              <span class="download__icon">
+                <i class="fas fa-download" />
+              </span>
               <span class="ml-2">{{ $t("contracts.download") }}</span>
             </a>
 
             <a
-                v-if="deletePermission"
-                href="#"
-                class="dropdown-item dropdown-item--inside"
-                @click="deleteContract(data.item.id)"
+              v-if="deletePermission"
+              href="#"
+              class="dropdown-item dropdown-item--inside"
+              @click="deleteContract(data.item.id)"
             >
-                <span>
-                  <i class="far fa-trash" />
-                </span>
+              <span>
+                <i class="far fa-trash" />
+              </span>
               <span class="ml-3">
-                  {{ $t("delete") }}
-                </span>
+                {{ $t("delete") }}
+              </span>
             </a>
           </x-dropdown>
         </div>

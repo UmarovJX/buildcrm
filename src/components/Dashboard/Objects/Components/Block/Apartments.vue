@@ -3,7 +3,7 @@ import { mapGetters } from 'vuex'
 import api from '@/services/api'
 import DatePicker from 'vue2-datepicker'
 import 'vue2-datepicker/index.css'
-import XDropdown from "@/components/ui-components/dropdown/XDropdown.vue";
+import XDropdown from '@/components/ui-components/dropdown/XDropdown.vue'
 
 export default {
 
@@ -256,13 +256,13 @@ export default {
                 {{ $t("objects.create.plan.name") }}
               </template>
               <select
-                  v-model="apartment.plan"
-                  class="custom-select"
-                  @change="ApartmentUpdate(apartment, 'plan')"
+                v-model="apartment.plan"
+                class="custom-select"
+                @change="ApartmentUpdate(apartment, 'plan')"
               >
                 <option
-                    disabled
-                    :value="{
+                  disabled
+                  :value="{
                     id: null,
                     name: null,
                     area: null,
@@ -274,9 +274,9 @@ export default {
                   {{ $t("objects.create.choose_plan") }}
                 </option>
                 <option
-                    v-for="(plan, index) in typePlans"
-                    :key="index"
-                    :value="{
+                  v-for="(plan, index) in typePlans"
+                  :key="index"
+                  :value="{
                     id: plan.id,
                     name: plan.name,
                     area: plan.area,

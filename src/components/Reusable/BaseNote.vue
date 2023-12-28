@@ -1,10 +1,10 @@
 <script>
 import moment from 'moment'
-import XDropdown from "@/components/ui-components/dropdown/XDropdown.vue";
+import XDropdown from '@/components/ui-components/dropdown/XDropdown.vue'
 
 export default {
   name: 'BaseNote',
-  components: {XDropdown},
+  components: { XDropdown },
   emits: ['edit-selected-note', 'delete-note'],
   props: {
     detail: {

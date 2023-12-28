@@ -11,12 +11,30 @@ export default class ContractsPermission extends Permission {
     if (this.hasAdminRole()) return true
 
     if (splitProperty.length === 3) {
-      return this.contracts()[one][two][three] ?? false
+      if (
+        this.contracts().hasOwnProperty(one)
+          && this.contracts()[one].hasOwnProperty(two)
+          && this.contracts()[one][two].hasOwnProperty(three)
+      ) {
+        return this.contracts()[one][two][three]
+      }
+      return false
     }
     if (splitProperty.length === 2) {
-      return this.contracts()[one][two] ?? false
+      if (
+        this.contracts().hasOwnProperty(one)
+          && this.contracts()[one].hasOwnProperty(two)
+      ) {
+        return this.contracts()[one][two]
+      }
+      return false
     }
-    return this.contracts()[one] ?? false
+
+    if (this.contracts().hasOwnProperty(one)) {
+      return this.contracts()[one]
+    }
+
+    return false
   }
 
   static getContractsFilterPermission() {
@@ -64,7 +82,7 @@ export default class ContractsPermission extends Permission {
   }
 
   static getContractsPaymentsListPermission() {
-    return this.getContractsPermission('payments.list')
+    return this.getContractsPermission('payments.view')
   }
 
   static getContractsPaymentsImportPermission() {

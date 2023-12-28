@@ -1,10 +1,11 @@
 <script>
-import {mapActions, mapMutations, mapGetters} from 'vuex'
-import {BAlert, BButton} from 'bootstrap-vue'
+import { mapActions, mapMutations, mapGetters } from 'vuex'
+import { BAlert, BButton } from 'bootstrap-vue'
 import ApartmentsBookingModal from '@/components/Dashboard/Apartment/Components/ApartmentsBookingModal'
 import BaseFilterTabsContent from '@/components/Reusable/BaseFilterTabsContent'
 import BaseBreadCrumb from '@/components/BaseBreadCrumb'
 import api from '@/services/api'
+import XDropdown from '@/components/ui-components/dropdown/XDropdown.vue'
 import ViewClient from './ViewClient'
 import InfoManager from './InfoManager'
 import ReserveAdd from './Components/Reserve'
@@ -12,7 +13,6 @@ import EditApartment from './Components/Edit'
 import Filter from './Components/ApartmentsFilter'
 import SuccessAgree from './Components/SuccessAgree'
 import AgreeMultiple from './Components/AgreeMultiple'
-import XDropdown from "@/components/ui-components/dropdown/XDropdown.vue";
 
 export default {
   name: 'ApartmentList',
@@ -154,7 +154,7 @@ export default {
     ...mapGetters(['getApartments', 'getPermission', 'getMe', 'getLoading']),
     bookingPermission() {
       return (
-          this.selected.view
+        this.selected.view
           && this.selected.values.length > 1
           && this.getPermission.apartments
           && this.getPermission.apartments.contract
@@ -162,11 +162,11 @@ export default {
     },
     hasPermission() {
       return (
-          this.getPermission.apartments && this.getPermission.apartments.edit
+        this.getPermission.apartments && this.getPermission.apartments.edit
       )
     },
     showApartmentsContract() {
-      const {getPermission} = this
+      const { getPermission } = this
       const firstOption = getPermission.apartments && getPermission.apartments.contract
       const secondOption = getPermission.apartments && getPermission.apartments.root_contract
       return firstOption || secondOption
@@ -245,25 +245,25 @@ export default {
     ...mapActions(['fetchReserveClient']),
     ...mapMutations(['updateSpecificApartment']),
     bookSelectedApartments(status) {
-      const {values: apartments} = this.selected
-      const form = {...client, apartments}
+      const { values: apartments } = this.selected
+      const form = { ...client, apartments }
       delete form.apartment_id
       this.loading = true
       api.apartments
-          .bookingApartments(form)
-          .then(async response => {
-            const {contract_path} = response.data
-            await this.showSuccessResponse()
-            await this.updateContent()
-            await this.multiSelectOff()
-            await this.downloadContract(contract_path)
-          })
-          .catch(error => {
-            this.toastedWithErrorCode(error)
-          })
-          .finally(() => {
-            this.loading = false
-          })
+        .bookingApartments(form)
+        .then(async response => {
+          const { contract_path } = response.data
+          await this.showSuccessResponse()
+          await this.updateContent()
+          await this.multiSelectOff()
+          await this.downloadContract(contract_path)
+        })
+        .catch(error => {
+          this.toastedWithErrorCode(error)
+        })
+        .finally(() => {
+          this.loading = false
+        })
     },
     downloadContract(url) {
       const a = document.createElement('a')
@@ -288,7 +288,7 @@ export default {
       return data.item.order.status === 'hold'
     },
     allowViewWhenProcessing(data) {
-      const {status} = data.item.order
+      const { status } = data.item.order
       const userId = data.item.order?.user_id
 
       const permissionApartment = this.getPermission.apartments
@@ -343,7 +343,7 @@ export default {
           // localStorage.setItem("order", JSON.stringify(res.data));
           this.$router.push({
             name: 'confirm-apartment',
-            params: {id: res.data.uuid},
+            params: { id: res.data.uuid },
           })
           this.selected.view = false
           this.selected.values = []
@@ -357,7 +357,7 @@ export default {
       this.selectable = true
       this.$router.push({
         name: 'confirm-apartment',
-        params: {id: order_id[0]},
+        params: { id: order_id[0] },
       })
     },
     multiSelectOn() {
@@ -401,7 +401,7 @@ export default {
     onRowSelected(items) {
       this.$router.push({
         name: 'apartment-view',
-        params: {id: items[0].id},
+        params: { id: items[0].id },
       })
     },
     async PageCallBack(event) {
@@ -437,7 +437,7 @@ export default {
       }
 
       if (
-          event.target.scrollTop + event.target.clientHeight
+        event.target.scrollTop + event.target.clientHeight
           >= event.target.scrollHeight
       ) {
         if (this.getApartments.pagination.next) {
@@ -616,19 +616,19 @@ export default {
   <div>
     <div class="app-content apartment-list-filter">
       <base-bread-crumb
-          :bread-crumbs="breadCrumbs"
-          :active-content="activeContent"
-          class="mb-4"
+        :bread-crumbs="breadCrumbs"
+        :active-content="activeContent"
+        class="mb-4"
       />
 
       <div v-if="unsfinishedContracts.length">
         <b-alert
-            variant="warning"
-            class="py-2"
-            show
+          variant="warning"
+          class="py-2"
+          show
         >
           <div
-              class="alert-body py-0 d-flex w-100 align-items-center justify-content-center"
+            class="alert-body py-0 d-flex w-100 align-items-center justify-content-center"
           >
             <span>
               Привет {{ getMe.user.firstName }}, У вас
@@ -636,11 +636,11 @@ export default {
               продолжайте или отмените эти оформления
             </span>
             <b-button
-                v-if="getMe.user"
-                variant="info"
-                class="mt-0 mr-0 ml-2 h-auto"
-                to="/objects/unfinished-contracts"
-                style="padding: 7px 15px !important"
+              v-if="getMe.user"
+              variant="info"
+              class="mt-0 mr-0 ml-2 h-auto"
+              to="/objects/unfinished-contracts"
+              style="padding: 7px 15px !important"
             >
               Подробнее
             </b-button>
@@ -650,48 +650,48 @@ export default {
 
       <div class="d-flex justify-content-between flex-md-row flex-column">
         <div
-            v-if="showApartmentsContract"
-            class="d-flex justify-content-center align-items-center flex-md-row flex-column"
+          v-if="showApartmentsContract"
+          class="d-flex justify-content-center align-items-center flex-md-row flex-column"
         >
           <button
-              v-if="!selected.view && getPermission.apartments.contract"
-              class="btn btn-secondary mr-md-2 mr-0 mt-md-0 order-2"
-              @click="multiSelectOn"
+            v-if="!selected.view && getPermission.apartments.contract"
+            class="btn btn-secondary mr-md-2 mr-0 mt-md-0 order-2"
+            @click="multiSelectOn"
           >
-            <i class="far fa-list"/> {{ $t("apartments.list.choose") }}
+            <i class="far fa-list" /> {{ $t("apartments.list.choose") }}
           </button>
 
           <b-button
-              v-if="
+            v-if="
               selected.view &&
                 selected.values.length > 1 &&
                 getPermission.apartments &&
                 getPermission.apartments.contract
             "
-              v-b-modal.modal-agree
-              variant="success"
-              class="btn btn-primary mr-md-2 mr-0 mt-md-0 order-3"
-              @click="orderHold(selected.values)"
+            v-b-modal.modal-agree
+            variant="success"
+            class="btn btn-primary mr-md-2 mr-0 mt-md-0 order-3"
+            @click="orderHold(selected.values)"
           >
-            <i class="far fa-ballot-check"/>
+            <i class="far fa-ballot-check" />
             {{ $t("apartments.list.contract_all") }}
           </b-button>
 
           <b-button
-              v-if="bookingPermission"
-              v-b-modal.booking-creation-modal
-              class="mr-md-2 mr-0 mt-md-0 btn btn-primary order-4 booking__button"
+            v-if="bookingPermission"
+            v-b-modal.booking-creation-modal
+            class="mr-md-2 mr-0 mt-md-0 btn btn-primary order-4 booking__button"
           >
-            <i class="far fa-calendar-check"/>
+            <i class="far fa-calendar-check" />
             {{ $t("objects.booking") }}
           </b-button>
 
           <button
-              v-if="selected.view && getPermission.apartments.contract"
-              class="btn btn-warning mr-md-2 mr-0 mt-md-0 order-2"
-              @click="multiSelectOff"
+            v-if="selected.view && getPermission.apartments.contract"
+            class="btn btn-warning mr-md-2 mr-0 mt-md-0 order-2"
+            @click="multiSelectOff"
           >
-            <i class="far fa-redo"/> {{ $t("apartments.list.reset") }}
+            <i class="far fa-redo" /> {{ $t("apartments.list.reset") }}
           </button>
 
           <div class="mt-md-0 order-md-6 order-1">
@@ -703,48 +703,48 @@ export default {
         </div>
 
         <button
-            v-if="getPermission.apartments && getPermission.apartments.filter"
-            v-b-toggle.apartment-list-filter
-            class="btn btn-primary mr-0 mt-md-0 ml-md-auto"
+          v-if="getPermission.apartments && getPermission.apartments.filter"
+          v-b-toggle.apartment-list-filter
+          class="btn btn-primary mr-0 mt-md-0 ml-md-auto"
         >
-          <i class="fas fa-filter"/>
-          <i class="far fa-sliders-h mr-2"/>
+          <i class="fas fa-filter" />
+          <i class="far fa-sliders-h mr-2" />
           {{ $t("apartments.list.filter") }}
         </button>
       </div>
 
       <!--  TODO: FILTER SECTION    -->
       <base-filter-tabs-content
-          :filter-tab-list="filterTabList"
-          @get-new-content="getFilterTabsContent"
+        :filter-tab-list="filterTabList"
+        @get-new-content="getFilterTabsContent"
       />
       <!--  TODO: END OF FILTER SECTION    -->
 
       <div>
         <b-table
-            id="my-table"
-            ref="apartment-list-table"
-            v-model:sort-by="sortBy"
-            v-model:sort-desc="sortDesc"
-            class="custom-table"
-            sticky-header
-            borderless
-            show-empty
-            responsive
-            sort-icon-left
-            :items="items"
-            :fields="fields"
-            :tbody-tr-class="rowClass"
-            :empty-text="$t('no_data')"
-            :selectable="selectable"
-            :select-mode="selectMode"
-            @sort-changed="sortingChanged"
-            @scroll.native="handleScroll"
-            @row-selected="onRowSelected"
+          id="my-table"
+          ref="apartment-list-table"
+          v-model:sort-by="sortBy"
+          v-model:sort-desc="sortDesc"
+          class="custom-table"
+          sticky-header
+          borderless
+          show-empty
+          responsive
+          sort-icon-left
+          :items="items"
+          :fields="fields"
+          :tbody-tr-class="rowClass"
+          :empty-text="$t('no_data')"
+          :selectable="selectable"
+          :select-mode="selectMode"
+          @sort-changed="sortingChanged"
+          @scroll.native="handleScroll"
+          @row-selected="onRowSelected"
         >
           <template
-              #empty="scope"
-              class="text-center"
+            #empty="scope"
+            class="text-center"
           >
             <span class="d-flex justify-content-center align-items-center">
               {{ scope.emptyText }}
@@ -758,38 +758,38 @@ export default {
           <!--          </template>-->
 
           <template
-              #cell(number)="data"
-              class="p-0"
+            #cell(number)="data"
+            class="p-0"
           >
             <div class="position-relative">
               <div
-                  v-if="!data.item.is_sold"
-                  class="apartments__lock"
+                v-if="!data.item.is_sold"
+                class="apartments__lock"
               >
                 <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="svg-lock-button"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="svg-lock-button"
                 >
                   <path
-                      d="M17 9V7C17 4.2 14.8 2 12 2C9.2 2 7 4.2 7 7V9C5.3 9 4 10.3 4 12V19C4 20.7 5.3 22 7 22H17C18.7 22 20 20.7 20 19V12C20 10.3 18.7 9 17 9ZM9 7C9 5.3 10.3 4 12 4C13.7 4 15 5.3 15 7V9H9V7Z"
+                    d="M17 9V7C17 4.2 14.8 2 12 2C9.2 2 7 4.2 7 7V9C5.3 9 4 10.3 4 12V19C4 20.7 5.3 22 7 22H17C18.7 22 20 20.7 20 19V12C20 10.3 18.7 9 17 9ZM9 7C9 5.3 10.3 4 12 4C13.7 4 15 5.3 15 7V9H9V7Z"
                   />
                 </svg>
               </div>
               <div class="table-multi-select">
                 <b-form-checkbox
-                    v-if="
+                  v-if="
                     data.item.is_sold &&
                       selected.view &&
                       data.item.order.status === 'available'
                   "
-                    :id="'checkbox-' + data.item.id"
-                    v-model="selected.values"
-                    title="Выберите"
-                    :name="'checkbox-' + data.item.id"
-                    :value="data.item.id"
+                  :id="'checkbox-' + data.item.id"
+                  v-model="selected.values"
+                  title="Выберите"
+                  :name="'checkbox-' + data.item.id"
+                  :value="data.item.id"
                 />
                 <span>{{ data.item.number }}</span>
               </div>
@@ -813,10 +813,10 @@ export default {
           <template #cell(price)="data">
             {{
               data.item.price
-                  | number("0,0.00", {
-                thousandsSeparator: " ",
-                decimalSeparator: ",",
-              })
+                | number("0,0.00", {
+                  thousandsSeparator: " ",
+                  decimalSeparator: ",",
+                })
             }}
             {{ $t("ye") }}
           </template>
@@ -828,9 +828,9 @@ export default {
             <span v-else>
               {{
                 data.item.order.status
-                    | getStatus(
+                  | getStatus(
                     $moment(data.item.order.booking_date).format("YYYY.MM.DD")
-                    )
+                  )
               }}
             </span>
           </template>
@@ -842,79 +842,81 @@ export default {
                   <!-- Редактировать -->
                   <b-dropdown-item>
                     <b-link
-                        v-b-modal.modal-edit
-                        class="dropdown-item dropdown-item--inside"
-                        @click="[(edit = true), (apartment_id = data.item.id)]"
+                      v-b-modal.modal-edit
+                      class="dropdown-item dropdown-item--inside"
+                      @click="[(edit = true), (apartment_id = data.item.id)]"
                     >
-                      <i class="far fa-pencil"/> {{ $t("edit") }}
+                      <i class="far fa-pencil" /> {{ $t("edit") }}
                     </b-link>
                   </b-dropdown-item>
 
-                  <b-dropdown-item v-if="
-                        !data.item.is_sold &&
-                          data.item.order.status === 'available'
-                      ">
+                  <b-dropdown-item
+                    v-if="
+                      !data.item.is_sold &&
+                        data.item.order.status === 'available'
+                    "
+                  >
                     <b-link
-                        class="dropdown-item dropdown-item--inside"
-                        @click="toggleApartmentToSale(data.item)"
+                      class="dropdown-item dropdown-item--inside"
+                      @click="toggleApartmentToSale(data.item)"
                     >
-                      <i class="far fa-lock"/> {{ $t("return_to_sale") }}
+                      <i class="far fa-lock" /> {{ $t("return_to_sale") }}
                     </b-link>
                   </b-dropdown-item>
                 </template>
 
                 <!--  Забронировать -->
                 <b-dropdown-item
-                    v-if="
-                      data.item.is_sold &&
-                        getPermission.apartments &&
-                        getPermission.apartments.reserve &&
-                        data.item.order.status === 'available'
-                    "
+                  v-if="
+                    data.item.is_sold &&
+                      getPermission.apartments &&
+                      getPermission.apartments.reserve &&
+                      data.item.order.status === 'available'
+                  "
                 >
                   <b-link
-                      v-b-modal.modal-reserve-create
-                      class="dropdown-item dropdown-item--inside"
-                      @click="[(reserve = true), (apartment_id = data.item.id)]"
+                    v-b-modal.modal-reserve-create
+                    class="dropdown-item dropdown-item--inside"
+                    @click="[(reserve = true), (apartment_id = data.item.id)]"
                   >
-                    <i class="far fa-calendar-check"/>
+                    <i class="far fa-calendar-check" />
                     {{ $t("apartments.list.book") }}
                   </b-link>
                 </b-dropdown-item>
 
                 <!-- Посмотреть клиент  -->
                 <b-link
-                    v-if="clientsView(data)"
-                    class="dropdown-item dropdown-item--inside"
-                    @click="ReserveInfo(data.item)"
+                  v-if="clientsView(data)"
+                  class="dropdown-item dropdown-item--inside"
+                  @click="ReserveInfo(data.item)"
                 >
-                  <i class="far fa-eye"/>
+                  <i class="far fa-eye" />
                   {{ $t("apartments.list.view_client") }}
                 </b-link>
 
                 <!--  Информация о менеджера  -->
                 <b-link
-                    v-if="
-                      data.item.order.status === 'booked' &&
-                        data.item.order.user.id !== getMe.user.id
-                    "
-                    v-b-modal.modal-view-info-manager
-                    class="dropdown-item dropdown-item--inside"
-                    @click="getInfoReserve(data.item)"
+                  v-if="
+                    data.item.order.status === 'booked' &&
+                      data.item.order.user.id !== getMe.user.id
+                  "
+                  v-b-modal.modal-view-info-manager
+                  class="dropdown-item dropdown-item--inside"
+                  @click="getInfoReserve(data.item)"
                 >
-                  <i class="far fa-info-circle"/>
+                  <i class="far fa-info-circle" />
                   {{ $t("apartments.list.view_manager") }}
                 </b-link>
 
                 <!--  Подробная информация  -->
                 <router-link
-                    :to="{
-                      name: 'apartment-view',
-                      params: { id: data.item.id },
-                    }"
-                    :class="'dropdown-item dropdown-item--inside'"
+                  :to="{
+                    name: 'apartment-view',
+                    params: { id: data.item.id },
+                  }"
+                  :class="'dropdown-item dropdown-item--inside'"
                 >
-                  <i class="far fa-eye"/>
+                  <i class="far fa-eye" />
                   {{ $t("apartments.list.more") }}
                 </router-link>
 
@@ -922,21 +924,21 @@ export default {
 
                 <!--  Оформить -->
                 <b-link
-                    v-if="allowViewWhenProcessing(data) && !statusHold(data)"
-                    :class="'dropdown-item dropdown-item--inside'"
-                    @click="orderHold([data.item.id])"
+                  v-if="allowViewWhenProcessing(data) && !statusHold(data)"
+                  :class="'dropdown-item dropdown-item--inside'"
+                  @click="orderHold([data.item.id])"
                 >
-                  <i class="far fa-ballot-check"/>
+                  <i class="far fa-ballot-check" />
                   {{ $t("apartments.list.confirm") }}
                 </b-link>
 
                 <!--  Оформить when processing  -->
                 <b-link
-                    v-if="allowViewWhenProcessing(data) && statusHold(data)"
-                    :class="'dropdown-item dropdown-item--inside'"
-                    @click="goOrderHold([data.item.order.id])"
+                  v-if="allowViewWhenProcessing(data) && statusHold(data)"
+                  :class="'dropdown-item dropdown-item--inside'"
+                  @click="goOrderHold([data.item.order.id])"
                 >
-                  <i class="far fa-ballot-check"/>
+                  <i class="far fa-ballot-check" />
                   Продолжить оформление
                 </b-link>
               </x-dropdown>
@@ -945,88 +947,88 @@ export default {
         </b-table>
 
         <b-overlay
-            :show="loading"
-            no-wrap
-            opacity="0.5"
+          :show="loading"
+          no-wrap
+          opacity="0.5"
         >
           <template #overlay>
             <div class="d-flex justify-content-center w-100">
               <div class="lds-ellipsis">
-                <div/>
-                <div/>
-                <div/>
-                <div/>
+                <div />
+                <div />
+                <div />
+                <div />
               </div>
             </div>
           </template>
         </b-overlay>
 
         <paginate
-            v-if="getPagination"
-            v-model="currentPage"
-            :page-count="getPagination"
-            :click-handler="PageCallBack"
-            :prev-text="`<i class='fa fa-chevron-left'></i>`"
-            :next-text="`<i class='fa fa-chevron-right'></i>`"
-            :container-class="'pagination'"
-            :page-class="'page-item'"
-            :page-link-class="'page-link'"
-            :next-class="'page-item'"
-            :prev-class="'page-item'"
-            :prev-link-class="'page-link'"
-            :next-link-class="'page-link'"
+          v-if="getPagination"
+          v-model="currentPage"
+          :page-count="getPagination"
+          :click-handler="PageCallBack"
+          :prev-text="`<i class='fa fa-chevron-left'></i>`"
+          :next-text="`<i class='fa fa-chevron-right'></i>`"
+          :container-class="'pagination'"
+          :page-class="'page-item'"
+          :page-link-class="'page-link'"
+          :next-class="'page-item'"
+          :prev-class="'page-item'"
+          :prev-link-class="'page-link'"
+          :next-link-class="'page-link'"
         />
       </div>
 
       <div>
         <reserve-add
-            v-if="
+          v-if="
             reserve ||
               (getPermission.apartments && getPermission.apartments.reserve)
           "
-            :apartment="apartment_id"
-            @CreateReserve="CreateReserveSuccess"
+          :apartment="apartment_id"
+          @CreateReserve="CreateReserveSuccess"
         />
 
         <filter-form
-            v-if="getPermission.apartments && getPermission.apartments.filter"
-            :filtered="filter"
-            @filteredForm="filteredForm"
+          v-if="getPermission.apartments && getPermission.apartments.filter"
+          :filtered="filter"
+          @filteredForm="filteredForm"
         />
 
         <view-client
-            v-if="info_reserve"
-            :apartment-data="apartment_preview"
-            @CancelReserve="CloseReserveInfo"
+          v-if="info_reserve"
+          :apartment-data="apartment_preview"
+          @CancelReserve="CloseReserveInfo"
         />
 
         <edit-modal
-            v-if="
+          v-if="
             (getPermission.apartments && getPermission.apartments.edit) || edit
           "
-            :apartment="apartment_id"
-            @EditApartment="EditApartment"
+          :apartment="apartment_id"
+          @EditApartment="EditApartment"
         />
 
         <info-manager-modal
-            :manager-data="this.manager_apartment"
-            @ManagerInfo="ManagerInfo"
+          :manager-data="this.manager_apartment"
+          @ManagerInfo="ManagerInfo"
         />
 
         <agree-modal
-            v-if="selected.confirm"
-            :apartments="selected.values"
-            @successAgree="successAgree"
-            @CloseAgree="CloseAgree"
+          v-if="selected.confirm"
+          :apartments="selected.values"
+          @successAgree="successAgree"
+          @CloseAgree="CloseAgree"
         />
 
         <success-agree
-            :contract="contract"
-            :uuid="contract.id"
+          :contract="contract"
+          :uuid="contract.id"
         />
       </div>
     </div>
-    <apartments-booking-modal @set-client-data="bookSelectedApartments"/>
+    <apartments-booking-modal @set-client-data="bookSelectedApartments" />
   </div>
 </template>
 

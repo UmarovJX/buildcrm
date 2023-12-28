@@ -4,8 +4,8 @@ import { mapActions, mapGetters } from 'vuex'
 // import BaseFilterTabsContent from "@/components/Reusable/BaseFilterTabsContent";
 import BaseBreadCrumb from '@/components/BaseBreadCrumb'
 import api from '@/services/api'
+import XDropdown from '@/components/ui-components/dropdown/XDropdown.vue'
 import SideBarFilter from './SideBarFilter.vue'
-import XDropdown from "@/components/ui-components/dropdown/XDropdown.vue";
 
 export default {
   name: 'Contracts',
@@ -382,13 +382,13 @@ export default {
           <div class="float-right">
             <x-dropdown>
               <a
-                  v-if="
-                    data.item.status === 'contract' ||
-                      data.item.status === 'sold'
-                  "
-                  class="dropdown-item dropdown-item--inside"
-                  href="#"
-                  @click="downloadContractLink(data.item.id)"
+                v-if="
+                  data.item.status === 'contract' ||
+                    data.item.status === 'sold'
+                "
+                class="dropdown-item dropdown-item--inside"
+                href="#"
+                @click="downloadContractLink(data.item.id)"
               >
                 <i class="fa fa-download" />
                 {{ $t("contracts.download") }}
@@ -399,8 +399,8 @@ export default {
               <!--                    download-->
 
               <router-link
-                  :to="{ name: 'contracts-view', params: { id: data.item.id } }"
-                  :class="'dropdown-item dropdown-item--inside'"
+                :to="{ name: 'contracts-view', params: { id: data.item.id } }"
+                :class="'dropdown-item dropdown-item--inside'"
               >
                 <i class="far fa-eye" />
                 {{ $t("apartments.list.more") }}

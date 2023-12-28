@@ -8,7 +8,7 @@ import AppHeader from '@/components/Header/AppHeader'
 import BaseButton from '@/components/Reusable/BaseButton'
 import BasePlusIcon from '@/components/icons/BasePlusIcon'
 import BaseTabPicker from '@/components/Reusable/BaseTabPicker'
-import XDropdown from "@/components/ui-components/dropdown/XDropdown.vue";
+import XDropdown from '@/components/ui-components/dropdown/XDropdown.vue'
 
 export default {
   name: 'BranchesPage',
@@ -224,51 +224,51 @@ export default {
                   deletePermission || viewTemplatesPermission || editPermission
                 "
               >
-                  <router-link
-                    v-if="editPermission"
-                    :to="{
-                      name: 'edit-branch',
-                      params: { id: data.item.id, historyForm: data.item },
-                    }"
-                    :class="'dropdown-item dropdown-item--inside'"
-                  >
-                    <i class="fas fa-pen" />
-                    {{ $t("edit") }}
-                  </router-link>
+                <router-link
+                  v-if="editPermission"
+                  :to="{
+                    name: 'edit-branch',
+                    params: { id: data.item.id, historyForm: data.item },
+                  }"
+                  :class="'dropdown-item dropdown-item--inside'"
+                >
+                  <i class="fas fa-pen" />
+                  {{ $t("edit") }}
+                </router-link>
 
-                  <router-link
-                    v-if="viewTemplatesPermission"
-                    :to="{
-                      name: 'object-deal-template',
-                      params: { id: data.item.id },
-                    }"
-                    :class="'dropdown-item dropdown-item--inside'"
-                  >
-                    <i class="far fa-file-alt" />
-                    {{ $t("objects.deal_template.name") }}
-                  </router-link>
+                <router-link
+                  v-if="viewTemplatesPermission"
+                  :to="{
+                    name: 'object-deal-template',
+                    params: { id: data.item.id },
+                  }"
+                  :class="'dropdown-item dropdown-item--inside'"
+                >
+                  <i class="far fa-file-alt" />
+                  {{ $t("objects.deal_template.name") }}
+                </router-link>
 
-                  <button
-                    v-if="deletePermission"
-                    class="dropdown-item dropdown-item--inside"
-                    @click="deleteBranch(data.item.id)"
+                <button
+                  v-if="deletePermission"
+                  class="dropdown-item dropdown-item--inside"
+                  @click="deleteBranch(data.item.id)"
+                >
+                  <span>
+                    <i class="far fa-trash" />
+                  </span>
+                  <span
+                    v-if="currentTab === 'active'"
+                    class="ml-2"
                   >
-                    <span>
-                      <i class="far fa-trash" />
-                    </span>
-                    <span
-                      v-if="currentTab === 'active'"
-                      class="ml-2"
-                    >
-                      {{ $t("delete") }}
-                    </span>
-                    <span
-                      v-else
-                      class="ml-2"
-                    >
-                      {{ $t("undelete") }}
-                    </span>
-                  </button>
+                    {{ $t("delete") }}
+                  </span>
+                  <span
+                    v-else
+                    class="ml-2"
+                  >
+                    {{ $t("undelete") }}
+                  </span>
+                </button>
               </x-dropdown>
             </div>
           </template>
