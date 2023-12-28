@@ -81,11 +81,12 @@ export default function usePieStatistics() {
       )
       const sum = result.data.reduce((acc, a) => acc + a, 0)
 
-      objectSales.value.items = result.label.map((label, labelIndex) => ({
-        objectName: label,
-        objectData: result.data[labelIndex],
-        objectPercent: getPercent(result.data[labelIndex], sum),
-      }))
+      objectSales.value.items = result.label
+        .map((label, labelIndex) => ({
+          objectName: label,
+          objectData: result.data[labelIndex],
+          objectPercent: getPercent(result.data[labelIndex], sum),
+        })).sort((x, y) => y.objectPercent - x.objectPercent)
 
       objectSales.value.data.options = {
         ...pieChartOptions,

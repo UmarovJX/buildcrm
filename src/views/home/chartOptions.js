@@ -113,14 +113,14 @@ export const lineChartOptions = {
     //     show: true,
     //   },
     // },
-    row: {
-      colors: undefined,
-      opacity: 0.5,
-    },
-    column: {
-      colors: undefined,
-      opacity: 0.5,
-    },
+    // row: {
+    //   colors: undefined,
+    //   opacity: 0.5,
+    // },
+    // column: {
+    //   colors: undefined,
+    //   opacity: 0.5,
+    // },
     // row: {
     // colors: chartColors,
     // opacity: 0.5,

@@ -30,6 +30,10 @@ export default {
       type: [String, Object, Array],
       default: '',
     },
+    tableSortDesc: {
+      type: Boolean,
+      default: true,
+    },
   },
   setup() {
     const vm = getCurrentInstance().proxy
@@ -98,6 +102,8 @@ export default {
         responsive
         sort-icon-left
         :items="items"
+        sort-by="objectPercent"
+        :sort-desc="tableSortDesc"
         :fields="tableFields"
         :busy="busy"
         :empty-text="$t('no_data')"

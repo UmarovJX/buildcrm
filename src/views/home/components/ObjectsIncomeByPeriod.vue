@@ -28,8 +28,14 @@ export default {
       const list = []
       if (objKeys.length) {
         objKeys.forEach(key => {
+          let name = key
+
+          if (key === 'total') {
+            name = vm.$t('total')
+          }
+
           list.push({
-            name: key,
+            name,
             ...props.data[key],
           })
         })

@@ -339,6 +339,7 @@ export default {
             :items="tariffsPie.items"
             class="home__pie__section__tariffs"
             body-class="flex-column align-items-center"
+            :table-sort-desc="false"
           />
 
           <home-pie-chart
