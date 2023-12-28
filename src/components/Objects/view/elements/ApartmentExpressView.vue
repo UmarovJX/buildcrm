@@ -11,13 +11,11 @@ import { formatToPrice } from '@/util/reusable'
 import { mapGetters, mapMutations } from 'vuex'
 import api from '@/services/api'
 import PdfTemplate from '@/components/PdfTemplate2'
-import CheckoutPermission from '@/permission/checkout'
 import ApartmentComments from '@/components/Objects/view/elements/ApartmentComments'
 import { XIcon } from '@/components/ui-components/material-icons'
-import ApartmentsPermission from '@/permission/apartments'
 import { isNUNEZ } from '@/util/inspect'
-import SettingsPermission from '@/permission/settings.permission'
 import HidePriceButton from '@/components/Reusable/HidePriceButton.vue'
+import Permission from '@/permission'
 
 export default {
   name: 'ApartmentExpressView',
@@ -60,10 +58,10 @@ export default {
   /* DATA */
   data() {
     const apartmentCommentsPermission = {
-      view: ApartmentsPermission.getApartmentCommentsViewPermission(),
-      create: ApartmentsPermission.getApartmentCommentsCreatePermission(),
-      edit: ApartmentsPermission.getApartmentCommentsEditPermission(),
-      delete: ApartmentsPermission.getApartmentCommentsDeletePermission(),
+      view: Permission.getUserPermission('apartments.comments.view'),
+      create: Permission.getUserPermission('apartments.comments.create'),
+      edit: Permission.getUserPermission('apartments.comments.edit'),
+      delete: Permission.getUserPermission('apartments.comments.delete'),
     }
     return {
       isDownloading: false,
@@ -95,12 +93,12 @@ export default {
       printCalc: {},
       commentsData: {},
       commentLoading: false,
-      editDatePermission: CheckoutPermission.getEditDatePermission(),
-      bookPermission: CheckoutPermission.getBookPermission(),
-      checkoutPermission: CheckoutPermission.getCheckoutCheckPermission(),
-      checkoutRootPermission: CheckoutPermission.getRootPermission(),
-      statusViewPms: SettingsPermission.getPermission('apartments.status.view'),
-      holderViewPms: SettingsPermission.getPermission('apartments.holder.view'),
+      editDatePermission: Permission.getUserPermission('checkout.edit_date'),
+      bookPermission: Permission.getUserPermission('checkout.book'),
+      checkoutPermission: Permission.getUserPermission('checkout.checkout'),
+      checkoutRootPermission: Permission.getUserPermission('checkout.root'),
+      statusViewPms: Permission.getUserPermission('settings.apartments.status.view'),
+      holderViewPms: Permission.getUserPermission('settings.apartments.holder.view'),
     }
   },
 

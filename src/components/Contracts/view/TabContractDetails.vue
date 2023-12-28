@@ -16,6 +16,7 @@ export default {
       required: true,
     },
   },
+  emits: ['start-loading', 'finish-loading'],
   data() {
     return {
       companyDetails: {
@@ -38,14 +39,6 @@ export default {
         ContractsPermission.getContractsViewCommentPermission(),
     }
   },
-  emits: ['start-loading', 'finish-loading'],
-
-  async created() {
-    await this.fetchContractDetails()
-    if (this.uniformityPermission) {
-      await this.fetchCompareDetails()
-    }
-  },
   computed: {
     ...mapGetters({
       permission: 'getPermission',
@@ -53,6 +46,13 @@ export default {
     uniformityPermission() {
       return ContractsPermission.getContractsUniformityPermission()
     },
+  },
+
+  async created() {
+    await this.fetchContractDetails()
+    if (this.uniformityPermission) {
+      await this.fetchCompareDetails()
+    }
   },
   methods: {
     datePrettier: time => formatDateWithDot(time),

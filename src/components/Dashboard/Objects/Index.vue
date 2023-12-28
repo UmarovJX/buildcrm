@@ -238,7 +238,7 @@ export default {
                 </router-link>
               </b-dropdown-item>
 
-              <b-dropdown-item>
+              <b-dropdown-item v-if="editPermission">
                 <b-link
                   class="dropdown-item"
                   @click="archiveObject(object)"

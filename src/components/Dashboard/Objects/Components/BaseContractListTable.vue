@@ -3,6 +3,7 @@ import api from '@/services/api'
 import { mapGetters } from 'vuex'
 import TemplatesPermission from '@/permission/templates'
 import XDropdown from '@/components/ui-components/dropdown/XDropdown.vue'
+import { v3ServiceApi } from '@/services/v3/v3.service'
 
 export default {
   name: 'ContractListTable',
@@ -124,7 +125,7 @@ export default {
     makeItMain(contractId) {
       const { id: objectId } = this.$route.params
       this.showLoading = true
-      api.objectsV2
+      v3ServiceApi.templates
         .makeContractPrimary({ objectId, contractId })
         .then(() => {
           this.$emit('update-content')
@@ -139,7 +140,7 @@ export default {
     async deleteContract(contractId) {
       this.showLoading = false
       const objectId = this.$route.params.id
-      await api.objectsV2
+      await v3ServiceApi.templates
         .deleteContract({ objectId, contractId })
         .then(() => {
           const findIndex = this.contracts.findIndex(

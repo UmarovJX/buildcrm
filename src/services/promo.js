@@ -1,8 +1,8 @@
-import { axiosV2 } from '@/services/core/base'
+import { axiosApiV2, axiosV2 } from '@/services/core/base'
 import Core from '@/services/core/index'
 
 class Promo extends Core {
-  constructor(axios = axiosV2) {
+  constructor(axios = axiosApiV2) {
     super(axios)
   }
 
@@ -36,7 +36,7 @@ class Promo extends Core {
 }
 
 class PromoV2 extends Core {
-  constructor(axios = axiosV2) {
+  constructor(axios = axiosApiV2) {
     super(axios)
   }
 

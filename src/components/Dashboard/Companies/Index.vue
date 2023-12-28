@@ -7,6 +7,7 @@ import BasePlusIcon from '@/components/icons/BasePlusIcon'
 import BaseSearchInput from '@/components/Reusable/BaseSearchInput'
 import CompaniesPermission from '@/permission/companies'
 import AppHeader from '@/components/Header/AppHeader'
+import Permission from '@/permission'
 import CreateUpdateModal from './Components/CreateUpdateModal'
 
 export default {
@@ -21,7 +22,7 @@ export default {
   },
   data() {
     return {
-      createPermission: CompaniesPermission.getCompaniesCreatePermission(),
+      createPermission: Permission.getUserPermission('companies.create'),
       loading: false,
       companies: [],
       editedItem: {},

@@ -14,13 +14,13 @@ import BaseArrowLeft from '@/components/icons/BaseArrowLeftIcon'
 import BaseButton from '@/components/Reusable/BaseButton'
 import BaseModal from '@/components/Reusable/BaseModal'
 import BaseCloseIcon from '@/components/icons/BaseCloseIcon'
-import ApartmentsPermission from '@/permission/apartments'
 import { mapGetters } from 'vuex'
 import { isPrimitiveValue } from '@/util/reusable'
 import { sessionStorageGetItem, sessionStorageSetItem } from '@/util/storage'
 import AppHeader from '@/components/Header/AppHeader'
 import { XIcon } from '@/components/ui-components/material-icons'
 import { XCircularBackground } from '@/components/ui-components/circular-background'
+import Permission from '@/permission'
 
 export default {
   name: 'Objects',
@@ -366,16 +366,17 @@ export default {
     },
     checkedPermissionTab() {
       let result = this.componentTabs
-      if (!ApartmentsPermission.getApartmentListPermission()) {
+
+      if (!Permission.getUserPermission('apartments.lists.list')) {
         result = result.filter(item => item.view !== 'list')
       }
-      if (!ApartmentsPermission.getApartmentGridPermission()) {
+      if (!Permission.getUserPermission('apartments.lists.grid')) {
         result = result.filter(item => item.view !== 'architecture')
       }
-      if (!ApartmentsPermission.getApartmentChessPermission()) {
+      if (!Permission.getUserPermission('apartments.lists.grid_sm')) {
         result = result.filter(item => item.view !== 'chess')
       }
-      if (!ApartmentsPermission.getApartmentPlanPermission()) {
+      if (!Permission.getUserPermission('apartments.lists.plan')) {
         result = result.filter(item => item.view !== 'plan')
       }
       if (!this.is_parking) {
@@ -397,27 +398,8 @@ export default {
       return tabsActiveToFilter.includes(this.currentTab)
     },
     apartmentsFilterPermission() {
-      return ApartmentsPermission.getApartmentsPermission('filter')
+      return Permission.getUserPermission('apartments.filter')
     },
-
-    // apartmentsViewPermission() {
-    //   return ApartmentsPermission.getApartViewPermission()
-    // },
-    // apartmentsEditPermission() {
-    //   return ApartmentsPermission.getApartEditPermission()
-    // },
-    // apartmentsListPermission() {
-    //   return ApartmentsPermission.getApartListPermission()
-    // },
-    // apartmentsGridPermission() {
-    //   return ApartmentsPermission.getApartGridPermission()
-    // },
-    // apartmentsChessPermission() {
-    //   return ApartmentsPermission.getApartChessPermission()
-    // },
-    // apartmentsPlanPermission() {
-    //   return ApartmentsPermission.getApartPlanPermission()
-    // }
   },
 
   watch: {
@@ -546,7 +528,7 @@ export default {
       this.statusCounter = statusCounterNew
     },
     async fetchNecessary() {
-      if (ApartmentsPermission.getApartmentsPermission('filter')) {
+      if (Permission.getUserPermission('apartments.filter')) {
         await this.fetchFilterFields()
         await this.getGridOptimizationItems()
       }

@@ -1,9 +1,7 @@
 <script>
 import api from '@/services/api'
-import XDropdown from '@/components/ui-components/dropdown/XDropdown.vue'
 
 export default {
-  components: { XDropdown },
   props: ['apartment'],
 
   data: () => ({
@@ -178,33 +176,28 @@ export default {
         </div>
 
         <div class="apartment__info mb-3">
-          <x-dropdown>
-            <template #button-content>
-              {{ $t("objects.create.plan.name") }}
-            </template>
-
-            <select
-              v-model="apartment_info.plan_id"
-              class="custom-select"
-              required
+          <select
+            v-model="apartment_info.plan_id"
+            :placeholder="`${ $t('objects.create.plan.name') }`"
+            class="custom-select"
+            required
+          >
+            <option
+              disabled
+              value="null"
             >
-              <option
-                disabled
-                value="null"
-              >
-                {{ $t("objects.create.choose_plan") }}
-              </option>
+              {{ $t("objects.create.choose_plan") }}
+            </option>
 
-              <option
-                v-for="(plan, index) in plans"
-                :key="index"
-                :value="plan.id"
-              >
-                {{ plan.name }} - {{ $t("apartments.list.balcony") }}:
-                {{ plan.balcony ? plan.balcony_area : $t("no") }}
-              </option>
-            </select>
-          </x-dropdown>
+            <option
+              v-for="(plan, index) in plans"
+              :key="index"
+              :value="plan.id"
+            >
+              {{ plan.name }} - {{ $t("apartments.list.balcony") }}:
+              {{ plan.balcony ? plan.balcony_area : $t("no") }}
+            </option>
+          </select>
         </div>
 
         <div class="apartment__info mb-3">

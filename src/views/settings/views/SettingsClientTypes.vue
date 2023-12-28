@@ -58,7 +58,9 @@ export default {
     },
   },
   created() {
-    this.fetchClientTypes()
+    if (this.permission.view) {
+      this.fetchClientTypes()
+    }
   },
   methods: {
     createClientType() {
@@ -128,9 +130,15 @@ export default {
 </script>
 
 <template>
-  <div class="app-settings-client-type">
+
+  <div
+    v-if="permission.view"
+    class="app-settings-client-type"
+  >
     <!-- TODO: CLIENT TYPES TABLE   -->
-    <div class="d-flex justify-content-between">
+    <div
+      class="d-flex justify-content-between"
+    >
       <h3 class="x-font-size-1p5 font-craftworksans color-gray-400">
         {{ $t("client_types") }}
       </h3>

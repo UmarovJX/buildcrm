@@ -1,6 +1,7 @@
 <script>
 import api from '@/services/api'
 import TemplatesPermission from '@/permission/templates'
+import { v3ServiceApi } from '@/services/v3/v3.service'
 
 export default {
   name: 'CreateDealDocsTemplate',
@@ -81,7 +82,7 @@ export default {
 
           this.loading = true
           const { id } = this.$route.params
-          await api.objectsV2
+          await v3ServiceApi.templates
             .addNewContract({ id, form })
             .then(() => {
               // console.log(res, 'res');

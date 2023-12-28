@@ -14,6 +14,7 @@ import BaseLoading from '@/components/Reusable/BaseLoading.vue'
 import PlanUpsert from '@/views/plan/components/PlanUpsert.vue'
 import PlanFilter from '@/views/plan/components/PlanFilter.vue'
 import XPagination from '@/components/ui-components/pagination/XPagination.vue'
+import Permission from '@/permission'
 
 export default {
   name: 'AppPlan',
@@ -47,10 +48,10 @@ export default {
     })
     const planTypes = ref([])
     const permission = {
-      view: SettingsPermission.getPermission('plan.view'),
-      create: SettingsPermission.getPermission('plan.create'),
-      edit: SettingsPermission.getPermission('plan.edit'),
-      delete: SettingsPermission.getPermission('plan.delete'),
+      view: Permission.getUserPermission('plan.view'),
+      create: Permission.getUserPermission('plan.create'),
+      edit: Permission.getUserPermission('plan.edit'),
+      delete: Permission.getUserPermission('plan.delete'),
     }
     const filterParamsList = ref([])
 
@@ -256,7 +257,9 @@ export default {
       ])
     }
 
-    fetchItems()
+    if (permission.view) {
+      fetchItems()
+    }
 
     return {
       upsertType,

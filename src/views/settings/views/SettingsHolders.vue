@@ -6,6 +6,7 @@ import { XCircularBackground } from '@/components/ui-components/circular-backgro
 import SettingsCreateHolder from '@/views/settings/components/SettingsCreateHolder.vue'
 import SettingsPermission from '@/permission/settings.permission'
 import { v3ServiceApi } from '@/services/v3/v3.service'
+import Permission from '@/permission'
 
 export default {
   name: 'SettingsClientTypes',
@@ -34,10 +35,10 @@ export default {
         loading: false,
       },
       permission: {
-        view: SettingsPermission.getPermission('holders.view'),
-        create: SettingsPermission.getPermission('holders.create'),
-        edit: SettingsPermission.getPermission('holders.edit'),
-        delete: SettingsPermission.getPermission('holders.delete'),
+        view: Permission.getUserPermission('holders.view'),
+        create: Permission.getUserPermission('holders.create'),
+        edit: Permission.getUserPermission('holders.edit'),
+        delete: Permission.getUserPermission('holders.delete'),
       },
     }
   },

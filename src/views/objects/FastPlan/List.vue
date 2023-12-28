@@ -18,6 +18,7 @@ import { XCircularBackground } from '@/components/ui-components/circular-backgro
 import { XIcon } from '@/components/ui-components/material-icons'
 import BaseLoading from '@/components/Reusable/BaseLoading.vue'
 import { sortObjectValues } from '@/util/reusable'
+import Permission from '@/permission'
 
 export default {
   name: 'FastPlanList',
@@ -82,6 +83,7 @@ export default {
     }
     return {
       header,
+      permissionTypePlanUpdate: Permission.getUserPermission('type_plan.update'),
       showLoading: false,
       fields: [
         {
@@ -229,6 +231,7 @@ export default {
       />
 
       <x-button
+        v-if="permissionTypePlanUpdate"
         :text="$t('objects.create.fast_plan.add')"
         left-icon="add"
         @click="createPlan"

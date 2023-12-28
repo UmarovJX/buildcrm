@@ -54,7 +54,9 @@ export default {
     },
   },
   created() {
-    this.getCountries()
+    if (this.permission.view) {
+      this.getCountries()
+    }
   },
   methods: {
     setEngagementType(eType) {
@@ -122,7 +124,10 @@ export default {
 </script>
 
 <template>
-  <div class="settings-countries">
+  <div
+    v-if="permission.view"
+    class="settings-countries"
+  >
     <!-- TODO:SETTINGS COUNTRIES   -->
     <div class="d-flex justify-content-between">
       <h3 class="x-font-size-1p5 font-craftworksans color-gray-400">

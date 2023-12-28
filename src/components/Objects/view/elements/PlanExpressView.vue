@@ -7,6 +7,7 @@ import VueHtml2pdf from 'vue-html2pdf'
 import { mapGetters } from 'vuex'
 import ApartmentExpressView from '@/components/Objects/view/elements/ApartmentExpressView'
 import api from '@/services/api'
+import { isObject } from '@/util/inspect'
 
 export default {
   name: 'PlanExpressView',
@@ -80,7 +81,7 @@ export default {
       },
     },
     hasApartment() {
-      return Object.keys(this.plan).length > 0
+      return isObject(this.plan) && Object.keys(this.plan).length > 0
     },
   },
   watch: {
@@ -139,7 +140,7 @@ export default {
       no-header
       shadow
     >
-      <template #default="{ hide }">
+      <template #default>
         <vue-html2pdf
           v-if="hasApartment"
           ref="html2Pdf"

@@ -9,6 +9,7 @@ import BaseButton from '@/components/Reusable/BaseButton'
 import BasePlusIcon from '@/components/icons/BasePlusIcon'
 import BaseTabPicker from '@/components/Reusable/BaseTabPicker'
 import XDropdown from '@/components/ui-components/dropdown/XDropdown.vue'
+import Permission from '@/permission'
 
 export default {
   name: 'BranchesPage',
@@ -27,7 +28,7 @@ export default {
       createPermission: BranchesPermission.getBranchesCreatePermission(),
       editPermission: BranchesPermission.getBranchesEditPermission(),
       deletePermission: BranchesPermission.getBranchesDeletePermission(),
-      viewTemplatesPermission: TemplatesPermission.getTemplatesViewPermission(),
+      viewTemplatesPermission: Permission.getUserPermission('branches.templates.view'),
       loading: false,
       sortBy: 'id',
       sortDesc: false,

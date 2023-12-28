@@ -174,6 +174,11 @@ export default {
         count: roleItem.users_count,
       }))
     },
+    showActions() {
+      return this.deletePermission
+          || this.editPermission
+          || (this.unblockPermission && this.$route.query.status === 'deactivated')
+    },
   },
   async created() {
     this.filter = {
@@ -559,8 +564,11 @@ export default {
         </template>
 
         <template #cell(actions)="data">
-          <div class="float-right">
-            <x-dropdown v-if="deletePermission || editPermission">
+          <div
+            v-if="showActions"
+            class="float-right"
+          >
+            <x-dropdown>
               <!--user.role.id != 1 &&-->
               <b-button
                 v-if="editPermission"
@@ -571,8 +579,9 @@ export default {
                 <i class="far fa-pen" />
                 {{ $t("edit") }}
               </b-button>
+
               <b-button
-                v-if="unblockPermission && data.item.blocked_at"
+                v-if="unblockPermission"
                 v-b-modal.modal-edit
                 class="dropdown-item dropdown-item--inside"
                 @click="unblockUser(data.item)"

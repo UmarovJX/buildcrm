@@ -101,6 +101,7 @@ export default {
       this.allLangs.push(...res.data.result)
       this.currentLang = this.allLangs[0]
     })
+
     this.fetchItems()
   },
   methods: {
@@ -202,7 +203,10 @@ export default {
 </script>
 
 <template>
-  <div class="app-settings-client-type">
+  <div
+    v-if="permission.view"
+    class="app-settings-client-type"
+  >
     <!-- TODO: CLIENT TYPES TABLE   -->
     <div class="d-flex mb-4 justify-content-end">
       <!-- <h3

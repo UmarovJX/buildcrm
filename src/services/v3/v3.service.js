@@ -146,6 +146,16 @@ class V3Service extends Core {
     }
 
     role = this.base('role')
+
+    templates = {
+      getDealTemplateList: objectId => this.get(`v2/templates/branch/${objectId}`),
+      addNewContract: ({ id, form }) => this.post(`v2/templates/branch/${id}`, form),
+      makeContractPrimary: ({ objectId, contractId }) => this.put(
+        `v2/templates/branch/${objectId}/contract/${contractId}/primary`,
+      ),
+      deleteContract: ({ objectId, contractId }) => this.delete(`v2/templates/branch/${objectId}/contract/${contractId}`),
+    }
 }
 
+// eslint-disable-next-line import/prefer-default-export
 export const v3ServiceApi = new V3Service()

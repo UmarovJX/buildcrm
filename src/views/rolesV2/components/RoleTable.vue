@@ -1,10 +1,10 @@
 <script>
 import { computed, getCurrentInstance } from 'vue'
+import Permission from '@/permission'
 
 import BaseLoading from '@/components/Reusable/BaseLoading.vue'
 import { XIcon } from '@/components/ui-components/material-icons'
 import { XCircularBackground } from '@/components/ui-components/circular-background'
-import { v3ServiceApi } from '@/services/v3/v3.service'
 
 export default {
   name: 'GroupTable',
@@ -25,6 +25,9 @@ export default {
   },
   emits: ['delete'],
   setup() {
+    const permissionRoleEdit = Permission.getUserPermission('roles.edit')
+    const permissionRoleDelete = Permission.getUserPermission('roles.delete')
+
     const vm = getCurrentInstance().proxy
     const tableFields = computed(() => [
       {
@@ -51,6 +54,9 @@ export default {
     }
 
     return {
+      permissionRoleEdit,
+      permissionRoleDelete,
+
       tableFields,
       editItem,
     }
@@ -88,6 +94,7 @@ export default {
     <template #cell(actions)="{ item }">
       <div class="float-right d-flex x-gap-1 cursor-pointer">
         <x-circular-background
+          v-if="permissionRoleEdit"
           class="bg-violet-600"
           @click="editItem(item)"
         >
@@ -98,6 +105,7 @@ export default {
         </x-circular-background>
 
         <x-circular-background
+          v-if="permissionRoleDelete"
           class="bg-red-600"
           @click="$emit('delete',item.id)"
         >

@@ -12,6 +12,8 @@ import api from '@/services/api'
 import BaseDeleteIcon from '@/components/icons/BaseDeleteIcon'
 import ContractsPermission from '@/permission/contract'
 import AppDropdown from '@/components/Reusable/Dropdown/AppDropdown'
+import { isObject } from '@/util/inspect'
+import { hasOwnProperty } from '@/util/object'
 
 export default {
   name: 'ContractComments',
@@ -140,8 +142,11 @@ export default {
       return `${hours}:${minutes}, ${day} ${month}`
     },
     checkLocales(name) {
-      if (localStorage.locale) return name[localStorage.locale]
-      return name.ru
+      if (isObject(name) && hasOwnProperty(name, this.$i18n.locale)) {
+        return name[this.$i18n.locale]
+      }
+
+      return name
     },
     closeCreateModal() {
       this.$refs.create.closeModal()
@@ -237,14 +242,14 @@ export default {
           v-if="hasComment"
           class="comments-header__title"
         >
-          {{ this.$t("contracts.note") }} ({{ pagination.totalItems }}
+          {{ $t("contracts.note") }} ({{ pagination.totalItems }}
           {{ $t("contracts.notes") }})
         </h4>
         <h4
           v-else
           class="comments-header__title"
         >
-          {{ this.$t("contracts.note") }} ({{ $t("contracts.no_notes") }})
+          {{ $t("contracts.note") }} ({{ $t("contracts.no_notes") }})
         </h4>
         <base-button
           v-if="createCommentPermission"
@@ -263,7 +268,7 @@ export default {
       >
         <div
           v-for="userComment in comments"
-          :key="comment.id"
+          :key="userComment.id"
           class="comment"
         >
           <div class="comment-content">

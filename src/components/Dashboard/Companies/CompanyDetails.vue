@@ -10,6 +10,7 @@ import PaymentAccount from '@/permission/payment_account'
 import CompaniesPermission from '@/permission/companies'
 import AppHeader from '@/components/Header/AppHeader'
 import AppDropdown from '@/components/Reusable/Dropdown/AppDropdown'
+import Permission from '@/permission'
 
 export default {
   name: 'CompanyDetails',
@@ -42,11 +43,11 @@ export default {
       loading: false,
       payments: [],
       companyId: this.$route.params.companyId,
-      viewPaymentPermission: PaymentAccount.getPaymentAccountViewPermission(),
+      viewPaymentPermission: Permission.getUserPermission('payment_account.view'),
       createPaymentPermission:
-        PaymentAccount.getPaymentAccountCreatePermission(),
+          Permission.getUserPermission('payment_account.create'),
       deleteCompanyPermission:
-        CompaniesPermission.getCompaniesDeletePermission(),
+          Permission.getUserPermission('companies.delete'),
     }
   },
   async created() {

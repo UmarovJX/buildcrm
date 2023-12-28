@@ -6,6 +6,7 @@ import InstructionsModal from '@/components/Dashboard/Objects/Components/DealDoc
 import BaseContractListTable from '@/components/Dashboard/Objects/Components/BaseContractListTable'
 import CreateDealDocsTemplate from '@/components/Dashboard/Objects/Components/Deals/CreateDealDocsTemplate'
 import AppHeader from '@/components/Header/AppHeader'
+import { v3ServiceApi } from '@/services/v3/v3.service'
 
 export default {
   name: 'DealDocsTemplate',
@@ -87,8 +88,7 @@ export default {
     async getDealTemplateList() {
       this.loading = true
       const { id } = this.$route.params
-      await api.objectsV2
-        .getDealTemplateList(id)
+      await v3ServiceApi.templates.getDealTemplateList(id)
         .then(response => {
           this.contracts = response.data.data
           const objectCrumb = {

@@ -13,6 +13,7 @@ import BaseDeleteIcon from '@/components/icons/BaseDeleteIcon'
 import BaseLoadingContent from '@/components/BaseLoadingContent'
 import AppHeader from '@/components/Header/AppHeader'
 import { XButton } from '@/components/ui-components/button'
+import Permission from '@/permission'
 
 export default {
   name: 'TypePlanList',
@@ -29,8 +30,10 @@ export default {
   },
   data() {
     return {
-      editPermission: PlansPermission.getPlansEditPermission(),
-      deletePermission: PlansPermission.getPlansDeletePermission(),
+      editPermission: Permission.getUserPermission('plans.edit'),
+      deletePermission: Permission.getUserPermission('plans.delete'),
+      createPermission: Permission.getUserPermission('plans.create'),
+      permissionTypePlanView: Permission.getUserPermission('type_plan.view'),
       showLoading: false,
       manager: {},
       manager_id: null,
@@ -105,8 +108,8 @@ export default {
     },
     async deleteTypePlan(item) {
       const objectId = this.$route.params.id
-      const { apartments_count, id: planId } = item
-      if (apartments_count) {
+      const { apartments_count: apartmentsCount, id: planId } = item
+      if (apartmentsCount) {
         this.showLoading = true
         const response = await api.plans
           .deletePlanWhenHasApartment(objectId, planId)
@@ -189,11 +192,13 @@ export default {
 
       <div class="d-flex x-gap-1">
         <x-button
+          v-if="permissionTypePlanView"
           :text="$t('objects.create.fast_plan.name')"
           left-icon="activity_zone"
           @click="showDrawingList"
         />
         <x-button
+          v-if="createPermission"
           :text="$t('objects.create.plan.add')"
           variant="secondary"
           left-icon="add"

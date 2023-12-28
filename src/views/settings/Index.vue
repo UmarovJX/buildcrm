@@ -108,6 +108,13 @@ export default {
       return this.$route.name
     },
   },
+  mounted() {
+    if (this.tabs.length) {
+      this.$router.push({
+        name: this.tabs[0].value,
+      })
+    }
+  },
   methods: {
     changeRouteView(v) {
       if (this.$route.name !== v) {

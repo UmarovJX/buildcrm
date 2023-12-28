@@ -30,6 +30,7 @@ import SettingsPermission from '@/permission/settings.permission'
 import { isNull, isNUNEZ } from '@/util/inspect'
 import { keys } from '@/util/object'
 import XDropdown from '@/components/ui-components/dropdown/XDropdown.vue'
+import Permission from '@/permission'
 
 export default {
   name: 'ObjectTable',
@@ -128,18 +129,10 @@ export default {
         label: '',
       },
     ]
-    const holderEditPms = SettingsPermission.getPermission(
-      'apartments.holder.edit',
-    )
-    const holderViewPms = SettingsPermission.getPermission(
-      'apartments.holder.view',
-    )
-    const statusEditPms = SettingsPermission.getPermission(
-      'apartments.status.edit',
-    )
-    const statusViewPms = SettingsPermission.getPermission(
-      'apartments.status.view',
-    )
+    const holderEditPms = Permission.getUserPermission('apartments.holder.edit')
+    const holderViewPms = Permission.getUserPermission('apartments.holder.view')
+    const statusEditPms = Permission.getUserPermission('apartments.status.edit')
+    const statusViewPms = Permission.getUserPermission('apartments.status.view')
 
     if (holderViewPms) {
       fields.splice(1, 0, {
@@ -209,9 +202,9 @@ export default {
       reSoldItem: null,
       checkoutList: [],
       checkAll: false,
-      editPermission: ApartmentsPermission.getApartmentEditPermission(),
-      viewPermission: ApartmentsPermission.getApartmentViewPermission(),
-      isSoldPermission: ApartmentsPermission.getApartmentIsSoldPermission(),
+      editPermission: Permission.getUserPermission('apartments.edit'),
+      viewPermission: Permission.getUserPermission('apartments.view'),
+      isSoldPermission: Permission.getUserPermission('apartments.is_sold'),
       holderEditPms,
       holderViewPms,
       statusEditPms,
@@ -228,7 +221,8 @@ export default {
     // ...mapActions([ "fetchReserveClient"]),
     hasPermission() {
       return (
-        this.editPermission || this.isSoldPermission || this.viewPermission
+        this.editPermission
+        || this.isSoldPermission || this.viewPermission
       )
     },
 
@@ -896,6 +890,7 @@ export default {
                   <i class="far fa-lock" /> {{ $t("return_to_sale") }}
                 </b-link>
               </template>
+
               <router-link
                 :to="{
                   name: 'apartment-view',

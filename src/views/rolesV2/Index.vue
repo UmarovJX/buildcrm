@@ -11,6 +11,7 @@ import AppHeader from '@/components/Header/AppHeader.vue'
 import BaseLoading from '@/components/Reusable/BaseLoading.vue'
 import XPagination from '@/components/ui-components/pagination/XPagination.vue'
 import RoleTable from '@/views/rolesV2/components/RoleTable.vue'
+import Permission from '@/permission'
 
 export default {
   name: 'RolesV2',
@@ -24,6 +25,8 @@ export default {
     RoleTable,
   },
   setup() {
+    const permissionRoleCreate = Permission.getUserPermission('roles.create')
+
     const vm = getCurrentInstance().proxy
     const { toastError } = useToastError()
     const { isFetching, startFetching, finishFetching } = useLoading()
@@ -114,6 +117,8 @@ export default {
     fetchItems()
 
     return {
+      permissionRoleCreate,
+
       isFetching,
       items,
       permission,
@@ -138,7 +143,7 @@ export default {
 
       <template #header-actions>
         <x-button
-          v-if="permission.create"
+          v-if="permissionRoleCreate"
           variant="secondary"
           text="add"
           :bilingual="true"

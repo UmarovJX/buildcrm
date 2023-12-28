@@ -740,6 +740,9 @@ const routes = [
         path: 'roles',
         name: 'roles',
         component: () => import('@/views/rolesV2/Index.vue'),
+        meta: {
+          requiresAuth: 'roles',
+        },
       },
       {
         path: 'roles/create',

@@ -1,11 +1,11 @@
 <script>
 import { v3ServiceApi } from '@/services/v3/v3.service'
-import SettingsPermission from '@/permission/settings.permission'
 import { XButton } from '@/components/ui-components/button'
 import BaseLoading from '@/components/Reusable/BaseLoading.vue'
 import { XIcon } from '@/components/ui-components/material-icons'
 import { XCircularBackground } from '@/components/ui-components/circular-background'
 import SettingsCreateStatus from '@/views/settings/components/SettingsCreateStatus.vue'
+import Permission from '@/permission'
 
 export default {
   name: 'SettingsStatuses',
@@ -34,10 +34,10 @@ export default {
         loading: false,
       },
       permission: {
-        view: SettingsPermission.getPermission('statuses.view'),
-        create: SettingsPermission.getPermission('statuses.create'),
-        edit: SettingsPermission.getPermission('statuses.edit'),
-        delete: SettingsPermission.getPermission('statuses.delete'),
+        view: Permission.getUserPermission('statuses.view'),
+        create: Permission.getUserPermission('statuses.create'),
+        edit: Permission.getUserPermission('statuses.edit'),
+        delete: Permission.getUserPermission('statuses.delete'),
       },
     }
   },
@@ -67,7 +67,9 @@ export default {
     },
   },
   created() {
-    this.fetchHolders()
+    if (this.permission.view) {
+      this.fetchHolders()
+    }
   },
   methods: {
     startLoading() {
@@ -154,7 +156,10 @@ export default {
 </script>
 
 <template>
-  <div class="app-settings-client-type">
+  <div
+    v-if="permission.view"
+    class="app-settings-client-type"
+  >
     <!-- TODO: CLIENT TYPES TABLE   -->
     <div class="d-flex justify-content-between mb-4">
       <h3

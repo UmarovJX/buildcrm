@@ -69,7 +69,9 @@ export default {
     },
   },
   created() {
-    this.fetchItems()
+    if (this.permission.view) {
+      this.fetchItems()
+    }
   },
   methods: {
     startLoading() {
@@ -150,7 +152,10 @@ export default {
 </script>
 
 <template>
-  <div class="app-settings-client-type">
+  <div
+    v-if="permission.view"
+    class="app-settings-client-type"
+  >
     <!-- TODO: CLIENT TYPES TABLE   -->
     <div class="d-flex justify-content-between mb-4">
       <h3

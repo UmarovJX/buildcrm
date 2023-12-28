@@ -5,6 +5,8 @@ import BaseButton from '@/components/Reusable/BaseButton'
 import { sortObjectValues } from '@/util/reusable'
 import CompaniesPermission from '@/permission/companies'
 import XDropdown from '@/components/ui-components/dropdown/XDropdown.vue'
+import Permission from '@/permission'
+import { XIcon } from '@/components/ui-components/material-icons'
 
 export default {
   name: 'CompaniesList',
@@ -12,6 +14,7 @@ export default {
     XDropdown,
     BaseButton,
     BaseEditIcon,
+    XIcon,
   },
   props: {
     companies: {
@@ -22,7 +25,7 @@ export default {
   emits: ['edit-selected-company', 'delete-company', 'sort-companies'],
   data() {
     return {
-      editPermission: CompaniesPermission.getCompaniesEditPermission(),
+      editPermission: Permission.getUserPermission('companies.edit'),
       filter: {
         sortBy: '',
         sortDesc: false,
@@ -161,16 +164,19 @@ export default {
       <template #cell(actions)="data">
         <div class="float-right">
           <x-dropdown>
-            <BaseButton
+            <b-dropdown-item
               v-if="editPermission"
-              text=""
-              class="violet button rounded-circle]"
               @click="editSelectedCompany(data.item)"
             >
-              <template #right-icon>
-                <BaseEditIcon fill="var(--white)" />
-              </template>
-            </BaseButton>
+              {{ $t('edit') }}
+              <span>
+                <x-icon
+                  size="18"
+                  name="draw"
+                  class="violet-600"
+                />
+              </span>
+            </b-dropdown-item>
           </x-dropdown>
         </div>
       </template>
