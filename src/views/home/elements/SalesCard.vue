@@ -47,10 +47,13 @@ export default {
 
 <template>
   <base-card
-    :title="title"
     icon="attach_money"
     class="w-100"
   >
+    <template #title>
+      <span class="font-weight-bold">{{ title }}</span>
+    </template>
+
     <template #bottom>
       <div class="sales__details">
         <div class="d-flex flex-column">

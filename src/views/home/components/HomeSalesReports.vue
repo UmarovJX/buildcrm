@@ -43,7 +43,7 @@ export default {
   <div>
     <div class="d-flex justify-content-between">
       <h3 class="gray-600 font-craftworksans">
-        {{ $t('statistics.debtor_reports_title') }}
+        {{ $t('common.sales_information') }}
         <b-spinner
           v-if="busy"
           class="loading__spinner"
@@ -70,7 +70,7 @@ export default {
 <style lang="scss" scoped>
 .section__wrapper {
   display: flex;
-  flex-wrap: wrap;
+  //flex-wrap: wrap;
   gap: 2rem 1rem;
   min-height: 250px;
   margin-top: 1rem;

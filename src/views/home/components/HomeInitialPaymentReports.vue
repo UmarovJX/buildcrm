@@ -100,12 +100,15 @@ export default {
         class="w-100"
         bottom-flex-column
         :has-icon="false"
-        :title="reportItem.title"
         :bottom-left="reportItem.left"
         :bottom-right="reportItem.right"
         :bottom-center="reportItem.center"
         :bottom-extra="reportItem.extra"
-      />
+      >
+        <template #title>
+          <span class="font-weight-bold">{{ reportItem.title }}</span>
+        </template>
+      </base-card>
     </div>
   </div>
 </template>
@@ -113,7 +116,7 @@ export default {
 <style lang="scss" scoped>
 .section__wrapper {
   display: flex;
-  flex-wrap: wrap;
+  //flex-wrap: wrap;
   gap: 2rem 1rem;
   min-height: 250px;
   margin-top: 1rem;
