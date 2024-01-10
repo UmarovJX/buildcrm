@@ -152,7 +152,10 @@ export default function useStatistics() {
     try {
       main.value.busy = true
       const { data: { result } } = await v3ServiceApi.stats.main()
-      main.value.result = result
+      main.value.result.object_count = result.object_count
+      main.value.result.client_count = result.client_count
+      main.value.result.apartments = result.apartments
+      main.value.result.parking = result.parkings
     } catch (e) {
       toastError(e)
     } finally {

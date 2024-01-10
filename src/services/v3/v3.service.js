@@ -155,6 +155,14 @@ class V3Service extends Core {
       ),
       deleteContract: ({ objectId, contractId }) => this.delete(`v2/templates/branch/${objectId}/contract/${contractId}`),
     }
+
+    home = {
+      stat: {
+        initialPayments: b => this.post('statistics/home/initial-payments', b),
+        debtors: b => this.post('statistics/home/debtors', b),
+        sales: b => this.post('statistics/home/sales', b),
+      },
+    }
 }
 
 // eslint-disable-next-line import/prefer-default-export

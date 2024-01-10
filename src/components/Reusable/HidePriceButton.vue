@@ -4,6 +4,7 @@ import { useShowPrice } from '@/composables/useShowPrice'
 import { XIcon } from '@/components/ui-components/material-icons'
 import { XCircularBackground } from '@/components/ui-components/circular-background'
 import ApartmentsPermission from '@/permission/apartments'
+import Permission from '@/permission'
 
 export default {
   name: 'HidePriceButton',
@@ -14,8 +15,7 @@ export default {
   },
   data() {
     return {
-      hidePricePermission:
-        ApartmentsPermission.getApartmentHidePricePermission(),
+      hidePricePermission: Permission.getUserPermission('apartments.hidePrice'),
     }
   },
   setup() {

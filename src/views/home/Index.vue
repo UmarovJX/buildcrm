@@ -14,8 +14,8 @@ import usePieStatistics from '@/views/home/usePieStatistics'
 import useWidgets from '@/views/home/useWidgets'
 
 import AppHeader from '@/components/Header/AppHeader.vue'
-import ObjectsIncomeByPeriod from '@/views/home/components/ObjectsIncomeByPeriod.vue'
-import ObjectPayments from '@/views/home/components/ObjectPayments.vue'
+// import ObjectsIncomeByPeriod from '@/views/home/components/ObjectsIncomeByPeriod.vue'
+// import ObjectPayments from '@/views/home/components/ObjectPayments.vue'
 import HomePrimaryCards from '@/views/home/components/HomePrimaryCards.vue'
 import HomeSecondaryCards from '@/views/home/components/HomeSecondaryCards.vue'
 import HomeBranchReports from '@/views/home/components/HomeBranchReports.vue'
@@ -25,13 +25,16 @@ import HomeOrderReports from '@/views/home/components/HomeOrderReports.vue'
 import HomePieChart from '@/views/home/components/HomePieChart.vue'
 import SwitchButtonGroup from '@/views/home/elements/SwitchButtonGroup.vue'
 import Manager from '@/views/home/components/manager/Manager.vue'
+import HomeInitialPaymentReports from '@/views/home/components/HomeInitialPaymentReports.vue'
+import HomeDebtorReports from '@/views/home/components/HomeDebtorReports.vue'
+import HomeSalesReports from '@/views/home/components/HomeSalesReports.vue'
 
 export default {
   components: {
     SwitchButtonGroup,
     AppHeader,
-    ObjectsIncomeByPeriod,
-    ObjectPayments,
+    // ObjectsIncomeByPeriod,
+    // ObjectPayments,
     HomePrimaryCards,
     HomeSecondaryCards,
     HomeBranchReports,
@@ -40,6 +43,9 @@ export default {
     HomeOrderReports,
     HomePieChart,
     Manager,
+    HomeInitialPaymentReports,
+    HomeDebtorReports,
+    HomeSalesReports,
   },
   data: () => ({
     mainPermission: Permission.getUserPermission('general.view_statistics'),
@@ -78,7 +84,7 @@ export default {
 
     const views = computed(() => [
       {
-        title: vm.$t('common.table'),
+        title: vm.$t('reports.title'),
         value: 'table',
       },
       {
@@ -90,8 +96,17 @@ export default {
     const showTables = computed(() => typeOfView.value === 'table')
 
     const {
-      objectsIncome, fetchObjectsIncomeByPeriod,
-      objectPayments, fetchObjectPayments,
+      objectsIncome, /* fetchObjectsIncomeByPeriod */
+      objectPayments, /* fetchObjectPayments */
+
+      initialPayments,
+      fetchInitialPayments,
+
+      salesMain,
+      fetchSalesMain,
+
+      debtorMain,
+      fetchDebtorMain,
     } = useHome()
 
     const {
@@ -156,15 +171,19 @@ export default {
       ])
     }
 
-    async function fetchTableViewData(b = {}) {
+    async function fetchTableViewData() {
       if (tableLoaded.value) {
         return
       }
 
       await Promise.allSettled([
-        fetchObjectsIncomeByPeriod(b),
-        fetchObjectPayments(b),
+        // fetchObjectsIncomeByPeriod(b),
+        // fetchObjectPayments(b),
+        fetchInitialPayments(),
+        fetchSalesMain(),
+        fetchDebtorMain(),
       ])
+
       tableLoaded.value = true
     }
 
@@ -218,6 +237,10 @@ export default {
       permissionFounderGraph,
       permissionFounderTable,
       permissionManagerGraph,
+
+      initialPayments,
+      salesMain,
+      debtorMain,
 
       views,
       typeOfView,
@@ -296,15 +319,31 @@ export default {
         v-if="showTables && permissionFounderTable"
         class="home__section"
       >
-        <objects-income-by-period
-          :busy="objectsIncome.busy"
-          :data="objectsIncome.result"
+        <home-initial-payment-reports
+          :items="initialPayments.result"
+          :busy="initialPayments.busy"
+          class="mb-4"
         />
 
-        <object-payments
-          :busy="objectPayments.busy"
-          :data="objectPayments.result"
+        <home-debtor-reports
+          :items="debtorMain.result"
+          :busy="debtorMain.busy"
+          class="mb-4"
         />
+
+        <home-sales-reports
+          :items="salesMain.result"
+          :busy="salesMain.busy"
+        />
+
+        <!--        <objects-income-by-period-->
+        <!--          :busy="objectsIncome.busy"-->
+        <!--          :data="objectsIncome.result"-->
+        <!--        />-->
+        <!--        <object-payments-->
+        <!--          :busy="objectPayments.busy"-->
+        <!--          :data="objectPayments.result"-->
+        <!--        />-->
       </section>
 
       <section
@@ -382,7 +421,7 @@ export default {
   padding: 2rem 3rem 0 3rem;
   display: grid;
   grid-template-columns: 1fr;
-  gap: 2rem;
+  gap: 1rem;
 }
 
 .home__filter__section {
