@@ -79,7 +79,7 @@ export default {
     class="base__card"
   >
     <b-card-body class="bg-gray-100 base__card__body">
-      <b-card-text class="base__card__body__top">
+      <b-card-text class="base__card__body__top mb-0">
         <x-circular-background
           v-if="hasIcon"
           size="40px"
@@ -105,7 +105,7 @@ export default {
             class="base__card__bottom"
             :class="{'bottom__flex__column':bottomFlexColumn}"
           >
-            <b-card-text class="">
+            <b-card-text class="mb-0">
               <slot name="bottom-left">
                 <span
                   v-if="bottomLeft.title"
@@ -127,7 +127,10 @@ export default {
               </slot>
             </b-card-text>
 
-            <b-card-text v-if="bottomExtra.value !== 'bottom_extra'">
+            <b-card-text
+              v-if="bottomExtra.value !== 'bottom_extra'"
+              class="mb-0"
+            >
               <slot name="bottom-left">
                 <span
                   v-if="bottomExtra.title"
@@ -149,7 +152,10 @@ export default {
               </slot>
             </b-card-text>
 
-            <b-card-text v-if="hasBottomCenter">
+            <b-card-text
+              v-if="hasBottomCenter"
+              class="mb-0"
+            >
               <slot name="bottom-center">
                 <span class="base__card__bottom__title">
                   <slot name="bottom-left-title">
@@ -168,7 +174,7 @@ export default {
               </slot>
             </b-card-text>
 
-            <b-card-text>
+            <b-card-text class="mb-0">
               <slot name="bottom-right">
                 <span class="base__card__bottom__title">
                   <slot name="bottom-right-title">

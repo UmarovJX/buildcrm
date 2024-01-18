@@ -25,15 +25,21 @@ export default {
       icon="location_city"
       :title="`${ $t('objects.title') }`"
       :multiple="false"
-      :bottom="data.object_count"
-    />
+    >
+      <template #bottom>
+        <span class="mt-4 d-inline-block">{{ data.object_count }}</span>
+      </template>
+    </base-card>
 
     <base-card
       icon="group"
       :title="`${ $t('report.clients') }`"
       :multiple="false"
-      :bottom="data.client_count"
-    />
+    >
+      <template #bottom>
+        <span class="mt-4 d-inline-block">{{ data.client_count }}</span>
+      </template>
+    </base-card>
 
     <base-card
       class="base__card__multiple"

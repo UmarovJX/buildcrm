@@ -33,10 +33,10 @@ export default function useHome() {
 
       const initialRsp = await Promise.allSettled([
         v3ServiceApi.home.stat.initialPayments({ type: 'today' }),
-        v3ServiceApi.home.stat.initialPayments({ type: 'last_week' }),
         v3ServiceApi.home.stat.initialPayments({ type: 'this_week' }),
-        v3ServiceApi.home.stat.initialPayments({ type: 'last_month' }),
+        v3ServiceApi.home.stat.initialPayments({ type: 'last_week' }),
         v3ServiceApi.home.stat.initialPayments({ type: 'this_month' }),
+        v3ServiceApi.home.stat.initialPayments({ type: 'last_month' }),
       ])
 
       initialRsp.forEach(initialRaw => {

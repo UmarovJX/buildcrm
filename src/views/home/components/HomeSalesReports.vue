@@ -23,10 +23,11 @@ export default {
     const vm = getCurrentInstance().proxy
 
     const reportItems = computed(() => props.items.map(({
-      type, area, apartments_count, avg_area_cost, avg_cost,
+      type, area, apartments_count, avg_area_cost, avg_cost, total,
     }) => ({
       title: vm.$t(`common.${type}`),
       area,
+      total,
       apartmentsCount: apartments_count,
       avgAreaCost: avg_area_cost,
       avgCost: avg_cost,
@@ -72,7 +73,7 @@ export default {
   display: flex;
   //flex-wrap: wrap;
   gap: 2rem 1rem;
-  min-height: 250px;
+  //min-height: 250px;
   margin-top: 1rem;
   //border-bottom: 6px solid var(--gray-100);
 }

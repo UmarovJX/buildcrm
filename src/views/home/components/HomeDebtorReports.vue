@@ -116,7 +116,7 @@ export default {
   display: flex;
   //flex-wrap: wrap;
   gap: 2rem 1rem;
-  min-height: 250px;
+  //min-height: 250px;
   margin-top: 1rem;
   //border-bottom: 6px solid var(--gray-100);
 }

@@ -23,7 +23,7 @@ import HomeFilterBy from '@/views/home/components/HomeFilterBy.vue'
 import HomeIncomeReports from '@/views/home/components/HomeIncomeReports.vue'
 import HomeOrderReports from '@/views/home/components/HomeOrderReports.vue'
 import HomePieChart from '@/views/home/components/HomePieChart.vue'
-// import SwitchButtonGroup from '@/views/home/elements/SwitchButtonGroup.vue'
+import SwitchButtonGroup from '@/views/home/elements/SwitchButtonGroup.vue'
 import Manager from '@/views/home/components/manager/Manager.vue'
 import HomeInitialPaymentReports from '@/views/home/components/HomeInitialPaymentReports.vue'
 import HomeDebtorReports from '@/views/home/components/HomeDebtorReports.vue'
@@ -31,7 +31,7 @@ import HomeSalesReports from '@/views/home/components/HomeSalesReports.vue'
 
 export default {
   components: {
-    // SwitchButtonGroup,
+    SwitchButtonGroup,
     AppHeader,
     // ObjectsIncomeByPeriod,
     // ObjectPayments,
@@ -288,12 +288,12 @@ export default {
   <div>
     <app-header class="home__section">
       <template #header-actions>
-        <!--        <switch-button-group-->
-        <!--          v-if="permissionFounderGraph && permissionFounderTable"-->
-        <!--          v-model="typeOfView"-->
-        <!--          class="mr-4"-->
-        <!--          :items="views"-->
-        <!--        />-->
+        <switch-button-group
+          v-if="permissionFounderGraph && permissionFounderTable"
+          v-model="typeOfView"
+          class="mr-4"
+          :items="views"
+        />
       </template>
 
       <template #header-title>

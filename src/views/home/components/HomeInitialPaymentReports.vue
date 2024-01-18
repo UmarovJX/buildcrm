@@ -105,6 +105,10 @@ export default {
         :bottom-center="reportItem.center"
         :bottom-extra="reportItem.extra"
       >
+        <template #bottom-center>
+          <span class="gray-400">{{ reportItem.center.value }}</span>
+        </template>
+
         <template #title>
           <span class="font-weight-bold">{{ reportItem.title }}</span>
         </template>
@@ -118,7 +122,7 @@ export default {
   display: flex;
   //flex-wrap: wrap;
   gap: 2rem 1rem;
-  min-height: 250px;
+  //min-height: 250px;
   margin-top: 1rem;
   //border-bottom: 6px solid var(--gray-100);
 }
