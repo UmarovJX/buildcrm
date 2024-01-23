@@ -7,7 +7,6 @@ import { getPercent, lineChartOptions, pieChartOptions } from '@/views/home/char
 export default function useWidgets() {
   const { toastError } = useToastError()
 
-  const widgetData = ref(null)
   const managerWidget = ref(null)
   const managerStatusPie = ref({
     busy: false,
@@ -63,20 +62,16 @@ export default function useWidgets() {
     ...el,
     variant: 'primary',
     cls:
-          el.value === paymentType.value
-            ? `${el.cls} background-violet-600`
-            : `${el.cls} background-violet-100`,
+      el.value === paymentType.value
+        ? `${el.cls} background-violet-600`
+        : `${el.cls} background-violet-100`,
   })))
 
-  async function fetchWidgets(b = {}) {
-    widgetData.value = null
-    const widgetsRsp = await api.stats.getWidgets(b)
-    widgetData.value = widgetsRsp.data.result
-  }
 
   async function fetchManagerWidgets(b = {}) {
     managerWidget.value = null
     const managerWidgetRsp = await api.managerStats.getTotal(b)
+    console.log(managerWidgetRsp.data.result)
     managerWidget.value = managerWidgetRsp.data.result
   }
 
@@ -178,14 +173,16 @@ export default function useWidgets() {
   function shortSum(n) {
     const str = Math.floor(n).toString()
     switch (true) {
+      case str.length > 3 && str.length < 7:
+        return `${(str / 1_000).toFixed(3)} тыс`
       case str.length > 6 && str.length < 10:
-        return `${(str / 1_000_000).toFixed(2)} млн`
+        return `${(str / 1_000_000).toFixed(3)} млн`
       case str.length > 9 && str.length < 13:
-        return `${(str / 1_000_000_000).toFixed(2)} млрд`
+        return `${(str / 1_000_000_000).toFixed(3)} млрд`
       case str.length > 12 && str.length < 16:
-        return `${(str / 1_000_000_000_000).toFixed(2)} трлн`
+        return `${(str / 1_000_000_000_000).toFixed(3)} трлн`
       case str.length > 15 && str.length < 19:
-        return `${(str / 1_000_000_000_000).toFixed(2)} квадрлн`
+        return `${(str / 1_000_000_000_000).toFixed(3)} квадрлн`
       default:
         return formatToPrice(n, 2)
     }
@@ -225,7 +222,6 @@ export default function useWidgets() {
 
   async function fetchAll(body = {}) {
     await Promise.allSettled([
-      fetchWidgets(body),
       fetchManagerWidgets(body),
       fetchManagerSales(body),
       fetchManagerObjectsPie(body),
@@ -240,8 +236,6 @@ export default function useWidgets() {
     shortSum,
     fetchAll,
 
-    widgetData,
-    fetchWidgets,
 
     managerWidget,
     fetchManagerWidgets,

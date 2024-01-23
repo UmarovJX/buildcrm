@@ -24,8 +24,8 @@ export default class Permission {
     this.permission = null
   }
 
-  static getUserPermission(property) {
-    if (this.hasAdminRole()) {
+  static getUserPermission(property, ignoreAdmin) {
+    if (!ignoreAdmin && this.hasAdminRole()) {
       return true
     }
 

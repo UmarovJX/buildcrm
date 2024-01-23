@@ -73,7 +73,7 @@ export default function usePieStatistics() {
   async function fetchObjectSalesData(body = {}) {
     try {
       objectSales.value.busy = true
-      const { data: { result } } = await v3ServiceApi.stats.getObjectPie(
+      const { data: { result } } = await v3ServiceApi.stats.getObjectPie(//founder
         {
           filter_type: 'sum',
           ...body,
@@ -104,7 +104,7 @@ export default function usePieStatistics() {
   async function fetchTariffsPieData(body = {}) {
     try {
       tariffsPie.value.busy = true
-      const { data: { result } } = await v3ServiceApi.stats.getTariffsPie(body)
+      const { data: { result } } = await v3ServiceApi.stats.getTariffsPie(body)//founder
 
       const sum = result.data.reduce((acc, a) => acc + a, 0)
 
@@ -130,7 +130,7 @@ export default function usePieStatistics() {
   async function fetchManagersPieData(body = {}) {
     try {
       managersPie.value.busy = true
-      const { data: { result } } = await v3ServiceApi.stats.getManagersPie(body)
+      const { data: { result } } = await v3ServiceApi.stats.getManagersPie(body)//founder
 
       const sum = result.data.reduce((acc, a) => acc + a, 0)
 

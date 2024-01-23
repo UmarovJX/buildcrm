@@ -1,33 +1,31 @@
 <script>
-import {
-  computed, getCurrentInstance, ref, watch,
-} from 'vue'
-import { isNull } from '@/util/inspect'
-import { formatYMD } from '@/util/date'
-import { formatDateWithDot } from '@/util/reusable'
+import { computed, getCurrentInstance, ref, watch } from "vue";
+import { isNull } from "@/util/inspect";
+import { formatYMD } from "@/util/date";
+import { formatDateWithDot } from "@/util/reusable";
 
-import Permission from '@/permission'
+import Permission from "@/permission";
 
-import useHome from '@/views/home/useHome'
-import useStatistics from '@/views/home/useStatistics'
-import usePieStatistics from '@/views/home/usePieStatistics'
-import useWidgets from '@/views/home/useWidgets'
+import useHome from "@/views/home/useHome";
+import useStatistics from "@/views/home/useStatistics";
+import usePieStatistics from "@/views/home/usePieStatistics";
+import useWidgets from "@/views/home/useWidgets";
 
-import AppHeader from '@/components/Header/AppHeader.vue'
+import AppHeader from "@/components/Header/AppHeader.vue";
 // import ObjectsIncomeByPeriod from '@/views/home/components/ObjectsIncomeByPeriod.vue'
 // import ObjectPayments from '@/views/home/components/ObjectPayments.vue'
-import HomePrimaryCards from '@/views/home/components/HomePrimaryCards.vue'
-import HomeSecondaryCards from '@/views/home/components/HomeSecondaryCards.vue'
-import HomeBranchReports from '@/views/home/components/HomeBranchReports.vue'
-import HomeFilterBy from '@/views/home/components/HomeFilterBy.vue'
-import HomeIncomeReports from '@/views/home/components/HomeIncomeReports.vue'
-import HomeOrderReports from '@/views/home/components/HomeOrderReports.vue'
-import HomePieChart from '@/views/home/components/HomePieChart.vue'
-import SwitchButtonGroup from '@/views/home/elements/SwitchButtonGroup.vue'
-import Manager from '@/views/home/components/manager/Manager.vue'
-import HomeInitialPaymentReports from '@/views/home/components/HomeInitialPaymentReports.vue'
-import HomeDebtorReports from '@/views/home/components/HomeDebtorReports.vue'
-import HomeSalesReports from '@/views/home/components/HomeSalesReports.vue'
+import HomePrimaryCards from "@/views/home/components/HomePrimaryCards.vue";
+import HomeSecondaryCards from "@/views/home/components/HomeSecondaryCards.vue";
+import HomeBranchReports from "@/views/home/components/HomeBranchReports.vue";
+import HomeFilterBy from "@/views/home/components/HomeFilterBy.vue";
+import HomeIncomeReports from "@/views/home/components/HomeIncomeReports.vue";
+import HomeOrderReports from "@/views/home/components/HomeOrderReports.vue";
+import HomePieChart from "@/views/home/components/HomePieChart.vue";
+import SwitchButtonGroup from "@/views/home/elements/SwitchButtonGroup.vue";
+import Manager from "@/views/home/components/manager/Manager.vue";
+import HomeInitialPaymentReports from "@/views/home/components/HomeInitialPaymentReports.vue";
+import HomeDebtorReports from "@/views/home/components/HomeDebtorReports.vue";
+import HomeSalesReports from "@/views/home/components/HomeSalesReports.vue";
 
 export default {
   components: {
@@ -48,148 +46,230 @@ export default {
     HomeSalesReports,
   },
   data: () => ({
-    mainPermission: Permission.getUserPermission('general.view_statistics'),
+    mainPermission: Permission.getUserPermission("general.view_statistics"),
     managerPermission: Permission.getUserPermission(
-      'general.view_manager_statistics',
+      "general.view_manager_statistics"
     ),
   }),
   setup() {
-    const permissionFounderGraph = Permission.getUserPermission('statistics.view-founder-graph')
-    const permissionFounderTable = Permission.getUserPermission('statistics.view-founder-table')
-    const permissionManagerGraph = Permission.getUserPermission('statistics.view-manager-graph')
+    const permissionFounderGraph = Permission.getUserPermission(
+      "statistics.view-founder-graph",
+      true
+    );
+    const permissionFounderTable = Permission.getUserPermission(
+      "statistics.view-founder-table",
+      true
+    );
+    const permissionManagerGraph = Permission.getUserPermission(
+      "statistics.view-manager-graph",
+      true
+    );
 
-    let defaultTypeOfView = 'table'
+    let defaultTypeOfView = "table";
     if (!permissionFounderTable) {
       if (permissionFounderGraph) {
-        defaultTypeOfView = 'chart'
+        defaultTypeOfView = "chart";
       } else {
-        defaultTypeOfView = 'manager'
+        defaultTypeOfView = "manager";
       }
     }
 
-    const typeOfView = ref(defaultTypeOfView)
-    const vm = getCurrentInstance().proxy
-    const tableLoaded = ref(false)
-    const chartLoaded = ref(false)
-    const startDate = new Date()
-    startDate.setDate(1)
-    startDate.setHours(0, 0, 0, 0)
+    const typeOfView = ref(defaultTypeOfView);
+    const vm = getCurrentInstance().proxy;
+    const tableLoaded = ref(false);
+    const chartLoaded = ref(false);
+    const startDate = new Date();
+    startDate.setDate(1);
+    startDate.setHours(0, 0, 0, 0);
 
     const filter = ref({
       date_from: formatYMD(startDate),
       date_to: formatYMD(new Date()),
       object_id: null,
       payment_type: null,
-    })
+    });
 
     const views = computed(() => [
       {
-        title: vm.$t('reports.title'),
-        value: 'table',
+        title: vm.$t("reports.title"),
+        value: "table",
       },
       {
-        title: vm.$t('common.chart'),
-        value: 'chart',
+        title: vm.$t("common.chart"),
+        value: "chart",
       },
-    ])
+    ]);
 
-    const showTables = computed(() => typeOfView.value === 'table')
-
-    const {
-      objectsIncome, /* fetchObjectsIncomeByPeriod */
-      objectPayments, /* fetchObjectPayments */
-
+    const showTables = computed(() => typeOfView.value === "table");
+    let objectsIncome /* fetchObjectsIncomeByPeriod */,
+      objectPayments /* fetchObjectPayments */,
       initialPayments,
       fetchInitialPayments,
-
       salesMain,
       fetchSalesMain,
-
       debtorMain,
-      fetchDebtorMain,
-    } = useHome()
+      fetchDebtorMain;
+    if (permissionFounderTable) {
+      const d = useHome();
+      objectsIncome = d.objectsIncome;
+      objectPayments = d.objectPayments;
+      initialPayments = d.initialPayments;
+      fetchInitialPayments = d.fetchInitialPayments;
+      salesMain = d.salesMain;
+      fetchSalesMain = d.fetchSalesMain;
+      debtorMain = d.debtorMain;
+      fetchDebtorMain = d.fetchDebtorMain;
+    }
+    // const {
+    //   objectsIncome /* fetchObjectsIncomeByPeriod */,
+    //   objectPayments /* fetchObjectPayments */,
 
-    const {
-      periodType,
-      main, fetchMainData,
-      total, fetchTotalData,
-      branchReports, fetchBranchReportsData,
-      incomeReports, fetchIncomeReportsData,
-      orderReports, fetchOrderReportsData,
-      fetchAll: statisticsFetchAll,
-    } = useStatistics()
+    //   initialPayments,
+    //   fetchInitialPayments,
 
-    const {
-      objectSales,
-      tariffsPie,
-      managersPie,
-      fetchAll: pieFetchAll,
-    } = usePieStatistics()
+    //   salesMain,
+    //   fetchSalesMain,
 
-    const {
-      widgetData,
-      managerWidget,
+    //   debtorMain,
+    //   fetchDebtorMain,
+    // } = useHome(); //founder
+
+    let periodType,
+      main,
+      fetchMainData,
+      total,
+      fetchTotalData,
+      branchReports,
+      fetchBranchReportsData,
+      incomeReports,
+      fetchIncomeReportsData,
+      orderReports,
+      fetchOrderReportsData,
+      statisticsFetchAll; // fetchAll:
+    if (permissionFounderGraph) {
+      const d = useStatistics();
+      periodType = d.periodType;
+      main = d.main;
+      fetchMainData = d.fetchMainData;
+      total = d.total;
+      fetchTotalData = d.fetchTotalData;
+      branchReports = d.branchReports;
+
+      fetchBranchReportsData = d.fetchBranchReportsData;
+      incomeReports = d.incomeReports;
+      fetchIncomeReportsData = d.fetchIncomeReportsData;
+      orderReports = d.orderReports;
+      fetchOrderReportsData = d.fetchOrderReportsData;
+      statisticsFetchAll = d.fetchAll;
+    }
+    // const {
+    //   periodType,
+    //   main,
+    //   fetchMainData,
+    //   total,
+    //   fetchTotalData,
+    //   branchReports,
+    //   fetchBranchReportsData,
+    //   incomeReports,
+    //   fetchIncomeReportsData,
+    //   orderReports,
+    //   fetchOrderReportsData,
+    //   fetchAll: statisticsFetchAll,
+    // } = useStatistics();
+
+    let objectSales, tariffsPie, managersPie, pieFetchAll;
+    if (permissionFounderGraph) {
+      const d = usePieStatistics();
+      objectSales = d.objectSales;
+      tariffsPie = d.tariffsPie;
+      managersPie = d.managersPie;
+      pieFetchAll = d.fetchAll;
+    }
+    // const {
+    //   objectSales,
+    //   tariffsPie,
+    //   managersPie,
+    //   fetchAll: pieFetchAll,
+    // } = usePieStatistics();
+    let managerWidget,
       managerSales,
       managerObjectsPie,
       managerSalesCount,
       managerStatusPie,
-      fetchAll: widgetsFetchAll,
-    } = useWidgets()
+      widgetsFetchAll;
+    if (permissionManagerGraph) {
+      const d = useWidgets();
+      managerWidget = d.managerWidget;
+      managerSales = d.managerSales;
+      managerObjectsPie = d.managerObjectsPie;
+      managerSalesCount = d.managerSalesCount;
+      managerStatusPie = d.managerStatusPie;
+      widgetsFetchAll = d.fetchAll;
+    }
+    // const {
+    //   managerWidget,
+    //   managerSales,
+    //   managerObjectsPie,
+    //   managerSalesCount,
+    //   managerStatusPie,
+    //   fetchAll: widgetsFetchAll,
+    // } = useWidgets();
 
-    watch(typeOfView, chTypeOfView => {
-      if (chTypeOfView === 'table') {
+    watch(typeOfView, (chTypeOfView) => {
+      if (chTypeOfView === "table") {
         // eslint-disable-next-line no-use-before-define
-        fetchTableViewData()
+        fetchTableViewData();
       } else {
         // eslint-disable-next-line no-use-before-define
-        fetchChartViewData(getBody())
+        fetchChartViewData(getBody());
       }
-    })
+    });
 
     function getBody() {
-      const body = {}
+      const body = {};
 
       Object.entries(filter.value).forEach(([key, value]) => {
         if (!isNull(value)) {
-          body[key] = value
+          body[key] = value;
         }
-      })
+      });
 
-      return body
+      return body;
     }
 
     async function fetchByPeriod(pType) {
-      periodType.value = pType
+      periodType.value = pType;
       const body = {
         ...getBody(),
         type: pType,
-      }
-      await Promise.allSettled([
-        fetchIncomeReportsData(body),
-        fetchBranchReportsData(body),
-        fetchOrderReportsData(body),
-      ])
+      };
+      if (permissionFounderGraph)
+        await Promise.allSettled([
+          fetchIncomeReportsData(body),
+          fetchBranchReportsData(body),
+          fetchOrderReportsData(body),
+        ]);
     }
 
     async function fetchTableViewData() {
       if (tableLoaded.value) {
-        return
+        return;
       }
+      if (permissionFounderTable)
+        await Promise.allSettled([
+          // fetchObjectsIncomeByPeriod(b),
+          // fetchObjectPayments(b),
+          fetchInitialPayments(),
+          fetchSalesMain(),
+          fetchDebtorMain(),
+        ]);
 
-      await Promise.allSettled([
-        // fetchObjectsIncomeByPeriod(b),
-        // fetchObjectPayments(b),
-        fetchInitialPayments(),
-        fetchSalesMain(),
-        fetchDebtorMain(),
-      ])
-
-      tableLoaded.value = true
+      tableLoaded.value = true;
     }
 
     async function fetchChartViewData(b = {}) {
       if (chartLoaded.value) {
-        return
+        return;
       }
 
       // const pList = []
@@ -202,36 +282,42 @@ export default {
       //     pieFetchAll(b),
       //   )
       // }
+      const requests = [];
+      if (permissionFounderGraph) {
+        requests.push(statisticsFetchAll(b));
+        requests.push(pieFetchAll(b));
+      }
+      if (permissionManagerGraph) {
+        requests.push(
+          widgetsFetchAll(b) //manager
+        );
+      }
+      if (!requests.length) return;
 
-      await Promise.allSettled([
-        statisticsFetchAll(b),
-        pieFetchAll(b),
-        widgetsFetchAll(b),
-      ])
-      chartLoaded.value = true
+      await Promise.allSettled(requests);
+      chartLoaded.value = true;
     }
 
     async function fetchData(b = {}) {
       if (showTables.value) {
-        await fetchTableViewData(b)
+        await fetchTableViewData(b);
       } else {
-        await fetchChartViewData(b)
+        await fetchChartViewData(b);
       }
     }
 
     function filterCharts(fBody) {
       Object.entries(fBody).forEach(([key, value]) => {
         if (!isNull(value)) {
-          filter.value[key] = value
+          filter.value[key] = value;
         }
-      })
+      });
 
-      chartLoaded.value = false
-      fetchChartViewData(getBody())
+      chartLoaded.value = false;
+      fetchChartViewData(getBody());
     }
-
-    fetchMainData()
-    fetchData(getBody())
+    if (permissionFounderGraph) fetchMainData();
+    fetchData(getBody());
 
     return {
       permissionFounderGraph,
@@ -257,7 +343,6 @@ export default {
       tariffsPie,
       objectsIncome,
       objectPayments,
-      widgetData,
       managerWidget,
       managerSales,
       managerObjectsPie,
@@ -267,21 +352,21 @@ export default {
       fetchTotalData,
       filterCharts,
       fetchByPeriod,
-    }
+    };
   },
 
   methods: {
     formatDateWithDot,
     formatDate(d) {
-      const y = d.getFullYear()
-      let m = d.getMonth() + 1
-      if (m < 10) m = `0${m}`
-      let day = d.getDate()
-      if (day < 10) day = `0${day}`
-      return `${y}-${m}-${day}`
+      const y = d.getFullYear();
+      let m = d.getMonth() + 1;
+      if (m < 10) m = `0${m}`;
+      let day = d.getDate();
+      if (day < 10) day = `0${day}`;
+      return `${y}-${m}-${day}`;
     },
   },
-}
+};
 </script>
 
 <template>
@@ -310,7 +395,10 @@ export default {
     <home-filter-by
       v-if="!showTables && (permissionFounderGraph || permissionManagerGraph)"
       class="home__filter__section"
-      :class="{'home__manager__filter': permissionManagerGraph && !permissionFounderGraph}"
+      :class="{
+        home__manager__filter:
+          permissionManagerGraph && !permissionFounderGraph,
+      }"
       @filter-by="filterCharts"
     />
 
@@ -331,10 +419,7 @@ export default {
           class="mb-4"
         />
 
-        <home-sales-reports
-          :items="salesMain.result"
-          :busy="salesMain.busy"
-        />
+        <home-sales-reports :items="salesMain.result" :busy="salesMain.busy" />
 
         <!--        <objects-income-by-period-->
         <!--          :busy="objectsIncome.busy"-->
@@ -346,15 +431,8 @@ export default {
         <!--        />-->
       </section>
 
-      <section
-        v-else-if="permissionFounderGraph"
-        class="home__section"
-      >
-
-        <home-secondary-cards
-          :data="total.result"
-          :busy="total.busy"
-        />
+      <section v-else-if="permissionFounderGraph" class="home__section">
+        <home-secondary-cards :data="total.result" :busy="total.busy" />
 
         <home-income-reports
           :busy="incomeReports.busy"
@@ -368,7 +446,7 @@ export default {
             :busy="objectSales.busy"
             :data="objectSales.data"
             :items="objectSales.items"
-            class="home__pie__section__objects "
+            class="home__pie__section__objects"
           />
 
           <home-pie-chart
@@ -428,7 +506,7 @@ export default {
   padding: 2rem 3rem 0;
 }
 
-.home__manager__filter{
+.home__manager__filter {
   padding: 0 3rem 0;
 }
 
@@ -481,9 +559,9 @@ export default {
 @media screen and (max-width: 960px) {
   .home__pie__section {
     grid-template-areas:
-    "objects"
-    "tariffs"
-    "managers";
+      "objects"
+      "tariffs"
+      "managers";
   }
 }
 </style>
