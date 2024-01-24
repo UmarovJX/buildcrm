@@ -48,53 +48,53 @@ export default {
     };
 
     const reportItems = computed(() =>
-      props.items.map(
-        ({ type, plan_percentage, plan_amount, orders, amount, sale_avg }) => {
-          const left = showPlanPercentage(type)
-            ? {
-                title: vm.$t("plan.title"),
-                value: `${shortSum(plan_amount)} (${formatToPrice(
-                  plan_percentage,
-                  2
-                )}%)`,
-              }
-            : emptyProp;
+      props.items.map(({ type, plan, orders, amount, sale_avg }) => {
+        const left = showPlanPercentage(type)
+          ? {
+              title: vm.$t("plan.title"),
+              value: `${shortSum(plan.amount)} (${formatToPrice(
+                plan.percentage,
+                2
+              )}%)`,
+            }
+          : emptyProp;
+        const leftTooltip = plan.amount;
 
-          const center = showOrders(type)
-            ? {
-                title: "",
-                value: vm.$t("common.paid_for", {
-                  paid: orders.paid,
-                  total: orders.total,
-                }),
-              }
-            : emptyProp;
-
-          const extra = showAverageCheck(type)
-            ? {
-                title: vm.$t("common.average_check"),
-                value: `${shortSum(sale_avg)}`,
-              }
-            : emptyProp;
-
-          const extraTooltip = sale_avg;
-
-          return {
-            type,
-            title: vm.$t(`common.${type}`),
-            left,
-            center,
-            right: {
+        const center = showOrders(type)
+          ? {
               title: "",
-              value: `${shortSum(amount)}`,
-            },
-            rightTooltip: amount,
-            extra,
-            extraTooltip,
-            icon: iconCollection[type],
-          };
-        }
-      )
+              value: vm.$t("common.paid_for", {
+                paid: orders.paid,
+                total: orders.total,
+              }),
+            }
+          : emptyProp;
+
+        const extra = showAverageCheck(type)
+          ? {
+              title: vm.$t("common.average_check"),
+              value: `${shortSum(sale_avg)}`,
+            }
+          : emptyProp;
+
+        const extraTooltip = sale_avg;
+
+        return {
+          type,
+          title: vm.$t(`common.${type}`),
+          left,
+          leftTooltip,
+          center,
+          right: {
+            title: "",
+            value: `${shortSum(amount)}`,
+          },
+          rightTooltip: amount,
+          extra,
+          extraTooltip,
+          icon: iconCollection[type],
+        };
+      })
     );
 
     return {
@@ -120,6 +120,7 @@ export default {
         class="w-100"
         bottom-flex-column
         :bottom-left="reportItem.left"
+        :bottom-left-tooltip="reportItem.leftTooltip"
         :bottom-right="reportItem.right"
         :bottom-center="reportItem.center"
         :bottom-extra-tooltip="reportItem.extraTooltip"

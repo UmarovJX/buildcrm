@@ -183,7 +183,7 @@ export default {
                 <span class="base__card__bottom__value">
                   <slot name="bottom-left-value">
                     <span v-if="bottomCenter.value">
-                      {{ bottomCenter.value }} {{ bottomRightTooltip }}
+                      {{ bottomCenter.value }}
                     </span>
                   </slot>
                 </span>
