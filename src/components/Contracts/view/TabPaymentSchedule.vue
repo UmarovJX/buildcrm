@@ -1,27 +1,27 @@
 <script>
-import { formatToPrice, getDateProperty } from '@/util/reusable'
-import ModifyPaymentTransaction from '@/components/Contracts/view/ModifyPaymentTransaction'
-import ImportPaymentsModal from '@/components/Contracts/view/ImportPaymentsModal'
-import CurrencyChart from '@/components/Contracts/view/CurrencyChart'
-import BaseArrowRightIcon from '@/components/icons/BaseArrowRightIcon'
-import BaseArrowLeftIcon from '@/components/icons/BaseArrowLeftIcon'
-import BaseEditIcon from '@/components/icons/BaseEditIcon'
-import BaseDeleteIcon from '@/components/icons/BaseDeleteIcon'
+import { formatToPrice, getDateProperty } from "@/util/reusable";
+import ModifyPaymentTransaction from "@/components/Contracts/view/ModifyPaymentTransaction";
+import ImportPaymentsModal from "@/components/Contracts/view/ImportPaymentsModal";
+import CurrencyChart from "@/components/Contracts/view/CurrencyChart";
+import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
+import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
+import BaseEditIcon from "@/components/icons/BaseEditIcon";
+import BaseDeleteIcon from "@/components/icons/BaseDeleteIcon";
 // import BaseDownIcon from "@/components/icons/BaseDownIcon";
-import BaseArrowDownIcon from '@/components/icons/BaseArrowDownIcon'
-import BasePlusIcon from '@/components/icons/BasePlusIcon'
-import BaseLoading from '@/components/Reusable/BaseLoading'
-import BaseModal from '@/components/Reusable/BaseModal'
-import BaseButton from '@/components/Reusable/BaseButton'
-import BasePriceInput from '@/components/Reusable/BasePriceInput'
-import { XFormSelect } from '@/components/ui-components/form-select'
-import api from '@/services/api'
-import { mapGetters } from 'vuex'
-import ContractsPermission from '@/permission/contract'
+import BaseArrowDownIcon from "@/components/icons/BaseArrowDownIcon";
+import BasePlusIcon from "@/components/icons/BasePlusIcon";
+import BaseLoading from "@/components/Reusable/BaseLoading";
+import BaseModal from "@/components/Reusable/BaseModal";
+import BaseButton from "@/components/Reusable/BaseButton";
+import BasePriceInput from "@/components/Reusable/BasePriceInput";
+import { XFormSelect } from "@/components/ui-components/form-select";
+import api from "@/services/api";
+import { mapGetters } from "vuex";
+import ContractsPermission from "@/permission/contract";
 // import list from "@/components/Dashboard/TypePlan/List";
 
 export default {
-  name: 'TabPaymentSchedule',
+  name: "TabPaymentSchedule",
   components: {
     ModifyPaymentTransaction,
     ImportPaymentsModal,
@@ -49,42 +49,42 @@ export default {
       required: true,
     },
   },
-  emits: ['start-loading', 'finish-loading', 'refresh-details'],
+  emits: ["start-loading", "finish-loading", "refresh-details"],
   data() {
     const paymentMethodOptions = [
       {
-        value: 'transfer',
-        text: this.$t('contracts.transfer'),
+        value: "transfer",
+        text: this.$t("contracts.transfer"),
       },
       {
-        value: 'cash',
-        text: this.$t('cash'),
+        value: "cash",
+        text: this.$t("cash"),
       },
       {
-        value: 'payme',
-        text: this.$t('Payme'),
+        value: "payme",
+        text: this.$t("Payme"),
       },
       {
-        value: 'click',
-        text: this.$t('Click'),
+        value: "click",
+        text: this.$t("Click"),
       },
       {
-        value: 'apelsin',
-        text: this.$t('Apelsin'),
+        value: "apelsin",
+        text: this.$t("Apelsin"),
       },
       {
-        value: 'other',
-        text: this.$t('other'),
+        value: "other",
+        text: this.$t("other"),
       },
-    ]
+    ];
 
-    const showByOptions = []
+    const showByOptions = [];
 
-    for (let number = 10; number <= 50; number += 10) {
+    for (let number = 10; number <= 60; number += 10) {
       showByOptions.push({
         value: number,
         text: number,
-      })
+      });
     }
 
     return {
@@ -97,7 +97,7 @@ export default {
         items: [],
         pagination: {},
         params: {
-          limit: 20,
+          limit: 60,
           page: 1,
         },
         appLoading: false,
@@ -135,70 +135,71 @@ export default {
       },
       totalPayment: 0,
       increasedPrice: 0,
-    }
+    };
   },
   computed: {
     ...mapGetters({
-      permission: 'getPermission',
+      permission: "getPermission",
     }),
     paidPermission() {
-      return ContractsPermission.getContractsPaymentsImportPermission()
+      return ContractsPermission.getContractsPaymentsImportPermission();
     },
     listPermission() {
-      return ContractsPermission.getContractsPaymentsListPermission()
+      return ContractsPermission.getContractsPaymentsListPermission();
     },
     monthlyPaymentsCount() {
-      return this.order?.payments?.monthly_payments_count
+      return this.order?.payments?.monthly_payments_count;
     },
     paymentTypeOptionsPermission() {
-      const listOption = []
+      const listOption = [];
 
       if (ContractsPermission.getContractsInitialCreatePermission()) {
         listOption.push({
-          value: 'initial_payment',
-          text: this.$t('initial_payment'),
-        })
+          value: "initial_payment",
+          text: this.$t("initial_payment"),
+        });
       }
 
-      const monthlyPaymentCounts = this.order?.payments?.monthly_payments_count
+      const monthlyPaymentCounts = this.order?.payments?.monthly_payments_count;
       if (
-        ContractsPermission.getContractsMonthlyCreatePermission()
-          && monthlyPaymentCounts
+        ContractsPermission.getContractsMonthlyCreatePermission() &&
+        monthlyPaymentCounts
       ) {
         listOption.push({
-          value: 'monthly',
-          text: this.$t('monthly'),
-        })
+          value: "monthly",
+          text: this.$t("monthly"),
+        });
       }
 
-      return listOption
+      return listOption;
     },
     paymentTypeOptionsForCreate() {
-      const remainedPriceInitialPayment = this.order?.payments?.initial_payment_remained
-      let options = this.paymentTypeOptionsPermission
+      const remainedPriceInitialPayment =
+        this.order?.payments?.initial_payment_remained;
+      let options = this.paymentTypeOptionsPermission;
       if (!remainedPriceInitialPayment) {
         options = options.filter(
-          paymentOption => paymentOption.value !== 'initial_payment',
-        )
+          (paymentOption) => paymentOption.value !== "initial_payment"
+        );
       }
-      return options
+      return options;
     },
     uploadFilePermission() {
       return (
-        ContractsPermission.getContractsPaymentsCreatePermission()
-          && (ContractsPermission.getContractsInitialCreatePermission()
-              || ContractsPermission.getContractsMonthlyCreatePermission())
-      )
+        ContractsPermission.getContractsPaymentsCreatePermission() &&
+        (ContractsPermission.getContractsInitialCreatePermission() ||
+          ContractsPermission.getContractsMonthlyCreatePermission())
+      );
     },
     firstChart() {
-      const { payments, currency, reissue } = this.order
-      const currencyPrettier = formatToPrice(currency.toFixed(0))
+      const { payments, currency, reissue } = this.order;
+      const currencyPrettier = formatToPrice(currency.toFixed(0));
       const bottom = `${this.$t(
-        'payments.course',
-      )}: ${currencyPrettier} ${this.$t('payments.course_name')}`
+        "payments.course"
+      )}: ${currencyPrettier} ${this.$t("payments.course_name")}`;
       return {
         index: 0,
-        title: this.$t('payments.payment'),
+        title: this.$t("payments.payment"),
         price: formatToPrice(payments.transaction_price?.toFixed(0), 2),
         bottom,
         progress: 0,
@@ -206,28 +207,28 @@ export default {
           show: !reissue.re_order && reissue.view,
           price: formatToPrice(reissue.transaction_price?.toFixed(0), 2),
         },
-      }
+      };
     },
     secondChart() {
       const {
         initial_payment,
         initial_payment_remained,
         initial_payment_percent,
-      } = this.order.payments
+      } = this.order.payments;
       return {
         index: 1,
-        title: this.$t('payments.initial_fee'),
+        title: this.$t("payments.initial_fee"),
         price: formatToPrice(initial_payment, 2),
-        bottom: `${this.$t('payments.balance')}: ${formatToPrice(
+        bottom: `${this.$t("payments.balance")}: ${formatToPrice(
           initial_payment_remained,
-          2,
-        )} ${this.$t('payments.course_name')}`,
+          2
+        )} ${this.$t("payments.course_name")}`,
         progress: initial_payment_percent,
         reissue: {
           show: false,
           price: 0,
         },
-      }
+      };
     },
     thirdChart() {
       const {
@@ -235,187 +236,193 @@ export default {
         monthly_payments_count,
         installment_price_remained,
         installment_price_remained_percent,
-      } = this.order.payments
+      } = this.order.payments;
       return {
         index: 2,
         title: `${this.$t(
-          'payments.installment',
-        )} (${monthly_payments_count} ${this.$t('payments.month')})`,
+          "payments.installment"
+        )} (${monthly_payments_count} ${this.$t("payments.month")})`,
         price: formatToPrice(installment_price, 2),
-        bottom: `${this.$t('payments.balance')} : ${formatToPrice(
+        bottom: `${this.$t("payments.balance")} : ${formatToPrice(
           installment_price_remained,
-          2,
-        )} ${this.$t('payments.course_name')} `,
+          2
+        )} ${this.$t("payments.course_name")} `,
         progress: installment_price_remained_percent,
         reissue: {
           show: false,
           price: 0,
         },
-      }
+      };
     },
     currencyList() {
       if (this.hasConstructorOrder) {
-        return [this.firstChart, this.secondChart, this.thirdChart]
+        return [this.firstChart, this.secondChart, this.thirdChart];
       }
-      return []
+      return [];
     },
     scheduleFields() {
       return [
         {
-          key: 'date_payment',
-          label: this.$t('contracts.view.schedule'),
-          formatter: datePayment => {
-            const { year, month, day } = getDateProperty(datePayment)
+          key: "date_payment",
+          label: this.$t("contracts.view.schedule"),
+          formatter: (datePayment) => {
+            const { year, month, day } = getDateProperty(datePayment);
             /* const lastYear = year.toString().slice(-2) */
-            return `${day}.${month}.${year}`
+            return `${day}.${month}.${year}`;
           },
         },
         {
-          key: 'amount',
-          label: this.$t('contracts.view.sum'),
-          formatter: amount => `${formatToPrice(amount, 2)} ${this.$t('ye')}`,
+          key: "amount",
+          label: this.$t("contracts.view.sum"),
+          formatter: (amount) => `${formatToPrice(amount, 2)} ${this.$t("ye")}`,
         },
         {
-          key: 'type',
-          label: this.$t('contracts.view.type'),
-          formatter: type => this.$t(type),
+          key: "type",
+          label: this.$t("contracts.view.type"),
+          formatter: (type) => this.$t(type),
         },
         {
-          key: 'balance',
-          label: this.$t('contracts.view.paid'),
-          formatter: balance => `${formatToPrice(balance, 2)} ${this.$t('ye')}`,
+          key: "balance",
+          label: this.$t("contracts.view.paid"),
+          formatter: (balance) =>
+            `${formatToPrice(balance, 2)} ${this.$t("ye")}`,
         },
         {
-          key: 'status',
-          label: this.$t('contracts.table.status'),
+          key: "status",
+          label: this.$t("contracts.table.status"),
         },
-      ]
+      ];
     },
     paymentsField() {
       return [
         {
-          key: 'date_paid',
-          label: this.$t('payments.table.date'),
-          formatter: datePayment => {
-            const { year, month, day } = getDateProperty(datePayment)
+          key: "date_paid",
+          label: this.$t("payments.table.date"),
+          formatter: (datePayment) => {
+            const { year, month, day } = getDateProperty(datePayment);
             /* const lastYear = year.toString().slice(-2) */
-            return `${day}.${month}.${year}`
+            return `${day}.${month}.${year}`;
           },
         },
         {
-          key: 'amount',
-          label: this.$t('payments.table.balance'),
-          formatter: amount => `${formatToPrice(amount, 2)} ${this.$t('ye')}`,
+          key: "amount",
+          label: this.$t("payments.table.balance"),
+          formatter: (amount) => `${formatToPrice(amount, 2)} ${this.$t("ye")}`,
         },
         {
-          key: 'type',
-          label: this.$t('payments.table.type'),
-          formatter: type => this.$t(type),
+          key: "type",
+          label: this.$t("payments.table.type"),
+          formatter: (type) => this.$t(type),
         },
         {
-          key: 'payment_type',
-          label: this.$t('payments.table.method'),
-          formatter: paymentType => {
-            if (paymentType === 'cash') return this.$t('cash')
-            if (paymentType === 'other') return this.$t('other')
-            if (paymentType === 'transfer') return this.$t('contracts.transfer')
-            if (!paymentType) return '-'
-            return paymentType
+          key: "payment_type",
+          label: this.$t("payments.table.method"),
+          formatter: (paymentType) => {
+            if (paymentType === "cash") return this.$t("cash");
+            if (paymentType === "other") return this.$t("other");
+            if (paymentType === "transfer")
+              return this.$t("contracts.transfer");
+            if (!paymentType) return "-";
+            return paymentType;
           },
         },
         {
-          key: 'category.name',
-          label: this.$t('common.for_payment'),
-          formatter: name => name[this.$i18n.locale],
+          key: "category.name",
+          label: this.$t("common.for_payment"),
+          formatter: (name) => name[this.$i18n.locale],
         },
         {
-          key: 'comment',
-          label: this.$t('payments.table.comment'),
+          key: "comment",
+          label: this.$t("payments.table.comment"),
         },
         {
-          key: 'actions',
-          label: this.$t('payments.table.actions'),
+          key: "actions",
+          label: this.$t("payments.table.actions"),
         },
-      ]
+      ];
     },
     countOfScheduleItems() {
-      const { items, pagination } = this.paymentSchedule
-      return items.length && pagination.totalItems > 9
+      const { items, pagination } = this.paymentSchedule;
+      return items.length && pagination.totalItems > 9;
     },
     countOfPaymentItems() {
-      const { items, pagination } = this.paymentHistory
-      return items.length && pagination.totalItems > 9
+      const { items, pagination } = this.paymentHistory;
+      return items.length && pagination.totalItems > 9;
     },
     showSchedulePagination() {
-      const { paymentSchedule, appLoading, countOfScheduleItems } = this
+      const { paymentSchedule, appLoading, countOfScheduleItems } = this;
       return (
         countOfScheduleItems && !(appLoading || paymentSchedule.appLoading)
-      )
+      );
     },
     showPaymentsPagination() {
-      const { paymentHistory, appLoading, countOfPaymentItems } = this
-      return countOfPaymentItems && !(appLoading || paymentHistory.appLoading)
+      const { paymentHistory, appLoading, countOfPaymentItems } = this;
+      return countOfPaymentItems && !(appLoading || paymentHistory.appLoading);
     },
   },
   watch: {
-    'appendPayment.amount': function (amount) {
+    "appendPayment.amount": function (amount) {
       if (amount) {
-        this.validationWarnings.amount = false
+        this.validationWarnings.amount = false;
       }
     },
-    'appendPayment.type': function (type) {
+    "appendPayment.type": function (type) {
       if (type?.length > 1) {
-        this.validationWarnings.type = false
+        this.validationWarnings.type = false;
       }
     },
-    'appendPayment.payment_date': function (paymentDate) {
+    "appendPayment.payment_date": function (paymentDate) {
       if (paymentDate) {
-        this.validationWarnings.payment_date = false
+        this.validationWarnings.payment_date = false;
       }
     },
-    'appendPayment.payment_type': function (paymentType) {
+    "appendPayment.payment_type": function (paymentType) {
       if (paymentType) {
-        this.validationWarnings.payment_type = false
+        this.validationWarnings.payment_type = false;
       }
     },
   },
   async created() {
-    await this.fetchItems()
+    await this.fetchItems();
   },
   methods: {
     userInteractionEdit(type) {
-      if (type === 'initial_payment') return ContractsPermission.getContractsInitialEditPermission()
-      if (type === 'monthly') return ContractsPermission.getContractsMonthlyEditPermission()
-      if (type === 'all') {
+      if (type === "initial_payment")
+        return ContractsPermission.getContractsInitialEditPermission();
+      if (type === "monthly")
+        return ContractsPermission.getContractsMonthlyEditPermission();
+      if (type === "all") {
         return (
-          ContractsPermission.getContractsInitialEditPermission()
-            && ContractsPermission.getContractsMonthlyEditPermission()
-        )
+          ContractsPermission.getContractsInitialEditPermission() &&
+          ContractsPermission.getContractsMonthlyEditPermission()
+        );
       }
     },
     userInteractionDelete(type) {
-      if (type === 'initial_payment') return ContractsPermission.getContractsInitialDeletePermission()
-      if (type === 'monthly') return ContractsPermission.getContractsMonthlyDeletePermission()
-      if (type === 'all') {
+      if (type === "initial_payment")
+        return ContractsPermission.getContractsInitialDeletePermission();
+      if (type === "monthly")
+        return ContractsPermission.getContractsMonthlyDeletePermission();
+      if (type === "all") {
         return (
-          ContractsPermission.getContractsInitialDeletePermission()
-            && ContractsPermission.getContractsMonthlyDeletePermission()
-        )
+          ContractsPermission.getContractsInitialDeletePermission() &&
+          ContractsPermission.getContractsMonthlyDeletePermission()
+        );
       }
     },
     refreshDetails() {
-      this.fetchItems()
-      this.$emit('refresh-details')
+      this.fetchItems();
+      this.$emit("refresh-details");
     },
     async fetchItems() {
       if (this.listPermission) {
-        this.startLoading()
+        this.startLoading();
         await Promise.any([
           this.getPaymentSchedule(),
           this.getPaymentHistory(),
         ]).finally(() => {
-          this.finishLoading()
-        })
+          this.finishLoading();
+        });
       } else {
         // await Promise.any([this.getPaymentSchedule()])
         //     .finally(() => {
@@ -424,292 +431,293 @@ export default {
       }
     },
     async getPaymentSchedule() {
-      this.paymentSchedule.appLoading = true
-      const { id } = this.$route.params
-      const { params: scheduleParams } = this.paymentSchedule
+      this.paymentSchedule.appLoading = true;
+      const { id } = this.$route.params;
+      const { params: scheduleParams } = this.paymentSchedule;
       await api.contractV2
         .fetchPaymentSchedule(id, scheduleParams)
-        .then(response => {
-          this.paymentSchedule.items = response.data.items
-          this.paymentSchedule.pagination = response.data.pagination
+        .then((response) => {
+          this.paymentSchedule.items = response.data.items;
+          this.paymentSchedule.pagination = response.data.pagination;
         })
-        .catch(error => {
-          this.toastedWithErrorCode(error)
+        .catch((error) => {
+          this.toastedWithErrorCode(error);
         })
         .finally(() => {
-          this.paymentSchedule.appLoading = false
-        })
+          this.paymentSchedule.appLoading = false;
+        });
     },
     async getPaymentHistory() {
-      this.paymentHistory.appLoading = true
-      const { id } = this.$route.params
-      const { params: historyParams } = this.paymentHistory
+      this.paymentHistory.appLoading = true;
+      const { id } = this.$route.params;
+      const { params: historyParams } = this.paymentHistory;
       await api.contractV2
         .fetchPayments(id, historyParams)
-        .then(response => {
+        .then((response) => {
           this.totalPayment = formatToPrice(
             (response.data.total / 100).toFixed(2),
-            2,
-          )
-          this.paymentHistory.items = response.data.items
-          this.paymentHistory.pagination = response.data.pagination
+            2
+          );
+          this.paymentHistory.items = response.data.items;
+          this.paymentHistory.pagination = response.data.pagination;
         })
-        .catch(error => {
-          this.toastedWithErrorCode(error)
+        .catch((error) => {
+          this.toastedWithErrorCode(error);
         })
         .finally(() => {
-          this.paymentHistory.appLoading = false
-        })
+          this.paymentHistory.appLoading = false;
+        });
     },
     startLoading() {
-      this.appLoading = true
-      this.$emit('start-loading')
+      this.appLoading = true;
+      this.$emit("start-loading");
     },
     finishLoading() {
-      this.appLoading = false
-      this.$emit('finish-loading')
+      this.appLoading = false;
+      this.$emit("finish-loading");
     },
     swipePaymentsPage(page) {
-      this.paymentHistory.params.page = page
-      this.getPaymentHistory()
+      this.paymentHistory.params.page = page;
+      this.getPaymentHistory();
     },
     changePaymentsShowingLimit() {
-      const { params, pagination } = this.paymentHistory
+      const { params, pagination } = this.paymentHistory;
       if (params.limit !== pagination.perPage) {
-        this.paymentHistory.params.page = 1
-        this.getPaymentHistory()
+        this.paymentHistory.params.page = 1;
+        this.getPaymentHistory();
       }
     },
     swipeSchedulePage(page) {
-      this.paymentSchedule.params.page = page
-      this.getPaymentSchedule()
+      this.paymentSchedule.params.page = page;
+      this.getPaymentSchedule();
     },
     changeScheduleShowingLimit() {
-      const { params, pagination } = this.paymentSchedule
+      const { params, pagination } = this.paymentSchedule;
       if (params.limit !== pagination.perPage) {
-        this.paymentSchedule.params.page = 1
-        this.getPaymentSchedule()
+        this.paymentSchedule.params.page = 1;
+        this.getPaymentSchedule();
       }
     },
     openPaymentAdditionModal() {
-      this.$refs['payment-addition-modal'].openModal()
+      this.$refs["payment-addition-modal"].openModal();
     },
     closePaymentAdditionModal() {
-      this.$refs['payment-addition-modal'].closeModal()
+      this.$refs["payment-addition-modal"].closeModal();
       setTimeout(() => {
-        this.initAppendPayment()
-      }, 200)
+        this.initAppendPayment();
+      }, 200);
     },
     openPaymentsImportModal() {
-      this.$refs['import-payments'].openModal()
+      this.$refs["import-payments"].openModal();
     },
     async submitNewPayment() {
-      const paymentObserver = this.$refs['payment-observer']
-      const formCompleted = await paymentObserver.validate()
+      const paymentObserver = this.$refs["payment-observer"];
+      const formCompleted = await paymentObserver.validate();
       if (formCompleted) {
-        const { id } = this.$route.params
-        this.buttonLoading = true
-        const form = { ...this.appendPayment }
-        form.amount *= 100
+        const { id } = this.$route.params;
+        this.buttonLoading = true;
+        const form = { ...this.appendPayment };
+        form.amount *= 100;
         await api.contractV2
           .appendPayment(id, form)
           .then(() => {
-            this.closePaymentAdditionModal()
+            this.closePaymentAdditionModal();
             this.$swal({
-              title: this.$t('successfully'),
-              text: this.$t('contracts.add_payment_successfully'),
-              icon: 'success',
+              title: this.$t("successfully"),
+              text: this.$t("contracts.add_payment_successfully"),
+              icon: "success",
             }).then(() => {
-              this.initAppendPayment()
-              this.refreshDetails()
-            })
+              this.initAppendPayment();
+              this.refreshDetails();
+            });
           })
-          .catch(async error => {
-            const { response } = error
+          .catch(async (error) => {
+            const { response } = error;
             if (response.status === 402) {
-              const { available, available_amount } = response.data
-              const initialForm = { ...this.appendPayment }
-              const overbalance = initialForm.amount * 100 - available_amount
+              const { available, available_amount } = response.data;
+              const initialForm = { ...this.appendPayment };
+              const overbalance = initialForm.amount * 100 - available_amount;
               this.increasedPrice = formatToPrice(
                 (initialForm.amount * 100 - available_amount) / 100,
-                2,
-              )
+                2
+              );
 
               if (!available) {
-                this.warningForPayInitialPayment.price = available_amount
-                this.warningForPayInitialPayment.overbalance = overbalance
+                this.warningForPayInitialPayment.price = available_amount;
+                this.warningForPayInitialPayment.overbalance = overbalance;
                 this.increasedPrice = formatToPrice(
                   (initialForm.amount * 100 - available_amount) / 100,
-                  2,
-                )
-                this.$refs['initial-payment-warning'].openModal()
+                  2
+                );
+                this.$refs["initial-payment-warning"].openModal();
               }
             } else {
-              const { data } = error.response
-              const index = Object.keys(data)[0]
-              const text = data[index]
+              const { data } = error.response;
+              const index = Object.keys(data)[0];
+              const text = data[index];
 
               this.$swal({
                 text,
-                icon: 'error',
-                title: this.$t('error'),
-              })
+                icon: "error",
+                title: this.$t("error"),
+              });
             }
           })
           .finally(() => {
-            this.buttonLoading = false
-          })
+            this.buttonLoading = false;
+          });
       } else {
-        this.revalidateForm()
+        this.revalidateForm();
       }
     },
     revalidateForm() {
-      const { errors } = this.$refs['payment-observer']
-      const haveErrors = Object.keys(errors).length
+      const { errors } = this.$refs["payment-observer"];
+      const haveErrors = Object.keys(errors).length;
       if (haveErrors) {
-        const warningProperties = Object.keys(this.validationWarnings)
-        warningProperties.forEach(warningProperty => {
-          this.validationWarnings[warningProperty] = errors[warningProperty].length > 0
-        })
+        const warningProperties = Object.keys(this.validationWarnings);
+        warningProperties.forEach((warningProperty) => {
+          this.validationWarnings[warningProperty] =
+            errors[warningProperty].length > 0;
+        });
       }
     },
     initAppendPayment() {
       for (const [key] of Object.entries(this.appendPayment)) {
-        this.appendPayment[key] = null
+        this.appendPayment[key] = null;
       }
     },
     warnBeforeDelete(id) {
-      this.deletionPaymentId = id
-      this.$refs['warning-before-delete'].openModal()
+      this.deletionPaymentId = id;
+      this.$refs["warning-before-delete"].openModal();
     },
     cancelRemovingPayment() {
-      this.deletionPaymentId = null
-      this.$refs['warning-before-delete'].closeModal()
+      this.deletionPaymentId = null;
+      this.$refs["warning-before-delete"].closeModal();
     },
     async deletePaymentTransaction(transactionId) {
-      const { id: contractId } = this.$route.params
-      this.paymentHistory.appLoading = true
-      this.$refs['warning-before-delete'].closeModal()
+      const { id: contractId } = this.$route.params;
+      this.paymentHistory.appLoading = true;
+      this.$refs["warning-before-delete"].closeModal();
       await api.contractV2
         .removePaymentTransaction(contractId, transactionId)
         .then(() => {
           this.$swal({
-            title: this.$t('deleted'),
-            text: this.$t('contracts.deleted_payment_successfully'),
-            icon: 'success',
-          })
-          this.deletionPaymentId = null
-          this.refreshDetails()
+            title: this.$t("deleted"),
+            text: this.$t("contracts.deleted_payment_successfully"),
+            icon: "success",
+          });
+          this.deletionPaymentId = null;
+          this.refreshDetails();
         })
-        .catch(error => {
-          const { data } = error.response
-          const primaryKey = Object.keys(data)[0]
+        .catch((error) => {
+          const { data } = error.response;
+          const primaryKey = Object.keys(data)[0];
           this.$bvToast.toast(data[primaryKey], {
-            title: `${this.$t('error')}`,
-            variant: 'danger',
+            title: `${this.$t("error")}`,
+            variant: "danger",
             solid: true,
-          })
+          });
         })
         .finally(() => {
-          this.paymentHistory.appLoading = false
-        })
+          this.paymentHistory.appLoading = false;
+        });
     },
     editPaymentTransaction(item) {
-      this.modifyTransactionProperties = item
-      this.toggleModifyTransaction = true
+      this.modifyTransactionProperties = item;
+      this.toggleModifyTransaction = true;
     },
     modifyTransactionModalHide() {
-      this.modifyTransactionProperties = {}
-      this.toggleModifyTransaction = false
+      this.modifyTransactionProperties = {};
+      this.toggleModifyTransaction = false;
     },
     async payOnlyInitialPayment() {
-      const { id } = this.$route.params
-      const { price } = this.warningForPayInitialPayment
-      const formInitial = { ...this.appendPayment }
-      formInitial.type = 'initial_payment'
-      formInitial.amount = price
-      this.initialPaymentLoading = true
+      const { id } = this.$route.params;
+      const { price } = this.warningForPayInitialPayment;
+      const formInitial = { ...this.appendPayment };
+      formInitial.type = "initial_payment";
+      formInitial.amount = price;
+      this.initialPaymentLoading = true;
       await api.contractV2
         .appendPayment(id, formInitial)
         .then(() => {
-          this.closePaymentAdditionModal()
+          this.closePaymentAdditionModal();
           this.$swal({
-            title: this.$t('successfully'),
-            text: this.$t('contracts.add_payment_successfully'),
-            icon: 'success',
+            title: this.$t("successfully"),
+            text: this.$t("contracts.add_payment_successfully"),
+            icon: "success",
           }).then(() => {
-            this.initAppendPayment()
-            this.refreshDetails()
-          })
+            this.initAppendPayment();
+            this.refreshDetails();
+          });
         })
-        .catch(error => {
-          const { data } = error.response
-          const primaryKey = Object.keys(data)[0]
+        .catch((error) => {
+          const { data } = error.response;
+          const primaryKey = Object.keys(data)[0];
           this.$bvToast.toast(data[primaryKey], {
-            title: `${this.$t('error')}`,
-            variant: 'danger',
+            title: `${this.$t("error")}`,
+            variant: "danger",
             solid: true,
-          })
+          });
         })
         .finally(() => {
-          this.$refs['initial-payment-warning'].closeModal()
-          this.initialPaymentLoading = false
-        })
+          this.$refs["initial-payment-warning"].closeModal();
+          this.initialPaymentLoading = false;
+        });
     },
     async exchangeToMonthlyPayment() {
-      const { id } = this.$route.params
-      this.monthlyPaymentLoading = true
-      const { price, overbalance } = this.warningForPayInitialPayment
+      const { id } = this.$route.params;
+      this.monthlyPaymentLoading = true;
+      const { price, overbalance } = this.warningForPayInitialPayment;
 
-      const formInitial = { ...this.appendPayment }
-      formInitial.type = 'initial_payment'
-      formInitial.amount = price
+      const formInitial = { ...this.appendPayment };
+      formInitial.type = "initial_payment";
+      formInitial.amount = price;
       await api.contractV2
         .appendPayment(id, formInitial)
         .then(async () => {
-          this.closePaymentAdditionModal()
+          this.closePaymentAdditionModal();
         })
-        .catch(error => {
-          const { data } = error.response
-          const primaryKey = Object.keys(data)[0]
+        .catch((error) => {
+          const { data } = error.response;
+          const primaryKey = Object.keys(data)[0];
           this.$bvToast.toast(data[primaryKey], {
-            title: `${this.$t('error')}`,
-            variant: 'danger',
+            title: `${this.$t("error")}`,
+            variant: "danger",
             solid: true,
-          })
-        })
+          });
+        });
 
-      const formMonthly = { ...this.appendPayment }
-      formMonthly.type = 'initial_monthly'
-      formMonthly.amount = overbalance
+      const formMonthly = { ...this.appendPayment };
+      formMonthly.type = "initial_monthly";
+      formMonthly.amount = overbalance;
       await api.contractV2
         .appendPayment(id, formMonthly)
         .then(() => {
           this.$swal({
-            title: this.$t('successfully'),
-            text: this.$t('contracts.add_payment_successfully'),
-            icon: 'success',
+            title: this.$t("successfully"),
+            text: this.$t("contracts.add_payment_successfully"),
+            icon: "success",
           }).then(() => {
-            this.initAppendPayment()
-            this.refreshDetails()
-          })
+            this.initAppendPayment();
+            this.refreshDetails();
+          });
         })
-        .catch(error => {
-          const { data } = error.response
-          const primaryKey = Object.keys(data)[0]
+        .catch((error) => {
+          const { data } = error.response;
+          const primaryKey = Object.keys(data)[0];
           this.$bvToast.toast(data[primaryKey], {
-            title: `${this.$t('error')}`,
-            variant: 'danger',
+            title: `${this.$t("error")}`,
+            variant: "danger",
             solid: true,
-          })
+          });
         })
         .finally(() => {
-          this.$refs['initial-payment-warning'].closeModal()
-          this.monthlyPaymentLoading = false
-        })
+          this.$refs["initial-payment-warning"].closeModal();
+          this.monthlyPaymentLoading = false;
+        });
     },
   },
-}
+};
 </script>
 <template>
   <div>
@@ -724,10 +732,7 @@ export default {
     </div>
 
     <!--  PAYMENTS HISTORY  -->
-    <div
-      v-if="listPermission"
-      class="payments__history"
-    >
+    <div v-if="listPermission" class="payments__history">
       <!--  HEADING    -->
       <div class="heading">
         <h3 class="title">
@@ -746,11 +751,7 @@ export default {
           >
             <template #left-icon>
               <span>
-                <base-arrow-down-icon
-                  :width="20"
-                  :height="20"
-                  fill="#7C3AED"
-                />
+                <base-arrow-down-icon :width="20" :height="20" fill="#7C3AED" />
               </span>
             </template>
           </base-button>
@@ -762,11 +763,7 @@ export default {
           >
             <template #left-icon>
               <span>
-                <base-plus-icon
-                  :width="20"
-                  :height="20"
-                  fill="#ffffff"
-                />
+                <base-plus-icon :width="20" :height="20" fill="#ffffff" />
               </span>
             </template>
           </base-button>
@@ -774,21 +771,12 @@ export default {
       </div>
 
       <!--   PAYMENT ADDITION MODAL   -->
-      <base-modal
-        ref="payment-addition-modal"
-        design="payment-modal"
-      >
+      <base-modal ref="payment-addition-modal" design="payment-modal">
         <template #header>
           <!--   GO BACK     -->
           <span class="d-flex align-items-center">
-            <span
-              class="go__back"
-              @click="closePaymentAdditionModal"
-            >
-              <base-arrow-left-icon
-                :width="32"
-                :height="32"
-              />
+            <span class="go__back" @click="closePaymentAdditionModal">
+              <base-arrow-left-icon :width="32" :height="32" />
             </span>
             <!--    TITLE      -->
             <span class="title ml-3">{{ $t("payments.payment_add") }}</span>
@@ -796,10 +784,7 @@ export default {
         </template>
 
         <template #main>
-          <ValidationObserver
-            ref="payment-observer"
-            style="overflow-y: auto"
-          >
+          <ValidationObserver ref="payment-observer" style="overflow-y: auto">
             <div class="payment-addition-fields">
               <ValidationProvider
                 name="payment_date"
@@ -811,7 +796,7 @@ export default {
                   v-model="appendPayment.payment_date"
                   type="date"
                   class="w-100"
-                >
+                />
               </ValidationProvider>
               <ValidationProvider
                 name="type"
@@ -903,7 +888,7 @@ export default {
               type="text"
               :placeholder="$t('payments.table.comment')"
               class="w-100"
-            >
+            />
           </ValidationObserver>
         </template>
 
@@ -945,10 +930,7 @@ export default {
           <!--    CELL OF COMMENT      -->
           <template #cell(comment)="{ item }">
             <span v-if="item.comment">{{ item.comment }}</span>
-            <span
-              v-else
-              class=""
-            > - </span>
+            <span v-else class=""> - </span>
           </template>
 
           <!--     ACTIONS     -->
@@ -960,11 +942,7 @@ export default {
                 class="edit__icon icon"
                 @click="editPaymentTransaction(item)"
               >
-                <base-edit-icon
-                  :width="18"
-                  :height="18"
-                  fill="#ffff"
-                />
+                <base-edit-icon :width="18" :height="18" fill="#ffff" />
               </span>
               <!--      DELETE PAYMENT        -->
               <span
@@ -972,20 +950,13 @@ export default {
                 class="delete__icon icon"
                 @click="warnBeforeDelete(item.id)"
               >
-                <base-delete-icon
-                  :width="18"
-                  :height="18"
-                  fill="#ffff"
-                />
+                <base-delete-icon :width="18" :height="18" fill="#ffff" />
               </span>
             </span>
           </template>
 
           <!--   CONTENT WHEN EMPTY SCOPE       -->
-          <template
-            #empty="scope"
-            class="text-center"
-          >
+          <template #empty="scope" class="text-center">
             <div
               class="d-flex justify-content-center align-items-center empty__scope"
             >
@@ -995,10 +966,7 @@ export default {
         </b-table>
 
         <!--   PAYMENT PAGINATION     -->
-        <div
-          v-if="showPaymentsPagination"
-          class="pagination__vue"
-        >
+        <div v-if="showPaymentsPagination" class="pagination__vue">
           <!--   Pagination   -->
           <vue-paginate
             :page-count="paymentHistory.pagination.total"
@@ -1162,10 +1130,7 @@ export default {
       </b-table>
 
       <!--  SCHEDULE PAGINATION    -->
-      <div
-        v-if="showSchedulePagination"
-        class="pagination__vue"
-      >
+      <div v-if="showSchedulePagination" class="pagination__vue">
         <!--   Pagination   -->
         <vue-paginate
           :page-count="paymentSchedule.pagination.total"
@@ -1228,10 +1193,7 @@ export default {
     </div>
 
     <!--  IMPORT PAYMENTS MODAL  -->
-    <import-payments-modal
-      ref="import-payments"
-      :contract="order"
-    />
+    <import-payments-modal ref="import-payments" :contract="order" />
 
     <!--  MODIFY PAYMENT TRANSACTION  -->
     <modify-payment-transaction
@@ -1245,10 +1207,7 @@ export default {
     />
 
     <!-- WARNING MODAL -->
-    <base-modal
-      ref="initial-payment-warning"
-      design="small-modal"
-    >
+    <base-modal ref="initial-payment-warning" design="small-modal">
       <template #header>
         <span class="d-flex justify-content-center align-items-center">
           <svg
@@ -1278,7 +1237,7 @@ export default {
           {{ $t("contracts.warning") }}
         </h3>
         <p>
-          {{ $t("contracts.warning_in_payment", {price: increasedPrice}) }}
+          {{ $t("contracts.warning_in_payment", { price: increasedPrice }) }}
         </p>
       </template>
 
@@ -1510,7 +1469,7 @@ input[type="date"]::-webkit-datetime-edit-year-field {
 
   &-status {
     border-radius: 2rem;
-    padding: 0.8rem 2rem;
+    padding: 0.4rem 2rem;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1562,7 +1521,7 @@ input[type="date"]::-webkit-datetime-edit-year-field {
 ::v-deep .payment__schedule__tbody {
   color: var(--gray-600);
   font-size: 16px;
-  line-height: 22px;
+  line-height: 16px;
 
   tr:nth-last-child(1) {
     border-bottom: 2px solid var(--gray-200);
@@ -1570,7 +1529,7 @@ input[type="date"]::-webkit-datetime-edit-year-field {
 
   td {
     vertical-align: middle !important;
-    padding: 20px 16px;
+    padding: 2px 16px;
   }
 
   td:nth-child(3) {

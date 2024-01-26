@@ -1,23 +1,23 @@
 <script>
-import { computed, getCurrentInstance, ref } from 'vue'
-import { formatToPrice } from '@/util/reusable'
-import { v3ServiceApi } from '@/services/v3/v3.service'
-import { dateFormatWithDot } from '@/util/date/calendar.util'
-import { useToastError } from '@/composables/useToastError'
-import SettingsPermission from '@/permission/settings.permission'
+import { computed, getCurrentInstance, ref } from "vue";
+import { formatToPrice } from "@/util/reusable";
+import { v3ServiceApi } from "@/services/v3/v3.service";
+import { dateFormatWithDot } from "@/util/date/calendar.util";
+import { useToastError } from "@/composables/useToastError";
+import SettingsPermission from "@/permission/settings.permission";
 
-import { XButton } from '@/components/ui-components/button'
-import { XIcon } from '@/components/ui-components/material-icons'
-import { XCircularBackground } from '@/components/ui-components/circular-background'
-import AppHeader from '@/components/Header/AppHeader.vue'
-import BaseLoading from '@/components/Reusable/BaseLoading.vue'
-import PlanUpsert from '@/views/plan/components/PlanUpsert.vue'
-import PlanFilter from '@/views/plan/components/PlanFilter.vue'
-import XPagination from '@/components/ui-components/pagination/XPagination.vue'
-import Permission from '@/permission'
+import { XButton } from "@/components/ui-components/button";
+import { XIcon } from "@/components/ui-components/material-icons";
+import { XCircularBackground } from "@/components/ui-components/circular-background";
+import AppHeader from "@/components/Header/AppHeader.vue";
+import BaseLoading from "@/components/Reusable/BaseLoading.vue";
+import PlanUpsert from "@/views/plan/components/PlanUpsert.vue";
+import PlanFilter from "@/views/plan/components/PlanFilter.vue";
+import XPagination from "@/components/ui-components/pagination/XPagination.vue";
+import Permission from "@/permission";
 
 export default {
-  name: 'AppPlan',
+  name: "AppPlan",
   components: {
     XIcon,
     XButton,
@@ -29,11 +29,11 @@ export default {
     XPagination,
   },
   setup() {
-    const vm = getCurrentInstance().proxy
-    const { toastError } = useToastError()
-    const upsertType = ref('create')
-    const editStorage = ref(false)
-    const showCreateModal = ref(false)
+    const vm = getCurrentInstance().proxy;
+    const { toastError } = useToastError();
+    const upsertType = ref("create");
+    const editStorage = ref(false);
+    const showCreateModal = ref(false);
     const pagination = ref({
       current: 1,
       previous: 0,
@@ -41,157 +41,159 @@ export default {
       perPage: 10,
       totalPage: 0,
       totalItem: 0,
-    })
+    });
     const tableData = ref({
       items: [],
       loading: false,
-    })
-    const planTypes = ref([])
+    });
+    const planTypes = ref([]);
     const permission = {
-      view: Permission.getUserPermission('plan.view'),
-      create: Permission.getUserPermission('plan.create'),
-      edit: Permission.getUserPermission('plan.edit'),
-      delete: Permission.getUserPermission('plan.delete'),
-    }
-    const filterParamsList = ref([])
+      view: Permission.getUserPermission("plan.view"),
+      create: Permission.getUserPermission("plan.create"),
+      edit: Permission.getUserPermission("plan.edit"),
+      delete: Permission.getUserPermission("plan.delete"),
+    };
+    const filterParamsList = ref([]);
 
     const tableFields = computed(() => [
       {
-        key: 'index',
-        label: '#',
+        key: "index",
+        label: "#",
       },
       {
-        key: 'date_from',
-        label: vm.$t('from_the_date_of'),
+        key: "date_from",
+        label: vm.$t("from_the_date_of"),
         formatter: dateFormatter,
       },
       {
-        key: 'date_to',
-        label: vm.$t('to_the_date_of'),
+        key: "date_to",
+        label: vm.$t("to_the_date_of"),
         formatter: dateFormatter,
       },
       {
-        key: 'amount',
-        label: vm.$t('plan_amount'),
-        formatter: price => `${formatToPrice(price)} ${vm.$t('ye')}`,
+        key: "amount",
+        label: vm.$t("plan_amount"),
+        formatter: (price) => `${formatToPrice(price)} ${vm.$t("ye")}`,
       },
       {
-        key: 'type',
-        label: vm.$t('plan_type'),
-        formatter: type => type.name[vm.$i18n.locale],
+        key: "type",
+        label: vm.$t("plan_type"),
+        formatter: (type) => type.name?.[vm.$i18n.locale],
       },
       {
-        key: 'actions',
-        label: '',
+        key: "actions",
+        label: "",
       },
-    ])
+    ]);
 
-    const showPagination = computed(() => !tableData.value.loading && pagination.value.totalItem)
+    const showPagination = computed(
+      () => !tableData.value.loading && pagination.value.totalItem
+    );
 
     function dateFormatter(date) {
-      return dateFormatWithDot(date, { reverse: false, monthIndex: 1 })
+      return dateFormatWithDot(date, { reverse: false, monthIndex: 1 });
     }
 
     function startLoading() {
-      tableData.value.loading = true
+      tableData.value.loading = true;
     }
 
     function finishLoading() {
-      tableData.value.loading = false
+      tableData.value.loading = false;
     }
 
     async function findAll({ page = null, perPage = null, filter = {} }) {
       try {
-        startLoading()
+        startLoading();
         const response = await v3ServiceApi.plan.findAll({
           ...filter,
           page: page ?? pagination.value.current,
           limit: perPage ?? pagination.value.perPage,
-        })
-        tableData.value.items = response.data.result
-        pagination.value = response.data.pagination
+        });
+        tableData.value.items = response.data.result;
+        pagination.value = response.data.pagination;
       } catch (e) {
-        toastError(e)
+        toastError(e);
       } finally {
-        finishLoading()
+        finishLoading();
       }
     }
 
     function createClientType() {
-      setUpsertType('create')
-      openCreatingClientTypeModal()
+      setUpsertType("create");
+      openCreatingClientTypeModal();
     }
 
     function setUpsertType(eType) {
-      if (['create', 'edit'].includes(eType)) {
-        upsertType.value = eType
+      if (["create", "edit"].includes(eType)) {
+        upsertType.value = eType;
       }
     }
 
     function openCreatingClientTypeModal() {
-      showCreateModal.value = true
+      showCreateModal.value = true;
     }
 
     function closeCreatingClientTypeModal() {
-      showCreateModal.value = false
+      showCreateModal.value = false;
     }
 
     function clientTypeCreated() {
-      closeCreatingClientTypeModal()
-      findAll({})
+      closeCreatingClientTypeModal();
+      findAll({});
     }
 
     async function deleteTrigger(id) {
       vm.$swal({
-        title: vm.$t('sweetAlert.title'),
-        text: vm.$t('sweetAlert.text'),
-        icon: 'warning',
+        title: vm.$t("sweetAlert.title"),
+        text: vm.$t("sweetAlert.text"),
+        icon: "warning",
         showCancelButton: true,
-        cancelButtonText: vm.$t('cancel'),
-        confirmButtonText: vm.$t('sweetAlert.yes'),
-      }).then(async result => {
+        cancelButtonText: vm.$t("cancel"),
+        confirmButtonText: vm.$t("sweetAlert.yes"),
+      }).then(async (result) => {
         if (result.value) {
           try {
-            startLoading()
-            await v3ServiceApi.plan.remove({ id })
-            await findAll({})
+            startLoading();
+            await v3ServiceApi.plan.remove({ id });
+            await findAll({});
           } catch (e) {
-            toastError(e)
+            toastError(e);
           } finally {
-            finishLoading()
+            finishLoading();
           }
         }
-      })
+      });
     }
 
     async function editTrigger(id) {
       try {
-        startLoading()
+        startLoading();
         const {
           data: { result },
-        } = await v3ServiceApi.plan.findOne({ id })
-        editStorage.value = result
-        this.setUpsertType('edit')
-        this.openCreatingClientTypeModal()
+        } = await v3ServiceApi.plan.findOne({ id });
+        editStorage.value = result;
+        this.setUpsertType("edit");
+        this.openCreatingClientTypeModal();
       } catch (e) {
-        toastError(e)
+        toastError(e);
       } finally {
-        finishLoading()
+        finishLoading();
       }
     }
 
     async function fetchPlanTypeList() {
       try {
-        const response = await v3ServiceApi.plan.types()
-        const resultEntries = Object.entries(response.data.result)
+        const response = await v3ServiceApi.plan.types();
+        const resultEntries = Object.entries(response.data.result);
         for (const [key, value] of resultEntries) {
           planTypes.value.push({
             value: value.type,
             text: value.name,
-          })
+          });
         }
       } catch (e) {
-        toastError(e)
+        toastError(e);
       }
     }
 
@@ -199,17 +201,19 @@ export default {
       findAll({
         page,
         perPage,
-      })
+      });
     }
 
     async function fetchFilterParams() {
       try {
-        const { data: { result } } = await v3ServiceApi.plan.filterParams({
+        const {
+          data: { result },
+        } = await v3ServiceApi.plan.filterParams({
           page: 1,
           limit: 150,
-        })
+        });
 
-        filterParamsList.value = result
+        filterParamsList.value = result;
 
         // const monthsInNumber = {
         //   "Jan": 0,
@@ -238,7 +242,7 @@ export default {
         //   }
         // })
       } catch (e) {
-        toastError(e)
+        toastError(e);
       }
     }
 
@@ -246,7 +250,7 @@ export default {
       findAll({
         page: 1,
         filter: filterObj,
-      })
+      });
     }
 
     async function fetchItems() {
@@ -254,11 +258,11 @@ export default {
         fetchFilterParams(),
         findAll({}),
         fetchPlanTypeList(),
-      ])
+      ]);
     }
 
     if (permission.view) {
-      fetchItems()
+      fetchItems();
     }
 
     return {
@@ -283,16 +287,16 @@ export default {
       filterTable,
       openCreatingClientTypeModal,
       closeCreatingClientTypeModal,
-    }
+    };
   },
-}
+};
 </script>
 
 <template>
   <div class="app-settings-client-type">
     <app-header>
       <template #header-title>
-        {{ $t('plan.title') }}
+        {{ $t("plan.title") }}
       </template>
 
       <template #header-actions>
@@ -304,10 +308,7 @@ export default {
           @click="createClientType"
         >
           <template #left-icon>
-            <x-icon
-              name="add"
-              class="violet-600"
-            />
+            <x-icon name="add" class="violet-600" />
           </template>
         </x-button>
       </template>
@@ -356,10 +357,7 @@ export default {
             class="bg-violet-600"
             @click="editTrigger(item.id)"
           >
-            <x-icon
-              name="edit"
-              class="color-white"
-            />
+            <x-icon name="edit" class="color-white" />
           </x-circular-background>
 
           <x-circular-background
@@ -367,10 +365,7 @@ export default {
             class="bg-red-600"
             @click="deleteTrigger(item.id)"
           >
-            <x-icon
-              name="delete"
-              class="color-white"
-            />
+            <x-icon name="delete" class="color-white" />
           </x-circular-background>
         </div>
       </template>

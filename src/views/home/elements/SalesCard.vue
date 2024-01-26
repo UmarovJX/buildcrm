@@ -46,6 +46,10 @@ export default {
       type: Number,
       default: 0,
     },
+    initial: {
+      type: Number,
+      default: 0,
+    },
   },
   methods: { formatToPrice, shortSum },
 };
@@ -70,6 +74,19 @@ export default {
             variant="secondary"
           >
             {{ formatToPrice(total) }}
+          </b-tooltip>
+        </div>
+        <div class="d-flex flex-column">
+          <span class="item__title">{{ $t("common.initial_payment") }}</span>
+          <span class="item__value" :id="name + 'initial'">{{
+            shortSum(initial)
+          }}</span>
+          <b-tooltip
+            :target="name + 'initial'"
+            triggers="hover"
+            variant="secondary"
+          >
+            {{ formatToPrice(initial) }}
           </b-tooltip>
         </div>
 

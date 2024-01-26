@@ -22,11 +22,20 @@ export default {
 
     const reportItems = computed(() =>
       props.items.map(
-        ({ type, area, apartments_count, avg_area_cost, avg_cost, total }) => ({
+        ({
+          type,
+          area,
+          apartments_count,
+          avg_area_cost,
+          avg_cost,
+          total,
+          total_initial_payments: initial,
+        }) => ({
           title: vm.$t(`common.${type}`),
           name: type,
           area,
           total,
+          initial,
           apartmentsCount: apartments_count,
           avgAreaCost: avg_area_cost,
           avgCost: avg_cost,
@@ -61,6 +70,7 @@ export default {
         :apartments-count="item.apartmentsCount"
         :avg-area-cost="item.avgAreaCost"
         :avg-cost="item.avgCost"
+        :initial="item.initial"
       />
     </div>
   </div>

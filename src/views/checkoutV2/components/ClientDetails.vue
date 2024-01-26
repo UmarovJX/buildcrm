@@ -1,21 +1,21 @@
 <script>
-import { XFormSelect } from '@/components/ui-components/form-select'
-import { XFormInput } from '@/components/ui-components/form-input'
-import { XIcon } from '@/components/ui-components/material-icons'
-import SectionTitle from '@/views/checkoutV2/elements/SectionTitle'
-import BaseDatePicker from '@/components/Reusable/BaseDatePicker'
-import BaseButton from '@/components/Reusable/BaseButton'
+import { XFormSelect } from "@/components/ui-components/form-select";
+import { XFormInput } from "@/components/ui-components/form-input";
+import { XIcon } from "@/components/ui-components/material-icons";
+import SectionTitle from "@/views/checkoutV2/elements/SectionTitle";
+import BaseDatePicker from "@/components/Reusable/BaseDatePicker";
+import BaseButton from "@/components/Reusable/BaseButton";
 import {
   symbolLatinToCyrillic,
   symbolCyrillicToLatin,
-} from '@/util/language-helper'
-import api from '@/services/api'
-import { formatDateToYMD } from '@/util/calendar'
-import { mapGetters, mapMutations } from 'vuex'
-import { isNotUndefinedNullEmptyZero } from '@/util/inspect'
+} from "@/util/language-helper";
+import api from "@/services/api";
+import { formatDateToYMD } from "@/util/calendar";
+import { mapGetters, mapMutations } from "vuex";
+import { isNotUndefinedNullEmptyZero } from "@/util/inspect";
 
 export default {
-  name: 'CheckoutClientDetails',
+  name: "CheckoutClientDetails",
   components: {
     XIcon,
     XFormSelect,
@@ -36,7 +36,7 @@ export default {
       other_phone: null,
       email: null,
       other_email: null,
-      language: 'uz',
+      language: "uz",
       first_name: { kirill: null, lotin: null },
       last_name: { kirill: null, lotin: null },
       middle_name: { kirill: null, lotin: null },
@@ -45,7 +45,7 @@ export default {
         first_name: { kirill: null, lotin: null },
         last_name: { kirill: null, lotin: null },
         middle_name: { kirill: null, lotin: null },
-        oked: '',
+        oked: "",
         company_name: null,
         bank: null,
         account_number: null,
@@ -58,10 +58,11 @@ export default {
       client_type_id: null,
       company_type_id: null,
       country_id: null,
-      address_line: '',
-    }
+      address_line: "",
+    };
 
     return {
+      phonesForDelete: [],
       companyTypes: [],
       autoFill: false,
       countriesList: [],
@@ -69,34 +70,34 @@ export default {
       emptyClientProperties,
       personalData: { ...emptyClientProperties },
       languageOptions: [
-        { text: 'UZ', value: 'uz' },
-        { text: 'RU', value: 'ru' },
+        { text: "UZ", value: "uz" },
+        { text: "RU", value: "ru" },
       ],
       subjectOptions: [
-        { text: 'physical_person', value: 1 },
-        { text: 'legal_entity', value: 2 },
+        { text: "physical_person", value: 1 },
+        { text: "legal_entity", value: 2 },
       ],
-      datePickerIconFill: 'var(--violet-600)',
+      datePickerIconFill: "var(--violet-600)",
       timeoutId: null,
-    }
+    };
   },
 
   computed: {
-    ...mapGetters('CheckoutV2', ['isUpdateMode']),
+    ...mapGetters("CheckoutV2", ["isUpdateMode"]),
     companyTypeOptions() {
       return this.companyTypes.map(({ id, name }) => ({
         value: id,
         text: name[this.$i18n.locale],
-      }))
+      }));
     },
     showLegalEntityFields() {
-      return this.personalData.subject === 2
+      return this.personalData.subject === 2;
     },
     clientTypeOptions() {
       return this.clientTypesList.map(({ name, id }) => ({
         text: name[this.$i18n.locale],
         value: id,
-      }))
+      }));
     },
   },
 
@@ -105,52 +106,52 @@ export default {
       this.getCountriesList(),
       this.getClientTypesList(),
       this.fetchCompanyType(),
-    ])
+    ]);
   },
 
   methods: {
-    ...mapMutations('CheckoutV2', ['setCountryList', 'setClientTypeList']),
+    ...mapMutations("CheckoutV2", ["setCountryList", "setClientTypeList"]),
     clientDebounce() {
       if (this.personalData.passport_series) {
         if (this.timeoutId !== null) {
-          clearTimeout(this.timeoutId)
+          clearTimeout(this.timeoutId);
         }
         this.timeoutId = setTimeout(() => {
-          this.getClientByPassport()
-        }, 500)
+          this.getClientByPassport();
+        }, 500);
       } else if (this.autoFill) {
-        this.resetClientContext()
-        this.turnedOffAutoFill()
+        this.resetClientContext();
+        this.turnedOffAutoFill();
       }
     },
     fetchLegalDadaByInn() {
       if (this.personalData.legal_entity.inn) {
         if (this.timeoutId !== null) {
-          clearTimeout(this.timeoutId)
+          clearTimeout(this.timeoutId);
         }
         this.timeoutId = setTimeout(() => {
-          this.getLegalClientByInn()
-        }, 500)
+          this.getLegalClientByInn();
+        }, 500);
       } else if (this.autoFill) {
-        this.resetClientContext()
-        this.turnedOffAutoFill()
+        this.resetClientContext();
+        this.turnedOffAutoFill();
       }
     },
     async fetchCompanyType() {
       await api.companies
         .getCompanyType()
-        .then(response => {
-          this.companyTypes = response.data
+        .then((response) => {
+          this.companyTypes = response.data;
         })
-        .catch(error => {
-          this.toastedWithErrorCode(error)
-        })
+        .catch((error) => {
+          this.toastedWithErrorCode(error);
+        });
     },
     turnedOnAutoFill() {
-      this.autoFill = true
+      this.autoFill = true;
     },
     turnedOffAutoFill() {
-      this.autoFill = false
+      this.autoFill = false;
     },
     async getLegalClientByInn() {
       if (this.personalData.legal_entity.inn.length > 3) {
@@ -158,35 +159,37 @@ export default {
           const { data } = await api.clientsV2.getClientBySearch({
             params: {
               field: this.personalData.legal_entity.inn,
-              subject: 'legal',
+              subject: "legal",
             },
-          })
-          this.autoFillFieldsByInn(data)
-          this.turnedOnAutoFill()
+          });
+          this.autoFillFieldsByInn(data);
+          this.turnedOnAutoFill();
         } catch (e) {
-          this.resetClientContext()
-          this.turnedOffAutoFill()
+          this.resetClientContext();
+          this.turnedOffAutoFill();
         }
       }
     },
     autoFillFieldsByInn(data) {
-      console.log('data', data)
-      this.personalData.legal_entity.fax = data.attributes.fax
-      this.personalData.legal_entity.mfo = data.attributes.mfo
-      this.personalData.legal_entity.ndc = data.attributes.nds
-      this.personalData.legal_entity.bank = data.attributes.bank_name
-      this.personalData.legal_entity.account_number = data.attributes.payment_number
-      this.personalData.legal_entity.legal_address = data.attributes.legal_address
-      this.personalData.legal_entity.company_name = data.attributes.name
-      this.personalData.company_type_id = data.attributes.company.id
-      this.personalData.email = data.email
-      this.personalData.other_email = data.additional_email
-      this.personalData.client_type_id = data.client_type.id
-      this.personalData.legal_entity.first_name = data.attributes.first_name
-      this.personalData.legal_entity.last_name = data.attributes.last_name
-      this.personalData.legal_entity.middle_name = data.attributes.middle_name
-      this.personalData.legal_entity.oked = data.attributes.oked
-      this.autoFillPhones(data.phones)
+      console.log("data", data);
+      this.personalData.legal_entity.fax = data.attributes.fax;
+      this.personalData.legal_entity.mfo = data.attributes.mfo;
+      this.personalData.legal_entity.ndc = data.attributes.nds;
+      this.personalData.legal_entity.bank = data.attributes.bank_name;
+      this.personalData.legal_entity.account_number =
+        data.attributes.payment_number;
+      this.personalData.legal_entity.legal_address =
+        data.attributes.legal_address;
+      this.personalData.legal_entity.company_name = data.attributes.name;
+      this.personalData.company_type_id = data.attributes.company.id;
+      this.personalData.email = data.email;
+      this.personalData.other_email = data.additional_email;
+      this.personalData.client_type_id = data.client_type.id;
+      this.personalData.legal_entity.first_name = data.attributes.first_name;
+      this.personalData.legal_entity.last_name = data.attributes.last_name;
+      this.personalData.legal_entity.middle_name = data.attributes.middle_name;
+      this.personalData.legal_entity.oked = data.attributes.oked;
+      this.autoFillPhones(data.phones);
     },
     async getClientByPassport() {
       if (this.personalData.passport_series.length === 9) {
@@ -194,49 +197,50 @@ export default {
           const { data } = await api.clientsV2.getClientBySearch({
             params: {
               field: this.personalData.passport_series,
-              subject: 'physical',
+              subject: "physical",
             },
-          })
-          this.autoFillFieldsByPassportSeries(data)
-          this.turnedOnAutoFill()
+          });
+          this.autoFillFieldsByPassportSeries(data);
+          this.turnedOnAutoFill();
         } catch (e) {
-          this.resetClientContext()
-          this.turnedOffAutoFill()
+          this.resetClientContext();
+          this.turnedOffAutoFill();
         }
       }
     },
     autoFillFieldsByPassportSeries(data) {
-      this.personalData.country_id = data.attributes.country.id
-      this.personalData.place_of_issue = data.attributes.passport_issued_by
-      this.personalData.address_line = data.attributes.address_line
+      this.personalData.country_id = data.attributes.country.id;
+      this.personalData.place_of_issue = data.attributes.passport_issued_by;
+      this.personalData.address_line = data.attributes.address_line;
       this.personalData.date_of_issue = formatDateToYMD(
-        data.attributes.passport_issued_date,
-      )
+        data.attributes.passport_issued_date
+      );
       this.personalData.birth_day = formatDateToYMD(
-        data.attributes.date_of_birth,
-      )
-      this.personalData.email = data.email
-      this.personalData.other_email = data.additional_email
-      this.personalData.language = data.language.toLowerCase()
-      this.personalData.first_name = data.attributes.first_name
-      this.personalData.last_name = data.attributes.last_name
-      this.personalData.middle_name = data.attributes.middle_name
-      this.personalData.client_type_id = data.client_type.id
-      this.personalData.country_id = data.attributes.country.id
-      this.autoFillPhones(data.phones)
+        data.attributes.date_of_birth
+      );
+      this.personalData.email = data.email;
+      this.personalData.other_email = data.additional_email;
+      this.personalData.language = data.language.toLowerCase();
+      this.personalData.first_name = data.attributes.first_name;
+      this.personalData.last_name = data.attributes.last_name;
+      this.personalData.middle_name = data.attributes.middle_name;
+      this.personalData.client_type_id = data.client_type.id;
+      this.personalData.country_id = data.attributes.country.id;
+      this.autoFillPhones(data.phones);
     },
 
     autoFillPhones(phones) {
-      phones = phones.filter(p => (
-        isNotUndefinedNullEmptyZero(p.phone) && p.phone.toString().length > 3
-      ))
+      phones = phones.filter(
+        (p) =>
+          isNotUndefinedNullEmptyZero(p.phone) && p.phone.toString().length > 3
+      );
 
       if (phones.length > 0) {
-        this.personalData.phone = phones[0].phone
+        this.personalData.phone = phones[0].phone;
       }
 
       if (phones.length > 1) {
-        this.personalData.other_phone = phones[1].phone
+        this.personalData.other_phone = phones[1].phone;
       }
 
       if (phones.length > 2) {
@@ -244,7 +248,7 @@ export default {
           this.personalData.extra_phones.push({
             idx: phones[i].id,
             value: phones[i].phone,
-          })
+          });
         }
       }
     },
@@ -255,131 +259,137 @@ export default {
         subject: this.personalData.subject,
         passport_series: this.personalData.passport_series,
         extra_phones: [],
-      }
+      };
     },
     translateLatin(type, event) {
       if (this.timeoutId !== null) {
-        clearTimeout(this.timeoutId)
+        clearTimeout(this.timeoutId);
       }
       this.timeoutId = setTimeout(() => {
         switch (type) {
-          case 'first_name':
+          case "first_name":
             if (!this.personalData.first_name.lotin) {
-              this.personalData.first_name.lotin = symbolCyrillicToLatin(event)
+              this.personalData.first_name.lotin = symbolCyrillicToLatin(event);
             }
-            break
-          case 'last_name':
+            break;
+          case "last_name":
             if (!this.personalData.last_name.lotin) {
-              this.personalData.last_name.lotin = symbolCyrillicToLatin(event)
+              this.personalData.last_name.lotin = symbolCyrillicToLatin(event);
             }
-            break
-          case 'second_name':
+            break;
+          case "second_name":
             if (!this.personalData.middle_name.lotin) {
-              this.personalData.middle_name.lotin = symbolCyrillicToLatin(event)
+              this.personalData.middle_name.lotin =
+                symbolCyrillicToLatin(event);
             }
-            break
+            break;
         }
-      }, 1000)
+      }, 1000);
     },
     translateCyrillic(type, event) {
       if (this.timeoutId !== null) {
-        clearTimeout(this.timeoutId)
+        clearTimeout(this.timeoutId);
       }
       this.timeoutId = setTimeout(() => {
         switch (type) {
-          case 'first_name':
+          case "first_name":
             if (!this.personalData.first_name.kirill) {
-              this.personalData.first_name.kirill = symbolLatinToCyrillic(event)
+              this.personalData.first_name.kirill =
+                symbolLatinToCyrillic(event);
             }
-            break
-          case 'last_name':
+            break;
+          case "last_name":
             if (!this.personalData.last_name.kirill) {
-              this.personalData.last_name.kirill = symbolLatinToCyrillic(event)
+              this.personalData.last_name.kirill = symbolLatinToCyrillic(event);
             }
-            break
-          case 'second_name':
+            break;
+          case "second_name":
             if (!this.personalData.middle_name.kirill) {
-              this.personalData.middle_name.kirill = symbolLatinToCyrillic(event)
+              this.personalData.middle_name.kirill =
+                symbolLatinToCyrillic(event);
             }
-            break
+            break;
         }
-      }, 1000)
+      }, 1000);
     },
     createExtraPhoneField() {
-      const lengthOfExtra = this.personalData.extra_phones.length
+      const lengthOfExtra = this.personalData.extra_phones.length;
       this.personalData.extra_phones.push({
         value: null,
         idx: `${lengthOfExtra + 1}_idx`,
-      })
+      });
     },
-    removePhoneField({ idx: rIdx }) {
+    removePhoneField(i) {
+      const { idx: rIdx, value } = i;
+      console.log(i);
       this.personalData.extra_phones = this.personalData.extra_phones.filter(
-        ({ idx }) => idx !== rIdx,
-      )
+        ({ idx }) => idx !== rIdx
+      );
+      this.phonesForDelete.push({ id: rIdx, phone: value, is_delete: true });
     },
     getObserverFlags() {
       console.log(
         'this.$refs["clients-data-observer"]',
-        this.$refs['clients-data-observer'],
-      )
-      return this.$refs['clients-data-observer'].flags
+        this.$refs["clients-data-observer"]
+      );
+      return this.$refs["clients-data-observer"].flags;
     },
     async validateFields() {
-      return await this.$refs['clients-data-observer'].validate()
+      return await this.$refs["clients-data-observer"].validate();
     },
     async getCountriesList() {
       try {
-        const { data: countriesList } = await api.settingsV2.fetchCountries()
-        this.setCountryList(countriesList)
-        this.countriesList = countriesList.map(cty => ({
+        const { data: countriesList } = await api.settingsV2.fetchCountries();
+        this.setCountryList(countriesList);
+        this.countriesList = countriesList.map((cty) => ({
           value: cty.id,
           text: cty.name.uz,
-        }))
+        }));
       } catch (e) {
-        this.toastedWithErrorCode(e)
+        this.toastedWithErrorCode(e);
       }
     },
     async getClientTypesList() {
       try {
-        const { data: clientTypesList } = await api.settingsV2.getClientTypes()
-        this.setClientTypeList(clientTypesList)
-        this.clientTypesList = clientTypesList
+        const { data: clientTypesList } = await api.settingsV2.getClientTypes();
+        this.setClientTypeList(clientTypesList);
+        this.clientTypesList = clientTypesList;
       } catch (e) {
-        this.toastedWithErrorCode(e)
+        this.toastedWithErrorCode(e);
       }
     },
-    isPhysicalClient: clientSubject => clientSubject === 'physical',
-    isLegalClient: clientSubject => clientSubject === 'legal',
+    isPhysicalClient: (clientSubject) => clientSubject === "physical",
+    isLegalClient: (clientSubject) => clientSubject === "legal",
     sendForm() {
-      const p = this.personalData
+      const p = this.personalData;
 
       const phones = p.extra_phones.map(({ idx, value }) => {
         if (isNotUndefinedNullEmptyZero(idx)) {
           return {
             id: idx,
             phone: value,
-          }
+          };
         }
 
         return {
           id: null,
           phone: value,
-        }
-      })
+        };
+      });
 
-      phones.unshift({ id: null, phone: p.other_phone })
-      phones.unshift({ id: null, phone: p.phone })
-
+      phones.unshift({ id: null, phone: p.other_phone });
+      phones.unshift({ id: null, phone: p.phone });
+      phones.push(...this.phonesForDelete);
       const common = {
         phones,
         email: p.email,
         language: p.language,
         client_type_id: p.client_type_id,
         additional_email: p.other_email,
-      }
+      };
       if (p.subject === 1) {
         return {
-          subject: 'physical',
+          subject: "physical",
           ...common,
           attributes: {
             first_name: p.first_name,
@@ -392,10 +402,10 @@ export default {
             country_id: p.country_id,
             address_line: p.address_line,
           },
-        }
+        };
       }
       return {
-        subject: 'legal',
+        subject: "legal",
         ...common,
         attributes: {
           first_name: p.legal_entity.first_name,
@@ -412,46 +422,47 @@ export default {
           fax: p.legal_entity.fax,
           company_type_id: p.company_type_id,
         },
-      }
+      };
     },
     fillFormInUpdateMode({ client }) {
       if (this.isPhysicalClient(client.subject)) {
-        this.personalData.subject = 1
-        this.personalData.passport_series = client.attributes.passport_series
-        this.autoFillFieldsByPassportSeries(client)
+        this.personalData.subject = 1;
+        this.personalData.passport_series = client.attributes.passport_series;
+        this.autoFillFieldsByPassportSeries(client);
       }
 
       if (this.isLegalClient(client.subject)) {
-        this.personalData.subject = 2
-        this.personalData.legal_entity.company_name = client.attributes.name
-        this.personalData.legal_entity.bank = client.attributes.bank_name
-        this.personalData.legal_entity.account_number = client.attributes.payment_number
-        this.personalData.legal_entity.mfo = client.attributes.mfo
-        this.personalData.legal_entity.inn = client.attributes.inn
-        this.personalData.legal_entity.ndc = client.attributes.nds
-        this.personalData.legal_entity.legal_address = client.attributes.legal_address
-        this.personalData.legal_entity.fax = client.attributes.fax
-        this.personalData.email = client.email
-        this.personalData.other_email = client.additional_email
-        this.personalData.client_type_id = client.client_type.id
-        this.personalData.company_type_id = client.attributes.company.id
-        this.personalData.legal_entity.first_name = client.attributes.first_name
-        this.personalData.legal_entity.last_name = client.attributes.last_name
-        this.personalData.legal_entity.middle_name = client.attributes.middle_name
-        this.personalData.legal_entity.oked = client.attributes.oked
+        this.personalData.subject = 2;
+        this.personalData.legal_entity.company_name = client.attributes.name;
+        this.personalData.legal_entity.bank = client.attributes.bank_name;
+        this.personalData.legal_entity.account_number =
+          client.attributes.payment_number;
+        this.personalData.legal_entity.mfo = client.attributes.mfo;
+        this.personalData.legal_entity.inn = client.attributes.inn;
+        this.personalData.legal_entity.ndc = client.attributes.nds;
+        this.personalData.legal_entity.legal_address =
+          client.attributes.legal_address;
+        this.personalData.legal_entity.fax = client.attributes.fax;
+        this.personalData.email = client.email;
+        this.personalData.other_email = client.additional_email;
+        this.personalData.client_type_id = client.client_type.id;
+        this.personalData.company_type_id = client.attributes.company.id;
+        this.personalData.legal_entity.first_name =
+          client.attributes.first_name;
+        this.personalData.legal_entity.last_name = client.attributes.last_name;
+        this.personalData.legal_entity.middle_name =
+          client.attributes.middle_name;
+        this.personalData.legal_entity.oked = client.attributes.oked;
 
-        this.autoFillPhones(client.phones)
+        this.autoFillPhones(client.phones);
       }
     },
   },
-}
+};
 </script>
 
 <template>
-  <validation-observer
-    ref="clients-data-observer"
-    tag="div"
-  >
+  <validation-observer ref="clients-data-observer" tag="div">
     <!--! CLIENTS_PERSONAL_DATA  -->
     <section-title
       title="clients_personal_data"
@@ -1030,10 +1041,7 @@ export default {
           class="remove-extra-phone-btn"
           @click="removePhoneField(extraPhone)"
         >
-          <x-icon
-            name="remove"
-            class="gray-400"
-          />
+          <x-icon name="remove" class="gray-400" />
         </base-button>
       </div>
 
@@ -1045,10 +1053,7 @@ export default {
         @click="createExtraPhoneField"
       >
         <template #left-icon>
-          <x-icon
-            name="add"
-            class="violet-600"
-          />
+          <x-icon name="add" class="violet-600" />
         </template>
       </base-button>
     </div>
