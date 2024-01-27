@@ -1,10 +1,10 @@
 <script>
-import { mapActions, mapGetters, mapMutations } from 'vuex'
-import api from '@/services/api'
-import DummyPassword from '@/util/password-generate'
-import scorePassword from '@/util/score-password'
+import { mapActions, mapGetters, mapMutations } from "vuex";
+import api from "@/services/api";
+import DummyPassword from "@/util/password-generate";
+import scorePassword from "@/util/score-password";
 
-const dummy = new DummyPassword()
+const dummy = new DummyPassword();
 
 export default {
   props: {
@@ -26,16 +26,16 @@ export default {
     branches: [],
     manager: {
       branch_id: null,
-      first_name: '',
-      last_name: '',
-      second_name: '',
-      phone: '',
-      email: '',
-      role_id: '',
-      password: '',
+      first_name: "",
+      last_name: "",
+      second_name: "",
+      phone: "",
+      email: "",
+      role_id: "",
+      password: "",
       objects: [],
     },
-    typeForPassword: 'password',
+    typeForPassword: "password",
     header: {
       headers: {
         Authorization: `Bearer ${localStorage.token}`,
@@ -48,10 +48,10 @@ export default {
       digits: true,
       symbols: true,
     },
-    errorNumber: 'Пароль должен содержать хотя бы одну цифру',
-    errorUppercase: 'Пароль должен содержать заглавных буквы',
-    errorLowercase: 'Пароль должен содержать маленькие буквы',
-    errorSpecialChar: 'Пароль должен содержать хотя бы один символ',
+    errorNumber: "Пароль должен содержать хотя бы одну цифру",
+    errorUppercase: "Пароль должен содержать заглавных буквы",
+    errorLowercase: "Пароль должен содержать маленькие буквы",
+    errorSpecialChar: "Пароль должен содержать хотя бы один символ",
     validationError: {
       show: false,
       message: [],
@@ -61,88 +61,91 @@ export default {
   }),
 
   watch: {
-    'editHistoryContext.id': function (id) {
+    "editHistoryContext.id": function (id) {
       if (id !== 0) {
-        this.setHistoryContext()
+        this.setHistoryContext();
       }
     },
-    'manager.password': function (value) {
-      this.checkPassword(value)
+    "manager.password": function (value) {
+      this.checkPassword(value);
     },
   },
 
   async created() {
-    await this.getBranchesList()
+    await this.getBranchesList();
   },
 
   mounted() {
-    this.setHistoryContext()
+    this.setHistoryContext();
   },
 
   computed: {
-    ...mapGetters(['getObjects', 'getUser', 'getRoles']),
+    ...mapGetters(["getObjects", "getUser", "getRoles"]),
     score() {
       switch (scorePassword(this.manager.password)) {
         case 0:
-          return 'risky'
+          return "risky";
         case 1:
-          return 'guessable'
+          return "guessable";
         case 2:
-          return 'weak'
+          return "weak";
         case 3:
-          return 'safe'
+          return "safe";
         case 4:
-          return 'secure'
+          return "secure";
         default:
-          return ''
+          return "";
       }
     },
   },
 
   methods: {
-    ...mapMutations(['updateUser']),
-    ...mapActions(['nullManager']),
+    ...mapMutations(["updateUser"]),
+    ...mapActions(["nullManager"]),
 
     checkPassword(password) {
-      const specialCharRegex = /[^A-Za-z0-9]/g
-      const lowercaseRegex = /(.*[a-z].*)/g
-      const uppercaseRegex = /(.*[A-Z].*)/g
-      const numberRegex = /(.*[0-9].*)/g
+      const specialCharRegex = /[^A-Za-z0-9]/g;
+      const lowercaseRegex = /(.*[a-z].*)/g;
+      const uppercaseRegex = /(.*[A-Z].*)/g;
+      const numberRegex = /(.*[0-9].*)/g;
 
-      const hasSpecialChar = specialCharRegex.test(password)
-      const hasLowerCase = lowercaseRegex.test(password)
-      const hasUpperCase = uppercaseRegex.test(password)
-      const hasNumber = numberRegex.test(password)
-      this.validationError.message = []
-      if (!hasSpecialChar) this.validationError.message.push(this.errorSpecialChar)
-      if (!hasLowerCase) this.validationError.message.push(this.errorLowercase)
-      if (!hasUpperCase) this.validationError.message.push(this.errorUppercase)
-      if (!hasNumber) this.validationError.message.push(this.errorNumber)
+      const hasSpecialChar = specialCharRegex.test(password);
+      const hasLowerCase = lowercaseRegex.test(password);
+      const hasUpperCase = uppercaseRegex.test(password);
+      const hasNumber = numberRegex.test(password);
+      this.validationError.message = [];
+      if (!hasSpecialChar)
+        this.validationError.message.push(this.errorSpecialChar);
+      if (!hasLowerCase) this.validationError.message.push(this.errorLowercase);
+      if (!hasUpperCase) this.validationError.message.push(this.errorUppercase);
+      if (!hasNumber) this.validationError.message.push(this.errorNumber);
       this.validationError.message.length
         ? (this.validationError.show = true)
-        : (this.validationError.show = false)
+        : (this.validationError.show = false);
 
-      this.validationPassword = hasLowerCase && hasUpperCase && hasNumber && hasSpecialChar
+      this.validationPassword =
+        hasLowerCase && hasUpperCase && hasNumber && hasSpecialChar;
     },
     regeneratePassword() {
-      const characters = []
+      const characters = [];
       for (const option in this.options) {
-        if (this.options[option] === true) characters.push(dummy[option.toUpperCase()])
+        if (this.options[option] === true)
+          characters.push(dummy[option.toUpperCase()]);
       }
       this.manager.password = dummy.create(
         this.options.length,
-        characters.join(''),
-      )
+        characters.join("")
+      );
     },
     toggleInputType() {
-      if (this.typeForPassword === 'password') {
-        this.typeForPassword = 'text'
+      if (this.typeForPassword === "password") {
+        this.typeForPassword = "text";
       } else {
-        this.typeForPassword = 'password'
+        this.typeForPassword = "password";
       }
     },
     setHistoryContext() {
-      const length = Object.keys(this.editHistoryContext).length > 1
+      const length = Object.keys(this.editHistoryContext).length > 1;
       if (length) {
         const {
           first_name,
@@ -153,81 +156,81 @@ export default {
           branch,
           role,
           objects,
-        } = this.editHistoryContext
-        this.manager.objects = objects.map(object => object.id)
-        this.manager.first_name = first_name
-        this.manager.last_name = last_name
-        this.manager.second_name = second_name
-        this.manager.phone = phone
-        this.manager.email = email
-        this.manager.branch_id = branch.id
-        this.manager.role_id = role.id
+        } = this.editHistoryContext;
+        this.manager.objects = objects.map((object) => object.id);
+        this.manager.first_name = first_name;
+        this.manager.last_name = last_name;
+        this.manager.second_name = second_name;
+        this.manager.phone = phone;
+        this.manager.email = email;
+        this.manager.branch_id = branch.id;
+        this.manager.role_id = role.id;
       }
     },
     async getBranchesList() {
       await api.branches
         .getBranchesList()
-        .then(response => {
-          this.branches = response.data
-          this.branchId = this.branches[0].id
+        .then((response) => {
+          this.branches = response.data;
+          this.branchId = this.branches[0].id;
         })
-        .catch(error => {
-          this.toastedWithErrorCode(error)
-        })
+        .catch((error) => {
+          this.toastedWithErrorCode(error);
+        });
     },
     resetModal() {
-      this.$bvModal.hide('modal-edit')
-      this.nullManager()
-      this.error = false
-      this.errors = []
-      this.objects = []
+      this.$bvModal.hide("modal-edit");
+      this.nullManager();
+      this.error = false;
+      this.errors = [];
+      this.objects = [];
     },
 
     handleOk(bvModalEvt) {
-      bvModalEvt.preventDefault()
-      this.handleSubmit()
+      bvModalEvt.preventDefault();
+      this.handleSubmit();
     },
 
     async submitForm() {
       if (this.validationPassword) {
-        this.getLoading = true
+        this.getLoading = true;
         try {
-          const form = { ...this.manager }
-          form.phone = form.phone.replace(/\s/g, '')
-          form.objects = form.objects.filter(object => object !== null)
+          const form = { ...this.manager };
+          form.phone = form.phone.replace(/\s/g, "");
+          form.objects = form.objects.filter((object) => object !== null);
           const response = await api.userV2.updateUserData(
             this.managerId,
-            form,
-          )
-          this.toasted(response.data.message, 'success')
+            form
+          );
+          this.toasted(response.data.message, "success");
           this.$nextTick(() => {
-            this.getLoading = false
-            this.$bvModal.hide('modal-edit')
-          })
-          this.$emit('EditManager', this.manager)
-          this.resetFormValues()
+            this.getLoading = false;
+            this.$bvModal.hide("modal-edit");
+          });
+          this.$emit("EditManager", this.manager);
+          this.resetFormValues();
         } catch (error) {
-          this.getLoading = false
+          this.getLoading = false;
           if (!error.response) {
-            this.toasted('Error: Network Error', 'error')
+            this.toasted("Error: Network Error", "error");
           } else if (error.response.status === 403) {
-            this.toasted(error.response.data.message, 'error')
+            this.toasted(error.response.data.message, "error");
           } else if (error.response.status === 401) {
-            this.toasted(error.response.data, 'error')
+            this.toasted(error.response.data, "error");
           } else if (error.response.status === 500) {
-            this.toasted(error.response.data.message, 'error')
+            this.toasted(error.response.data.message, "error");
           } else if (error.response.status === 422) {
-            this.error = true
-            this.errors = error.response.data
+            this.error = true;
+            this.errors = error.response.data;
           } else {
-            this.toasted(error.response.data.message, 'error')
+            this.toasted(error.response.data.message, "error");
           }
         }
       }
     },
 
     resetFormValues() {
-      this.manager.password = ''
+      this.manager.password = "";
       // for (let key of Object.keys(this.manager)) {
       //   const property = this.manager[key]
       //   const isArray = Array.isArray(property)
@@ -248,26 +251,26 @@ export default {
     },
 
     getName(name) {
-      const { locale } = localStorage
-      let value = ''
+      const { locale } = localStorage;
+      let value = "";
 
       if (locale) {
         switch (locale) {
-          case 'ru':
-            value = name.ru
-            break
-          case 'uz':
-            value = name.uz
-            break
+          case "ru":
+            value = name?.ru;
+            break;
+          case "uz":
+            value = name?.uz;
+            break;
         }
       } else {
-        value = name.ru
+        value = name?.ru;
       }
 
-      return value
+      return value;
     },
   },
-}
+};
 </script>
 
 <template>
@@ -279,44 +282,25 @@ export default {
       hide-footer
       @show="resetModal"
     >
-      <b-alert
-        v-if="error"
-        show
-        variant="danger"
-      >
+      <b-alert v-if="error" show variant="danger">
         <ul>
-          <li
-            v-for="(error, index) in errors"
-            :key="index"
-          >
-            <span
-              v-for="msg in error"
-              :key="msg"
-            >
+          <li v-for="(error, index) in errors" :key="index">
+            <span v-for="msg in error" :key="msg">
               {{ msg }}
             </span>
           </li>
         </ul>
       </b-alert>
 
-      <ValidationObserver
-        ref="edit-observer"
-        v-slot="{ handleSubmit }"
-      >
-        <form
-          ref="form"
-          @submit.stop.prevent="handleSubmit(submitForm)"
-        >
+      <ValidationObserver ref="edit-observer" v-slot="{ handleSubmit }">
+        <form ref="form" @submit.stop.prevent="handleSubmit(submitForm)">
           <b-form-group
             label-cols="4"
             label-cols-lg="2"
             :label="$t('user.first_name')"
             label-for="first_name"
           >
-            <b-form-input
-              id="first_name"
-              v-model="manager.first_name"
-            />
+            <b-form-input id="first_name" v-model="manager.first_name" />
           </b-form-group>
 
           <b-form-group
@@ -325,10 +309,7 @@ export default {
             :label="$t('user.last_name')"
             label-for="last_name"
           >
-            <b-form-input
-              id="last_name"
-              v-model="manager.last_name"
-            />
+            <b-form-input id="last_name" v-model="manager.last_name" />
           </b-form-group>
 
           <b-form-group
@@ -337,10 +318,7 @@ export default {
             :label="$t('user.second_name')"
             label-for="middle_name"
           >
-            <b-form-input
-              id="second_name"
-              v-model="manager.second_name"
-            />
+            <b-form-input id="second_name" v-model="manager.second_name" />
           </b-form-group>
 
           <b-form-group
@@ -363,11 +341,7 @@ export default {
             :label="$t('user.email')"
             label-for="email"
           >
-            <b-form-input
-              id="email"
-              v-model="manager.email"
-              type="email"
-            />
+            <b-form-input id="email" v-model="manager.email" type="email" />
           </b-form-group>
 
           <b-form-group
@@ -376,11 +350,7 @@ export default {
             :label="$t('user.role')"
             label-for="roles"
           >
-            <b-form-select
-              id="roles"
-              v-model="manager.role_id"
-              class="mb-3"
-            >
+            <b-form-select id="roles" v-model="manager.role_id" class="mb-3">
               <b-form-select-option
                 v-for="(role, index) in getRoles"
                 :key="index"
@@ -437,7 +407,7 @@ export default {
                   style="width: 20px; height: 20px"
                   src="@/assets/icons/refresh.svg"
                   alt="no-preview-aye.svg"
-                >
+                />
               </b-input-group-text>
               <b-input-group-text @click="toggleInputType()">
                 <img
@@ -445,13 +415,13 @@ export default {
                   src="@/assets/icons/no-preview-aye.svg"
                   style="width: 20px; height: 20px"
                   alt="no-preview-aye.svg"
-                >
+                />
                 <img
                   v-else
                   src="@/assets/icons/preview-aye.svg"
                   style="width: 20px; height: 20px"
                   alt="preview-aye.svg"
-                >
+                />
               </b-input-group-text>
               <div
                 v-if="manager.password"
@@ -466,16 +436,13 @@ export default {
             >
               {{ errors[0] }}
             </span>
-            <div
-              v-if="manager.password && validationError.show"
-              class="mb-3"
-            >
+            <div v-if="manager.password && validationError.show" class="mb-3">
               <span
                 v-for="(message, index) in validationError.message"
                 :key="index"
                 class="w-100 error__provider d-flex justify-content-end mb-1 text-right"
               >
-                {{ message }} <br>
+                {{ message }} <br />
               </span>
             </div>
           </ValidationProvider>
@@ -503,18 +470,11 @@ export default {
           </b-form-group>
 
           <div class="w-100 d-flex justify-content-center">
-            <b-button
-              variant="light"
-              @click="resetModal"
-            >
+            <b-button variant="light" @click="resetModal">
               {{ $t("cancel") }}
             </b-button>
 
-            <b-button
-              type="submit"
-              class="ml-1"
-              variant="success"
-            >
+            <b-button type="submit" class="ml-1" variant="success">
               <i class="fas fa-save" /> {{ $t("save") }}
             </b-button>
           </div>
@@ -522,12 +482,7 @@ export default {
       </ValidationObserver>
     </b-modal>
 
-    <b-overlay
-      :show="getLoading"
-      no-wrap
-      opacity="0.5"
-      style="z-index: 222233"
-    >
+    <b-overlay :show="getLoading" no-wrap opacity="0.5" style="z-index: 222233">
       <template #overlay>
         <div class="d-flex justify-content-center w-100">
           <div class="lds-ellipsis">

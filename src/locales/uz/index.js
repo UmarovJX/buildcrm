@@ -40,6 +40,7 @@ export default {
   reissue_percentage: 'Qayta rasmiylashtirish foizi',
   percentage_of_recontract: "Qayta ro'yxatdan o'tish foizi",
   common: {
+    initial_payment: 'Первоначальный платеж',
     square_meters: 'Kvadrat metr',
     sales_information: 'Sotuv haqida malumot',
     prepayment_report: "Oldindan to'lov hisoboti",
@@ -134,11 +135,11 @@ export default {
       last: 'Дата последнего платежа',
     },
     monthly_title:
-            'График оплаты (количество месяцев: {month}) с {prepay}% предоплатой',
+      'График оплаты (количество месяцев: {month}) с {prepay}% предоплатой',
     disclaimer1:
-            '*Вся информация действительна на дату создания информационного листа.',
+      '*Вся информация действительна на дату создания информационного листа.',
     disclaimer2:
-            'Перед заключение договора, просим уточнять всю информацию в офисах продаж',
+      'Перед заключение договора, просим уточнять всю информацию в офисах продаж',
   },
   contract_is_expired: 'Просроченные договоры',
   contract_is_duplicate: 'Дубликат договоры',
@@ -185,9 +186,9 @@ export default {
   to_the_date_of: 'Sanasigacha',
   download_report: 'Yuklab olish',
   checkout_permission_error_when_initial_set_to_zero:
-        "Boshlang'ich to'lovni 0 so'm qilish imkoniyati mavjud emas",
+    "Boshlang'ich to'lovni 0 so'm qilish imkoniyati mavjud emas",
   checkout_warning_when_initial_set_to_zero:
-        "Boshlang'ich to'lovni 0 so'm qildingiz",
+    "Boshlang'ich to'lovni 0 so'm qildingiz",
   deleted_date: 'Oʻchirilgan sana',
   contracts_not_found: {
     title: 'Shartnomalar topilmadi',
@@ -225,7 +226,7 @@ export default {
   changes_successfully_saved: 'Изменения успешно сохранены.',
   yes_cancel: 'Xa, bekor qilish',
   checkout_warning_before_cancel:
-        'Rasmiylashtirishni bekor qilishni xohlashingizga ishonchingiz komilmi?',
+    'Rasmiylashtirishni bekor qilishni xohlashingizga ishonchingiz komilmi?',
   this_action_cannot_be_undone: "Ushbu harakatni bekor qilib bo'lmaydi.",
   to_all_contracts: 'Barcha shartnomalarga',
   download_all_contract: 'Barcha shartnomalarni yuklab olish',
@@ -250,7 +251,7 @@ export default {
   cleaned_apartments: "O'chirilgan xonadonlar",
   final_total_price: 'Yakuniy umumiy narx',
   fields_not_filled_out_or_incorrectly:
-        "Qizil rang bilan belgilangan maydonlar to'ldirilmagan yoki noto'g'ri to'ldirilgan",
+    "Qizil rang bilan belgilangan maydonlar to'ldirilmagan yoki noto'g'ri to'ldirilgan",
   fax: 'Faks',
   legal_address: 'Yuridik manzil',
   ndc: 'NDS',
@@ -274,7 +275,7 @@ export default {
   communication_language: 'Muloqot tili',
   place_of_issue__of_passport_id: 'Pasport yoki ID berilgan joy',
   passport_series_example:
-        'Pasport yoki ID raqami va seriyasi (misol. AB1234567)',
+    'Pasport yoki ID raqami va seriyasi (misol. AB1234567)',
   fio_full: 'Familiya, otasining ismi yoki boshqa ismi',
   nation: 'Millat',
   person_type: 'Subyekt',
@@ -410,18 +411,18 @@ export default {
     },
     apartments: {
       watch_apartments:
-                "Xonadonlar sahifasini ko'rish huquqi (bitta obyekt sahifasi)",
+        "Xonadonlar sahifasini ko'rish huquqi (bitta obyekt sahifasi)",
       filter_apartments: "Sahifadagi xonadonlar ro'yxatini filtrlash huquqi",
       edit_apartment: 'Xonadonni tahrirlash huquqi (bitta obyekt sahifasi)',
       status_apartment:
-                "Xonadonni sotuvdan olish va qo'yish huquqi (bitta obyekt sahifasi)",
+        "Xonadonni sotuvdan olish va qo'yish huquqi (bitta obyekt sahifasi)",
       change_list_apartments: "Xonadonlar jadvalini ko'rish huquqi",
       list_apartments1:
-                "Xonadonlar ro'yxatini o'zgartirish uchun shaxmatka 1.0 dan foydalanish huquqi",
+        "Xonadonlar ro'yxatini o'zgartirish uchun shaxmatka 1.0 dan foydalanish huquqi",
       list_apartments2:
-                "Xonadonlar ro'yxatini o'zgartirish uchun shaxmatka 2.0 dan foydalanish huquqi",
+        "Xonadonlar ro'yxatini o'zgartirish uchun shaxmatka 2.0 dan foydalanish huquqi",
       using_layouts:
-                "Xonadonlar ro'yxatini o'zgartirish uchun xonadon rejasidan foydalanish huquqi",
+        "Xonadonlar ro'yxatini o'zgartirish uchun xonadon rejasidan foydalanish huquqi",
       read_comments: "Izohlarni ko'rish huquqi",
       create_comments: 'Izohni yaratish huquqi',
       update_comments: 'Izohni tahrirlash huquqi',
@@ -444,9 +445,9 @@ export default {
       download_deal: 'Shartnomalarni yuklash huquqi',
       decline_deal: 'Shartnomani bekor qilish huquqi',
       client_type:
-                "Mijoz turini o'zgartirish huquqi ('Mijoz haqida batafsil' qismida)",
+        "Mijoz turini o'zgartirish huquqi ('Mijoz haqida batafsil' qismida)",
       watch_branch_deals:
-                "Filialning barcha shartnomalarini ko'rish huquqi (filial ish yurituvchisi)",
+        "Filialning barcha shartnomalarini ko'rish huquqi (filial ish yurituvchisi)",
       import: "To'lovlarni yuklab olish huquqi",
       executor: 'Ijro etuvchi',
       list: "To'lovlarni ko'rish huquqi",
@@ -515,14 +516,14 @@ export default {
       add_branch: "Filial qo'shish huquqi",
       watch_contract_template: "Shartnomani na'muna shablonini ko'rish huquqi",
       create_contract_template:
-                "Shartnomani na'muna shablonini yaratish huquqi",
+        "Shartnomani na'muna shablonini yaratish huquqi",
       delete_contract_template:
-                "Shartnomani na'muna shablonini o'chirish huquqi",
+        "Shartnomani na'muna shablonini o'chirish huquqi",
       make_main_branch_template:
-                "Asosiy filial shartnomani na'munasini yaratish huquqi",
+        "Asosiy filial shartnomani na'munasini yaratish huquqi",
       template_download: "Shartnomani na'muna shablonini yuklash huquqi",
       template_instruction:
-                "Shartnomani na'muna shablonini ko'rsatmasini ko'rish huquqi",
+        "Shartnomani na'muna shablonini ko'rsatmasini ko'rish huquqi",
     },
     reports: {
       create: 'Право создавать отчеты',
@@ -540,9 +541,9 @@ export default {
     phone_number: 'Telefon raqami',
     validation_last_password: 'Eski parol noto’g’ri terilgan!',
     validation_password:
-            'Parol kamida 8 ta harf yoki raqamlardan iborat bo’lishi kerak!',
+      'Parol kamida 8 ta harf yoki raqamlardan iborat bo’lishi kerak!',
     validation_confirm_password:
-            'Tasdiqlash paroli yangi parol bilan bir xil bo’lishi kerak',
+      'Tasdiqlash paroli yangi parol bilan bir xil bo’lishi kerak',
   },
   xonsaroy: 'Xonsaroy',
   checkout_booking: 'Rasmiylashtirish',
@@ -555,7 +556,7 @@ export default {
   discount_per_m2: 'M2 uchun chegirma',
   enter_discount: "To'lov turini tanlang",
   address_office:
-        'Toshkent shahri, Yunusobod tumani, Yangi shahar ko‘chasi, 64A-uy',
+    'Toshkent shahri, Yunusobod tumani, Yangi shahar ko‘chasi, 64A-uy',
   motto: 'Orzular sari ishonchli qadam!',
   quarter: 'Chorak',
   of_the_year: 'yil',
@@ -600,8 +601,8 @@ export default {
   recontract_download: 'Qayta rasmiylashtirilgan shartnomani yuklash',
   leave_import: 'Importni tark etasizmi?',
   leave_import_text:
-        'Haqiqatan ham importni bekor qilish va undan chiqishni xohlaysizmi? </br>'
-        + "Barcha qo'llaniladigan o'zgarishlar bekor qilinadi.",
+    'Haqiqatan ham importni bekor qilish va undan chiqishni xohlaysizmi? </br>'
+    + "Barcha qo'llaniladigan o'zgarishlar bekor qilinadi.",
   no_leave: "Yo'q, qolaman",
   yes_leave: 'Ha, chiqaman',
   yes: 'Ha',
@@ -652,7 +653,7 @@ export default {
   contract_file_not_found: 'Kontrakt fayl topilmadi',
   instruction: "Ko'rsatma",
   validation_warning_to_bottom:
-        "Maydonlardan biri noto'g'ri to'ldirilgan, barcha maydonlarni yana tekshiring!",
+    "Maydonlardan biri noto'g'ri to'ldirilgan, barcha maydonlarni yana tekshiring!",
   new_name: 'Yangi nom',
   meaning: 'Manosi',
   example_by_2: 'Misol',
@@ -812,7 +813,7 @@ export default {
     date_of_end_label: 'Aksiya shu kungacha amal qiladi',
     select_block: 'Bino (larni) tanlang',
     select_floor_plan:
-            'Binodagi qavat, xonadon rejasi yoki xonadon uchun aksiya belgilang',
+      'Binodagi qavat, xonadon rejasi yoki xonadon uchun aksiya belgilang',
     select_price: 'Aksiya narxi (m2 uchun)',
     select_type: 'Aksiya turini tanlang',
     select_sum: "So'm",
@@ -864,7 +865,7 @@ export default {
     payment_download: "To'lovlarni import qilish",
     payment_add: "To'lov qo'shish",
     import:
-            'Toʻlovlarni import qilish uchun faylni .xls yoki .csv formatida yuklang',
+      'Toʻlovlarni import qilish uchun faylni .xls yoki .csv formatida yuklang',
     drag_file: 'Faylni ushbu maydonga torting yoki',
     click_file: 'faylni tanlash uchun bosing',
     download_template: 'Shablonni yuklab olish',
@@ -893,16 +894,16 @@ export default {
     warning: 'Ogohlantirish',
     edit_payment: "To'lovni tahrirlash",
     warn_before_delete_contract:
-            'Shartnomani arxivlamoqchimisiz? Bu amalni ortga qaytarib bo‘lmaydi.',
+      'Shartnomani arxivlamoqchimisiz? Bu amalni ortga qaytarib bo‘lmaydi.',
     comment: 'Izoh',
     comment_delete_contract: "O'chirish sababini ko'rsating",
     add_payment_successfully: "To'lovlar ro'yxatiga muvaffaqiyatli qo'shildi",
     deleted_payment_successfully:
-            'Toʻlovni oʻchirib tashlamoqchimisiz? Bu amalni ortga qaytarib bo‘lmaydi.',
+      'Toʻlovni oʻchirib tashlamoqchimisiz? Bu amalni ortga qaytarib bo‘lmaydi.',
     warn_before_delete_payment:
-            'Toʻlovni oʻchirib tashlamoqchimisiz? Bu amalni ortga qaytarib bo‘lmaydi.',
+      'Toʻlovni oʻchirib tashlamoqchimisiz? Bu amalni ortga qaytarib bo‘lmaydi.',
     warning_in_payment:
-            "Boshlang'ich to'lov uchun {price} so'm ortiqcha qolgan. Shu miqdorni oylik to'lovga o'tkazishni xohlaysizmi?",
+      "Boshlang'ich to'lov uchun {price} so'm ortiqcha qolgan. Shu miqdorni oylik to'lovga o'tkazishni xohlaysizmi?",
     title: 'Shartnomalar',
     download: 'Shartnomani yuklab olish',
     f_i_o: 'F.I.SH', // asd
@@ -921,8 +922,8 @@ export default {
     no_note: "Hozircha hech qanday eslatma yo'q",
     delete_note: "Eslatmani o'chirish",
     note_delete_confirmation:
-            "Eslatmani o'chirishga qaroringiz qattiymi?\n"
-            + "Quydagi buyruqni bekor qilishni ilojisi yo'q.",
+      "Eslatmani o'chirishga qaroringiz qattiymi?\n"
+      + "Quydagi buyruqni bekor qilishni ilojisi yo'q.",
     edit_note: 'Eslatmani tahrirlash',
     note_text: 'Eslatma matni',
     individual: 'individual',
@@ -961,9 +962,9 @@ export default {
 
     view: {
       regenerate_warning:
-                "Shartnoma faqatgina bir marta o'zgartirilishi mumkin , Davom etishdan oldin barcha malumotlarni tekshiring",
+        "Shartnoma faqatgina bir marta o'zgartirilishi mumkin , Davom etishdan oldin barcha malumotlarni tekshiring",
       regenerate_select_reason:
-                "Shartnomaning o'zgartirilishi sababini tanlang",
+        "Shartnomaning o'zgartirilishi sababini tanlang",
       unfamiliar: 'Notanish', // asd
       familiar: 'Tanish', // asd
       edit_type: "Mijoz turini o'zgartirish", // asd
@@ -1047,7 +1048,7 @@ export default {
       clients: {
         view: "Mijozlar ma'lumotlarini ko'rishga ruxsat berish",
         cancel_contract:
-                    'Band qilingan xonadonlarni bandlikdan chiqarishga ruxsat berish',
+          'Band qilingan xonadonlarni bandlikdan chiqarishga ruxsat berish',
         delete: "Mijozlarni o'chirishga ruxsat berish",
         terminate: 'Shartnomalarni bekor qilishga ruxsat berish',
         cancelled: "Bekor qilingan shartnomalarni ko'rishga ruxsat berish",
@@ -1285,7 +1286,7 @@ export default {
     list: "Xonadon rejalari ro'yxati",
     plan_required: 'Xonadon loyihasini tanlashingiz shart',
     delete_title:
-            "Bu xonadon rejasida {apartments_count} ta xonadon mavjud boshqa rejaga o'tkazishingiz kerak",
+      "Bu xonadon rejasida {apartments_count} ta xonadon mavjud boshqa rejaga o'tkazishingiz kerak",
   },
 
   debtors: {
@@ -1299,7 +1300,7 @@ export default {
     client_type: 'mijoz turi', // asd
     import_debtors: 'Qarzlar importi',
     import_text:
-            'Qarzlarni import qilish uchun faylni .xls yoki .csv formatida yuklang',
+      'Qarzlarni import qilish uchun faylni .xls yoki .csv formatida yuklang',
     file_field: 'Fayl maydoni',
     property: 'Xususiyat',
     file: 'Fayldagi maydon',
@@ -1380,7 +1381,7 @@ export default {
       main: 'Asosiy',
       title: "Shartnoma shablonlari ro'yxati",
       warning_message:
-                'Siz barcha asosiy shartnomalarni tanlamadingiz! Iltimos, barcha asosiy shartnomalarni tanlang!',
+        'Siz barcha asosiy shartnomalarni tanlamadingiz! Iltimos, barcha asosiy shartnomalarni tanlang!',
     },
 
     create: {
@@ -1515,7 +1516,7 @@ export default {
     new: 'Yangi',
     published: 'Nashr qilingan',
     comment:
-            'Siz har doim versiya raqamini bosish orqali sozlamalarda nashr yozuvlarini topishingiz mumkin.',
+      'Siz har doim versiya raqamini bosish orqali sozlamalarda nashr yozuvlarini topishingiz mumkin.',
   },
 
   sweetAlert: {
@@ -1561,7 +1562,7 @@ export default {
     success_update_company: "Kompaniya muvaffaqiyatli o'zgartirildi",
     success_delete_company: "Kompaniya muvaffaqiyatli o'chirildi",
     are_you_sure_delete_role:
-            "Agar rolni o'chirmoqchi bo'lsangiz bu ro'ldagi foydalanuvchilar uchun yangi rol tanlashingiz kerak!", // 'text_cancel_contract': 'Вы действительно хотите расторгнуть контракт',
+      "Agar rolni o'chirmoqchi bo'lsangiz bu ro'ldagi foydalanuvchilar uchun yangi rol tanlashingiz kerak!", // 'text_cancel_contract': 'Вы действительно хотите расторгнуть контракт',
     payment_edit: "To'lovni taxrirlash",
     debtors: {
       payment_info: "To'lov summasi!",
@@ -1569,7 +1570,7 @@ export default {
       payment_delete: "To'lovni rostdan xam bekor qilmoqchimisiz?",
       next: 'Davom etish',
       are_you_sure:
-                "Siz chindan ham to'lovni tasdiqlamoqchimisiz? Keyin bu amaliyotni bekor qilib bo'lmaydi!",
+        "Siz chindan ham to'lovni tasdiqlamoqchimisiz? Keyin bu amaliyotni bekor qilib bo'lmaydi!",
       yes: "Xa, to'lvoni tasdiqlayman",
       placeholder: "Agar to'lovga izohingiz bo'lsa yozing!",
     },

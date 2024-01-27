@@ -33,6 +33,7 @@ import TabPaymentSchedule from '@/components/Contracts/view/TabPaymentSchedule'
 import TabObjectDetails from '@/components/Contracts/view/TabObjectDetails'
 import TabClientDetails from '@/components/Contracts/view/TabClientDetails'
 import TabContractDetails from '@/components/Contracts/view/TabContractDetails'
+import TabContractComments from '@/components/Contracts/view/TabContractComments'
 import TabReContractDetails from '@/components/Contracts/view/TabReContractDetails'
 import ActivityLog from '@/components/Contracts/view/ActivityLog'
 import FastPlanList from '@/views/objects/FastPlan/List'
@@ -475,6 +476,14 @@ const routes = [
             },
           },
           {
+            name: 'contract-comments',
+            path: 'contract-comments',
+            component: TabContractComments,
+            meta: {
+              requiresAuth: 'contracts',
+            },
+          },
+          {
             name: 'reissue-details',
             path: 'reissue-details',
             component: TabReContractDetails,
@@ -796,8 +805,8 @@ router.beforeEach(async (to, from, next) => {
           if (requiresAuth) {
             const perm = Permission.getUserPermission(requiresAuth)
             const hasAccess = (isBoolean(perm) && perm)
-                            || user.role === 1
-                            || (perm && perm?.view)
+              || user.role === 1
+              || (perm && perm?.view)
             if (hasAccess) {
               return next()
             }

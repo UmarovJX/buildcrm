@@ -1,6 +1,8 @@
 import { axiosV1CRM, axiosV2 } from '@/services/core/base'
 import Core from '@/services/core/index'
 
+let cashedMe = null
+
 class AuthV1 extends Core {
   constructor(axios = axiosV1CRM) {
     super(axios)
@@ -11,7 +13,8 @@ class AuthV1 extends Core {
   }
 
   getMe() {
-    return this.get('oauth/me')
+    if (cashedMe) return cashedMe;
+    return cashedMe = this.get('oauth/me')
   }
 }
 

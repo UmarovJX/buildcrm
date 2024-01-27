@@ -151,7 +151,7 @@ export default function useStatistics() {
   async function fetchMainData() {
     try {
       main.value.busy = true
-      const { data: { result } } = await v3ServiceApi.stats.main()
+      const { data: { result } } = await v3ServiceApi.stats.main()//founder
       main.value.result.object_count = result.object_count
       main.value.result.client_count = result.client_count
       main.value.result.apartments = result.apartments
@@ -166,7 +166,8 @@ export default function useStatistics() {
   async function fetchTotalData(b = {}) {
     try {
       total.value.busy = true
-      const { data: { result } } = await v3ServiceApi.stats.total(b)
+      const { data: { result } } = await v3ServiceApi.stats.total(b)//founder
+      console.log('total',result)
       total.value.result = result
     } catch (e) {
       toastError(e)
@@ -178,7 +179,7 @@ export default function useStatistics() {
   async function fetchIncomeReportsData(b) {
     try {
       incomeReports.value.busy = true
-      const { data: { result } } = await v3ServiceApi.stats.getSalesData(b)
+      const { data: { result } } = await v3ServiceApi.stats.getSalesData(b)//founder
       incomeReports.value.data.series = result.data.map(item => ({
         name: item.label,
         data: item.data,
@@ -285,7 +286,7 @@ export default function useStatistics() {
   async function fetchBranchReportsData(b) {
     try {
       branchReports.value.busy = true
-      const { data: { result } } = await v3ServiceApi.stats.getBranchesData(b)
+      const { data: { result } } = await v3ServiceApi.stats.getBranchesData(b)//founder
 
       branchReports.value.data.series = result.data.map(item => ({
         name: item.label,
@@ -309,7 +310,7 @@ export default function useStatistics() {
   async function fetchOrderReportsData(b) {
     try {
       orderReports.value.busy = true
-      const { data: { result } } = await v3ServiceApi.stats.getOrdersData(b)
+      const { data: { result } } = await v3ServiceApi.stats.getOrdersData(b)//founder
       orderReports.value.data.series = result.data.map(item => ({
         name: item.label,
         data: item.data,

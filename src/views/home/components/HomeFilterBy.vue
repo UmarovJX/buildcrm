@@ -1,71 +1,72 @@
 <script>
-import {
-  computed, getCurrentInstance, onMounted, ref, watch,
-} from 'vue'
-import useObject from '@/composables/xonsaroy/useObject'
+import { computed, getCurrentInstance, onMounted, ref, watch } from "vue";
+import useObject from "@/composables/xonsaroy/useObject";
 
-import { XFormSelect } from '@/components/ui-components/form-select'
-import StatisticsDatePicker from '@/views/home/elements/StatisticsDatePicker.vue'
+import { XFormSelect } from "@/components/ui-components/form-select";
+import StatisticsDatePicker from "@/views/home/elements/StatisticsDatePicker.vue";
 
 export default {
-  name: 'HomeFilterBy',
+  name: "HomeFilterBy",
   components: {
     XFormSelect,
     StatisticsDatePicker,
   },
-  emits: ['filter-by'],
+  emits: ["filter-by"],
   setup(props, { emit }) {
-    const vm = getCurrentInstance().proxy
-    const { objects, fetchObjects } = useObject()
+    const vm = getCurrentInstance().proxy;
+    const { objects, fetchObjects } = useObject();
     const filter = ref({
       payment_type: null,
       object_id: null,
-    })
+    });
     const dateRange = ref({
       date_from: null,
       date_to: null,
-    })
+    });
 
     const paymentOptions = computed(() => [
       {
-        text: vm.$t('initial_payment'),
-        value: 'initial',
+        text: vm.$t("initial_payment"),
+        value: "initial_payment",
       },
       {
-        text: vm.$t('monthly_pay'),
-        value: 'monthly',
+        text: vm.$t("monthly_pay"),
+        value: "monthly",
       },
-    ])
+    ]);
 
-    watch([
-      () => filter.value.object_id,
-      () => filter.value.payment_type,
-      () => dateRange.value.date_from,
-      () => dateRange.value.date_to,
-    ],
-    ([objectId, paymentType, dateFrom, dateTo]) => {
-      emit('filter-by', {
-        object_id: objectId,
-        payment_type: paymentType,
-        date_from: dateFrom,
-        date_to: dateTo,
-      })
-    }, {
-      deep: true,
-    })
+    watch(
+      [
+        () => filter.value.object_id,
+        () => filter.value.payment_type,
+        () => dateRange.value.date_from,
+        () => dateRange.value.date_to,
+      ],
+      ([objectId, paymentType, dateFrom, dateTo]) => {
+        emit("filter-by", {
+          object_id: objectId,
+          payment_type: paymentType,
+          date_from: dateFrom,
+          date_to: dateTo,
+        });
+      },
+      {
+        deep: true,
+      }
+    );
 
     onMounted(() => {
-      fetchObjects()
-    })
+      fetchObjects();
+    });
 
     return {
       filter,
       objects,
       dateRange,
       paymentOptions,
-    }
+    };
   },
-}
+};
 </script>
 
 <template>
@@ -104,7 +105,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-.home__filter__by{
+.home__filter__by {
   gap: 1rem;
 }
 

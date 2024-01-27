@@ -1,26 +1,26 @@
 <script>
-import api from '@/services/api'
-import BaseLoading from '@/components/Reusable/BaseLoading'
-import BaseArrowRight from '@/components/icons/BaseArrowRightIcon'
-import BaseArrowLeft from '@/components/icons/BaseArrowLeftIcon'
-import BaseModal from '@/components/Reusable/BaseModal'
-import BaseButton from '@/components/Reusable/BaseButton'
-import { mapActions, mapGetters } from 'vuex'
-import BaseCloseIcon from '@/components/icons/BaseCloseIcon'
-import BaseWarningIcon from '@/components/icons/BaseWarningIcon'
-import ContractsPermission from '@/permission/contract'
-import AppDropdown from '@/components/Reusable/Dropdown/AppDropdown'
-import AppHeader from '@/components/Header/AppHeader'
-import XFormSelect from '@/components/ui-components/form-select/FormSelect.vue'
-import { XIcon } from '@/components/ui-components/material-icons'
-import { XSquareBackground } from '@/components/ui-components/square-background'
-import { XModalCenter } from '@/components/ui-components/modal-center'
-import { XFormInput } from '@/components/ui-components/form-input'
-import Permission from '@/permission'
-import ApproverList from '@/views/contracts/components/ApproverList.vue'
+import api from "@/services/api";
+import BaseLoading from "@/components/Reusable/BaseLoading";
+import BaseArrowRight from "@/components/icons/BaseArrowRightIcon";
+import BaseArrowLeft from "@/components/icons/BaseArrowLeftIcon";
+import BaseModal from "@/components/Reusable/BaseModal";
+import BaseButton from "@/components/Reusable/BaseButton";
+import { mapActions, mapGetters } from "vuex";
+import BaseCloseIcon from "@/components/icons/BaseCloseIcon";
+import BaseWarningIcon from "@/components/icons/BaseWarningIcon";
+import ContractsPermission from "@/permission/contract";
+import AppDropdown from "@/components/Reusable/Dropdown/AppDropdown";
+import AppHeader from "@/components/Header/AppHeader";
+import XFormSelect from "@/components/ui-components/form-select/FormSelect.vue";
+import { XIcon } from "@/components/ui-components/material-icons";
+import { XSquareBackground } from "@/components/ui-components/square-background";
+import { XModalCenter } from "@/components/ui-components/modal-center";
+import { XFormInput } from "@/components/ui-components/form-input";
+import Permission from "@/permission";
+import ApproverList from "@/views/contracts/components/ApproverList.vue";
 
 export default {
-  name: 'ContractView',
+  name: "ContractView",
   components: {
     ApproverList,
     XFormInput,
@@ -39,7 +39,7 @@ export default {
     XIcon,
   },
   data() {
-    return {
+    const d = {
       order: {},
       showLoading: false,
       activeTab: 0,
@@ -47,29 +47,34 @@ export default {
       archive: {
         showWarnModal: false,
         sending: false,
-        comment: '',
+        comment: "",
       },
       tabs: [
         {
           id: 0,
-          title: this.$t('payment_schedule'),
-          route: 'contracts-view',
+          title: this.$t("payment_schedule"),
+          route: "contracts-view",
+          count: 0,
         },
         {
           id: 1,
-          title: this.$t('object_details'),
-          route: 'contract-object-details',
+          title: this.$t("object_details"),
+          route: "contract-object-details",
+          count: 0,
         },
         {
           id: 2,
-          title: this.$t('client_details'),
-          route: 'contract-client-details',
+          title: this.$t("client_details"),
+          route: "contract-client-details",
+          count: 0,
         },
         {
           id: 3,
-          title: this.$t('contract_details'),
-          route: 'contract-details',
+          title: this.$t("contract_details"),
+          route: "contract-details",
+          count: 0,
         },
+
         // {
         //     id: 5,
         //     title: this.$t('contract_log'),
@@ -77,8 +82,9 @@ export default {
         // },
         {
           id: 4,
-          title: this.$t('recontract_details'),
-          route: 'reissue-details',
+          title: this.$t("recontract_details"),
+          route: "reissue-details",
+          count: 0,
         },
       ],
       deleteComment: null,
@@ -87,59 +93,71 @@ export default {
       types: [],
       reason_type: null,
       reContractViewPermission:
-          ContractsPermission.getContractsReissueViewPermission(),
-      reissueEditPermission: ContractsPermission.getContractsReissueCreatePermission(),
+        ContractsPermission.getContractsReissueViewPermission(),
+      reissueEditPermission:
+        ContractsPermission.getContractsReissueCreatePermission(),
       downloadPermission: ContractsPermission.getContractsDownloadPermission(),
       deletePermission: ContractsPermission.getContractsCancelPermission(),
       hasAdminRole: Permission.hasAdminRole(),
+    };
+    if (ContractsPermission.getContractsCommentsPermission()) {
+      d.tabs.push({
+        id: 5,
+        title: this.$t("contracts.note"),
+        route: "contract-comments",
+        count: 0,
+      });
     }
+    return d;
   },
   computed: {
     ...mapGetters({
-      permission: 'getPermission',
-      me: 'getMe',
+      permission: "getPermission",
+      me: "getMe",
     }),
     tabIndex: {
       get() {
-        const { name } = this.$route
-        const index = this.tabs.findIndex(item => item.route === name)
+        const { name } = this.$route;
+        const index = this.tabs.findIndex((item) => item.route === name);
         if (index !== -1) {
-          return index
+          return index;
         }
-        return 0
+        return 0;
       },
       set(value) {
-        return value
+        return value;
       },
     },
     role() {
-      return this.me.role
+      return this.me.role;
     },
     isStatusContract() {
-      return this.order.status === 'contract'
+      return this.order.status === "contract";
     },
     hasAction() {
       return (
-        this.reContractPermission
-          || this.editPermission
-          || this.deletePermission
-          || this.downloadPermission
-      )
+        this.reContractPermission ||
+        this.editPermission ||
+        this.deletePermission ||
+        this.downloadPermission
+      );
     },
     // reContractViewPermission(){
     //   return ContractsPermission.getContractsReissueViewPermission()
     // },
     reContractPermission() {
       return (
-        ContractsPermission.getContractsReissueCreatePermission()
-          && this.order.reissue
-          && this.order.reissue.re_order
-      )
+        ContractsPermission.getContractsReissueCreatePermission() &&
+        this.order.reissue &&
+        this.order.reissue.re_order
+      );
     },
     editReissuePm() {
-      return this.reissueEditPermission
-          && this.order.reissue.view
-          && !this.order.reissue.re_order
+      return (
+        this.reissueEditPermission &&
+        this.order.reissue.view &&
+        !this.order.reissue.re_order
+      );
     },
     editPermission() {
       // if (this.order.version === 1) {
@@ -152,14 +170,16 @@ export default {
       //   return ContractsPermission.getContractsEditPermission()
       // }
 
-      return ContractsPermission.getContractsEditPermission()
-          && this.order.status !== 'cancelled'
+      return (
+        ContractsPermission.getContractsEditPermission() &&
+        this.order.status !== "cancelled"
+      );
     },
     hasConstructorOrder() {
-      return Object.keys(this.order).length > 0
+      return Object.keys(this.order).length > 0;
     },
     cancelReissuePermission() {
-      return this.editReissuePm && this.order.reissue.re_order_cancel
+      return this.editReissuePm && this.order.reissue.re_order_cancel;
     },
   },
   watch: {
@@ -167,246 +187,250 @@ export default {
       deep: true,
       handler(value) {
         const findItem = this.tabs.findIndex(
-          item => item.route === 'contracts-view',
-        )
-        if (findItem === -1 && value.name === 'contracts-view') {
-          return this.$router.push({ name: 'contracts' })
+          (item) => item.route === "contracts-view"
+        );
+        if (findItem === -1 && value.name === "contracts-view") {
+          return this.$router.push({ name: "contracts" });
         }
       },
     },
   },
   async created() {
-    await this.fetchContractData()
+    await this.fetchContractData();
   },
   mounted() {
-    this.$refs.archiveWarningModal.openModal()
+    this.$refs.archiveWarningModal.openModal();
   },
   methods: {
-    ...mapActions('notify', ['openNotify']),
+    updateItemCount(e) {
+      this.tabs.find((tab) => tab.route === e.route).count = e.count;
+    },
+    ...mapActions("notify", ["openNotify"]),
     closeArchiveWarnModal() {
-      this.archive.showWarnModal = false
-      this.archive.comment = null
+      this.archive.showWarnModal = false;
+      this.archive.comment = null;
     },
     async restoreContract() {
       try {
-        this.showLoading = true
-        await api.contractV2.recover({ contractId: this.order.id })
+        this.showLoading = true;
+        await api.contractV2.recover({ contractId: this.order.id });
       } catch (e) {
-        this.toastedWithErrorCode(e)
+        this.toastedWithErrorCode(e);
       } finally {
-        await this.fetchContractData()
+        await this.fetchContractData();
       }
     },
     async archiveContract() {
       try {
-        this.archive.sending = true
+        this.archive.sending = true;
         await api.contractV2.archive().putArchive({
           contractId: this.order.id,
           body: {
             comment: this.archive.comment,
           },
-        })
-        this.archive.showWarnModal = false
-        this.archive.sending = false
-        this.archive.comment = ''
+        });
+        this.archive.showWarnModal = false;
+        this.archive.sending = false;
+        this.archive.comment = "";
       } catch (e) {
-        this.toastedWithErrorCode(e)
+        this.toastedWithErrorCode(e);
       } finally {
-        await this.fetchContractData()
+        await this.fetchContractData();
       }
     },
     async unarchiveContract() {
       try {
-        this.showLoading = true
+        this.showLoading = true;
         // await api.contractV2.recover({ contractId: this.order.id });
         await api.contractV2
           .archive()
-          .putArchive({ contractId: this.order.id })
+          .putArchive({ contractId: this.order.id });
       } catch (e) {
-        this.toastedWithErrorCode(e)
+        this.toastedWithErrorCode(e);
       } finally {
-        await this.fetchContractData()
+        await this.fetchContractData();
       }
     },
     tabChange(currentTabs) {
-      const index = this.tabs.filter(item => item.id === currentTabs)
-      this.$router.replace({ name: index[0].route })
+      const index = this.tabs.filter((item) => item.id === currentTabs);
+      this.$router.replace({ name: index[0].route });
     },
     checkLocales(name) {
-      if (localStorage.locale) return name[localStorage.locale]
-      return name.ru
+      if (localStorage.locale) return name[localStorage.locale];
+      return name.ru;
     },
     nextReContract() {
       this.$router.push({
-        name: 're-contract',
+        name: "re-contract",
         params: {
           id: this.$route.params.id,
           type: this.reason_type.id,
         },
-      })
+      });
     },
     setFormProperty(property, value) {
-      this.form[property] = value
-      this.errors[property] = false
+      this.form[property] = value;
+      this.errors[property] = false;
     },
     openReContractModal() {
-      this.$refs['re-contract'].openModal()
-      this.getType()
+      this.$refs["re-contract"].openModal();
+      this.getType();
     },
     getType() {
-      const { id } = this.$route.params
+      const { id } = this.$route.params;
       api.contractV2
         .reOrderDetails(id)
-        .then(res => {
-          this.types = res.data.types.map(item => ({
+        .then((res) => {
+          this.types = res.data.types.map((item) => ({
             value: item.id,
             text: item.name[localStorage.locale],
-          }))
+          }));
         })
-        .catch(err => console.log(err))
+        .catch((err) => console.log(err));
     },
     closeReContractModal() {
-      this.$refs['re-contract'].closeModal()
+      this.$refs["re-contract"].closeModal();
     },
     async downloadContact() {
-      const { id } = this.$route.params
+      const { id } = this.$route.params;
       await api.contract
         .downloadContract(id)
         .then(({ data, headers }) => {
-          const filename = headers.hasOwnProperty('x-filename')
-            ? headers['x-filename']
-            : 'contract'
-          const fileURL = window.URL.createObjectURL(new Blob([data]))
-          const fileLink = document.createElement('a')
-          fileLink.href = fileURL
-          fileLink.setAttribute('download', filename)
-          document.body.appendChild(fileLink)
-          fileLink.click()
+          const filename = headers.hasOwnProperty("x-filename")
+            ? headers["x-filename"]
+            : "contract";
+          const fileURL = window.URL.createObjectURL(new Blob([data]));
+          const fileLink = document.createElement("a");
+          fileLink.href = fileURL;
+          fileLink.setAttribute("download", filename);
+          document.body.appendChild(fileLink);
+          fileLink.click();
         })
-        .catch(() => '#')
+        .catch(() => "#");
     },
     openPaymentDeletionModal() {
-      this.$refs['payment-deletion-warning'].openModal()
+      this.$refs["payment-deletion-warning"].openModal();
     },
     closePaymentDeletionModal() {
       // deleteComment
-      this.$refs['payment-deletion-warning'].closeModal()
+      this.$refs["payment-deletion-warning"].closeModal();
     },
     async deleteContract() {
-      const isValid = await this.$refs.userComment.validate()
+      const isValid = await this.$refs.userComment.validate();
       if (isValid) {
-        const { id } = this.$route.params
+        const { id } = this.$route.params;
         const body = {
           comment: this.deleteComment,
-        }
-        this.showLoading = true
-        this.closePaymentDeletionModal()
+        };
+        this.showLoading = true;
+        this.closePaymentDeletionModal();
         await api.contractV2
           .deleteContract(id, body)
           .then(async () => {
             // this.$router.go(-1);
             this.$swal({
-              title: this.$t('successfully'),
-              icon: 'success',
-              button: this.$t('yes'),
-            })
-            await this.fetchContractData()
+              title: this.$t("successfully"),
+              icon: "success",
+              button: this.$t("yes"),
+            });
+            await this.fetchContractData();
           })
-          .catch(error => {
-            this.toastedWithErrorCode(error)
+          .catch((error) => {
+            this.toastedWithErrorCode(error);
           })
           .finally(() => {
-            this.deleteComment = null
-            this.showLoading = false
-          })
+            this.deleteComment = null;
+            this.showLoading = false;
+          });
       } else {
-        this.$refs['comment-area'].focus()
+        this.$refs["comment-area"].focus();
       }
     },
     async fetchContractData() {
-      this.showLoading = true
-      const { id } = this.$route.params
+      this.showLoading = true;
+      const { id } = this.$route.params;
       await api.contractV2
         .fetchContractView(id)
-        .then(response => {
-          this.order = response.data
-          this.tabsConfiguration()
+        .then((response) => {
+          this.order = response.data;
+          this.tabsConfiguration();
         })
-        .catch(error => {
-          this.toastedWithErrorCode(error)
+        .catch((error) => {
+          this.toastedWithErrorCode(error);
         })
         .finally(() => {
-          this.showLoading = false
-        })
+          this.showLoading = false;
+        });
     },
     tabsConfiguration() {
-      const { status, reissue } = this.order
-      if (status === 'booked') {
-        this.tabs = this.tabs.filter(tab => tab.id !== 0 && tab.id !== 4)
-        this.activeTab = this.tabs[0]
-        this.tabChange(this.activeTab.id)
+      const { status, reissue } = this.order;
+      if (status === "booked") {
+        this.tabs = this.tabs.filter((tab) => tab.id !== 0 && tab.id !== 4);
+        this.activeTab = this.tabs[0];
+        this.tabChange(this.activeTab.id);
       }
       if (!(reissue?.view && this.reContractViewPermission)) {
-        this.tabs = this.tabs.filter(tab => tab.id !== 4)
+        this.tabs = this.tabs.filter((tab) => tab.id !== 4);
       }
     },
     startLoading() {
-      this.showLoading = true
+      this.showLoading = true;
     },
     finishLoading() {
-      this.showLoading = false
+      this.showLoading = false;
     },
     backNavigation() {
-      this.$router.back()
+      this.$router.back();
     },
     refreshDetails() {
-      this.fetchContractData()
+      this.fetchContractData();
     },
     openEditPage() {
-      const name = this.order.type === 'parking'
-        ? 'parking-checkout-update'
-        : 'checkout-v2-update'
+      const name =
+        this.order.type === "parking"
+          ? "parking-checkout-update"
+          : "checkout-v2-update";
       this.$router.push({
         name,
         params: {
           id: this.$route.params.id,
           object: this.order.object.id,
         },
-      })
+      });
     },
     openReissueEditPage() {
       this.$router.push({
-        name: 're-contract',
+        name: "re-contract",
         params: {
           id: this.$route.params.id,
         },
         query: {
-          role: 'edit',
+          role: "edit",
         },
-      })
+      });
     },
     async cancelReissue() {
       try {
-        this.showLoading = true
+        this.showLoading = true;
         const { value } = await this.$swal({
-          title: this.$t('sweetAlert.title'),
-          icon: 'warning',
+          title: this.$t("sweetAlert.title"),
+          icon: "warning",
           showCancelButton: true,
-          cancelButtonText: this.$t('cancel'),
-          confirmButtonText: this.$t('sweetAlert.yes_agree'),
-        })
+          cancelButtonText: this.$t("cancel"),
+          confirmButtonText: this.$t("sweetAlert.yes_agree"),
+        });
         if (value) {
-          await api.contractV2.cancelReissue(this.$route.params.id)
-          await this.fetchContractData()
+          await api.contractV2.cancelReissue(this.$route.params.id);
+          await this.fetchContractData();
         }
       } catch (e) {
-        this.toastedWithErrorCode(e)
+        this.toastedWithErrorCode(e);
       } finally {
-        this.showLoading = false
+        this.showLoading = false;
       }
     },
   },
-}
+};
 </script>
 <template>
   <div>
@@ -417,22 +441,13 @@ export default {
           class="navigation__content justify-content-between"
         >
           <div class="d-flex align-items-center">
-            <div
-              class="go__back"
-              @click="backNavigation"
-            >
-              <BaseArrowLeft
-                :width="32"
-                :height="32"
-              />
+            <div class="go__back" @click="backNavigation">
+              <BaseArrowLeft :width="32" :height="32" />
             </div>
             <div class="breadcrumb__content">
               <div>
                 {{ $t("payments.payment_list") }}
-                <BaseArrowRight
-                  :width="18"
-                  :height="18"
-                />
+                <BaseArrowRight :width="18" :height="18" />
                 <span>{{ order.contract }}</span>
               </div>
               <span class="head">
@@ -459,10 +474,7 @@ export default {
           class="bg-yellow-100"
           style="border-radius: 2rem"
         >
-          <x-icon
-            name="archive"
-            class="color-yellow-600"
-          />
+          <x-icon name="archive" class="color-yellow-600" />
           <span class="ml-1">{{ $t("in_the_archive") }}</span>
         </x-square-background>
         <x-square-background
@@ -470,11 +482,7 @@ export default {
           padding="0.4"
           class="mr-2 bg-violet-600"
         >
-          <x-icon
-            size="40"
-            name="local_parking"
-            class="color-yellow-400"
-          />
+          <x-icon size="40" name="local_parking" class="color-yellow-400" />
         </x-square-background>
         <!-- <approver-list :approvers="order.approved" v-if="order.approved" /> -->
       </template>
@@ -506,15 +514,9 @@ export default {
                 </div>
                 {{ $t("contracts.view.download_contract") }}
               </b-dropdown-item>
-              <b-dropdown-item
-                v-if="editPermission"
-                @click="openEditPage"
-              >
+              <b-dropdown-item v-if="editPermission" @click="openEditPage">
                 <div>
-                  <x-icon
-                    name="stylus_note"
-                    size="24"
-                  />
+                  <x-icon name="stylus_note" size="24" />
                 </div>
                 {{ $t("contracts.view.update_contract") }}
               </b-dropdown-item>
@@ -558,10 +560,7 @@ export default {
                 @click="openReContractModal"
               >
                 <div>
-                  <x-icon
-                    name="update"
-                    size="24"
-                  />
+                  <x-icon name="update" size="24" />
                 </div>
                 {{ $t("re_contract") }}
               </b-dropdown-item>
@@ -570,10 +569,7 @@ export default {
                 v-if="editReissuePm"
                 @click="openReissueEditPage"
               >
-                <x-icon
-                  name="update"
-                  size="24"
-                />
+                <x-icon name="update" size="24" />
                 {{ $t("edit_reissue") }}
               </b-dropdown-item>
 
@@ -581,10 +577,7 @@ export default {
                 v-if="cancelReissuePermission"
                 @click="cancelReissue"
               >
-                <x-icon
-                  name="contract_delete"
-                  size="24"
-                />
+                <x-icon name="contract_delete" size="24" />
                 {{ $t("cancel_reissue") }}
               </b-dropdown-item>
 
@@ -616,11 +609,7 @@ export default {
     </AppHeader>
 
     <template v-show="!showLoading">
-      <b-tabs
-        v-model="tabIndex"
-        card
-        class="custom-tab"
-      >
+      <b-tabs v-model="tabIndex" card class="custom-tab">
         <div class="bottom__line" />
         <b-tab
           v-for="tab in tabs"
@@ -628,6 +617,10 @@ export default {
           :title="tab.title"
           @click="tabChange(tab.id)"
         >
+          <template #title>
+            {{ tab.title }}
+            <span v-if="tab.count" class="tab-info"> {{ tab.count }}</span>
+          </template>
           <!--   PRICE CONTENT     -->
         </b-tab>
       </b-tabs>
@@ -639,6 +632,7 @@ export default {
         @start-loading="startLoading"
         @finish-loading="finishLoading"
         @refresh-details="refreshDetails"
+        @item-count="updateItemCount"
       />
     </template>
 
@@ -690,14 +684,8 @@ export default {
     <base-modal ref="payment-deletion-warning">
       <template #header>
         <span class="warning__before__delete-head">
-          <span
-            class="go__back"
-            @click="backNavigation"
-          >
-            <BaseArrowLeft
-              :width="32"
-              :height="32"
-            />
+          <span class="go__back" @click="backNavigation">
+            <BaseArrowLeft :width="32" :height="32" />
           </span>
           <span class="title">{{ $t("contracts.warning") }}</span>
         </span>
@@ -720,15 +708,9 @@ export default {
               label-for="userComment"
               desclass="mb-0"
             >
-              <b-form-textarea
-                v-model="deleteComment"
-                class="delete-comment"
-              />
+              <b-form-textarea v-model="deleteComment" class="delete-comment" />
             </b-form-group>
-            <span
-              v-if="errors[0]"
-              class="error__provider"
-            >
+            <span v-if="errors[0]" class="error__provider">
               {{ errors[0] }}
             </span>
           </ValidationProvider>
@@ -753,18 +735,12 @@ export default {
     </base-modal>
 
     <!--RE - CONTRACT-->
-    <base-modal
-      ref="re-contract"
-      design="reContract-modal auto-height"
-    >
+    <base-modal ref="re-contract" design="reContract-modal auto-height">
       <template #header>
         <span class="d-flex align-items-center justify-content-between">
           <span class="title">{{ $t("re_contract") }}</span>
 
-          <span
-            class="go__back"
-            @click="closeReContractModal"
-          >
+          <span class="go__back" @click="closeReContractModal">
             <BaseCloseIcon />
           </span>
         </span>
@@ -978,5 +954,15 @@ export default {
     background-color: var(--gray-500) !important;
     color: var(--white) !important;
   }
+}
+.tab-info {
+  border-radius: 30%;
+  background-color: var(--success);
+  padding: 2px 6px;
+  display: inline-block;
+  margin-left: 5px;
+  color: white;
+  font-size: 12px;
+  line-height: 14px;
 }
 </style>
