@@ -1473,7 +1473,7 @@ input[type="date"]::-webkit-datetime-edit-year-field {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 18rem;
+    width: 10rem;
   }
 
   &-paid {
@@ -1489,6 +1489,7 @@ input[type="date"]::-webkit-datetime-edit-year-field {
   &-waiting {
     background-color: var(--yellow-100);
     color: var(--yellow-600);
+    margin: 3px;
   }
 
   &-uncertain {
