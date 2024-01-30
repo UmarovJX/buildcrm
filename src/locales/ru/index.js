@@ -869,6 +869,16 @@ export default {
   },
 
   contracts: {
+    additional: 'Доп. соглашение',
+    chooseAddType: "Тип доп.соглашения",
+    addType: {
+      swap: 'Смена квартиры',
+      add: 'Изменение квадратуры',
+      subtract: 'Возврат',
+    },
+    change_status: 'Изменить статус',
+    change_status_success: 'Статус успешно обновлен',
+    change_status_fail: 'Ошибка!',
     name: 'Договоры',
     list_contracts: 'Список договоров',
     collapsed_contracts_list: 'СД',

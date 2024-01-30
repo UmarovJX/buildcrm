@@ -88,6 +88,9 @@ export default {
     }
 
     return {
+      currentItem: null,
+      newStatus: null,
+      paymentStatusData: [],
       showByOptions,
       paymentMethodOptions,
       buttonLoading: false,
@@ -138,6 +141,14 @@ export default {
     };
   },
   computed: {
+    paymentStatusOptions() {
+      return Object.keys(this.paymentStatusData)
+        .map((el) => this.paymentStatusData[el])
+        .map((el) => ({
+          value: el.type,
+          text: el.name[this.$i18n.locale],
+        }));
+    },
     ...mapGetters({
       permission: "getPermission",
     }),
@@ -384,6 +395,7 @@ export default {
   },
   async created() {
     await this.fetchItems();
+    this.getPaymentScheduleStatuses();
   },
   methods: {
     userInteractionEdit(type) {
@@ -429,6 +441,35 @@ export default {
         //       this.finishFetching()
         //     })
       }
+    },
+    async getPaymentScheduleStatuses() {
+      api.contractV2.getStatuses(this.$route.params.id).then((res) => {
+        this.paymentStatusData = res.data.result;
+      });
+    },
+    async updateStatus() {
+      this.buttonLoading = true;
+      api.contractV2
+        .updateStatus(
+          this.$route.params.id,
+          this.currentItem.id,
+          this.newStatus
+        )
+        .then(() => {
+          this.$toasted.show(this.$t("contracts.change_status_success"), {
+            type: "success",
+          });
+          this.getPaymentSchedule();
+          this.closeStatusModal();
+        })
+        .catch((err) => {
+          this.$toasted.show(this.$t("contracts.change_status_fail"), {
+            type: "error",
+          });
+        })
+        .finally(() => {
+          this.buttonLoading = false;
+        });
     },
     async getPaymentSchedule() {
       this.paymentSchedule.appLoading = true;
@@ -506,6 +547,15 @@ export default {
       setTimeout(() => {
         this.initAppendPayment();
       }, 200);
+    },
+
+    openStatusModal(item) {
+      this.currentItem = item;
+      this.newStatus = item.status;
+      this.$refs["status-update-modal"].openModal();
+    },
+    closeStatusModal() {
+      this.$refs["status-update-modal"].closeModal();
     },
     openPaymentsImportModal() {
       this.$refs["import-payments"].openModal();
@@ -769,6 +819,44 @@ export default {
           </base-button>
         </div>
       </div>
+      <base-modal ref="status-update-modal" design="payment-modal">
+        <template #header>
+          <!--   GO BACK     -->
+          <span class="d-flex align-items-center">
+            <span class="go__back" @click="closeStatusModal">
+              <base-arrow-left-icon :width="32" :height="32" />
+            </span>
+            <!--    TITLE      -->
+            <span class="title ml-3">{{ $t("contracts.change_status") }}</span>
+          </span>
+        </template>
+        <template #main v-if="currentItem">
+          <div style="min-height: 150px">
+            <x-form-select
+              v-model="newStatus"
+              class="w-100"
+              :options="paymentStatusOptions"
+            />
+          </div>
+        </template>
+        <template #footer>
+          <b-overlay
+            :show="buttonLoading"
+            rounded
+            opacity="0.6"
+            spinner-small
+            spinner-variant="primary"
+            class="d-inline-block w-100"
+          >
+            <base-button
+              :text="$t('save')"
+              :fixed="true"
+              design="violet-gradient"
+              @click="updateStatus"
+            />
+          </b-overlay>
+        </template>
+      </base-modal>
 
       <!--   PAYMENT ADDITION MODAL   -->
       <base-modal ref="payment-addition-modal" design="payment-modal">
@@ -1103,28 +1191,11 @@ export default {
       >
         <template #cell(status)="{ item }">
           <span
-            v-if="item.status === 'waiting'"
-            class="payment__schedule-waiting payment__schedule-status"
+            v-if="paymentStatusData"
+            @click="openStatusModal(item)"
+            :class="'payment__schedule-status payment__schedule-' + item.status"
           >
-            {{ $t("waiting_to_payment") }}
-          </span>
-          <span
-            v-else-if="item.status === 'paid'"
-            class="payment__schedule-paid payment__schedule-status"
-          >
-            {{ $t("paid") }}
-          </span>
-          <span
-            v-else-if="item.status === 'partially'"
-            class="payment__schedule-partially payment__schedule-status"
-          >
-            {{ $t("partially") }}
-          </span>
-          <span
-            v-else
-            class="payment__schedule-uncertain payment__schedule-status"
-          >
-            {{ item.status }}
+            {{ paymentStatusData[item.status].name[$i18n.locale] }}
           </span>
         </template>
       </b-table>
@@ -1468,6 +1539,7 @@ input[type="date"]::-webkit-datetime-edit-year-field {
   }
 
   &-status {
+    cursor: pointer;
     border-radius: 2rem;
     padding: 0.4rem 2rem;
     display: flex;
