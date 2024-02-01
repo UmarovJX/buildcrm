@@ -180,6 +180,13 @@ class ContractV2 extends Core {
   recover({ contractId }, b = {}) {
     return this.post(`contracts/${contractId}/recovery`, b)
   }
+
+  getStatuses(id) {
+    return this.get(`contracts/${id}/payment-schedule/statuses`)
+  }
+  updateStatus(contract, payment, status) {
+    return this.put(`contracts/${contract}/payment-schedule/${payment}`, { status })
+  }
 }
 
 export default {
