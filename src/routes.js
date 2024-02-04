@@ -40,6 +40,8 @@ import FastPlanList from '@/views/objects/FastPlan/List'
 import AddDrawing from '@/views/objects/FastPlan/AddDrawing.vue'
 import Editor from '@/views/Editor.vue'
 
+import SubContractCreate from '@/views/contracts/subContract/Create'
+
 /* ? PARKING ROUTES */
 import ParkingCheckout from '@/views/parking/checkout/Index.vue'
 
@@ -500,6 +502,11 @@ const routes = [
             },
           },
         ],
+      },
+      {
+        path: '/contracts/:id/sub/:type',
+        name: 'sub-contract-create',
+        component: SubContractCreate
       },
 
       {
