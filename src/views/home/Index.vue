@@ -66,6 +66,7 @@ export default {
     );
 
     let defaultTypeOfView = "table";
+    console.log("permissionFounderTable", permissionFounderTable);
     if (!permissionFounderTable) {
       if (permissionFounderGraph) {
         defaultTypeOfView = "chart";
@@ -109,6 +110,7 @@ export default {
       fetchSalesMain,
       debtorMain,
       fetchDebtorMain;
+    console.log("permissionFounderTable", permissionFounderTable);
     if (permissionFounderTable) {
       const d = useHome();
       objectsIncome = d.objectsIncome;
@@ -146,6 +148,7 @@ export default {
       orderReports,
       fetchOrderReportsData,
       statisticsFetchAll; // fetchAll:
+    console.log("permissionFounderGraph", permissionFounderGraph);
     if (permissionFounderGraph) {
       const d = useStatistics();
       periodType = d.periodType;
