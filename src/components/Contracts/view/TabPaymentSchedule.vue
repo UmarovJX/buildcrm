@@ -894,18 +894,19 @@ export default {
         <template #main>
           <ValidationObserver ref="payment-observer" style="overflow-y: auto">
             <div class="payment-addition-fields">
-              <ValidationProvider
-                name="payment_date"
-                rules="required"
-                class="content__form__select"
-                :class="{ warning__border: validationWarnings.payment_date }"
-              >
-                <input
-                  v-model="appendPayment.payment_date"
-                  type="date"
-                  class="w-100"
-                />
+              <ValidationProvider name="payment_date" rules="required">
+                <div
+                  class="content__form__select"
+                  :class="{ warning__border: validationWarnings.payment_date }"
+                >
+                  <input
+                    v-model="appendPayment.payment_date"
+                    type="date"
+                    class="w-100"
+                  />
+                </div>
               </ValidationProvider>
+
               <ValidationProvider
                 name="type"
                 rules="required"
@@ -1644,9 +1645,8 @@ input[type="date"]::-webkit-datetime-edit-year-field {
 }
 
 .warning__border {
-  border: 2px solid var(--red-600);
+  border: 1px solid var(--red-600) !important;
 }
-
 .warning__before__delete {
   &-head {
     display: flex;

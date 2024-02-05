@@ -208,7 +208,7 @@ export default {
     await this.fetchContractData();
   },
   mounted() {
-    this.$refs.archiveWarningModal.openModal();
+    //this.$refs.archiveWarningModal.openModal();
   },
   methods: {
     closeSubContractModal() {
