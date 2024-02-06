@@ -18,6 +18,7 @@ import { XModalCenter } from "@/components/ui-components/modal-center";
 import { XFormInput } from "@/components/ui-components/form-input";
 import Permission from "@/permission";
 import ApproverList from "@/views/contracts/components/ApproverList.vue";
+import { v3ServiceApi } from "@/services/v3/v3.service";
 
 export default {
   name: "ContractView",
@@ -53,11 +54,7 @@ export default {
         showModal: false,
         type: null,
       },
-      subContractOptions: [
-        { value: "swap", text: "Поменять квартиру" },
-        { value: "add", text: "Увеличить квадратуру" },
-        { value: "subtract", text: "Возврат" },
-      ],
+      subContractOptions: [],
       tabs: [
         {
           id: 0,
@@ -208,6 +205,13 @@ export default {
     await this.fetchContractData();
   },
   mounted() {
+    v3ServiceApi.subOrder.getOptions().then((r) => {
+      const d = r.data;
+      this.subContractOptions = Object.keys(d).map((el) => ({
+        value: el,
+        text: d[el].name[this.$i18n.locale],
+      }));
+    });
     //this.$refs.archiveWarningModal.openModal();
   },
   methods: {
