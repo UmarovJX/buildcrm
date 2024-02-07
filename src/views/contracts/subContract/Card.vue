@@ -1,37 +1,42 @@
 <template>
-  <div class="card">
-    <div class="card-title">{{ title }}</div>
+  <div class="card1">
+    <div class="card1-title">{{ title }}</div>
     <div class="d-flex justify-content-between mt-2">
-      <div class="card-label">Номер квартиры</div>
-      <div class="card-label fw700">
+      <div class="card1-label">Номер квартиры</div>
+      <div class="card1-value fw700">
         {{ number }}
         <span v-if="newApartment">--> {{ newNumber }} </span>
       </div>
     </div>
     <div class="d-flex justify-content-between mt-2">
-      <div class="card-label">Блок</div>
-      <div class="card-label fw700">{{ block }}</div>
+      <div class="card1-label">Блок</div>
+      <div class="card1-value fw700">
+        {{ block }} <span v-if="newApartment">--> {{ newBlock }} </span>
+      </div>
     </div>
     <div class="d-flex justify-content-between mt-2">
-      <div class="card-label">Этаж</div>
-      <div class="card-label fw700">{{ floor }}</div>
+      <div class="card1-label">Этаж</div>
+      <div class="card1-value fw700">
+        {{ floor }} <span v-if="newApartment">--> {{ newFloor }} </span>
+      </div>
     </div>
     <div class="d-flex justify-content-between mt-2">
-      <div class="card-label">Комнаты</div>
-      <div class="card-label fw700">{{ rooms }}</div>
+      <div class="card1-label">Комнаты</div>
+      <div class="card1-value fw700">{{ rooms }}</div>
     </div>
     <div class="d-flex justify-content-between mt-2">
-      <div class="card-label">Площадь</div>
-      <div class="card-label fw700">
+      <div class="card1-label">Площадь</div>
+      <div class="card1-value fw700">
         {{ area }}<span v-if="areaChange">--> {{ newArea }} м2 </span>
       </div>
     </div>
     <div class="d-flex justify-content-between mt-2">
-      <div class="card-label">Балкон</div>
-      <div class="card-label fw700">{{ balcony }} м2</div>
+      <div class="card1-label">Балкон</div>
+      <div class="card1-value fw700">{{ balcony }} м2</div>
     </div>
     <div class="d-flex justify-content-between mt-4" v-if="type === 'swap'">
       <base-search-input
+        style="width: 100%"
         placeholder="Поиск квартир"
         @trigger-input="searchApartments"
       ></base-search-input>
@@ -52,7 +57,8 @@
       value-field="value"
       text-field="name"
       :options="apartmentOptions"
-      placeholder="Новая квартира"
+      :placeholder="selectPlaceholder"
+      :is-loading="isSearching"
     />
   </div>
 </template>
@@ -60,11 +66,11 @@
 <script>
 import api from "@/services/api";
 import { computed, getCurrentInstance, ref, watch } from "vue";
-import { XFormSelect } from "@/components/ui-components/form-select";
+import { XFormSelect } from "@/views/contracts/subContract/form-select";
 
-import BaseSearchInput from "@/components/Reusable/BaseSearchInput";
+import BaseSearchInput from "@/views/contracts/subContract/BaseSearchInput";
 
-import { XFormInput } from "@/components/ui-components/form-input";
+import { XFormInput } from "@/views/contracts/subContract/form-input";
 
 export default {
   components: { BaseSearchInput, XFormSelect, XFormInput },
@@ -101,6 +107,13 @@ export default {
     const newNumber = computed(
       () => apartments.value.find((el) => el.uuid === newApartment.value).number
     );
+    const newBlock = computed(
+      // () => apartments.value.find((el) => el.uuid === newApartment.value).number
+      () => "API?"
+    );
+    const newFloor = computed(
+      () => apartments.value.find((el) => el.uuid === newApartment.value).floor
+    );
     const apartmentOptions = computed(() => {
       return apartments.value.map((el) => ({
         value: el.uuid,
@@ -119,15 +132,24 @@ export default {
       return res.toFixed(1);
     });
 
+    const isSearching = ref(false);
     let oldSearch = undefined;
     function searchApartments(e) {
       if (e === oldSearch) return;
       oldSearch = e;
       const query = { limit: 50, status: ["available"], number: [e] };
+      isSearching.value = true;
+      apartments.value = [];
       api.objectsV2
         .fetchObjectApartments(vm.object, query)
-        .then((r) => (apartments.value = r.data.items));
+        .then((r) => (apartments.value = r.data.items))
+        .finally(() => (isSearching.value = false));
     }
+    const selectPlaceholder = computed(() => {
+      if (isSearching.value) return "Ищем...";
+      if (apartments.value.length === 0) return "Не найдено";
+      return "Новая квартира";
+    });
 
     return {
       searchApartments,
@@ -135,29 +157,38 @@ export default {
       apartments,
       newApartment,
       newNumber,
+      newBlock,
+      newFloor,
       areaChangePlaceholder,
       areaChange,
       newArea,
+      isSearching,
+      selectPlaceholder,
     };
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.card {
-  width: 320px;
-  border: 1px var(--gray-200) solid;
-  border-radius: 20px;
+.card1 {
+  background-color: var(--gray-100);
+  width: 360px;
+  border-radius: 32px;
   padding: 20px;
   overflow: visible;
   //font-weight: 600;
 
   &-title {
     font-size: 24px;
+    font-weight: 600;
     color: var(--gray-500);
   }
   &-label {
-    color: var(--gray-500);
+    font-weight: 600;
+    color: #9ca3af;
+  }
+  &-value {
+    color: #4b5563;
   }
 }
 .fw700 {

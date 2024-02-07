@@ -9,13 +9,10 @@
             </div>
             <div class="breadcrumb__content">
               <div>
-                {{ $t("Доп соглашение к договору") }}
-                <BaseArrowRight :width="18" :height="18" />
+                {{ $t("Договор") }}
                 <span>{{ order.contract }}</span>
               </div>
-              <span class="head">
-                {{ subContractType }}
-              </span>
+              <span class="head"> Оформить доп соглашение </span>
             </div>
           </div>
         </div>
@@ -31,175 +28,225 @@
       </base-button>
     </div>
     <ValidationObserver ref="validation-observer">
-      <ValidationProvider class="mt-4" rules="required" v-slot="{ errors }">
-        <div class="row">
-          <div class="col-6">
-            <base-date-picker
-              v-model="subContractDate"
-              :range="false"
-              class="data-picker"
-              :class="{ warning__border: errors[0] }"
-              format="DD.MM.YYYY"
-              :placeholder="'Дата соглашения'"
-              icon-fill="var(--violet-600)"
-            />
+      <!-- DATE && NUMBER -->
+      <div class="row">
+        <div class="col-8">
+          <div class="row">
+            <div class="col-6">
+              <ValidationProvider
+                class="mt-4"
+                rules="required"
+                v-slot="{ errors }"
+              >
+                <base-date-picker
+                  v-model="subContractDate"
+                  :range="false"
+                  class="data-picker"
+                  :class="{ warning__border: errors[0] }"
+                  format="DD.MM.YYYY"
+                  :placeholder="'Дата соглашения'"
+                  icon-fill="var(--violet-600)"
+                />
+              </ValidationProvider>
+            </div>
+            <div class="col-6 d-flex">
+              <div class="input-left">
+                <x-form-input
+                  style="width: 100%"
+                  v-model="order.contract"
+                  :label="true"
+                  type="text"
+                  placeholder="Контракт"
+                  readonly
+                />
+              </div>
+              <ValidationProvider
+                rules="required"
+                v-slot="{ errors }"
+                class="input-right"
+              >
+                <x-form-input
+                  class="w-100"
+                  :class="{ warning__border: errors[0] }"
+                  v-model="subContractNumber"
+                  :label="true"
+                  type="text"
+                  placeholder="Номер доп соглашения"
+                />
+              </ValidationProvider>
+            </div>
           </div>
         </div>
-      </ValidationProvider>
-      <div class="mt-4">
-        <div class="row">
-          <div class="col-6 d-flex">
-            <div class="input-left">
-              <x-form-input
-                v-model="order.contract"
-                :label="true"
-                type="text"
-                placeholder="Контракт"
-                readonly
-              />
-            </div>
-            <ValidationProvider
-              rules="required"
-              v-slot="{ errors }"
-              class="input-right"
-            >
+      </div>
+      <div class="row mt-4">
+        <div class="col-8">
+          <div class="row">
+            <div class="col-6">
               <x-form-input
                 class="w-100"
-                :class="{ warning__border: errors[0] }"
-                v-model="subContractNumber"
+                :value="subContractType"
                 :label="true"
                 type="text"
-                placeholder="Номер доп соглашения"
+                readonly
+                placeholder="Тип"
               />
-            </ValidationProvider>
+            </div>
           </div>
         </div>
       </div>
-
-      <div class="d-flex mt-4 apartments flex-wrap" v-if="apartments">
-        <apartment-card
-          v-for="a in apartments"
-          :key="a.id"
-          title="Квартиры"
-          :floor="a.apartment.floor"
-          :number="a.apartment.number"
-          :rooms="a.apartment.rooms"
-          :entrance="a.entrance"
-          :type="$route.params.type"
-          :block="a.block.name"
-          :area="a.apartment.plan.area"
-          :balcony="a.apartment.plan.balcony_area"
-          :object="a.object.id"
-          apartment="2"
-          @apartment-changed="(e) => setNewApartment(a, e)"
-          @area-changed="(e) => setNewArea(a, e)"
-        >
-        </apartment-card>
-      </div>
-
-      <div class="row mt-4" v-if="showPrice">
-        <ValidationProvider rules="required" v-slot="{ errors }" class="w-100">
-          <div class="col-6">
-            <base-price-input
-              class="discount-per-m2"
-              :class="{ warning__border: errors[0] }"
-              :label="true"
-              :currency="`${$t('ye')}`"
-              placeholder="Цена за м2"
-              v-model="m2_price"
-              :permission-change="true"
-              @input="updateFullPrice"
-            />
-          </div>
-        </ValidationProvider>
-      </div>
-
       <!-- CLIENT INFO -->
-      <div class="row mt-4" v-if="showClientInfo">
-        <div class="col">Информация и клиенте</div>
-      </div>
-      <div class="row mt-4" v-if="showClientInfo">
-        <ValidationProvider rules="required" v-slot="{ errors }" class="w-100">
-          <div class="col-6">
-            <x-form-input
-              :class="{ warning__border: errors[0] }"
-              v-model="cardNumber"
-              :label="true"
-              class="w-100"
-              type="text"
-              placeholder="Номер карты"
-            />
+      <div v-if="showClientInfo">
+        <div class="row mt-4">
+          <div class="col client-label">Информация и клиенте</div>
+        </div>
+        <div class="row mt-4">
+          <div class="col-8">
+            <div class="row">
+              <div class="col-6">
+                <ValidationProvider
+                  rules="required"
+                  v-slot="{ errors }"
+                  class="w-100"
+                >
+                  <x-form-input
+                    :class="{ warning__border: errors[0] }"
+                    v-model="cardNumber"
+                    :label="true"
+                    class="w-100"
+                    type="text"
+                    placeholder="Номер карты"
+                  />
+                </ValidationProvider>
+              </div>
+              <div class="col-6">
+                <ValidationProvider
+                  rules="required"
+                  v-slot="{ errors }"
+                  class="w-100"
+                >
+                  <x-form-input
+                    :class="{ warning__border: errors[0] }"
+                    v-model="bank"
+                    :label="true"
+                    class="w-100"
+                    type="text"
+                    placeholder="Адрес банка"
+                  />
+                </ValidationProvider>
+              </div>
+            </div>
           </div>
-        </ValidationProvider>
+        </div>
       </div>
-      <div class="row mt-4" v-if="showClientInfo">
-        <ValidationProvider rules="required" v-slot="{ errors }" class="w-100">
-          <div class="col-6">
-            <x-form-input
-              :class="{ warning__border: errors[0] }"
-              v-model="bank"
-              :label="true"
-              class="w-100"
-              type="text"
-              placeholder="Адрес банка"
-            />
+      <div class="row mt-4" style="min-height: 57px" v-if="showPrice">
+        <div class="col-8">
+          <div class="row">
+            <div class="col-6" v-if="showPrice">
+              <ValidationProvider
+                rules="required"
+                v-slot="{ errors }"
+                class="w-100"
+              >
+                <base-price-input
+                  class="discount-per-m2"
+                  :class="{
+                    warning__border: errors[0],
+                  }"
+                  :label="true"
+                  :currency="`${$t('ye')}`"
+                  :placeholder="'Цена за м2, ' + $t('ye')"
+                  top-placeholder
+                  v-model="m2_price"
+                  :permission-change="true"
+                  @input="updateFullPrice"
+                />
+              </ValidationProvider>
+            </div>
+            <div class="col-6" v-if="showFullPrice">
+              <ValidationProvider
+                rules="required"
+                v-slot="{ errors }"
+                class="w-100"
+              >
+                <base-price-input
+                  :class="{ warning__border: errors[0] }"
+                  class="discount-per-m2"
+                  :label="true"
+                  :currency="`${$t('ye')}`"
+                  :placeholder="'Полная цена, ' + $t('ye')"
+                  top-placeholder
+                  v-model="fullPrice"
+                  :permission-change="true"
+                  @input="updateMPrice"
+                />
+              </ValidationProvider>
+            </div>
           </div>
-        </ValidationProvider>
+        </div>
       </div>
-      <!-- CLIENT INFO -->
+      <div class="row mt-4">
+        <div class="col client-label">Список квартир</div>
+      </div>
+      <div class="row mt-4 flex-wrap" v-if="apartments">
+        <div class="col-4" v-for="a in apartments" :key="a.id">
+          <apartment-card
+            style="width: 100%"
+            title="Квартиры"
+            :floor="a.apartment.floor"
+            :number="a.apartment.number"
+            :rooms="a.apartment.rooms"
+            :entrance="a.entrance"
+            :type="$route.params.type"
+            :block="a.block.name"
+            :area="a.apartment.plan.area"
+            :balcony="a.apartment.plan.balcony_area"
+            :object="a.object.id"
+            @apartment-changed="(e) => setNewApartment(a, e)"
+            @area-changed="(e) => setNewArea(a, e)"
+          >
+          </apartment-card>
+        </div>
+      </div>
 
-      <div class="row mt-4" v-if="showStartDate">
-        <ValidationProvider rules="required" v-slot="{ errors }" class="w-100">
-          <div class="col-6">
-            <base-date-picker
-              :class="{ warning__border: errors[0] }"
-              v-model="paymentStart"
-              :range="false"
-              class="data-picker"
-              format="DD.MM.YYYY"
-              placeholder="Дата начала рассрочки"
-              icon-fill="var(--violet-600)"
-            />
+      <div class="row mt-4">
+        <div class="col-8">
+          <div class="row">
+            <div class="col-6" v-if="showStartDate">
+              <ValidationProvider
+                rules="required"
+                v-slot="{ errors }"
+                class="w-100"
+              >
+                <base-date-picker
+                  :class="{ warning__border: errors[0] }"
+                  v-model="paymentStart"
+                  :range="false"
+                  class="data-picker"
+                  format="DD.MM.YYYY"
+                  placeholder="Дата начала рассрочки"
+                  icon-fill="var(--violet-600)"
+                />
+              </ValidationProvider>
+            </div>
+            <div class="col-6" v-if="showEndDate">
+              <ValidationProvider
+                rules="required"
+                v-slot="{ errors }"
+                class="w-100"
+              >
+                <base-date-picker
+                  :class="{ warning__border: errors[0] }"
+                  v-model="paymentEnd"
+                  :range="false"
+                  class="data-picker"
+                  format="DD.MM.YYYY"
+                  placeholder="Дата окончания рассрочки"
+                  icon-fill="var(--violet-600)"
+                />
+              </ValidationProvider>
+            </div>
           </div>
-        </ValidationProvider>
-      </div>
-      <div class="row mt-4" v-if="showEndDate">
-        <ValidationProvider rules="required" v-slot="{ errors }" class="w-100">
-          <div class="col-6">
-            <base-date-picker
-              :class="{ warning__border: errors[0] }"
-              v-model="paymentEnd"
-              :range="false"
-              class="data-picker"
-              format="DD.MM.YYYY"
-              placeholder="Дата окончания рассрочки"
-              icon-fill="var(--violet-600)"
-            />
-          </div>
-        </ValidationProvider>
-      </div>
-      <div class="row mt-4" v-if="showFullPrice">
-        <ValidationProvider rules="required" v-slot="{ errors }" class="w-100">
-          <div class="col-6">
-            <base-price-input
-              :class="{ warning__border: errors[0] }"
-              class="discount-per-m2"
-              :label="true"
-              :currency="`${$t('ye')}`"
-              placeholder="Полная цена"
-              v-model="fullPrice"
-              :permission-change="true"
-              @input="updateMPrice"
-            />
-            <!-- <x-form-input
-          v-model="fullPrice"
-          :label="true"
-          class="w-100"
-          type="text"
-          placeholder="Итоговая цена"
-        /> -->
-          </div>
-        </ValidationProvider>
+        </div>
       </div>
     </ValidationObserver>
   </div>
@@ -216,7 +263,7 @@ import BaseButton from "@/components/Reusable/BaseButton";
 import { XFormInput } from "@/components/ui-components/form-input";
 import BaseDatePicker from "@/components/Reusable/BaseDatePicker";
 import ApartmentCard from "@/views/contracts/subContract/Card";
-import BasePriceInput from "@/components/Reusable/BasePriceInput";
+import BasePriceInput from "@/views/contracts/subContract/BasePriceInput";
 
 export default {
   components: {
@@ -425,9 +472,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.apartments {
-  gap: 20px;
-}
+// .apartments {
+//   gap: 20px;
+// }
 .navigation__content {
   display: flex;
   align-items: center;
@@ -457,7 +504,7 @@ export default {
   border-top-left-radius: 100%;
   border-bottom-left-radius: 100%;
   border-right: 2px var(--gray-300) solid;
-  width: 250px;
+  width: 150px;
   &:focus-within,
   &:hover {
     background-color: var(--gray-200);
@@ -478,12 +525,18 @@ export default {
   background-color: var(--gray-100);
   width: 100%;
   border: none;
-  padding: 0.75rem 1.25rem;
+  padding: 12px 22px;
 }
 .warning__border {
   border: 1px solid var(--red-600) !important;
 }
 .data-picker {
   border-radius: 2rem;
+}
+
+.client-label {
+  font-weight: 600;
+  font-size: 24px;
+  color: #4b5563;
 }
 </style>
