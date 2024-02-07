@@ -27,12 +27,14 @@
     <div class="d-flex justify-content-between mt-2">
       <div class="card1-label">Площадь</div>
       <div class="card1-value fw700">
-        {{ area }}<span v-if="areaChange">--> {{ newArea }} м2 </span>
+        {{ area }}<span v-if="areaChange">--> {{ newArea }} </span> м<sup
+          >2</sup
+        >
       </div>
     </div>
     <div class="d-flex justify-content-between mt-2">
       <div class="card1-label">Балкон</div>
-      <div class="card1-value fw700">{{ balcony }} м2</div>
+      <div class="card1-value fw700">{{ balcony }} м<sup>2</sup></div>
     </div>
     <div class="d-flex justify-content-between mt-4" v-if="type === 'swap'">
       <base-search-input
