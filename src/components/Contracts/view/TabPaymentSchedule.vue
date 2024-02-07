@@ -1579,6 +1579,7 @@ input[type="date"]::-webkit-datetime-edit-year-field {
     align-items: center;
     width: 14rem;
     color: var(--violet-600);
+    background-color: var(--violet-100);
   }
 
   &-paid {
