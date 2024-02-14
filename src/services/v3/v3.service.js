@@ -166,6 +166,8 @@ class V3Service extends Core {
   subOrder = {
     getOptions: () => this.post('orders/change-types'),
     create: b => this.post('orders/add-contract', b),
+    getAll: b => this.post('orders/all-contracts', b),
+    view: b => this.post('orders/show-contract', b),
   }
 }
 

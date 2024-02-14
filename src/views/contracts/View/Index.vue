@@ -80,6 +80,12 @@ export default {
           route: "contract-details",
           count: 0,
         },
+        {
+          id: 6,
+          title: "Доп.соглашения",
+          route: "sub-contracts",
+          count: 0,
+        },
 
         // {
         //     id: 5,

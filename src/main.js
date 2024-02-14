@@ -31,7 +31,7 @@ import * as rules from 'vee-validate/dist/rules'
 import uz from './locales/uz/warns/index.json'
 import ru from './locales/ru/warns/index.json'
 import store from './store'
-import i18n from './locales'
+import { initI18n } from './locales'
 import toasted from './util/toasted'
 import router from './routes'
 
@@ -97,10 +97,14 @@ Vue.use(VueYandexMetrika, {
     webvisor: true,
   },
 })
-new Vue({
-  el: '#app',
-  i18n,
-  store,
-  router,
-  render: h => h(App),
+
+initI18n().then(function (i18n) {
+  new Vue({
+    el: '#app',
+    i18n,
+    store,
+    router,
+    render: h => h(App),
+  })
 })
+

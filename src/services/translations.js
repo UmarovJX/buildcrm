@@ -25,6 +25,9 @@ class TranslationsV3 extends Core {
   removeTranslation(body) {
     return this.post('translation/remove', body)
   }
+  findAll(body) {
+    return this.post('translation/findAll', body)
+  }
 }
 
 export default {

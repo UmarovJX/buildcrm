@@ -185,6 +185,9 @@
         </div>
       </div>
       <div class="row mt-4">
+        <div class="col client-label">{{ $t("hello8") }}</div>
+      </div>
+      <div class="row mt-4">
         <div class="col client-label">Список квартир</div>
       </div>
       <div class="row mt-4 flex-wrap" v-if="apartments">
@@ -418,6 +421,8 @@ export default {
             area: el.areaChange,
           }));
         d.append("end_date", paymentEnd.value);
+        d.append("payment_due", paymentEnd.value);
+
         d.append("price", m2_price.value);
         for (let i in aparts) {
           console.log(aparts[i]);

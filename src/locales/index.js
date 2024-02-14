@@ -11,12 +11,20 @@ const language = localStorage.locale
 
 export function initI18n() {
   return api.translationsV3.findAll({ tags: ['main'] }).then(({ data }) => {
-    console.log(data);
     return new VueLang({
       locale: language,
       fallbackLocale: 'ru',
       messages: {
         ru: Object.assign(ru, data.result),
+        uz,
+      }
+    })
+  }).catch(() => {
+    return new VueLang({
+      locale: language,
+      fallbackLocale: 'ru',
+      messages: {
+        ru,
         uz,
       }
     })
