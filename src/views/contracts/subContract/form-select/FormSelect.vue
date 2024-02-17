@@ -449,7 +449,7 @@ export default {
         class="x-form-select-icon"
         :class="{ 'x-form-select-icon-open': open }"
       >
-        <base-loading height="24" width="24" v-if="isLoading"></base-loading>
+        <base-loading :height="24" :width="24" v-if="isLoading"></base-loading>
         <base-down-icon v-else-if="options.length" />
       </span>
     </div>

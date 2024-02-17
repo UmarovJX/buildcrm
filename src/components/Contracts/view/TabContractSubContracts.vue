@@ -235,10 +235,10 @@ export default {
         </span>
       </template>
       <template #main>
-        <base-loading v-if="loading"></base-loading>
+        <base-loading v-if="loading" style="min-width: 506px"></base-loading>
         <div v-else>
           <div class="row">
-            <div class="col-6">
+            <div class="col-12 no-pointer">
               <x-form-input
                 class="w-100"
                 :value="currentTypeName"
@@ -248,7 +248,7 @@ export default {
                 readonly
               />
             </div>
-            <div class="col-6">
+            <div class="col-12 mt-2 no-pointer">
               <x-form-input
                 class="w-100"
                 :value="currentDate"
@@ -261,7 +261,7 @@ export default {
           </div>
           <!-- Prices -->
           <div class="row mt-2" v-if="current && currentType !== 'swap'">
-            <div class="col-6">
+            <div class="col-6 no-pointer">
               <x-form-input
                 class="w-100"
                 :value="currentm2"
@@ -271,7 +271,7 @@ export default {
                 readonly
               />
             </div>
-            <div class="col-6">
+            <div class="col-6 no-pointer">
               <x-form-input
                 class="w-100"
                 :value="currentTransaction"
@@ -284,109 +284,74 @@ export default {
           </div>
           <!-- EXTRA -->
           <div class="row mt-2" v-if="current && currentType === 'subtract'">
-            <div class="col-6">
+            <div class="col-6 no-pointer">
               <x-form-input
                 class="w-100"
                 :value="card"
                 :label="true"
                 type="text"
-                placeholder="Card"
+                placeholder="Номер карты"
                 readonly
               />
             </div>
-            <div class="col-6">
+            <div class="col-6 no-pointer">
               <x-form-input
                 class="w-100"
                 :value="bank"
                 :label="true"
                 type="text"
-                placeholder="Bank"
+                placeholder="Адрес банка"
                 readonly
               />
             </div>
           </div>
-          <div class="row mt-2" v-if="current && currentType === 'subtract'">
+          <div
+            class="row mt-2 no-pointer"
+            v-if="current && currentType === 'subtract'"
+          >
             <div class="col-6">
               <x-form-input
                 class="w-100"
                 :value="paymentDue"
                 :label="true"
                 type="text"
-                placeholder="Payment Due"
+                placeholder="Дата платежа"
                 readonly
               />
             </div>
           </div>
           <!-- Apartments -->
-          <div class="section-title mt-4">Apartments</div>
-          <div v-if="current && currentType === 'swap'">
+          <div class="section-title mt-4 mb-2">Квартиры</div>
+          <div v-if="current">
             <div class="apartment" v-for="a of apartments" :key="a.old.id">
               <div class="d-flex justify-content-between">
-                <div class="label">Number</div>
+                <div class="label">Номер</div>
                 <div class="value">
                   {{ a.old.number }} --> {{ a.new.number }}
                 </div>
               </div>
               <div class="d-flex justify-content-between mt-2">
-                <div class="label">Floor</div>
+                <div class="label">Этаж</div>
                 <div class="value">{{ a.old.floor }} --> {{ a.new.floor }}</div>
               </div>
               <div class="d-flex justify-content-between mt-2">
-                <div class="label">Block</div>
+                <div class="label">Блок</div>
                 <div class="value">
                   {{ a.old.block.name }} --> {{ a.new.block.name }}
                 </div>
               </div>
               <div class="d-flex justify-content-between mt-2">
-                <div class="label">Rooms</div>
+                <div class="label">Комнаты</div>
                 <div class="value">
                   {{ a.old.rooms }}
                 </div>
               </div>
               <div class="d-flex justify-content-between mt-2">
-                <div class="label">Area</div>
-                <div class="value">{{ a.old.area }} m2</div>
-              </div>
-              <div class="d-flex justify-content-between mt-2">
-                <div class="label">Balcony</div>
-                <div class="value">{{ a.old.balcony_area }} m2</div>
-              </div>
-            </div>
-          </div>
-          <div
-            v-if="
-              current && (currentType === 'add' || currentType === 'subtract')
-            "
-          >
-            <div class="apartment mt-2" v-for="a of apartments" :key="a.old.id">
-              <div class="d-flex justify-content-between">
-                <div class="label">Number</div>
-                <div class="value">
-                  {{ a.old.number }}
-                </div>
-              </div>
-              <div class="d-flex justify-content-between mt-2">
-                <div class="label">Floor</div>
-                <div class="value">{{ a.old.floor }}</div>
-              </div>
-              <div class="d-flex justify-content-between mt-2">
-                <div class="label">Block</div>
-                <div class="value">
-                  {{ a.old.block.name }}
-                </div>
-              </div>
-              <div class="d-flex justify-content-between mt-2">
-                <div class="label">Rooms</div>
-                <div class="value">
-                  {{ a.old.rooms }}
-                </div>
-              </div>
-              <div class="d-flex justify-content-between mt-2">
-                <div class="label">Area</div>
+                <div class="label">Площадь</div>
                 <div class="value">{{ a.old.area }} --> {{ a.new.area }}m2</div>
               </div>
               <div class="d-flex justify-content-between mt-2">
-                <div class="label">Balcony</div>
+                <div class="label">Площадь балкона</div>
                 <div class="value">{{ a.old.balcony_area }} m2</div>
               </div>
             </div>
@@ -399,6 +364,9 @@ export default {
 
 <style lang="scss" scoped>
 @import "../../../assets/scss/utils/pagination";
+.no-pointer {
+  pointer-events: none;
+}
 .section-title {
   color: var(--gray-600);
   font-size: 24px;
@@ -415,6 +383,7 @@ export default {
   }
   & .value {
     font-weight: 600;
+    color: var(--gray-600);
   }
 }
 ::v-deep .table__list {

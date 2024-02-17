@@ -78,6 +78,7 @@
           </div>
         </div>
       </div>
+      <!-- subOrder Type -->
       <div class="row mt-4">
         <div class="col-8">
           <div class="row">
@@ -184,8 +185,51 @@
           </div>
         </div>
       </div>
-      <div class="row mt-4">
-        <div class="col client-label">{{ $t("hello8") }}</div>
+      <div
+        class="row mt-4"
+        v-if="$route.params.type === 'kadastr' && discounts"
+      >
+        <div class="col-8">
+          <div class="row">
+            <div class="col-6">
+              <ValidationProvider
+                rules="required"
+                v-slot="{ errors }"
+                class="w-100"
+              >
+                <x-form-select
+                  v-model="discount"
+                  :class="{ warning__border: errors[0] }"
+                  value-field="value"
+                  text-field="name"
+                  :options="discountOptions"
+                  :placeholder="'Вариант оплаты'"
+                />
+              </ValidationProvider>
+            </div>
+            <div class="col-6">
+              <ValidationProvider
+                rules="required"
+                v-slot="{ errors }"
+                class="w-100"
+              >
+                <base-price-input
+                  style="padding-top: 12px; padding-bottom: 12px"
+                  class="discount-per-m2"
+                  :class="{
+                    warning__border: errors[0],
+                  }"
+                  :label="true"
+                  :currency="`${$t('ye')}`"
+                  :placeholder="'Сумма скидки, ' + $t('ye')"
+                  top-placeholder
+                  v-model="discountAmount"
+                  :permission-change="true"
+                />
+              </ValidationProvider>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="row mt-4">
         <div class="col client-label">Список квартир</div>
@@ -197,13 +241,13 @@
             title="Квартиры"
             :floor="a.apartment.floor"
             :number="a.apartment.number"
-            :rooms="a.apartment.rooms"
+            :rooms="a.apartment.room"
             :entrance="a.entrance"
             :type="$route.params.type"
-            :block="a.block.name"
+            :block="a.apartment.block.name"
             :area="a.apartment.plan.area"
             :balcony="a.apartment.plan.balcony_area"
-            :object="a.object.id"
+            :uuid="a.apartment.id"
             @apartment-changed="(e) => setNewApartment(a, e)"
             @area-changed="(e) => setNewArea(a, e)"
           >
@@ -214,6 +258,25 @@
       <div class="row mt-4">
         <div class="col-8">
           <div class="row">
+            <div class="col-6">
+              <ValidationProvider
+                rules="required"
+                v-slot="{ errors }"
+                class="w-100"
+              >
+                <base-date-picker
+                  :class="{ warning__border: errors[0] }"
+                  v-model="initialPaymentDate"
+                  :range="false"
+                  class="data-picker"
+                  format="DD.MM.YYYY"
+                  placeholder="Дата Первого платежа"
+                  icon-fill="var(--violet-600)"
+                />
+              </ValidationProvider>
+            </div>
+          </div>
+          <div class="row mt-4">
             <div class="col-6" v-if="showStartDate">
               <ValidationProvider
                 rules="required"
@@ -267,7 +330,7 @@ import { XFormInput } from "@/components/ui-components/form-input";
 import BaseDatePicker from "@/components/Reusable/BaseDatePicker";
 import ApartmentCard from "@/views/contracts/subContract/Card";
 import BasePriceInput from "@/views/contracts/subContract/BasePriceInput";
-
+import { XFormSelect } from "@/components/ui-components/form-select";
 export default {
   components: {
     AppHeader,
@@ -278,10 +341,22 @@ export default {
     BaseDatePicker,
     ApartmentCard,
     BasePriceInput,
+    XFormSelect,
   },
   setup() {
     const vm = getCurrentInstance().proxy;
     const order = ref(null);
+
+    const discounts = ref(null);
+    const discount = ref(null);
+    const discountAmount = ref(null);
+    const discountOptions = computed(() => {
+      return discounts.value.map((el) => ({
+        value: el.id,
+        name: el.prepay + " %",
+      }));
+    });
+
     const subContractDate = ref(new Date().toISOString().split("T")[0]);
     const subContractNumber = ref("");
     const isLoading = ref(false);
@@ -298,15 +373,20 @@ export default {
       options.value = res;
       console.log(res);
     });
-    const showPrice = computed(() => vm.$route.params.type !== "swap");
+    const showPrice = computed(
+      () => !["swap", "kadastr"].includes(vm.$route.params.type)
+    );
     const showFullPrice = computed(() => vm.$route.params.type === "add");
     const showEndDate = computed(() => vm.$route.params.type !== "swap");
-    const showStartDate = computed(() => vm.$route.params.type === "add");
+    const showStartDate = computed(() =>
+      ["add", "kadastr"].includes(vm.$route.params.type)
+    );
     const showClientInfo = computed(() => vm.$route.params.type === "subtract");
 
     const m2_price = ref(null);
     const paymentStart = ref(null);
     const paymentEnd = ref(null);
+    const initialPaymentDate = ref(null);
     const fullPrice = ref(null);
     const cardNumber = ref(null);
     const bank = ref(null);
@@ -318,22 +398,28 @@ export default {
     const apartments = ref(null);
     onMounted(() => {
       const { id } = vm.$route.params;
-      api.contractV2
-        .fetchContractView(id)
-        .then((response) => {
-          vm.order = response.data;
-        })
-        .catch((error) => {
-          vm.toastedWithErrorCode(error);
-        });
-      api.contractV2.getContractObjectDetails(id, "apartments").then(
-        (r) =>
-          (apartments.value = r.data.map((e) => ({
+      Promise.all([
+        api.contractV2.fetchContractView(id),
+        v3ServiceApi.subOrder.getApartmentList({ uuid: id }),
+      ])
+        .then((res) => {
+          vm.order = res[0].data;
+          apartments.value = res[1].data.result.map((e) => ({
             ...e,
             newApartment: null,
             areaChange: 0,
-          })))
-      );
+          }));
+        })
+        .then(() =>
+          api.apartmentsV2.getApartmentView(
+            vm.order.object.id,
+            apartments.value[0].apartment.id
+          )
+        )
+        .then((res) => (discounts.value = res.data.discounts))
+        .catch((error) => {
+          vm.toastedWithErrorCode(error);
+        });
     });
     function setNewApartment(apartment, newA) {
       apartment.newApartment = newA;
@@ -374,8 +460,8 @@ export default {
         const aparts = apartments.value
           .filter((el) => el.newApartment)
           .map((el) => ({
-            uuid: el.id,
-            new_uuid: el.newApartment.uuid,
+            uuid: el.apartment.id,
+            new_uuid: el.newApartment.id,
           }));
         if (aparts.length === 0) {
           return vm.toasted("No changes in order", "error");
@@ -387,6 +473,30 @@ export default {
           d.append(`apartments[${i}][new_uuid]`, aparts[i].new_uuid);
         }
       }
+      // kadastr
+      else if (type === "kadastr") {
+        const aparts = apartments.value
+          .filter((el) => el.newApartment)
+          .map((el) => ({
+            uuid: el.apartment.id,
+            new_uuid: el.newApartment.id,
+          }));
+        if (aparts.length === 0) {
+          return vm.toasted("No changes in order", "error");
+        }
+
+        for (let i in aparts) {
+          console.log(aparts[i]);
+          d.append(`apartments[${i}][uuid]`, aparts[i].uuid);
+          d.append(`apartments[${i}][new_uuid]`, aparts[i].new_uuid);
+        }
+        d.append("initial_payment_date", initialPaymentDate.value);
+        d.append("discount_id", discount.value);
+        d.append("discount_amount", discountAmount.value);
+        d.append("start_date", paymentStart.value);
+        d.append("end_date", paymentEnd.value);
+      }
+
       // ADD
       else if (type === "add") {
         const fullM = apartments.value
@@ -396,7 +506,7 @@ export default {
         const aparts = apartments.value
           .filter((el) => el.areaChange)
           .map((el) => ({
-            uuid: el.id,
+            uuid: el.apartment.id,
             area: el.areaChange,
           }));
         d.append("start_date", paymentStart.value);
@@ -417,7 +527,7 @@ export default {
         const aparts = apartments.value
           .filter((el) => el.areaChange)
           .map((el) => ({
-            uuid: el.id,
+            uuid: el.apartment.id,
             area: el.areaChange,
           }));
         d.append("end_date", paymentEnd.value);
@@ -456,11 +566,17 @@ export default {
       paymentStart,
       paymentEnd,
 
+      discount,
+      discounts,
+      discountAmount,
+      discountOptions,
+
       apartments,
       showPrice,
       showFullPrice,
       showStartDate,
       showEndDate,
+      initialPaymentDate,
       showClientInfo,
       cardNumber,
       bank,

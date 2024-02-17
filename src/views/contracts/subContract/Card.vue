@@ -36,7 +36,10 @@
       <div class="card1-label">Балкон</div>
       <div class="card1-value fw700">{{ balcony }} м<sup>2</sup></div>
     </div>
-    <div class="d-flex justify-content-between mt-4" v-if="type === 'swap'">
+    <div
+      class="d-flex justify-content-between mt-4"
+      v-if="type === 'swap' || type === 'kadastr'"
+    >
       <base-search-input
         style="width: 100%"
         placeholder="Поиск квартир"
@@ -73,6 +76,7 @@ import { XFormSelect } from "@/views/contracts/subContract/form-select";
 import BaseSearchInput from "@/views/contracts/subContract/BaseSearchInput";
 
 import { XFormInput } from "@/views/contracts/subContract/form-input";
+import { v3ServiceApi } from "@/services/v3/v3.service";
 
 export default {
   components: { BaseSearchInput, XFormSelect, XFormInput },
@@ -87,18 +91,21 @@ export default {
     "area",
     "balcony",
     "object",
+    "uuid",
   ],
   setup() {
     const vm = getCurrentInstance().proxy;
     const apartments = ref(null);
     const newApartment = ref(null);
     const areaChange = ref(null);
+    console.log(vm.uuid);
     watch(
       () => newApartment.value,
       (v) => {
+        console.log(v);
         vm.$emit(
           "apartment-changed",
-          apartments.value.find((el) => el.uuid === v)
+          apartments.value.find((el) => el.id === v)
         );
       }
     );
@@ -107,19 +114,19 @@ export default {
       (v) => vm.$emit("area-changed", parseFloat(areaChange.value))
     );
     const newNumber = computed(
-      () => apartments.value.find((el) => el.uuid === newApartment.value).number
+      () => apartments.value.find((el) => el.id === newApartment.value).number
     );
     const newBlock = computed(
-      // () => apartments.value.find((el) => el.uuid === newApartment.value).number
-      () => "API?"
+      () =>
+        apartments.value.find((el) => el.id === newApartment.value).block.name
     );
     const newFloor = computed(
-      () => apartments.value.find((el) => el.uuid === newApartment.value).floor
+      () => apartments.value.find((el) => el.id === newApartment.value).floor
     );
     const apartmentOptions = computed(() => {
       return apartments.value.map((el) => ({
-        value: el.uuid,
-        name: el.number + " " + el.plan.area + " м2",
+        value: el.id,
+        name: el.number,
       }));
     });
     const areaChangePlaceholder = computed(() => {
@@ -138,14 +145,23 @@ export default {
     let oldSearch = undefined;
     function searchApartments(e) {
       if (e === oldSearch) return;
+      if (e === "") {
+        apartments.value = null;
+        return;
+      }
       oldSearch = e;
-      const query = { limit: 50, status: ["available"], number: [e] };
       isSearching.value = true;
       apartments.value = [];
-      api.objectsV2
-        .fetchObjectApartments(vm.object, query)
-        .then((r) => (apartments.value = r.data.items))
-        .finally(() => (isSearching.value = false));
+      let r;
+      const fd = new FormData();
+      fd.append("uuid", vm.uuid);
+      if (vm.type === "swap") r = v3ServiceApi.subOrder.getSwapList(fd);
+      if (vm.type === "kadastr") r = v3ServiceApi.subOrder.getKadastrList(fd);
+      r.then((r) => {
+        apartments.value = r.data.result.filter((el) =>
+          el.number.toLowerCase().includes(e.toLowerCase())
+        );
+      }).finally(() => (isSearching.value = false));
     }
     const selectPlaceholder = computed(() => {
       if (isSearching.value) return "Ищем...";

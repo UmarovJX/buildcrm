@@ -168,6 +168,9 @@ class V3Service extends Core {
     create: b => this.post('orders/add-contract', b),
     getAll: b => this.post('orders/all-contracts', b),
     view: b => this.post('orders/show-contract', b),
+    getApartmentList: b => this.post('orders/apartments/list', b),
+    getSwapList: b => this.post('orders/apartments/swapList', b),
+    getKadastrList: b => this.post('orders/apartments/kadastrList', b),
   }
 }
 
