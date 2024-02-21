@@ -257,7 +257,7 @@
 
       <div class="row mt-4">
         <div class="col-8">
-          <div class="row">
+          <div class="row" v-if="$route.params.type === 'kadastr'">
             <div class="col-6">
               <ValidationProvider
                 rules="required"
@@ -353,7 +353,7 @@ export default {
     const discountOptions = computed(() => {
       return discounts.value.map((el) => ({
         value: el.id,
-        name: el.prepay + " %",
+        name: "Предоплата " + el.prepay + " %",
       }));
     });
 

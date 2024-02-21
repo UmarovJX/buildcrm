@@ -102,11 +102,12 @@ export default {
     watch(
       () => newApartment.value,
       (v) => {
-        console.log(v);
-        vm.$emit(
-          "apartment-changed",
-          apartments.value.find((el) => el.id === v)
-        );
+        if (!v) vm.$emit("apartment-changed", null);
+        else
+          vm.$emit(
+            "apartment-changed",
+            apartments.value.find((el) => el.id === v)
+          );
       }
     );
     watch(
@@ -146,6 +147,7 @@ export default {
     function searchApartments(e) {
       if (e === oldSearch) return;
       if (e === "") {
+        newApartment.value = null;
         apartments.value = null;
         return;
       }

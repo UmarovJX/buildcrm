@@ -98,10 +98,39 @@ export default {
       if (!this.current) return "";
       return this.current.edit_type.type;
     },
+    currentDiscount() {
+      if (!this.current) return "";
+      return "Предоплата " + this.current.extra_data.discount.prepay_to + "%";
+    },
+    currentDiscountAmount() {
+      if (!this.current) return "";
+      return formatToPrice(this.current.extra_data.discount_amount);
+    },
     currentDate() {
       if (!this.current) return "";
       const { year, month, day } = getDateProperty(
         this.current.contract_date.split("T")[0]
+      );
+      return `${day}.${month}.${year}`;
+    },
+    currentStartDate() {
+      if (!this.current) return "";
+      const { year, month, day } = getDateProperty(
+        this.current.extra_data.start_date.split("T")[0]
+      );
+      return `${day}.${month}.${year}`;
+    },
+    currentEndDate() {
+      if (!this.current) return "";
+      const { year, month, day } = getDateProperty(
+        this.current.extra_data.end_date.split("T")[0]
+      );
+      return `${day}.${month}.${year}`;
+    },
+    currentInitialPaymentDate() {
+      if (!this.current) return "";
+      const { year, month, day } = getDateProperty(
+        this.current.extra_data.initial_payment_date.split("T")[0]
       );
       return `${day}.${month}.${year}`;
     },
@@ -192,7 +221,7 @@ export default {
     >
       <!--    CELL OF COMMENT      -->
       <template #cell(edit_type)="{ item }">
-        <span>{{ item.edit_type.name[$i18n.locale] }}</span>
+        <span>{{ item.edit_type?.name?.[$i18n.locale] }}</span>
       </template>
 
       <template #cell(actions)="{ item }">
@@ -259,67 +288,195 @@ export default {
               />
             </div>
           </div>
-          <!-- Prices -->
-          <div class="row mt-2" v-if="current && currentType !== 'swap'">
-            <div class="col-6 no-pointer">
-              <x-form-input
-                class="w-100"
-                :value="currentm2"
-                :label="true"
-                type="text"
-                placeholder="Цена за м2"
-                readonly
-              />
+          <div v-if="currentType === 'add'">
+            <div class="row mt-2">
+              <div class="col-6 no-pointer">
+                <x-form-input
+                  class="w-100"
+                  :value="currentm2"
+                  :label="true"
+                  type="text"
+                  placeholder="Цена за м2"
+                  readonly
+                />
+              </div>
+              <div class="col-6 no-pointer">
+                <x-form-input
+                  class="w-100"
+                  :value="currentTransaction"
+                  :label="true"
+                  type="text"
+                  :placeholder="
+                    currentType === 'kadastr' ? 'Скидка' : 'Полная сумма'
+                  "
+                  readonly
+                />
+              </div>
             </div>
-            <div class="col-6 no-pointer">
-              <x-form-input
-                class="w-100"
-                :value="currentTransaction"
-                :label="true"
-                type="text"
-                placeholder="Полная сумма"
-                readonly
-              />
-            </div>
-          </div>
-          <!-- EXTRA -->
-          <div class="row mt-2" v-if="current && currentType === 'subtract'">
-            <div class="col-6 no-pointer">
-              <x-form-input
-                class="w-100"
-                :value="card"
-                :label="true"
-                type="text"
-                placeholder="Номер карты"
-                readonly
-              />
-            </div>
-            <div class="col-6 no-pointer">
-              <x-form-input
-                class="w-100"
-                :value="bank"
-                :label="true"
-                type="text"
-                placeholder="Адрес банка"
-                readonly
-              />
-            </div>
-          </div>
-          <div
-            class="row mt-2 no-pointer"
-            v-if="current && currentType === 'subtract'"
-          >
-            <div class="col-6">
-              <x-form-input
-                class="w-100"
-                :value="paymentDue"
-                :label="true"
-                type="text"
-                placeholder="Дата платежа"
-                readonly
-              />
+            <div class="row mt-2">
+              <div class="col-6 no-pointer">
+                <x-form-input
+                  class="w-100"
+                  :value="currentStartDate"
+                  :label="true"
+                  type="text"
+                  placeholder="Начало рассрочки"
+                  readonly
+                />
+              </div>
+              <div class="col-6 no-pointer">
+                <x-form-input
+                  class="w-100"
+                  :value="currentEndDate"
+                  :label="true"
+                  type="text"
+                  placeholder="Конец рассрочки"
+                  readonly
+                />
+              </div>
             </div>
           </div>
+
+          <div v-if="currentType === 'subtract'">
+            <div class="row mt-2">
+              <div class="col-6 no-pointer">
+                <x-form-input
+                  class="w-100"
+                  :value="currentm2"
+                  :label="true"
+                  type="text"
+                  placeholder="Цена за м2"
+                  readonly
+                />
+              </div>
+              <div class="col-6 no-pointer">
+                <x-form-input
+                  class="w-100"
+                  :value="currentTransaction"
+                  :label="true"
+                  type="text"
+                  placeholder="Полная сумма"
+                  readonly
+                />
+              </div>
+            </div>
+            <div class="row mt-2">
+              <div class="col-6 no-pointer">
+                <x-form-input
+                  class="w-100"
+                  :value="card"
+                  :label="true"
+                  type="text"
+                  placeholder="Номер карты"
+                  readonly
+                />
+              </div>
+              <div class="col-6 no-pointer">
+                <x-form-input
+                  class="w-100"
+                  :value="bank"
+                  :label="true"
+                  type="text"
+                  placeholder="Адрес банка"
+                  readonly
+                />
+              </div>
+            </div>
+            <div class="row mt-2 no-pointer">
+              <div class="col-6">
+                <x-form-input
+                  class="w-100"
+                  :value="paymentDue"
+                  :label="true"
+                  type="text"
+                  placeholder="Дата платежа"
+                  readonly
+                />
+              </div>
+            </div>
+          </div>
+
+          <div v-if="currentType === 'kadastr'">
+            <div class="row mt-2">
+              <div class="col-6 no-pointer">
+                <x-form-input
+                  class="w-100"
+                  :value="currentm2"
+                  :label="true"
+                  type="text"
+                  placeholder="Цена за м2"
+                  readonly
+                />
+              </div>
+              <div class="col-6 no-pointer">
+                <x-form-input
+                  class="w-100"
+                  :value="currentTransaction"
+                  :label="true"
+                  type="text"
+                  placeholder="Полная сумма"
+                  readonly
+                />
+              </div>
+            </div>
+            <div class="row mt-2">
+              <div class="col-6 no-pointer">
+                <x-form-input
+                  class="w-100"
+                  :value="currentDiscount"
+                  :label="true"
+                  type="text"
+                  placeholder="Дискоунт"
+                  readonly
+                />
+              </div>
+              <div class="col-6 no-pointer">
+                <x-form-input
+                  class="w-100"
+                  :value="currentDiscountAmount"
+                  :label="true"
+                  type="text"
+                  placeholder="Сумма дискоунта"
+                  readonly
+                />
+              </div>
+            </div>
+            <div class="row mt-2">
+              <div class="col-6 no-pointer">
+                <x-form-input
+                  class="w-100"
+                  :value="currentStartDate"
+                  :label="true"
+                  type="text"
+                  placeholder="Начало рассрочки"
+                  readonly
+                />
+              </div>
+              <div class="col-6 no-pointer">
+                <x-form-input
+                  class="w-100"
+                  :value="currentEndDate"
+                  :label="true"
+                  type="text"
+                  placeholder="Конец рассрочки"
+                  readonly
+                />
+              </div>
+            </div>
+            <div class="row mt-2">
+              <div class="col-6">
+                <x-form-input
+                  class="w-100"
+                  :value="currentEndDate"
+                  :label="true"
+                  type="text"
+                  placeholder="Первый платеж"
+                  readonly
+                />
+              </div>
+            </div>
+          </div>
+
           <!-- Apartments -->
           <div class="section-title mt-4 mb-2">Квартиры</div>
           <div v-if="current">
