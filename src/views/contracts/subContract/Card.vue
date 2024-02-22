@@ -38,6 +38,7 @@
     </div>
     <div
       class="d-flex justify-content-between mt-4"
+      style="position: relative"
       v-if="type === 'swap' || type === 'kadastr'"
     >
       <base-search-input
@@ -45,6 +46,7 @@
         placeholder="Поиск квартир"
         @trigger-input="searchApartments"
       ></base-search-input>
+      <div class="options"></div>
     </div>
     <div class="d-flex justify-content-between mt-4" v-else>
       <x-form-input
@@ -56,6 +58,7 @@
       />
     </div>
     <x-form-select
+      ref="options"
       v-if="apartments"
       v-model="newApartment"
       class="mt-4"
@@ -97,6 +100,7 @@ export default {
     const vm = getCurrentInstance().proxy;
     const apartments = ref(null);
     const newApartment = ref(null);
+    const options = ref(null);
     const areaChange = ref(null);
     console.log(vm.uuid);
     watch(
@@ -163,7 +167,11 @@ export default {
         apartments.value = r.data.result.filter((el) =>
           el.number.toLowerCase().includes(e.toLowerCase())
         );
-      }).finally(() => (isSearching.value = false));
+      }).finally(() => {
+        isSearching.value = false;
+        if (apartments.value.length > 0)
+          setTimeout(() => options.value.openOptionList(), 0);
+      });
     }
     const selectPlaceholder = computed(() => {
       if (isSearching.value) return "Ищем...";
@@ -172,6 +180,7 @@ export default {
     });
 
     return {
+      options,
       searchApartments,
       apartmentOptions,
       apartments,
@@ -190,6 +199,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.options {
+  position: absolute;
+  top: 100%;
+  width: 100%;
+}
 .card1 {
   background-color: var(--gray-100);
   width: 360px;

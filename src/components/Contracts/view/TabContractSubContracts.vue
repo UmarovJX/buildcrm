@@ -9,6 +9,7 @@ import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
 import BaseDownIcon from "@/components/icons/BaseDownIcon";
 import { v3ServiceApi } from "@/services/v3/v3.service";
+import api from "@/services/api";
 import BaseDeleteIcon from "@/components/icons/BaseDeleteIcon";
 import ContractsPermission from "@/permission/contract";
 import AppDropdown from "@/components/Reusable/Dropdown/AppDropdown";
@@ -78,6 +79,7 @@ export default {
     ];
 
     return {
+      path: process.env.VUE_APP_URL,
       fields,
       subContracts: null,
       isLoading: true,
@@ -162,6 +164,22 @@ export default {
     this.getSubContracts();
   },
   methods: {
+    async downloadContract(id) {
+      await api.contract
+        .downloadContract(id)
+        .then(({ data, headers }) => {
+          const filename = headers.hasOwnProperty("x-filename")
+            ? headers["x-filename"]
+            : "contract";
+          const fileURL = window.URL.createObjectURL(new Blob([data]));
+          const fileLink = document.createElement("a");
+          fileLink.href = fileURL;
+          fileLink.setAttribute("download", filename);
+          document.body.appendChild(fileLink);
+          fileLink.click();
+        })
+        .catch(() => "#");
+    },
     openModal(item) {
       this.$refs["detail-modal"].openModal();
     },
@@ -232,6 +250,12 @@ export default {
           >
             <x-icon name="visibility" class="color-white" />
           </x-circular-background>
+          <x-circular-background
+            class="bg-green cursor-pointer ml-2"
+            @click="downloadContract(item.id)"
+          >
+            <x-icon name="download" class="color-white" />
+          </x-circular-background>
         </div>
       </template>
 
@@ -257,10 +281,7 @@ export default {
             <base-arrow-left-icon :width="32" :height="32" />
           </span>
           <!--    TITLE      -->
-          <span class="title ml-3"
-            >Детали доп.соглашения
-            <span v-if="current">{{ current.contract_number }}</span>
-          </span>
+          <span class="title ml-3">Детали доп.соглашения </span>
         </span>
       </template>
       <template #main>
@@ -277,13 +298,25 @@ export default {
                 readonly
               />
             </div>
-            <div class="col-12 mt-2 no-pointer">
+          </div>
+          <div class="row mt-2">
+            <div class="col-6 no-pointer" v-if="current">
+              <x-form-input
+                class="w-100"
+                :value="current.contract_number"
+                :label="true"
+                type="text"
+                placeholder="Номер доп.соглашения"
+                readonly
+              />
+            </div>
+            <div class="col-6 no-pointer">
               <x-form-input
                 class="w-100"
                 :value="currentDate"
                 :label="true"
                 type="text"
-                placeholder="Дата"
+                placeholder="Дата доп.соглашения"
                 readonly
               />
             </div>
