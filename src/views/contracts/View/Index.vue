@@ -18,6 +18,7 @@ import { XModalCenter } from "@/components/ui-components/modal-center";
 import { XFormInput } from "@/components/ui-components/form-input";
 import Permission from "@/permission";
 import ApproverList from "@/views/contracts/components/ApproverList.vue";
+import { v3ServiceApi } from "@/services/v3/v3.service";
 
 export default {
   name: "ContractView",
@@ -49,6 +50,11 @@ export default {
         sending: false,
         comment: "",
       },
+      subContract: {
+        showModal: false,
+        type: null,
+      },
+      subContractOptions: [],
       tabs: [
         {
           id: 0,
@@ -72,6 +78,12 @@ export default {
           id: 3,
           title: this.$t("contract_details"),
           route: "contract-details",
+          count: 0,
+        },
+        {
+          id: 6,
+          title: "Доп.соглашения",
+          route: "sub-contracts",
           count: 0,
         },
 
@@ -199,9 +211,26 @@ export default {
     await this.fetchContractData();
   },
   mounted() {
-    this.$refs.archiveWarningModal.openModal();
+    v3ServiceApi.subOrder.getOptions().then((r) => {
+      const d = r.data;
+      this.subContractOptions = Object.keys(d).map((el) => ({
+        value: el,
+        text: d[el].name[this.$i18n.locale],
+      }));
+    });
+    //this.$refs.archiveWarningModal.openModal();
   },
   methods: {
+    closeSubContractModal() {
+      this.subContract.showModal = false;
+      this.subContract.type = null;
+    },
+    goSubContractPage() {
+      this.$router.push({
+        name: "sub-contract-create",
+        params: { id: this.$route.params.id, type: this.subContract.type },
+      });
+    },
     updateItemCount(e) {
       this.tabs.find((tab) => tab.route === e.route).count = e.count;
     },
@@ -602,6 +631,13 @@ export default {
                   {{ $t("move_to_archive") }}
                 </b-dropdown-item>
               </template>
+              <b-dropdown-item
+                class="ml-1"
+                @click="subContract.showModal = true"
+              >
+                <x-icon name="note_add" />
+                {{ $t("create_sub_contract") }}
+              </b-dropdown-item>
             </template>
           </AppDropdown>
         </div>
@@ -678,6 +714,42 @@ export default {
             :placeholder="`${$t('commentary')}`"
           />
         </div>
+      </template>
+    </x-modal-center>
+    <x-modal-center
+      v-if="subContract.showModal"
+      :bilingual="true"
+      cancel-button-text="cancel"
+      apply-button-class="w-100"
+      cancel-button-class="w-100"
+      apply-button-text="create_agree"
+      footer-class="d-flex justify-content-between x-gap-1"
+      @close="closeSubContractModal"
+      @cancel="closeSubContractModal"
+      @apply="goSubContractPage"
+      :disable-apply="!subContract.type"
+    >
+      <template #header>
+        <h3 class="x-font-size-36px font-craftworksans color-gray-600">
+          {{ $t("create_sub_contract") }}
+        </h3>
+      </template>
+
+      <template #body>
+        <b-form-group
+          label="Выберите тип доп соглашения:"
+          v-slot="{ ariaDescribedby }"
+          label-size="lg"
+        >
+          <b-form-radio-group
+            v-model="subContract.type"
+            :options="subContractOptions"
+            :aria-describedby="ariaDescribedby"
+            name="radios-stacked"
+            size="md"
+            stacked
+          ></b-form-radio-group>
+        </b-form-group>
       </template>
     </x-modal-center>
 

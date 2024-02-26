@@ -1,15 +1,15 @@
 <script>
-import { mapGetters } from 'vuex'
-import api from '@/services/api'
-import TemplatesPermission from '@/permission/templates'
-import InstructionsModal from '@/components/Dashboard/Objects/Components/DealDocsTemplate/InstructionsModal'
-import BaseContractListTable from '@/components/Dashboard/Objects/Components/BaseContractListTable'
-import CreateDealDocsTemplate from '@/components/Dashboard/Objects/Components/Deals/CreateDealDocsTemplate'
-import AppHeader from '@/components/Header/AppHeader'
-import { v3ServiceApi } from '@/services/v3/v3.service'
+import { mapGetters } from "vuex";
+import api from "@/services/api";
+import TemplatesPermission from "@/permission/templates";
+import InstructionsModal from "@/components/Dashboard/Objects/Components/DealDocsTemplate/InstructionsModal";
+import BaseContractListTable from "@/components/Dashboard/Objects/Components/BaseContractListTable";
+import CreateDealDocsTemplate from "@/components/Dashboard/Objects/Components/Deals/CreateDealDocsTemplate";
+import AppHeader from "@/components/Header/AppHeader";
+import { v3ServiceApi } from "@/services/v3/v3.service";
 
 export default {
-  name: 'DealDocsTemplate',
+  name: "DealDocsTemplate",
   components: {
     AppHeader,
     InstructionsModal,
@@ -23,102 +23,113 @@ export default {
       loading: false,
       contracts: [],
       contractTabs: 0,
-      objectName: '',
+      objectName: "",
       breadCrumbs: [
         {
           route: {
-            name: 'object-deal-template',
+            name: "object-deal-template",
           },
           content: {
-            type: 'i18n',
-            path: 'objects.deal_template.name',
+            type: "i18n",
+            path: "objects.deal_template.name",
           },
         },
       ],
-    }
+    };
   },
   computed: {
     ...mapGetters({
-      permission: 'getPermission',
+      permission: "getPermission",
     }),
     activeContent() {
-      return this.$t('objects.deal_template.title')
+      return this.$t("objects.deal_template.title");
     },
     saleContracts() {
-      return this.contracts.filter(contract => (
-        contract.category === 'sale'
-          || contract.category === 'not_initial'
-          || contract.category === 'not_initial'
-      ))
+      return this.contracts.filter(
+        (contract) =>
+          contract.category === "sale" ||
+          contract.category === "not_initial" ||
+          contract.category === "not_initial"
+      );
     },
     notInitialContracts() {
-      return this.contracts.filter(contract => contract.category === 'not_initial')
+      return this.contracts.filter(
+        (contract) => contract.category === "not_initial"
+      );
     },
     reserveContracts() {
-      return this.contracts.filter(contract => contract.category === 'reserve')
+      return this.contracts.filter(
+        (contract) => contract.category === "reserve"
+      );
     },
     reissueContracts() {
       return this.contracts.filter(
-        contract => contract.category === 'reissue',
-      )
+        (contract) => contract.category === "reissue"
+      );
     },
     parkingContracts() {
       return this.contracts.filter(
-        contract => contract.category === 'parking',
-      )
+        (contract) => contract.category === "parking"
+      );
+    },
+    additionalContracts() {
+      return this.contracts.filter(
+        (contract) => contract.category === "additional"
+      );
     },
   },
   async created() {
-    await this.getDealTemplateList()
+    await this.getDealTemplateList();
   },
   methods: {
     updateLoading(loadingValue) {
-      this.loading = loadingValue
+      this.loading = loadingValue;
     },
     updateContent({ category }) {
-      if (category === 'sale') this.contractTabs = 0
-      else if (category === 'reserve') this.contractTabs = 1
-      else if (category === 'not_initial') this.contractTabs = 2
-      else if (category === 'reissue') {
-        this.contractTabs = 3
+      if (category === "sale") this.contractTabs = 0;
+      else if (category === "reserve") this.contractTabs = 1;
+      else if (category === "not_initial") this.contractTabs = 2;
+      else if (category === "reissue") {
+        this.contractTabs = 3;
       }
 
-      this.getDealTemplateList()
+      this.getDealTemplateList();
     },
     async getDealTemplateList() {
-      this.loading = true
-      const { id } = this.$route.params
-      await v3ServiceApi.templates.getDealTemplateList(id)
-        .then(response => {
-          this.contracts = response.data.data
+      this.loading = true;
+      const { id } = this.$route.params;
+      await v3ServiceApi.templates
+        .getDealTemplateList(id)
+        .then((response) => {
+          this.contracts = response.data.data;
           const objectCrumb = {
             route: {
-              name: 'apartments',
+              name: "apartments",
               params: {
                 object: this.$route.params.id,
               },
             },
             content: {
-              type: 'string',
+              type: "string",
               path: response.data.object_name,
             },
-          }
+          };
           const hasApartmentLink = this.breadCrumbs.findIndex(
-            breadcrumb => breadcrumb.routeName === 'apartments',
-          )
+            (breadcrumb) => breadcrumb.routeName === "apartments"
+          );
           if (hasApartmentLink === -1) {
-            this.breadCrumbs.unshift(objectCrumb)
+            this.breadCrumbs.unshift(objectCrumb);
           }
         })
-        .catch(error => {
-          this.toastedWithErrorCode(error)
+        .catch((error) => {
+          this.toastedWithErrorCode(error);
         })
         .finally(() => {
-          this.loading = false
-        })
+          this.loading = false;
+        });
     },
   },
-}
+};
 </script>
 
 <template>
@@ -159,10 +170,7 @@ export default {
       </app-header>
 
       <!--   Contract List    -->
-      <b-card
-        no-body
-        class="mt-3"
-      >
+      <b-card no-body class="mt-3">
         <b-tabs
           v-model="contractTabs"
           pills
@@ -201,6 +209,14 @@ export default {
               @update-content="getDealTemplateList"
             />
           </b-tab>
+          <b-tab :title="$t('additional')">
+            <base-contract-list-table
+              :contracts="additionalContracts"
+              type="additional"
+              @update-loading="updateLoading"
+              @update-content="getDealTemplateList"
+            />
+          </b-tab>
         </b-tabs>
       </b-card>
     </div>
@@ -212,12 +228,7 @@ export default {
     <instructions-modal />
 
     <!--  XLoadingWrapper Content  -->
-    <b-overlay
-      :show="loading"
-      no-wrap
-      opacity="0.5"
-      style="z-index: 2222"
-    >
+    <b-overlay :show="loading" no-wrap opacity="0.5" style="z-index: 2222">
       <template #overlay>
         <div class="d-flex justify-content-center w-100">
           <div class="lds-ellipsis">

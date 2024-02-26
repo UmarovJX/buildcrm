@@ -33,12 +33,15 @@ import TabPaymentSchedule from '@/components/Contracts/view/TabPaymentSchedule'
 import TabObjectDetails from '@/components/Contracts/view/TabObjectDetails'
 import TabClientDetails from '@/components/Contracts/view/TabClientDetails'
 import TabContractDetails from '@/components/Contracts/view/TabContractDetails'
+import TabSubContracts from '@/components/Contracts/view/TabContractSubContracts'
 import TabContractComments from '@/components/Contracts/view/TabContractComments'
 import TabReContractDetails from '@/components/Contracts/view/TabReContractDetails'
 import ActivityLog from '@/components/Contracts/view/ActivityLog'
 import FastPlanList from '@/views/objects/FastPlan/List'
 import AddDrawing from '@/views/objects/FastPlan/AddDrawing.vue'
 import Editor from '@/views/Editor.vue'
+
+import SubContractCreate from '@/views/contracts/subContract/Create'
 
 /* ? PARKING ROUTES */
 import ParkingCheckout from '@/views/parking/checkout/Index.vue'
@@ -476,6 +479,14 @@ const routes = [
             },
           },
           {
+            name: 'sub-contracts',
+            path: 'sub-contracts',
+            component: TabSubContracts,
+            meta: {
+              requiresAuth: 'contracts',
+            },
+          },
+          {
             name: 'contract-comments',
             path: 'contract-comments',
             component: TabContractComments,
@@ -500,6 +511,11 @@ const routes = [
             },
           },
         ],
+      },
+      {
+        path: '/contracts/:id/sub/:type',
+        name: 'sub-contract-create',
+        component: SubContractCreate
       },
 
       {

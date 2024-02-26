@@ -31,12 +31,16 @@ export default {
         { text: "ru", value: "ru" },
       ],
       primaryPermission: TemplatesPermission.getTemplatesPrimaryPermission(),
+      additionalData: null,
     };
   },
   watch: {
     "form.category"(nV) {
       this.form.type = null;
     },
+  },
+  created() {
+    this.getAdditionalTypes();
   },
   computed: {
     typeOptions() {
@@ -59,10 +63,12 @@ export default {
       ];
     },
     additionalTypes() {
-      return ["swap", "add", "subtract"].map((el) => ({
-        value: el,
-        text: this.$t("contracts.addType." + el),
-      }));
+      if (this.additionalData)
+        return Object.keys(this.additionalData).map((key) => ({
+          value: key,
+          text: this.additionalData[key].name[this.$i18n.locale],
+        }));
+      return [];
     },
     showPaymentType() {
       const notShow = ["reserve", "reissue", "additional"];
@@ -73,6 +79,9 @@ export default {
     },
   },
   methods: {
+    async getAdditionalTypes() {
+      this.additionalData = (await v3ServiceApi.subOrder.getOptions()).data;
+    },
     async submitNewDocs() {
       if (!this.loading) {
         const validation = await this.$refs["validation-observer"].validate();

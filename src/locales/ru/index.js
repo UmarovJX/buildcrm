@@ -1,4 +1,5 @@
 export default {
+  create_sub_contract: 'Создать доп.соглашение',
   statistics: {
     object_payments: {
       paid: 'Поступление за все время',

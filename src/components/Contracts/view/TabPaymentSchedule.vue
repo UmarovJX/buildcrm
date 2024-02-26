@@ -19,6 +19,8 @@ import api from "@/services/api";
 import { mapGetters } from "vuex";
 import ContractsPermission from "@/permission/contract";
 // import list from "@/components/Dashboard/TypePlan/List";
+import { XIcon } from "@/components/ui-components/material-icons";
+import { XCircularBackground } from "@/components/ui-components/circular-background";
 
 export default {
   name: "TabPaymentSchedule",
@@ -38,6 +40,8 @@ export default {
     BaseLoading,
     BaseButton,
     BaseModal,
+    XIcon,
+    XCircularBackground,
   },
   props: {
     order: {
@@ -819,6 +823,7 @@ export default {
           </base-button>
         </div>
       </div>
+
       <base-modal ref="status-update-modal" design="payment-modal">
         <template #header>
           <!--   GO BACK     -->
@@ -831,13 +836,28 @@ export default {
           </span>
         </template>
         <template #main v-if="currentItem">
-          <div style="min-height: 150px">
+          <b-form-group
+            label="Выберите статус:"
+            v-slot="{ ariaDescribedby }"
+            label-size="lg"
+          >
+            <b-form-radio-group
+              v-model="newStatus"
+              :options="paymentStatusOptions"
+              :aria-describedby="ariaDescribedby"
+              name="radios-stacked"
+              size="md"
+              stacked
+            ></b-form-radio-group>
+          </b-form-group>
+
+          <!-- <div>
             <x-form-select
               v-model="newStatus"
               class="w-100"
               :options="paymentStatusOptions"
             />
-          </div>
+          </div> -->
         </template>
         <template #footer>
           <b-overlay
@@ -874,18 +894,19 @@ export default {
         <template #main>
           <ValidationObserver ref="payment-observer" style="overflow-y: auto">
             <div class="payment-addition-fields">
-              <ValidationProvider
-                name="payment_date"
-                rules="required"
-                class="content__form__select"
-                :class="{ warning__border: validationWarnings.payment_date }"
-              >
-                <input
-                  v-model="appendPayment.payment_date"
-                  type="date"
-                  class="w-100"
-                />
+              <ValidationProvider name="payment_date" rules="required">
+                <div
+                  class="content__form__select"
+                  :class="{ warning__border: validationWarnings.payment_date }"
+                >
+                  <input
+                    v-model="appendPayment.payment_date"
+                    type="date"
+                    class="w-100"
+                  />
+                </div>
               </ValidationProvider>
+
               <ValidationProvider
                 name="type"
                 rules="required"
@@ -1190,13 +1211,25 @@ export default {
         class="payment__schedule-table"
       >
         <template #cell(status)="{ item }">
-          <span
-            v-if="paymentStatusData"
-            @click="openStatusModal(item)"
-            :class="'payment__schedule-status payment__schedule-' + item.status"
-          >
-            {{ paymentStatusData[item.status].name[$i18n.locale] }}
-          </span>
+          <div class="d-flex d-align-items">
+            <span
+              v-if="paymentStatusData"
+              :class="
+                'payment__schedule-status payment__schedule-' + item.status
+              "
+            >
+              {{ paymentStatusData[item.status].name[$i18n.locale] }}
+            </span>
+            <x-circular-background
+              @click="openStatusModal(item)"
+              class="bg-violet-600 ml-2"
+            >
+              <x-icon
+                name="edit"
+                class="color-white user-select-none cursor-pointer"
+              />
+            </x-circular-background>
+          </div>
         </template>
       </b-table>
 
@@ -1539,13 +1572,14 @@ input[type="date"]::-webkit-datetime-edit-year-field {
   }
 
   &-status {
-    cursor: pointer;
     border-radius: 2rem;
     padding: 0.4rem 2rem;
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 10rem;
+    width: 14rem;
+    color: var(--violet-600);
+    background-color: var(--violet-100);
   }
 
   &-paid {
@@ -1561,12 +1595,6 @@ input[type="date"]::-webkit-datetime-edit-year-field {
   &-waiting {
     background-color: var(--yellow-100);
     color: var(--yellow-600);
-    margin: 3px;
-  }
-
-  &-uncertain {
-    background-color: var(--gray-100);
-    color: var(--gray-600);
   }
 }
 
@@ -1618,9 +1646,8 @@ input[type="date"]::-webkit-datetime-edit-year-field {
 }
 
 .warning__border {
-  border: 2px solid var(--red-600);
+  border: 1px solid var(--red-600) !important;
 }
-
 .warning__before__delete {
   &-head {
     display: flex;

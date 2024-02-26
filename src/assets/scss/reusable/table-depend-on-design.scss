@@ -31,3 +31,7 @@
 ::v-deep .row__body__bottom-border:not(:last-child) {
   border-bottom: 2px solid var(--gray-200) !important;
 }
+
+.cursor-pointer {
+  cursor: pointer;
+}
