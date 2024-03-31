@@ -1,35 +1,27 @@
 <script>
 export default {
-  name: 'BaseFilterTabsContent2',
-  emits: ['get-new-content'],
+  name: "BaseFilterTabsContent2",
+  emits: ["get-new-content"],
   props: {
     filterTabList: {
       type: Array,
       required: true,
     },
     current: {
-      type: String,
       required: true,
     },
   },
-  watch: {
-    current: {
-      handler(v) {
-        console.log(v)
-      },
-      deep: true,
-    },
-  },
+
   mounted() {
-    console.log(this.filterTabList)
+    console.log(this.filterTabList);
   },
   methods: {
     getFilteredContent(status) {
-      console.log(status)
-      this.$emit('get-new-content', status)
+      console.log(status);
+      this.$emit("get-new-content", status);
     },
   },
-}
+};
 </script>
 
 <template>
@@ -84,14 +76,14 @@ export default {
 
 .filter__content {
   position: relative;
-  display: grid;
-  grid-template-columns: repeat(8, 1fr);
+  display: flex;
   width: 100%;
   font-family: Inter, serif;
   font-style: normal;
   font-weight: 600;
   //line-height: 22px;
   color: var(--gray-600);
+  flex-wrap: nowrap;
 
   &-item {
     position: relative;
@@ -103,7 +95,7 @@ export default {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    padding: 0 0.75rem;
+    padding: 0 1rem;
 
     p {
       margin: 0;

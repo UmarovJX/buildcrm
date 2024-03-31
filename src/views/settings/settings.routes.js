@@ -92,6 +92,15 @@ export default [
           parent: 'settings',
         },
       },
+      {
+        path: 'settings-buildings',
+        name: 'settings-buildings',
+        component: () => import('@/views/settings/views/SettingsBuildings.vue'),
+        meta: {
+          requiresAuth: 'settings.buildings',
+          parent: 'settings',
+        },
+      },
     ],
   },
 ]

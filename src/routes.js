@@ -77,6 +77,15 @@ import PageNotFound from './components/PageNotFound'
 import Dashboard from './views/home/Index.vue'
 import Auth from './components/Auth/Login'
 
+// OBJECTS V2
+import ObjectsV2 from '@/views/objectsV2/Index'
+import ObjectsV2View from '@/views/objectsV2/View'
+import ObjectsV2Tariffs from '@/views/objectsV2/Tariffs'
+import ObjectsV2Plans from '@/views/objectsV2/Plans'
+import ObjectsV2Building from '@/views/objectsV2/Building'
+import ObjectsV2Block from '@/views/objectsV2/Block'
+
+
 const originalPush = VueRouter.prototype.push
 
 VueRouter.prototype.push = function push(location) {
@@ -90,6 +99,60 @@ const routes = [
     path: '/',
     component: AppLayout,
     children: [
+      // OBJECTS V2
+      {
+        path: 'objects2',
+        name: 'objects2',
+        component: ObjectsV2,
+        meta: {
+          requiresAuth: 'objects',
+        },
+      },
+      {
+        path: 'objects2/:objectid',
+        name: 'objects2-view',
+        component: ObjectsV2View,
+        meta: {
+          requiresAuth: 'objects',
+        },
+
+      },
+      {
+        path: 'objects2/:objectid/tariffs',
+        name: 'objects2-tariffs',
+        component: ObjectsV2Tariffs,
+        meta: {
+          requiresAuth: 'objects',
+        },
+
+      },
+      {
+        path: 'objects2/:objectid/plans',
+        name: 'objects2-plans',
+        component: ObjectsV2Plans,
+        meta: {
+          requiresAuth: 'objects',
+        },
+
+      },
+      {
+        path: 'objects2/:objectid/buildings/:building',
+        name: 'objects2-building',
+        component: ObjectsV2Building,
+        meta: {
+          requiresAuth: 'objects',
+        },
+
+      },
+      {
+        path: 'objects2/:objectid/buildings/:building/blocks/:block',
+        name: 'objects2-block',
+        component: ObjectsV2Block,
+        meta: {
+          requiresAuth: 'objects',
+        },
+
+      },
       {
         /* HOME */
         path: '',
