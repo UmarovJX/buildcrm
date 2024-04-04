@@ -6,6 +6,11 @@ import { v3ServiceApi } from "@/services/v3/v3.service";
 export default {
   name: "CreateDealDocsTemplate",
   emits: ["update-content"],
+  props: {
+    warningData: {
+      type: Array,
+    },
+  },
   data() {
     return {
       loading: false,
@@ -25,6 +30,7 @@ export default {
         { value: "reissue", text: this.$t("contract_regeneration") },
         { value: "parking", text: this.$t("parking") },
         { value: "additional", text: this.$t("contracts.additional") },
+        { value: "warning", text: this.$t("Уведомления") },
       ],
       options: [
         { text: "uz", value: "uz" },
@@ -43,6 +49,12 @@ export default {
     this.getAdditionalTypes();
   },
   computed: {
+    warningOptions() {
+      return Object.keys(this.warningData).map((key) => ({
+        text: this.warningData[key][this.$i18n.locale],
+        value: key,
+      }));
+    },
     typeOptions() {
       const option = [
         { value: "full", text: this.$t("full") },
@@ -70,8 +82,9 @@ export default {
         }));
       return [];
     },
+
     showPaymentType() {
-      const notShow = ["reserve", "reissue", "additional"];
+      const notShow = ["reserve", "reissue", "additional", "warning"];
       const index = notShow.findIndex(
         (ctyType) => ctyType === this.form.category
       );
@@ -225,6 +238,33 @@ export default {
           </b-form-group>
           <span class="error__provider">{{ errors[0] }}</span>
         </ValidationProvider>
+        <!-- Select Addditional Type -->
+        <ValidationProvider
+          v-if="form.category === 'warning'"
+          v-slot="{ errors }"
+          rules="required"
+          :name="`${$t('objects.additional')}`"
+        >
+          <b-form-group
+            label-cols="6"
+            label-cols-lg="3"
+            :label="$t('contracts.chooseAddType')"
+            label-for="form_selection_category"
+          >
+            <b-form-select
+              id="form_selection_category"
+              v-model="form.type"
+              :options="warningOptions"
+            >
+              <template #first>
+                <b-form-select-option :value="null" disabled>
+                  {{ $t("apartments.list.choose") }}
+                </b-form-select-option>
+              </template>
+            </b-form-select>
+          </b-form-group>
+          <span class="error__provider">{{ errors[0] }}</span>
+        </ValidationProvider>
         <!--  SELECT TYPE  -->
         <b-form-group
           v-if="showPaymentType"
@@ -288,7 +328,7 @@ export default {
       </form>
     </ValidationObserver>
     <!--  MODAL FOOTER    -->
-    <template #modal-footer="{ ok, cancel, hide }">
+    <template #modal-footer="{ cancel }">
       <div class="d-flex justify-content-end">
         <b-button class="cancel__button" variant="light" @click="cancel()">
           {{ $t("cancel") }}

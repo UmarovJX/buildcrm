@@ -18,6 +18,7 @@ export default {
   },
   data() {
     return {
+      warningData: [],
       instructionPermission: TemplatesPermission.getInstructionViewPermission(),
       createPermission: TemplatesPermission.getTemplatesCreatePermission(),
       loading: false,
@@ -77,9 +78,21 @@ export default {
         (contract) => contract.category === "additional"
       );
     },
+    warnings() {
+      return this.contracts.filter(
+        (contract) => contract.category === "warning"
+      );
+    },
   },
   async created() {
     await this.getDealTemplateList();
+    v3ServiceApi.warningOrders.getList().then(({ data: { result } }) => {
+      result.cancelled = {
+        uz: "Отменен",
+        ru: "Отменен",
+      };
+      this.warningData = result;
+    });
   },
   methods: {
     updateLoading(loadingValue) {
@@ -217,12 +230,24 @@ export default {
               @update-content="getDealTemplateList"
             />
           </b-tab>
+          <b-tab :title="$t('Уведомления')">
+            <base-contract-list-table
+              :contracts="warnings"
+              type="warning"
+              @update-loading="updateLoading"
+              @update-content="getDealTemplateList"
+              :translations="warningData"
+            />
+          </b-tab>
         </b-tabs>
       </b-card>
     </div>
 
     <!-- Creation Modal   -->
-    <create-deal-docs-template @update-content="updateContent" />
+    <create-deal-docs-template
+      @update-content="updateContent"
+      :warning-data="warningData"
+    />
 
     <!--  Instructions Modal  -->
     <instructions-modal />

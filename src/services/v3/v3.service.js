@@ -172,6 +172,11 @@ class V3Service extends Core {
     getSwapList: b => this.post('orders/apartments/swapList', b),
     getKadastrList: b => this.post('orders/apartments/kadastrList', b),
   }
+
+  warningOrders = {
+    download: (order, data) => this.post(`orders/${order}/warning/download`, data),
+    getList: () => this.post('orders/warning/list')
+  }
 }
 
 // eslint-disable-next-line import/prefer-default-export

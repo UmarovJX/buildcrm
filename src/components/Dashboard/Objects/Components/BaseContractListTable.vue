@@ -17,6 +17,9 @@ export default {
       type: String,
       required: true,
     },
+    translations: {
+      type: Object
+    }
   },
   emits: ['update-content', 'update-loading'],
   data() {
@@ -213,8 +216,11 @@ export default {
         </div>
       </template>
 
-      <template #cell(type)="data">
-        <span>
+      <template #cell(type)="{item}">
+        <span v-if="type==='warning'">
+          {{ translations[item.type]?.[$i18n.locale] }}
+        </span>
+        <span v-else>
           {{ getCategoryName(data.item.type) }}
         </span>
       </template>

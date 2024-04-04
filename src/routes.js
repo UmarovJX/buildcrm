@@ -34,6 +34,7 @@ import TabObjectDetails from '@/components/Contracts/view/TabObjectDetails'
 import TabClientDetails from '@/components/Contracts/view/TabClientDetails'
 import TabContractDetails from '@/components/Contracts/view/TabContractDetails'
 import TabSubContracts from '@/components/Contracts/view/TabContractSubContracts'
+import TabWarnings from '@/components/Contracts/view/TabWarnings'
 import TabContractComments from '@/components/Contracts/view/TabContractComments'
 import TabReContractDetails from '@/components/Contracts/view/TabReContractDetails'
 import ActivityLog from '@/components/Contracts/view/ActivityLog'
@@ -482,6 +483,14 @@ const routes = [
             name: 'sub-contracts',
             path: 'sub-contracts',
             component: TabSubContracts,
+            meta: {
+              requiresAuth: 'contracts',
+            },
+          },
+          {
+            name: 'contract-warnings',
+            path: 'contract-warnings',
+            component: TabWarnings,
             meta: {
               requiresAuth: 'contracts',
             },

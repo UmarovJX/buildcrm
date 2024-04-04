@@ -86,6 +86,12 @@ export default {
           route: "sub-contracts",
           count: 0,
         },
+        {
+          id: 7,
+          title: "Уведомления",
+          route: "contract-warnings",
+          count: 0,
+        },
 
         // {
         //     id: 5,
@@ -669,6 +675,7 @@ export default {
         @finish-loading="finishLoading"
         @refresh-details="refreshDetails"
         @item-count="updateItemCount"
+        :status="order.status"
       />
     </template>
 
