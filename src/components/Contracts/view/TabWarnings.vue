@@ -109,11 +109,11 @@ export default {
     async download(item) {
       if (item.isLoading) return;
       item.isLoading = true;
-      const d = new FormData();
-      d.append("type", item.type);
-      d.append("date", item.date);
+      // const d = new FormData();
+      // d.append("type", item.type);
+      // d.append("date", item.date);
       await v3ServiceApi.warningOrders
-        .download(this.$route.params.id, d)
+        .download(this.$route.params.id, { type: item.type, date: item.date })
         .then(({ data, headers }) => {
           const filename = headers.hasOwnProperty("x-filename")
             ? headers["x-filename"]

@@ -174,7 +174,7 @@ class V3Service extends Core {
   }
 
   warningOrders = {
-    download: (order, data) => this.post(`orders/${order}/warning/download`, data),
+    download: (order, params) => this.get(`orders/${order}/warning/download`, { params }),
     getList: () => this.post('orders/warning/list')
   }
 }
