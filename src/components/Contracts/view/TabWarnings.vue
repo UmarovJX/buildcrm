@@ -9,12 +9,8 @@ import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
 import BaseDownIcon from "@/components/icons/BaseDownIcon";
 import { v3ServiceApi } from "@/services/v3/v3.service";
-import api from "@/services/api";
 import BaseDeleteIcon from "@/components/icons/BaseDeleteIcon";
-import ContractsPermission from "@/permission/contract";
 import AppDropdown from "@/components/Reusable/Dropdown/AppDropdown";
-import { isObject } from "@/util/inspect";
-import { hasOwnProperty } from "@/util/object";
 import { formatToPrice, getDateProperty } from "@/util/reusable";
 import { XIcon } from "@/components/ui-components/material-icons";
 import { XCircularBackground } from "@/components/ui-components/circular-background";
@@ -105,77 +101,6 @@ export default {
         ];
       return this.warnings;
     },
-    apartments() {
-      if (!this.current) return [];
-      return this.current.apartments;
-    },
-    currentTypeName() {
-      if (!this.current) return "";
-      return this.current.edit_type.name[this.$i18n.locale];
-    },
-    currentType() {
-      if (!this.current) return "";
-      return this.current.edit_type.type;
-    },
-    currentDiscount() {
-      if (!this.current) return "";
-      return "Предоплата " + this.current.extra_data.discount.prepay_to + "%";
-    },
-    currentDiscountAmount() {
-      if (!this.current) return "";
-      return formatToPrice(this.current.extra_data.discount_amount);
-    },
-    currentDate() {
-      if (!this.current) return "";
-      const { year, month, day } = getDateProperty(
-        this.current.contract_date.split("T")[0]
-      );
-      return `${day}.${month}.${year}`;
-    },
-    currentStartDate() {
-      if (!this.current) return "";
-      const { year, month, day } = getDateProperty(
-        this.current.extra_data.start_date.split("T")[0]
-      );
-      return `${day}.${month}.${year}`;
-    },
-    currentEndDate() {
-      if (!this.current) return "";
-      const { year, month, day } = getDateProperty(
-        this.current.extra_data.end_date.split("T")[0]
-      );
-      return `${day}.${month}.${year}`;
-    },
-    currentInitialPaymentDate() {
-      if (!this.current) return "";
-      const { year, month, day } = getDateProperty(
-        this.current.extra_data.initial_payment_date.split("T")[0]
-      );
-      return `${day}.${month}.${year}`;
-    },
-    currentm2() {
-      if (!this.current) return "";
-      return formatToPrice(this.current.per_square_price);
-    },
-    currentTransaction() {
-      if (!this.current) return "";
-      return formatToPrice(this.current.transaction_price);
-    },
-    card() {
-      if (!this.current) return "";
-      return this.current.extra_data.card_number;
-    },
-    bank() {
-      if (!this.current) return "";
-      return this.current.extra_data.bank_address;
-    },
-    paymentDue() {
-      if (!this.current) return "";
-      const { year, month, day } = getDateProperty(
-        this.current.extra_data.payment_due
-      );
-      return `${day}.${month}.${year}`;
-    },
   },
   async mounted() {
     this.getWarnings();
@@ -190,7 +115,6 @@ export default {
       await v3ServiceApi.warningOrders
         .download(this.$route.params.id, d)
         .then(({ data, headers }) => {
-          console.log(headers);
           const filename = headers.hasOwnProperty("x-filename")
             ? headers["x-filename"]
             : "contract.docx";
@@ -203,6 +127,7 @@ export default {
         })
         .catch((error) => {
           this.toastedWithErrorCode(error);
+          this.toastedWithErrorCode(error.response.error);
         })
         .finally(() => {
           item.isLoading = false;
@@ -248,7 +173,7 @@ export default {
   <div class="main">
     <!--  TABLE PAYMENTS LIST -->
     <div>
-      <h3 class="title mt-4">Доп.соглашения к контракту</h3>
+      <h3 class="title mt-4">Письма-уведомления к контракту</h3>
       <div class="addition__button" />
     </div>
     <b-table
@@ -300,20 +225,6 @@ export default {
         <base-loading />
       </template>
     </b-table>
-
-    <!-- <base-modal ref="detail-modal" design="payment-modal">
-      <template #header>
-        <span class="d-flex align-items-center">
-          <span class="go__back" @click="closeModal">
-            <base-arrow-left-icon :width="32" :height="32" />
-          </span>
-          <span class="title ml-3">Детали доп.соглашения </span>
-        </span>
-      </template>
-      <template #main>
-        <base-loading v-if="loading" style="min-width: 506px"></base-loading>
-      </template>
-    </base-modal> -->
   </div>
 </template>
 
