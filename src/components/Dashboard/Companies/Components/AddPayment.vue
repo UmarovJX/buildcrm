@@ -93,8 +93,8 @@ export default {
           uz: this.paymentData.bank_name.uz,
           ru: this.paymentData.bank_name.ru,
         },
-        mfo: parseInt(this.paymentData.mfo),
-        payment_account: parseInt(this.paymentData.payment_account),
+        mfo: this.paymentData.mfo,
+        payment_account: this.paymentData.payment_account,
       };
     },
 
@@ -104,8 +104,8 @@ export default {
           ru: this.payment.bank_name.ru,
           uz: this.payment.bank_name.uz,
         },
-        payment_account: parseInt(this.payment.payment_account),
-        mfo: parseInt(this.payment.mfo),
+        payment_account: (this.payment.payment_account),
+        mfo: (this.payment.mfo),
       };
       // const form = Object.assign({}, data)
       const { position } = this.modalProperties;
@@ -115,19 +115,6 @@ export default {
         // const {companyId} = this.$route.params
       } else {
         this.updateCurrentPayment(data);
-        // api.companies.addPayment(companyId, data)
-        //     .then((response) => {
-        //       const {message} = response.data
-        //       this.$bvModal.hide("modal-create")
-        //       this.$emit("updated-company", {message})
-        //       this.resetModal()
-        //     })
-        //     .catch((error) => {
-        //       this.toastedWithErrorCode(error)
-        //     })
-        //     .finally(() => {
-        //       this.loading = false
-        //     })
       }
     },
     async updateCurrentPayment(form) {
@@ -249,7 +236,6 @@ export default {
               label,
               labelFor,
               bind,
-              mask,
               rules,
               type,
             } in providerSchema.slice(2)"
@@ -262,7 +248,6 @@ export default {
               class="mb-2 w-100"
               v-model="payment[bind]"
               :label="true"
-              :mask="mask"
               :type="type"
               :id="labelFor"
               :placeholder="label"
