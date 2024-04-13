@@ -65,8 +65,20 @@ export default {
       true
     );
 
+    const permissionInitial = Permission.getUserPermission(
+      "statistics.view-statistics-initial",
+      true
+    );
+    const permissionDebtor = Permission.getUserPermission(
+      "statistics.view-statistics-monthly",
+      true
+    );
+    const permissionSales = Permission.getUserPermission(
+      "statistics.view-statistics-sales",
+      true
+    );
+
     let defaultTypeOfView = "table";
-    console.log("permissionFounderTable", permissionFounderTable);
     if (!permissionFounderTable) {
       if (permissionFounderGraph) {
         defaultTypeOfView = "chart";
@@ -110,7 +122,6 @@ export default {
       fetchSalesMain,
       debtorMain,
       fetchDebtorMain;
-    console.log("permissionFounderTable", permissionFounderTable);
     if (permissionFounderTable) {
       const d = useHome();
       objectsIncome = d.objectsIncome;
@@ -148,7 +159,6 @@ export default {
       orderReports,
       fetchOrderReportsData,
       statisticsFetchAll; // fetchAll:
-    console.log("permissionFounderGraph", permissionFounderGraph);
     if (permissionFounderGraph) {
       const d = useStatistics();
       periodType = d.periodType;
@@ -258,14 +268,12 @@ export default {
       if (tableLoaded.value) {
         return;
       }
-      if (permissionFounderTable)
-        await Promise.allSettled([
-          // fetchObjectsIncomeByPeriod(b),
-          // fetchObjectPayments(b),
-          fetchInitialPayments(),
-          fetchSalesMain(),
-          fetchDebtorMain(),
-        ]);
+      const promises = [];
+      if (permissionInitial) promises.push(fetchInitialPayments());
+      if (permissionDebtor) promises.push(fetchDebtorMain());
+      if (permissionSales) promises.push(fetchSalesMain());
+      if (permissionFounderTable && promises.length)
+        await Promise.allSettled(promises);
 
       tableLoaded.value = true;
     }
@@ -326,6 +334,9 @@ export default {
       permissionFounderGraph,
       permissionFounderTable,
       permissionManagerGraph,
+      permissionInitial,
+      permissionDebtor,
+      permissionSales,
 
       initialPayments,
       salesMain,
@@ -411,18 +422,24 @@ export default {
         class="home__section"
       >
         <home-initial-payment-reports
+          v-if="permissionInitial"
           :items="initialPayments.result"
           :busy="initialPayments.busy"
           class="mb-4"
         />
 
         <home-debtor-reports
+          v-if="permissionDebtor"
           :items="debtorMain.result"
           :busy="debtorMain.busy"
           class="mb-4"
         />
 
-        <home-sales-reports :items="salesMain.result" :busy="salesMain.busy" />
+        <home-sales-reports
+          v-if="permissionSales"
+          :items="salesMain.result"
+          :busy="salesMain.busy"
+        />
 
         <!--        <objects-income-by-period-->
         <!--          :busy="objectsIncome.busy"-->

@@ -1,27 +1,27 @@
 <script>
-import VueHtml2pdf from 'vue-html2pdf'
-import { formatToPrice, phonePrettier } from '@/util/reusable'
-import { hasOwnProperty, keys } from '@/util/object'
-import { mapGetters } from 'vuex'
-import { useShowPrice } from '@/composables/useShowPrice'
+import VueHtml2pdf from "vue-html2pdf";
+import { formatToPrice, phonePrettier } from "@/util/reusable";
+import { hasOwnProperty, keys } from "@/util/object";
+import { mapGetters } from "vuex";
+import { useShowPrice } from "@/composables/useShowPrice";
 
 function addMonths(n) {
-  const date = new Date()
-  const m = date.getMonth()
-  const y = date.getFullYear()
+  const date = new Date();
+  const m = date.getMonth();
+  const y = date.getFullYear();
 
-  const newM = (m + +n) % 12
-  const newY = (m + +n - newM) / 12 + y
-  return new Date(newY, newM, 1)
+  const newM = (m + +n) % 12;
+  const newY = (m + +n - newM) / 12 + y;
+  return new Date(newY, newM, 1);
 }
 
 export default {
-  name: 'PdfTemplate2',
+  name: "PdfTemplate2",
   components: {
     VueHtml2pdf,
   },
   setup() {
-    return useShowPrice()
+    return useShowPrice();
   },
   props: {
     apartment: {
@@ -36,104 +36,118 @@ export default {
       type: String,
     },
   },
-  emits: ['has-downloaded'],
+  emits: ["has-downloaded"],
   data() {
     return {
-      img: '',
+      img: "",
       showPdfContent: false,
       htmlToPdfOptions: {
         margin: 0,
-        filename: '',
+        filename: "",
         html2canvas: {
           dpi: 72,
           scale: 1.4,
           letterRendering: true,
           useCORS: true,
         },
-        image: { type: 'png', quality: 0.99 },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+        image: { type: "png", quality: 0.99 },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
       },
-    }
+    };
   },
   computed: {
     lastPaymentMonth() {
-      const d = addMonths(+this.printCalc.month + 1)
-      return d.toLocaleString('en', { month: 'long' })
+      const d = addMonths(+this.printCalc.month + 1);
+      return d.toLocaleString("en", { month: "long" });
     },
     lastPaymentYear() {
-      const d = addMonths(+this.printCalc.month + 1)
+      const d = addMonths(+this.printCalc.month + 1);
 
-      return d.getFullYear()
+      return d.getFullYear();
     },
     ...mapGetters({
-      me: 'getMe',
+      me: "getMe",
     }),
     filteredDiscounts() {
-      return this.apartment.discounts.filter(el => el.prepay !== 100)
+      return this.apartment.discounts.filter((el) => el.prepay !== 100);
+    },
+    groupedDiscounts() {
+      return this.filteredDiscounts.reduce(
+        (acc, el) => {
+          if (acc[acc.length - 1].length < 3) acc[acc.length - 1].push(el);
+          else acc.push([el]);
+          return acc;
+        },
+        [[]]
+      );
+    },
+    restDiscounts() {
+      return this.groupedDiscounts.slice(1);
     },
 
     planImage() {
       if (this.apartment?.plan?.images?.length) {
-        return this.apartment.plan.images[0]
+        return this.apartment.plan.images[0];
       }
 
-      return false
+      return false;
     },
     hasBalcony() {
-      return this.apartment.plan?.balcony
+      return this.apartment.plan?.balcony;
     },
     managerName() {
-      if (hasOwnProperty(this.me, 'user') && keys(this.me.user).length) {
-        return `${this.me.user.lastName} ${this.me.user.firstName}`
+      if (hasOwnProperty(this.me, "user") && keys(this.me.user).length) {
+        return `${this.me.user.lastName} ${this.me.user.firstName}`;
       }
 
-      return false
+      return false;
     },
   },
   mounted() {
-    console.log(this.imgData.length)
-    console.log(this.me)
+    console.log(this.imgData.length);
+    console.log(this.me);
   },
 
   methods: {
     formatPhoneNumber(phoneNumberString) {
-      const cleaned = (`${phoneNumberString}`).replace(/\D/g, '')
-      const match = cleaned.match(/^(\d{3})(\d{2})(\d{3})(\d{4})$/)
+      const cleaned = `${phoneNumberString}`.replace(/\D/g, "");
+      const match = cleaned.match(/^(\d{3})(\d{2})(\d{3})(\d{4})$/);
       if (match) {
-        return `+${match[1]} (${match[2]}) ${match[3]} ${match[4]}`
+        return `+${match[1]} (${match[2]}) ${match[3]} ${match[4]}`;
       }
-      return phoneNumberString
+      return phoneNumberString;
     },
     m2Price(disc) {
-      return this.discountedPrice(disc) / this.apartment.plan.area
+      return this.discountedPrice(disc) / this.apartment.plan.area;
     },
     discountedPrice(disc) {
       if (disc.id === this.printCalc.discount?.id) {
-        return this.printCalc.total
+        return this.printCalc.total;
       }
-      if (disc.prepay === 100) return this.apartment.price
-      return disc.amount * this.apartment.plan?.area
+      if (disc.prepay === 100) return this.apartment.price;
+      return disc.amount * this.apartment.plan?.area;
     },
     monthlyPayment(disc) {
-      const forPay = (this.discountedPrice(disc) * (100 - disc.prepay)) / 100
-      const degree = Math.floor(parseInt(forPay).toString().length / 3)
-      const adjustedMonthlyPayment = Math.ceil(forPay / (Math.pow(10, degree) * this.printCalc.month))
-        * Math.pow(10, degree)
-      return adjustedMonthlyPayment
+      const forPay = (this.discountedPrice(disc) * (100 - disc.prepay)) / 100;
+      const degree = Math.floor(parseInt(forPay).toString().length / 3);
+      const adjustedMonthlyPayment =
+        Math.ceil(forPay / (Math.pow(10, degree) * this.printCalc.month)) *
+        Math.pow(10, degree);
+      return adjustedMonthlyPayment;
     },
     firstPayment(disc) {
-      return (this.discountedPrice(disc) * disc.prepay) / 100
+      return (this.discountedPrice(disc) * disc.prepay) / 100;
     },
     lastMonth(disc) {
-      const forPay = (this.discountedPrice(disc) * (100 - disc.prepay)) / 100
-      return forPay - this.monthlyPayment(disc) * (this.printCalc.month - 1)
+      const forPay = (this.discountedPrice(disc) * (100 - disc.prepay)) / 100;
+      return forPay - this.monthlyPayment(disc) * (this.printCalc.month - 1);
     },
     fullDiscount(disc) {
       if (disc.id === this.printCalc.discount.id) {
-        return this.printCalc.total_discount
+        return this.printCalc.total_discount;
       }
 
-      return this.apartment.prices?.price - this.discountedPrice(disc)
+      return this.apartment.prices?.price - this.discountedPrice(disc);
     },
     phonePrettier,
     pricePrettier: (price, decimalCount) => formatToPrice(price, decimalCount),
@@ -141,60 +155,58 @@ export default {
       // this.showPdfContent = true
     },
     hasDownloadedPdf($event) {
-      this.$emit('has-downloaded', $event)
+      this.$emit("has-downloaded", $event);
       // this.showPdfContent = false
     },
     generatePdf() {
-      this.htmlToPdfOptions.filename = `${this.apartment?.object?.name
-      }, ${
+      this.htmlToPdfOptions.filename = `${this.apartment?.object?.name}, ${
         this.apartment.number
-      } - ${
-        this.$t('apartment')}`
-      this.$refs.html2Pdf.generatePdf()
+      } - ${this.$t("apartment")}`;
+      this.$refs.html2Pdf.generatePdf();
     },
     buildingDate(time) {
-      const date = new Date(time)
-      const year = date.getFullYear()
-      let month = date.getMonth()
+      const date = new Date(time);
+      const year = date.getFullYear();
+      let month = date.getMonth();
       if (month < 3) {
-        month = 'I'
+        month = "I";
       } else if (month >= 3 && month < 6) {
-        month = 'II'
+        month = "II";
       } else if (month >= 6 && month < 9) {
-        month = 'III'
+        month = "III";
       } else {
-        month = 'IV'
+        month = "IV";
       }
-      return ` ${month} - ${this.$t('quarter')}, ${year}`
+      return ` ${month} - ${this.$t("quarter")}, ${year}`;
     },
 
     totalPrintDiscount({ amount, prepay, type }) {
-      const { apartment, printCalc } = this
-      const basePriceM2 = parseFloat(apartment.price_m2)
-      const basePrice = apartment.prices.price
-      let result = 0
-      const customDiscount = printCalc.discount_price * apartment.plan.area
-      if (prepay === 100 && type === 'percent') {
-        result = basePrice - basePriceM2 * apartment.plan.area + customDiscount
+      const { apartment, printCalc } = this;
+      const basePriceM2 = parseFloat(apartment.price_m2);
+      const basePrice = apartment.prices.price;
+      let result = 0;
+      const customDiscount = printCalc.discount_price * apartment.plan.area;
+      if (prepay === 100 && type === "percent") {
+        result = basePrice - basePriceM2 * apartment.plan.area + customDiscount;
       } else {
-        result = basePrice - amount * apartment.plan.area + customDiscount
+        result = basePrice - amount * apartment.plan.area + customDiscount;
       }
       return {
         format: formatToPrice(result, 2),
         value: result,
-      }
+      };
     },
     totalPrintPrice(item) {
-      const basePrice = this.apartment.prices.price
-      const { value: discountPrice } = this.totalPrintDiscount(item)
-      const result = basePrice - discountPrice
+      const basePrice = this.apartment.prices.price;
+      const { value: discountPrice } = this.totalPrintDiscount(item);
+      const result = basePrice - discountPrice;
       return {
         format: formatToPrice(result, 2),
         value: result,
-      }
+      };
     },
   },
-}
+};
 </script>
 
 <template>
@@ -247,21 +259,13 @@ export default {
               class="header_logo"
               :src="require('@/assets/img/xonsaroy_sariq.png')"
               alt=""
-            >
+            />
           </div>
-          <img
-            id="planImage"
-            :src="imgData"
-            alt="plan-image"
-            class="w-100"
-          >
+          <img id="planImage" :src="imgData" alt="plan-image" class="w-100" />
           <div class="row">
             <!-- OBJECT -->
             <div class="col-4 feature">
-              <img
-                :src="require('@/assets/icons/icon-facade.svg')"
-                alt=""
-              >
+              <img :src="require('@/assets/icons/icon-facade.svg')" alt="" />
               <div v-if="apartment.object">
                 <div class="title">
                   {{ $t("users.object") }}
@@ -273,10 +277,7 @@ export default {
             </div>
             <!-- APARTMENT NUMBER -->
             <div class="col-4 feature">
-              <img
-                :src="require('@/assets/icons/icon-door.svg')"
-                alt=""
-              >
+              <img :src="require('@/assets/icons/icon-door.svg')" alt="" />
               <div v-if="apartment.object">
                 <div class="title">
                   {{ $t("apartment_number") }}
@@ -288,25 +289,17 @@ export default {
             </div>
             <!-- AREA -->
             <div class="col-4 feature">
-              <img
-                :src="require('@/assets/icons/icon-area.svg')"
-                alt=""
-              >
+              <img :src="require('@/assets/icons/icon-area.svg')" alt="" />
               <div v-if="apartment.plan">
                 <div class="title">
                   {{ $t("plan_area") }}
                 </div>
-                <div class="value">
-                  {{ apartment.plan.area }} m<sup>2</sup>
-                </div>
+                <div class="value">{{ apartment.plan.area }} m<sup>2</sup></div>
               </div>
             </div>
             <!-- BLOCK -->
             <div class="col-4 feature">
-              <img
-                :src="require('@/assets/icons/icon-flat.svg')"
-                alt=""
-              >
+              <img :src="require('@/assets/icons/icon-flat.svg')" alt="" />
               <div v-if="apartment.block">
                 <div class="title">
                   {{ $t("object.sort.block") }}
@@ -318,10 +311,7 @@ export default {
             </div>
             <!-- FLOOR -->
             <div class="col-4 feature">
-              <img
-                :src="require('@/assets/icons/icon-floor.svg')"
-                alt=""
-              >
+              <img :src="require('@/assets/icons/icon-floor.svg')" alt="" />
               <div>
                 <div class="title">
                   {{ $t("object.level") }}
@@ -333,10 +323,7 @@ export default {
             </div>
             <!-- ROOMS -->
             <div class="col-4 feature">
-              <img
-                :src="require('@/assets/icons/icon-door.svg')"
-                alt=""
-              >
+              <img :src="require('@/assets/icons/icon-door.svg')" alt="" />
               <div>
                 <div class="title">
                   {{ $t("number_of_rooms") }}
@@ -351,7 +338,7 @@ export default {
               <img
                 :src="require('@/assets/icons/icon-construction.svg')"
                 alt=""
-              >
+              />
               <div v-if="apartment.object">
                 <div class="title">
                   {{ $t("apartments.view.completion_date") }}
@@ -363,10 +350,7 @@ export default {
             </div>
             <!-- FLOOR COUNT -->
             <div class="col-4 feature">
-              <img
-                :src="require('@/assets/icons/icon-flat.svg')"
-                alt=""
-              >
+              <img :src="require('@/assets/icons/icon-flat.svg')" alt="" />
               <div v-if="apartment.block">
                 <div class="title">
                   {{ $t("apartments.view.number_of_blocks") }}
@@ -378,10 +362,7 @@ export default {
             </div>
             <!-- BALCONY AREA -->
             <div class="col-4 feature">
-              <img
-                :src="require('@/assets/icons/icon-area.svg')"
-                alt=""
-              >
+              <img :src="require('@/assets/icons/icon-area.svg')" alt="" />
               <div v-if="hasBalcony">
                 <div class="title">
                   {{ $t("objects.create.plan.balcony_area") }}
@@ -396,23 +377,12 @@ export default {
         <div class="w-100">
           <div class="footer pt-4">
             <div class="qr">
-              <img
-                :src="require('@/assets/icons/qr_web.svg')"
-                alt=""
-              >
-              <img
-                :src="require('@/assets/icons/qr_instagram.svg')"
-                alt=""
-              >
-              <img
-                :src="require('@/assets/icons/qr_telegram.svg')"
-                alt=""
-              >
+              <img :src="require('@/assets/icons/qr_web.svg')" alt="" />
+              <img :src="require('@/assets/icons/qr_instagram.svg')" alt="" />
+              <img :src="require('@/assets/icons/qr_telegram.svg')" alt="" />
             </div>
             <div>
-              <div class="section_title">
-                OOO “Xonsaroy”
-              </div>
+              <div class="section_title">OOO “Xonsaroy”</div>
               <div class="address">
                 г. Ташкент, Юнусобадский район, улица Янги Шахар, дом 64а
               </div>
@@ -451,7 +421,7 @@ export default {
               class="header_logo"
               :src="require('@/assets/img/xonsaroy_sariq.png')"
               alt=""
-            >
+            />
           </div>
           <!-- TABLE HEADER -->
           <div class="row">
@@ -607,11 +577,7 @@ export default {
           <div class="mb-4" />
           <div style="padding-left: 15px; padding-right: 15px">
             <!-- DISCOUNT DETAILS -->
-            <div
-              v-for="disc in filteredDiscounts"
-              :key="disc.id"
-              class=""
-            >
+            <div v-for="disc in groupedDiscounts[0]" :key="disc.id" class="">
               <div class="row">
                 <div class="section_title pb-2">
                   {{
@@ -662,7 +628,7 @@ export default {
                   {{ $t("ye") }}
                 </div>
               </div>
-              <div class="row last_payment mt-1 mb-3">
+              <div class="row last_payment mt-1 mb-2">
                 {{ $t("pdf.detail.last") }}:
                 {{ $t("common.month." + lastPaymentMonth.toLowerCase()) }},
                 {{ lastPaymentYear }}
@@ -670,32 +636,144 @@ export default {
             </div>
           </div>
 
-          <div class="row disclaimer mb-2">
+          <div class="row disclaimer mb-2" v-if="groupedDiscounts.length === 1">
             {{ $t("pdf.disclaimer1") }}
-            <br>
+            <br />
             {{ $t("pdf.disclaimer2") }}
           </div>
         </div>
-        <div class="w-100">
+        <div class="w-100" v-if="groupedDiscounts.length === 1">
           <div class="footer pt-4">
             <div class="qr">
-              <img
-                :src="require('@/assets/icons/qr_web.svg')"
-                alt=""
-              >
-              <img
-                :src="require('@/assets/icons/qr_instagram.svg')"
-                alt=""
-              >
-              <img
-                :src="require('@/assets/icons/qr_telegram.svg')"
-                alt=""
-              >
+              <img :src="require('@/assets/icons/qr_web.svg')" alt="" />
+              <img :src="require('@/assets/icons/qr_instagram.svg')" alt="" />
+              <img :src="require('@/assets/icons/qr_telegram.svg')" alt="" />
             </div>
             <div>
-              <div class="section_title">
-                OOO “Xonsaroy”
+              <div class="section_title">OOO “Xonsaroy”</div>
+              <div class="address">
+                г. Ташкент, Юнусобадский район, улица Янги Шахар, дом 64а
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="html2pdf__page-break pdf-page d-flex align-items-center justify-content-between"
+        v-for="(g, i) in restDiscounts"
+        :key="i"
+      >
+        <div>
+          <div class="row d-flex align-items-center justify-content-between">
+            <div class="header mt-1 mb-1">
+              <div class="object">
+                {{ apartment.object.name }}
+              </div>
+              <div class="apartment_data">
+                {{ $t("common.apartment") }} {{ apartment.number }}
+              </div>
+              <div class="detail">
+                {{ apartment.object.address }}
+              </div>
+              <div class="detail">
+                {{ $t("pdf.creation_date") }}:
+                {{ new Date().toLocaleDateString("ru") }}
+              </div>
+              <div class="detail">
+                {{ $t("pdf.manager") }} <b>{{ managerName }}</b>
+              </div>
+              <div class="detail">
+                {{ $t("common.phone") }}
+                <b>{{ formatPhoneNumber(me.user?.phone) }}</b>
+              </div>
+            </div>
+            <img
+              class="header_logo"
+              :src="require('@/assets/img/xonsaroy_sariq.png')"
+              alt=""
+            />
+          </div>
+          <div style="width: 700px"></div>
+
+          <div style="padding-left: 15px; padding-right: 15px">
+            <!-- DISCOUNT DETAILS -->
+            <div v-for="disc in g" :key="disc.id" class="">
+              <div class="row">
+                <div class="section_title pb-1">
+                  {{
+                    $t("pdf.monthly_title", {
+                      month: printCalc.month,
+                      prepay: disc.prepay,
+                    })
+                  }}
+                </div>
+              </div>
+              <div class="row borderb pb-1 align-items-center">
+                <div class="col-6 detail_title">
+                  {{ $t("pdf.detail.title_type") }}
+                </div>
+                <div class="col-6 detail_title">
+                  {{ $t("pdf.detail.title_value") }}
+                </div>
+              </div>
+              <div class="row borderb pt-1 pb-1">
+                <div class="col-6 detail_row">
+                  {{ $t("pdf.detail.first") }}
+                </div>
+                <div class="col-6 detail_row">
+                  {{
+                    pricePrettier(
+                      (discountedPrice(disc) * disc.prepay) / 100,
+                      2
+                    )
+                  }}
+                  {{ $t("ye") }}
+                </div>
+              </div>
+              <div class="row borderb pt-1 pb-1">
+                <div class="col-6 detail_row">
+                  {{ $t("pdf.detail.monthly") }}
+                </div>
+                <div class="col-6 detail_row">
+                  {{ pricePrettier(monthlyPayment(disc), 2) }}
+                  {{ $t("ye") }}
+                </div>
+              </div>
+              <div class="row pt-1 pb-1">
+                <div class="col-6 detail_row">
+                  {{ $t("Последняя") }}
+                </div>
+                <div class="col-6 detail_row">
+                  {{ pricePrettier(lastMonth(disc), 2) }}
+                  {{ $t("ye") }}
+                </div>
+              </div>
+              <div class="row last_payment mt-1 mb-2">
+                {{ $t("pdf.detail.last") }}:
+                {{ $t("common.month." + lastPaymentMonth.toLowerCase()) }},
+                {{ lastPaymentYear }}
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="row disclaimer mb-2"
+            v-if="i === restDiscounts.length - 1"
+          >
+            {{ $t("pdf.disclaimer1") }}
+            <br />
+            {{ $t("pdf.disclaimer2") }}
+          </div>
+        </div>
+        <div class="w-100" v-if="i === restDiscounts.length - 1">
+          <div class="footer pt-4">
+            <div class="qr">
+              <img :src="require('@/assets/icons/qr_web.svg')" alt="" />
+              <img :src="require('@/assets/icons/qr_instagram.svg')" alt="" />
+              <img :src="require('@/assets/icons/qr_telegram.svg')" alt="" />
+            </div>
+            <div>
+              <div class="section_title">OOO “Xonsaroy”</div>
               <div class="address">
                 г. Ташкент, Юнусобадский район, улица Янги Шахар, дом 64а
               </div>
