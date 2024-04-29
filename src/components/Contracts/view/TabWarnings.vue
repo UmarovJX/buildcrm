@@ -89,17 +89,15 @@ export default {
 
   computed: {
     warningList() {
-      if (this.status === "cancelled")
-        return [
-          ...this.warnings,
-          {
-            label: "Отменен",
-            type: "cancelled",
-            date: this.today,
-            isLoading: false,
-          },
-        ];
-      return this.warnings;
+      return [
+        ...this.warnings,
+        {
+          label: this.$i18n.locale === "ru" ? "Отказ" : "Rad etilgan",
+          type: "cancelled",
+          date: this.today,
+          isLoading: false,
+        },
+      ];
     },
   },
   async mounted() {
@@ -109,9 +107,6 @@ export default {
     async download(item) {
       if (item.isLoading) return;
       item.isLoading = true;
-      // const d = new FormData();
-      // d.append("type", item.type);
-      // d.append("date", item.date);
       await v3ServiceApi.warningOrders
         .download(this.$route.params.id, { type: item.type, date: item.date })
         .then(({ data, headers }) => {
@@ -130,8 +125,23 @@ export default {
           fileLink.click();
         })
         .catch((error) => {
-          this.toastedWithErrorCode(error);
-          this.toastedWithErrorCode(error.response.error);
+          if (
+            error.message &&
+            error.message === "Request failed with status code 404"
+          )
+            return this.toasted(
+              "Шаблон документа не загружен. Обратитесь к администратору!",
+              "error"
+            );
+          if (
+            error.message &&
+            error.message === "Request failed with status code 400"
+          )
+            return this.toasted(
+              "Шаблон документа не загружен. Обратитесь к администратору!",
+              "error"
+            );
+          else this.toastedWithErrorCode(error);
         })
         .finally(() => {
           item.isLoading = false;
