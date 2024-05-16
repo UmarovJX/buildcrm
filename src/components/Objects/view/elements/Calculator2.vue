@@ -126,14 +126,22 @@ export default {
       const degree = Math.floor(
         parseInt(this.totalPayment - this.prepay).toString().length / 3
       );
-      if (this.calc.month) {
-        const adjustedMonthlyPayment =
+      if (this.calc.type === "custom") {
+        if (this.calc.month) {
+          return (
+            Math.ceil(
+              (this.totalPayment - this.prepay) /
+                (Math.pow(10, degree) * this.calc.month)
+            ) * Math.pow(10, degree)
+          );
+        }
+      } else {
+        return (
           Math.ceil(
             (this.totalPayment - this.prepay) /
-              (Math.pow(10, degree) * this.calc.month)
-          ) * Math.pow(10, degree);
-
-        return adjustedMonthlyPayment;
+              (Math.pow(10, degree) * this.currentInstallmentObj.months)
+          ) * Math.pow(10, degree)
+        );
       }
       return 0;
     },
@@ -141,7 +149,10 @@ export default {
       return (
         this.totalPayment -
         this.prepay -
-        this.monthlyPayment * (this.calc.month - 1)
+        this.monthlyPayment *
+          (this.calc.type === "custom"
+            ? this.calc.month - 1
+            : this.currentInstallmentObj.months - 1)
       );
     },
     prepay() {
@@ -152,7 +163,7 @@ export default {
 
       let total = 0;
       if (this.calc.type === "installment") {
-        total = this.currentInstallmentObj.amount * this.apartment.plan.area;
+        total = this.discount.amount * this.apartment.plan.area;
       } else
         switch (this.discount.type) {
           case "promo":
@@ -317,6 +328,7 @@ export default {
   },
   methods: {
     async getInstallmentCalcs() {
+      this.calculatedInstallments = [];
       const resp = await v3ServiceApi.installments.calculate({
         discount_id: this.discount.id,
         amount: this.discount.amount,
