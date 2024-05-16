@@ -187,6 +187,10 @@ class ContractV2 extends Core {
   updateStatus(contract, payment, status) {
     return this.put(`contracts/${contract}/payment-schedule/${payment}`, { status })
   }
+
+  getContractStatusList() {
+    return this.get('contracts/payment-statuses')
+  }
 }
 
 export default {

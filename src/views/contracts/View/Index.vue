@@ -668,7 +668,6 @@ export default {
       </b-tabs>
 
       <router-view
-        v-show="!showLoading"
         :order="order"
         :has-constructor-order="hasConstructorOrder"
         @start-loading="startLoading"

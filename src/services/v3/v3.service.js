@@ -179,6 +179,16 @@ class V3Service extends Core {
     }),
     getList: () => this.post('orders/warning/list')
   }
+
+  // INSTALLATIONS
+  installments = {
+    getAll: (b) => this.post('installment-month/index', b),
+    create: (b) => this.post('installment-month/create', b),
+    update: (b) => this.post('installment-month/update', b),
+    show: (b) => this.post('installment-month/show', b),
+    remove: (b) => this.post('installment-month/remove', b),
+    calculate: (b) => this.post('installment-month/calculate-amount', b),
+  }
 }
 
 // eslint-disable-next-line import/prefer-default-export

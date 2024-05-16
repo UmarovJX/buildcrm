@@ -95,6 +95,7 @@ export default {
       currentItem: null,
       newStatus: null,
       paymentStatusData: [],
+      paymentStatusTranslations: {},
       showByOptions,
       paymentMethodOptions,
       buttonLoading: false,
@@ -400,6 +401,9 @@ export default {
   async created() {
     await this.fetchItems();
     this.getPaymentScheduleStatuses();
+    api.contractV2
+      .getContractStatusList()
+      .then((res) => (this.paymentStatusTranslations = res.data.result));
   },
   methods: {
     userInteractionEdit(type) {
@@ -433,7 +437,7 @@ export default {
     async fetchItems() {
       if (this.listPermission) {
         this.startLoading();
-        await Promise.any([
+        await Promise.all([
           this.getPaymentSchedule(),
           this.getPaymentHistory(),
         ]).finally(() => {
@@ -1213,12 +1217,12 @@ export default {
         <template #cell(status)="{ item }">
           <div class="d-flex d-align-items">
             <span
-              v-if="paymentStatusData"
+              v-if="paymentStatusTranslations"
               :class="
                 'payment__schedule-status payment__schedule-' + item.status
               "
             >
-              {{ paymentStatusData[item.status].name[$i18n.locale] }}
+              {{ paymentStatusTranslations[item.status]?.name?.[$i18n.locale] }}
             </span>
             <x-circular-background
               @click="openStatusModal(item)"
@@ -1260,21 +1264,6 @@ export default {
             </span>
           </template>
         </vue-paginate>
-
-        <!--  Show By Select    -->
-        <!--        <div class="show__by">-->
-        <!--          <span class="show__by__content">-->
-        <!--            <span class="description">{{ $t('contracts.show_by') }}:</span>-->
-        <!--            <b-form-select-->
-        <!--                @input="changeScheduleShowingLimit"-->
-        <!--                v-model="paymentSchedule.params.limit"-->
-        <!--                :options="showByOptions"-->
-        <!--            ></b-form-select>-->
-        <!--            <span class="arrow__down">-->
-        <!--              <base-down-icon/>-->
-        <!--            </span>-->
-        <!--          </span>-->
-        <!--        </div>-->
 
         <div class="show-by">
           <x-form-select

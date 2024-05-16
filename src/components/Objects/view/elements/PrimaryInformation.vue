@@ -1,26 +1,27 @@
 <script>
-import PrimaryTabItem from '@/components/Objects/view/elements/PrimaryTabItem'
-import Calculator from '@/components/Objects/view/elements/Calculator'
-import BaseArrowLeftIcon from '@/components/icons/BaseArrowLeftIcon'
-import BaseArrowRightIcon from '@/components/icons/BaseArrowRightIcon'
-import { formatToPrice } from '@/util/reusable'
-import { directive } from 'vue-awesome-swiper'
-import 'swiper/css/swiper.css'
-import PromoSection from '@/components/Objects/view/elements/PromoSection'
-import { Fancybox } from '@fancyapps/ui'
-import '@fancyapps/ui/dist/fancybox.css'
-import { useShowPrice } from '@/composables/useShowPrice'
+import PrimaryTabItem from "@/components/Objects/view/elements/PrimaryTabItem";
+import Calculator from "@/components/Objects/view/elements/Calculator2";
+import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
+import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
+import { formatToPrice } from "@/util/reusable";
+import { directive } from "vue-awesome-swiper";
+import "swiper/css/swiper.css";
+import PromoSection from "@/components/Objects/view/elements/PromoSection";
+import { Fancybox } from "@fancyapps/ui";
+import "@fancyapps/ui/dist/fancybox.css";
+import { useShowPrice } from "@/composables/useShowPrice";
 
 export default {
-  name: 'PrimaryInformation',
+  name: "PrimaryInformation",
   setup() {
-    return useShowPrice()
+    return useShowPrice();
   },
 
   components: {
     BaseArrowLeftIcon,
     BaseArrowRightIcon,
     Calculator,
+
     PrimaryTabItem,
     PromoSection,
   },
@@ -45,77 +46,74 @@ export default {
       swiperOption: {
         slidesPerView: 1,
         spaceBetween: 0,
-        direction: 'horizontal',
+        direction: "horizontal",
         pagination: {
-          el: '.swiper-pagination',
-          type: 'bullets',
+          el: ".swiper-pagination",
+          type: "bullets",
           clickable: true,
         },
         paginationClickable: true,
         draggable: true,
         loop: false,
         navigation: {
-          nextEl: '.swiper-button-next',
-          prevEl: '.swiper-button-prev',
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
         },
       },
-    }
+    };
   },
   computed: {
     price() {
-      return (
-        `${formatToPrice(this.apartment.prices.price, 2)} ${this.$t('ye')}`
-      )
+      return `${formatToPrice(this.apartment.prices.price, 2)} ${this.$t(
+        "ye"
+      )}`;
     },
 
     squareMetrePrice() {
-      return (
-        `${formatToPrice(this.apartment.prices.price_m2, 2)} ${this.$t('ye')}`
-      )
+      return `${formatToPrice(this.apartment.prices.price_m2, 2)} ${this.$t(
+        "ye"
+      )}`;
     },
 
     statusSold() {
-      return this.apartment.order.status === 'sold'
+      return this.apartment.order.status === "sold";
     },
   },
   mounted() {
-    Fancybox.bind('[data-fancybox]')
+    Fancybox.bind("[data-fancybox]");
   },
 
   methods: {
     forPrint(value) {
-      this.$emit('for-print', value)
+      this.$emit("for-print", value);
     },
     buildingDate(time) {
-      const date = new Date(time)
-      const year = date.getFullYear()
-      let month = date.getMonth()
+      const date = new Date(time);
+      const year = date.getFullYear();
+      let month = date.getMonth();
       if (month < 3) {
-        month = '1'
+        month = "1";
       } else if (month >= 3 && month < 6) {
-        month = '2'
+        month = "2";
       } else if (month >= 6 && month < 9) {
-        month = '3'
+        month = "3";
       } else {
-        month = '4'
+        month = "4";
       }
 
-      return ` ${month} - ${this.$t('quarter')} ${year} ${this.$t(
-        'of_the_year',
-      )}`
+      return ` ${month} - ${this.$t("quarter")} ${year} ${this.$t(
+        "of_the_year"
+      )}`;
     },
   },
-}
+};
 </script>
 
 <template>
   <div class="main__content">
     <!--   IMAGE SLIDER     -->
     <div class="slider-content">
-      <div
-        v-swiper="swiperOption"
-        class="swiper"
-      >
+      <div v-swiper="swiperOption" class="swiper">
         <!--     MAIN CONTENT OF SLIDE       -->
         <div class="swiper-wrapper">
           <div
@@ -130,13 +128,13 @@ export default {
                 class="swiper-image"
                 :src="image"
                 alt="img-plan"
-              >
+              />
               <img
                 v-else
                 class="swiper-image"
                 :src="require('@/assets/img/no-image.jpg')"
                 alt="img-no"
-              >
+              />
             </div>
           </div>
         </div>
@@ -162,17 +160,11 @@ export default {
       </div>
     </div>
 
-    <b-tabs
-      card
-      class="calculator-tab"
-    >
+    <b-tabs card class="calculator-tab">
       <template #tabs-start>
         <div class="bottom__line" />
       </template>
-      <b-tab
-        :title="$t('details')"
-        active
-      >
+      <b-tab :title="$t('details')" active>
         <!--   PRICE CONTENT     -->
         <div
           v-if="!statusSold"
@@ -207,10 +199,8 @@ export default {
           <span class="price__section-amount">{{ price }}</span>
         </div>
 
-        <Calculator
-          :apartment="apartment"
-          @for-print="forPrint"
-        />
+        <!-- <Calculator :apartment="apartment" @for-print="forPrint" /> -->
+        <Calculator :apartment="apartment" @for-print="forPrint" />
 
         <PromoSection :promo="apartment.promo" />
         <!--        &lt;!&ndash;   PROMO SECTION &ndash;&gt;-->
@@ -274,167 +264,180 @@ export default {
   </div>
 </template>
 
-<style lang="sass" scoped>
-::v-deep .main__content
-    .slider__image
-        object-fit: contain
+<style lang="scss" scoped>
+::v-deep .main__content {
+  .slider__image {
+    object-fit: contain;
+  }
+}
+::v-deep .slider-content {
+  margin: 1rem;
 
-::v-deep .slider-content
-    margin: 1rem
+  .swiper-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 24rem;
 
-    .swiper-container
-        display: flex
-        align-items: center
-        justify-content: center
-        height: 24rem
+    .swiper-slide {
+      cursor: grab;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0 58px;
 
-        .swiper-slide
-            cursor: grab
-            display: flex
-            justify-content: center
-            align-items: center
-            padding: 0 58px
+      .swiper-image {
+        width: 100%;
+        max-height: 19rem;
+        object-fit: contain;
+      } //height: 16rem
+    }
+    .swiper-button {
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
+      background-color: var(--gray-100);
+    }
+    .swiper-button-next::after,
+    .swiper-button-prev::after {
+      content: none;
+    }
+  }
+  .swiper-pagination {
+    margin-top: 3rem;
 
-            .swiper-image
-                width: 100%
-                max-height: 19rem
-                object-fit: contain
-        //height: 16rem
+    &-bullets {
+      bottom: 1rem;
+    }
+    &-bullet {
+      width: 0.75rem;
+      height: 0.75rem;
+      margin-right: 0.3rem;
+      background-color: var(--gray-400);
 
-        .swiper-button
-            width: 3rem
-            height: 3rem
-            border-radius: 50%
-            background-color: var(--gray-100)
+      &-active {
+        background-color: var(--violet-400);
+      }
+    }
+  }
+}
+::v-deep .calculator-tab {
+  .bottom__line {
+    height: 8px;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    border-radius: 1rem 1rem 0 0;
+    background-color: var(--gray-100);
+  }
+  .card-header {
+    padding: 0;
+    background-color: transparent;
+    margin: 0;
+    border-bottom: none;
+  }
+  .tab-content {
+    position: relative;
+  } //padding-top: 12px
 
-        .swiper-button-next::after,
-        .swiper-button-prev::after
-            content: none
+  .card-body {
+    padding: 0;
+  }
+  .card-header-tabs {
+    margin: 0;
+  }
+  .nav-tabs {
+    display: flex;
+    flex-wrap: nowrap;
+    column-gap: 0.5rem;
+    justify-content: space-around;
+    position: relative;
 
-    .swiper-pagination
-        margin-top: 3rem
+    .nav-item {
+      width: 100%;
+    }
+    .nav-link {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: none;
+      padding: 0 12px 12px;
+      color: var(--gray-600);
 
-        &-bullets
-            bottom: 1rem
+      &.active {
+        position: relative;
+        color: var(--violet-600);
 
-        &-bullet
-            width: 0.75rem
-            height: 0.75rem
-            margin-right: 0.3rem
-            background-color: var(--gray-400)
+        &:after {
+          content: "";
+          height: 8px;
+          width: 100%;
+          position: absolute;
+          bottom: 1px;
+          left: 0;
+          border-radius: 1rem 1rem 0 0;
+          background-color: var(--violet-600);
+          z-index: 5;
+        }
+      }
+    }
+  }
+}
+.price__section {
+  font-family: CraftworkSans, serif;
+  font-size: 1.5rem;
+  font-weight: 900;
+  margin: 1.5rem 0;
 
-            &-active
-                background-color: var(--violet-400)
+  &-amount {
+    color: var(--gray-600) !important;
+    line-height: 28px;
+    text-align: end;
+    width: 100%;
+  }
+  &-square-amount {
+    color: var(--gray-500) !important;
+    font-size: 18px;
+    line-height: 22px;
+  }
+}
+.button__view {
+  display: inline-block;
+  padding: 1rem 1.5rem;
+  background-color: var(--gray-100);
+  border-radius: 2rem;
+  font-family: Inter, sans-serif;
+}
+.particular__qualities {
+  font-family: Inter, sans-serif;
+  margin-bottom: 2.5rem;
 
-::v-deep .calculator-tab
+  .title {
+    font-size: 1.25rem;
+  }
+  &-content {
+    display: flex;
+    flex-wrap: wrap;
 
-    .bottom__line
-        height: 8px
-        width: 100%
-        position: absolute
-        bottom: 0
-        left: 0
-        border-radius: 1rem 1rem 0 0
-        background-color: var(--gray-100)
+    .part {
+      margin-top: 1rem;
 
-    .card-header
-        padding: 0
-        background-color: transparent
-        margin: 0
-        border-bottom: none
-
-    .tab-content
-        position: relative
-    //padding-top: 12px
-
-    .card-body
-        padding: 0
-
-    .card-header-tabs
-        margin: 0
-
-    .nav-tabs
-        display: flex
-        flex-wrap: nowrap
-        column-gap: .5rem
-        justify-content: space-around
-        position: relative
-
-        .nav-item
-            width: 100%
-
-        .nav-link
-            display: flex
-            justify-content: center
-            align-items: center
-            border: none
-            padding: 0 12px 12px
-            color: var(--gray-600)
-
-            &.active
-                position: relative
-                color: var(--violet-600)
-
-                &:after
-                    content: ''
-                    height: 8px
-                    width: 100%
-                    position: absolute
-                    bottom: 1px
-                    left: 0
-                    border-radius: 1rem 1rem 0 0
-                    background-color: var(--violet-600)
-                    z-index: 5
-
-.price__section
-    font-family: CraftworkSans, serif
-    font-size: 1.5rem
-    font-weight: 900
-    margin: 1.5rem 0
-
-    &-amount
-        color: var(--gray-600) !important
-        line-height: 28px
-        text-align: end
-        width: 100%
-
-    &-square-amount
-        color: var(--gray-500) !important
-        font-size: 18px
-        line-height: 22px
-
-.button__view
-    display: inline-block
-    padding: 1rem 1.5rem
-    background-color: var(--gray-100)
-    border-radius: 2rem
-    font-family: Inter, sans-serif
-
-.particular__qualities
-    font-family: Inter, sans-serif
-    margin-bottom: 2.5rem
-
-    .title
-        font-size: 1.25rem
-
-    &-content
-        display: flex
-        flex-wrap: wrap
-
-        .part
-            margin-top: 1rem
-
-            &:not(:last-child)
-                margin-right: 1rem
-
-            .image__container
-                width: 4rem
-                height: 4rem
-                display: block
-                background-color: var(--violet-300)
-                margin-bottom: 0.75rem
-
-            .description
-                font-size: 14px
-                line-height: 20px
+      &:not(:last-child) {
+        margin-right: 1rem;
+      }
+      .image__container {
+        width: 4rem;
+        height: 4rem;
+        display: block;
+        background-color: var(--violet-300);
+        margin-bottom: 0.75rem;
+      }
+      .description {
+        font-size: 14px;
+        line-height: 20px;
+      }
+    }
+  }
+}
 </style>

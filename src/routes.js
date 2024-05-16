@@ -56,6 +56,7 @@ import botRoutes from '@/views/bot/bot.routes'
 import { isBoolean } from '@/util/inspect'
 import UserSettings from './views/UserSettings'
 import Promo from './components/Dashboard/Objects/Promo/Index'
+import Installment from './components/Dashboard/Objects/Installment/Index'
 import CompanyDetails from './components/Dashboard/Companies/CompanyDetails'
 import EditApartment from './components/Dashboard/Apartment/EditApartment'
 import Companies from './components/Dashboard/Companies/Index'
@@ -208,6 +209,15 @@ const routes = [
         component: Promo,
         meta: {
           requiresAuth: 'promos',
+        },
+      },
+      {
+        /* OBJECTS INSTALLMENT */
+        name: 'objects-installment',
+        path: '/objects/:id/installment',
+        component: Installment,
+        meta: {
+          requiresAuth: 'installment.view',
         },
       },
 
