@@ -57,7 +57,7 @@ export default {
       const { id } = this.$route.params;
       this.startLoading();
       await v3ServiceApi.installments
-        .getAll({ page: 1, limit: 10 })
+        .getAll({ page: 1, limit: 100, object_id: id })
         .then((response) => {
           this.items = response.data.result;
           if (
