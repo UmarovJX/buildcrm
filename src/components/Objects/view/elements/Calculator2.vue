@@ -34,8 +34,8 @@ export default {
       calc: {
         discount: this.apartment.discounts[0].id,
         type: "custom",
-        discount_price: 0,
         month: 0,
+        full_discount: 0,
       },
     };
   },
@@ -156,56 +156,36 @@ export default {
       );
     },
     prepay() {
-      // if (this.discount.type == 'percent')
       if (this.discount.prepay === 100) return 0;
 
       const total_discount = this.minusDiscount;
-
       let total = 0;
       if (this.calc.type === "installment") {
         total = this.discount.amount * this.apartment.plan.area;
-      } else
+      } else {
         switch (this.discount.type) {
-          case "promo":
-          case "fixed":
-          case "addition":
-            if (this.discount_price) {
-              total =
-                (this.discount.amount - parseFloat(this.discount_price)) *
-                this.apartment.plan.area;
-            } else {
-              total = this.discount.amount * this.apartment.plan.area;
-            }
+          case "percent":
+            total = this.totalForPercente / total_discount;
             break;
           default:
-            total = this.totalForPercente / total_discount;
-
-            break;
+            total =
+              this.discount.amount * this.apartment.plan.area -
+              (this.calc.full_discount || 0);
         }
+      }
       return (this.discount.prepay * total) / 100;
     },
     totalForPercente() {
       const total_discount = this.minusDiscount;
       let total = 0;
 
-      switch (this.discount.type) {
-        case "fixed":
-        case "promo":
-        case "addition":
-          if (this.calc.discount_price) {
-            total =
-              (this.discount.amount - parseFloat(this.calc.discount_price)) *
-              this.apartment.plan.area;
-          } else {
-            total = this.discount.amount * this.apartment.plan.area;
-          }
-          break;
-        default:
-          total = this.apartment.prices.price / total_discount;
-          break;
+      if (this.discount.type === "percent") {
+        return this.apartment.prices.price / total_discount;
       }
-
-      return total;
+      return (
+        this.discount.amount * this.apartment.plan.area -
+        (this.calc.full_discount || 0)
+      );
     },
     discount() {
       return this.apartment.discounts.find(
@@ -213,35 +193,34 @@ export default {
       );
     },
     basePrice() {
-      switch (this.discount.type) {
-        case "promo":
-        case "fixed":
-        case "addition":
-          return this.discount.amount * this.apartment.plan.area;
-        default:
-          return this.apartment.price;
-      }
+      if (this.discount.type === "percent") return this.apartment.price;
+      return this.discount.amount * this.apartment.plan.area;
     },
     totalDiscount() {
       const { calc, apartment } = this;
       const { prices, plan } = apartment;
-      const fullDiscount = this.calc.discount_price * plan.area;
+      const fullDiscount = this.calc.full_discount;
       if (this.calc.type === "custom") {
         return (prices.price - this.basePrice + fullDiscount).toFixed(2);
       }
       return prices.price - this.totalPayment;
     },
-    fullDiscount: {
+    m2Discount: {
       get() {
-        return this.calc.discount_price * this.apartment.plan.area;
+        return (
+          Math.floor(
+            (this.calc.full_discount / this.apartment.plan.area) * 100
+          ) / 100
+        );
       },
       set(v) {
-        this.calc.discount_price = +v / this.apartment.plan.area;
+        this.calc.full_discount =
+          Math.ceil(v * this.apartment.plan.area * 100) / 100;
       },
     },
     minusDiscount() {
       if (this.discount.type === "percent") {
-        if (this.discount.prepay === 100) return 1;
+        return 1;
       }
 
       return 1 - this.discount.prepay / 100;
@@ -251,35 +230,13 @@ export default {
       let total = 0;
       if (this.calc.type === "custom")
         switch (this.discount.type) {
-          case "promo":
-          case "fixed":
-          case "addition":
-            total =
-              (this.discount.amount -
-                parseFloat(this.calc.discount_price || 0)) *
-              this.apartment.plan.area;
-            break;
           case "percent":
-            if (this.discount.prepay === 100) {
-              total = this.apartment.prices.price - this.totalDiscount;
-            } else {
-              total =
-                this.apartment.prices.price / total_discount -
-                this.totalDiscount;
-              if (this.calc.discount_price) {
-                total -=
-                  parseFloat(this.calc.discount_price) *
-                  this.apartment.plan.area;
-              }
-            }
+            total = this.apartment.prices.price - this.totalDiscount;
             break;
           default:
             total =
-              this.apartment.prices.price / total_discount - this.totalDiscount;
-            if (this.calc.discount_price) {
-              total -=
-                parseFloat(this.calc.discount_price) * this.apartment.plan.area;
-            }
+              this.discount.amount * this.apartment.plan.area -
+              (this.calc.full_discount || 0);
             break;
         }
       else {
@@ -436,7 +393,7 @@ export default {
           :label="true"
           :currency="`${$t('ye')}`"
           :placeholder="$t('apartments.view.discount_per_m2')"
-          v-model="calc.discount_price"
+          v-model="m2Discount"
           :permission-change="true"
         />
         <base-price-input
@@ -446,7 +403,7 @@ export default {
           :currency="`${$t('ye')}`"
           :placeholder="$t('apartments.view.discount_all')"
           :permission-change="true"
-          v-model="fullDiscount"
+          v-model="calc.full_discount"
         />
       </div>
     </div>
@@ -472,7 +429,9 @@ export default {
           {{ $t("selling_price") }} m<sup>2</sup>
         </span>
         <span class="price d-block color-gray-600">
-          {{ pricePrettier(m2Price - calc.discount_price, 2) }}
+          {{
+            pricePrettier(m2Price - calc.full_discount / apartment.plan.area, 2)
+          }}
           {{ $t("ye") }}</span
         >
       </div>

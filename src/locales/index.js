@@ -15,8 +15,8 @@ export function initI18n() {
       locale: language,
       fallbackLocale: 'ru',
       messages: {
-        ru: Object.assign(ru, data.result),
-        uz,
+        ru: Object.assign(ru, data.result.ru),
+        uz: Object.assign(uz, data.result.uz),
       }
     })
   }).catch(() => {
