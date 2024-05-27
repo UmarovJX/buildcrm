@@ -20,6 +20,7 @@ import { NOTIFY } from "@/constants/names";
 import { headerItems } from "@/views/checkoutV3/helper/headerComputed";
 import Permission from "@/permission";
 
+import { formatDateToYMD } from "@/util/calendar";
 import {
   addMonth,
   getFullMonthDifference,
@@ -82,8 +83,13 @@ export default {
       order: {
         orders: [
           {
+            apartment: {
+              uuid: 0,
+            },
             contract_number: "",
+            numberUpdated: false,
             contract_date: null,
+            dateUpdated: false,
             calculation: {
               type: null,
               discount: null,
@@ -105,7 +111,7 @@ export default {
           },
         ],
       },
-      currentApartment: null,
+      currentApartment: 0,
       calculations: {},
     };
   },
@@ -123,13 +129,17 @@ export default {
   computed: {
     totalForAll() {
       if (this.stepStateIdx <= 1) return 0;
-      return this.order.orders
-        .map((ord) =>
-          this.$refs[
-            `apartment-overview-${ord.apartment.uuid}`
-          ][0].getFullPayment()
-        )
-        .reduce((acc, el) => acc + el, 0);
+      if (this.order.orders.length > 1)
+        return this.order.orders
+          .map((ord) =>
+            this.$refs[
+              `apartment-overview-${ord.apartment.uuid}`
+            ][0].getFullPayment()
+          )
+          .reduce((acc, el) => acc + el, 0);
+      return this.$refs[
+        `apartment-overview-${this.order.orders[0].apartment.uuid}`
+      ].getFullPayment();
     },
     isUpdateMode() {
       const pathUnits = this.$route.path.split("/");
@@ -149,10 +159,12 @@ export default {
     handleContractDate(e) {
       const ord = this.order.orders.find((el) => el.uuid === e.uuid);
       ord.contract_date = e.value;
+      ord.dateUpdated = true;
     },
     handleContractNumber(e) {
       const ord = this.order.orders.find((el) => el.uuid === e.uuid);
       ord.contract_number = e.value;
+      ord.numberUpdated = true;
     },
     handlePaymentsUpd(e) {
       const ord = this.order.orders.find((el) => el.uuid === e.uuid);
@@ -235,11 +247,9 @@ export default {
       ord.calculation[e.field] = e.value;
     },
     handleCountryList(e) {
-      console.log("country", e);
       this.countryList = e;
     },
     handleClientTypeList(e) {
-      console.log("client", e);
       this.clientTypeList = e;
     },
     ...mapMutations("CheckoutV2", ["reset", "setFunctionType"]),
@@ -259,10 +269,8 @@ export default {
               months: e.apartment.object.credit_month,
               prepay: e.apartment.discounts[0].prepay,
               discount_amount: 0,
-              first_payment_date: new Date().toISOString(),
-              monthly_payment_date: addMonth(new Date(), 1)
-                .toISOString()
-                .slice(0, 10),
+              first_payment_date: formatDateToYMD(new Date()),
+              monthly_payment_date: formatDateToYMD(addMonth(new Date(), 1)),
               price: 0,
 
               installments: [],
@@ -294,8 +302,10 @@ export default {
         .then((res) => {
           ord.calculation.installments = res.data.result;
           if (!ord.calculation.currentInstallment)
-            ord.calculation.currentInstallment = res.data.result[0].id;
-          ord.calculation.months = res.data.result[0].months;
+            setTimeout(() => {
+              ord.calculation.currentInstallment = res.data.result[0].id;
+              ord.calculation.months = res.data.result[0].months;
+            }, 0);
         });
     },
 
@@ -417,12 +427,21 @@ export default {
     },
 
     async secondStepReadyToNext() {
-      const isInitialZero = this.order.orders.some(
-        (ord) =>
-          this.$refs[
-            `apartment-overview-${ord.apartment.uuid}`
-          ][0].getPrepay() < 1
-      );
+      // const isInitialZero = this.order.orders.some((ord) =>
+      //   console.log(this.$refs[`apartment-overview-${ord.apartment.uuid}`])
+      // );
+      const isInitialZero =
+        this.order.orders.length > 1
+          ? this.order.orders.some(
+              (ord) =>
+                this.$refs[
+                  `apartment-overview-${ord.apartment.uuid}`
+                ][0].getPrepay() < 1
+            )
+          : this.$refs[
+              `apartment-overview-${this.order.orders[0].apartment.uuid}`
+            ].getPrepay() < 1;
+
       if (isInitialZero) {
         if (this.permission.hasAdminRole() || this.permission.isMainManager()) {
           await this.openNotify({
@@ -442,21 +461,32 @@ export default {
         }
       }
 
-      const vR = await Promise.allSettled(
-        this.order.orders.map((ord) =>
-          this.$refs[
-            `apartment-overview-${ord.apartment.uuid}`
-          ][0].completeFields()
-        )
-      );
-      const invalidIndex = vR.findIndex((el) => el.value === false);
+      const vR =
+        this.order.orders.length > 1
+          ? await Promise.allSettled(
+              this.order.orders.map((ord) =>
+                this.$refs[
+                  `apartment-overview-${ord.apartment.uuid}`
+                ][0].completeFields()
+              )
+            )
+          : this.$refs[
+              `apartment-overview-${this.order.orders[0].apartment.uuid}`
+            ].completeFields();
+      const invalidIndex =
+        this.order.orders.length > 1
+          ? vR.findIndex((el) => el.value === false)
+          : vR
+          ? -1
+          : 0;
       if (~invalidIndex) {
         await this.openNotify({
           type: "error",
           message: this.$t("fields_not_filled_out_or_incorrectly"),
         });
       }
-
+      console.log(this.currentApartment);
+      console.log(this.order.orders.length - 1);
       if (this.currentApartment === this.order.orders.length - 1) {
         return !~invalidIndex;
       }
@@ -529,6 +559,70 @@ export default {
     },
 
     generateOrdersBody() {
+      try {
+        return this.order.orders.map((ord) => {
+          const req = {
+            uuid: ord.uuid,
+            discount_id: ord.calculation.discount,
+            months: ord.calculation.months,
+            first_payment_date: ord.calculation.first_payment_date,
+            payment_date: ord.calculation.monthly_payment_date,
+            contract_date: ord.contract_date,
+            discount_amount: ord.calculation.discount_amount,
+            comment: this.userComment.vBind,
+          };
+
+          if (ord.numberUpdated) req.contract_number = ord.contract_number;
+
+          const p =
+            this.order.orders.length > 1
+              ? this.$refs[
+                  `apartment-overview-${ord.apartment.uuid}`
+                ][0].getPayments()
+              : this.$refs[
+                  `apartment-overview-${ord.apartment.uuid}`
+                ].getPayments();
+
+          req.monthly = p
+            .filter((el) => el.type === "monthly")
+            .map((el) => ({
+              amount: el.amount,
+              date: formatDateToYMD(el.date),
+              edited: +(el.editedDate || el.editedAmount) + "",
+            }));
+
+          if (
+            ord.calculation.initial_payments > 1 ||
+            ord.calculation.discount === "other" ||
+            ord.apartment.discounts.find(
+              (el) => el.id === ord.calculation.discount
+            ).prepay !== ord.calculation.prepay
+          ) {
+            req.prepay_edited = true;
+            req.initial_payments = p
+              .filter((el) => el.type === "initial")
+              .map((el) => ({
+                amount: el.amount,
+                date: formatDateToYMD(el.date),
+                edited: +(el.editedDate || el.editedAmount) + "",
+              }));
+          }
+
+          if (ord.calculation.type === "installment") {
+            req.installment_month_id = ord.calculation.currentInstallment;
+          }
+          if (ord.calculation.discount === "other") {
+            req.apartments = [
+              {
+                id: ord.apartment.uuid,
+                price: ord.calculation.price,
+              },
+            ];
+          }
+
+          return req;
+        });
+      } catch (error) {}
       try {
         return this.apartments.map((a) => {
           const orderCtx = {
@@ -611,7 +705,7 @@ export default {
         console.error(e);
       }
     },
-
+    // FINAL CALL
     async authenticateApartments() {
       try {
         this.startSubmitting();
@@ -628,7 +722,6 @@ export default {
                   id: this.$route.params.id,
                 },
               });
-
               this.openNotify({
                 type: NOTIFY.type.success,
                 message: this.$t("changes_successfully_saved"),
@@ -643,7 +736,6 @@ export default {
               client_id: this.clientData.id,
             },
           });
-
           await this.$router.push({
             name: "checkout-contract-review",
             params: {
@@ -691,7 +783,6 @@ export default {
         case "third": {
           const isValid =
             this.$refs["client-details-observer"].getObserverFlags().passed;
-          console.log(isValid);
           if (!isValid) {
             this.navigationPmHandler("third", true);
           } else {
@@ -738,6 +829,24 @@ export default {
           this.$route.params.id
         );
         // this.initEditItems(data)
+        const d = {
+          orders: data,
+        };
+        data.calculation = {
+          type: "custom",
+          discount: data.discount_id,
+          months: data.payments_details.month,
+          prepay: data.payments_details.discount.prepay_to,
+          discount_amount: data.discount_amount,
+          first_payment_date: data.first_payment_date,
+          monthly_payment_date: data.payment_date,
+          price: data.discount_id === "other" ? data.apartments[0].price : 0,
+
+          installments: [],
+          currentInstallment: null,
+          initial_payments: data.schedule.initial_payment?.length || 1,
+        };
+
         this.$refs["client-details-observer"].fillFormInUpdateMode({
           client: data.client,
         });
@@ -858,7 +967,7 @@ export default {
           </b-tabs>
           <div v-else>
             <ch-apartments-overview
-              ref="apartments-overview"
+              :ref="`apartment-overview-${order.orders[0].apartment.uuid}`"
               @go-review="showReviewSection"
               :order-data="order.orders[0]"
               @update-calc="handleCalcUpdate"

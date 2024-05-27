@@ -28,7 +28,7 @@ export const fullPayment = function () {
 export const prepayAmount = function () {
     const type = this.order.calculation.type
     if (type === 'installment') {
-        return (this.order.calculation.prepay * this.order.apartment.plan.area * this.discount.amount / 100);
+        return (this.order.calculation.prepay * (this.order.apartment.plan.area * this.discount.amount) / 100);
     }
     return this.fullPayment * this.order.calculation.prepay / 100
 }

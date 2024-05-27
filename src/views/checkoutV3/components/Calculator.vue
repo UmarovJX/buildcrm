@@ -60,7 +60,10 @@ export default {
 
     m2Discount: {
       get() {
-        return this.order.calculation; //TODO
+        return (
+          this.order.calculation.discount_amount /
+          this.order.apartment.plan.area
+        );
       },
       set(v) {
         this.emitCalc(

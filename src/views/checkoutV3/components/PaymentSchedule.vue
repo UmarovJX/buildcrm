@@ -9,14 +9,13 @@ import BaseCloseIcon from "@/components/icons/BaseCloseIcon";
 import BaseDatePicker from "@/components/Reusable/BaseDatePicker";
 import BasePriceInput from "@/components/Reusable/BasePriceInput";
 import { mapActions } from "vuex";
-import { dateProperties } from "@/util/calendar";
+import { dateProperties, formatDateToYMD } from "@/util/calendar";
 import { makeProp as p } from "@/util/props";
 import { PROP_TYPE_OBJECT } from "@/constants/props";
 import { hasChild } from "@/util/object";
 import {
   addMonth,
   getFullMonthDifference,
-  dateForPicker,
   keyGen,
 } from "@/views/checkoutV3/helper/dateHelpers.js";
 
@@ -175,6 +174,9 @@ export default {
     },
   },
   methods: {
+    getPaymentSchedule() {
+      return this.payments;
+    },
     emitCalc(field, v) {
       this.$emit("update-calc", {
         uuid: this.order.uuid,
@@ -189,7 +191,7 @@ export default {
       //   ...payment,
       //   month: ymd,
       // };
-      this.current = { ...payment, date: dateForPicker(payment.date) };
+      this.current = { ...payment, date: formatDateToYMD(payment.date) };
       this.openEditModal();
     },
     openEditModal() {
@@ -256,25 +258,28 @@ export default {
         }
       }
       // Date update
-      if (dateForPicker(oldObj.date) !== this.current.date) {
+      if (formatDateToYMD(oldObj.date) !== this.current.date) {
         if (
           this.current.type === "monthly" &&
           new Date(this.current.date) >
-            new Date(this.order.calculation.monthly_payment_date)
+            new Date(this.order.calculation.monthly_payment_date) &&
+          new Date(this.current.date) <
+            this.payments[this.payments.length - 1].date
         ) {
           oldObj.date = new Date(this.current.date);
           oldObj.editedDate = true;
-          let found = false;
-          for (let i = 0; i < this.payments.length; i++) {
-            if (!found) found = this.payments[i].key === key;
-            else {
-              this.payments[i].editedDate ||
-                (this.payments[i].date = addMonth(
-                  this.payments[i - 1].date,
-                  1
-                ));
-            }
-          }
+          this.sortPayments();
+          // let found = false;
+          // for (let i = 0; i < this.payments.length; i++) {
+          //   if (!found) found = this.payments[i].key === key;
+          //   else {
+          //     this.payments[i].editedDate ||
+          //       (this.payments[i].date = addMonth(
+          //         this.payments[i - 1].date,
+          //         1
+          //       ));
+          //   }
+          // }
         }
         if (
           this.current.type === "initial" &&
@@ -284,18 +289,21 @@ export default {
             new Date(this.order.calculation.first_payment_date)
         ) {
           oldObj.date = new Date(this.current.date);
-          let found = false;
-          this.payments
-            .filter((el) => el.type === "initial")
-            .forEach((el, i, arr) => {
-              if (!found) found = el.key === key;
-              else {
-                el.key !== key && (el.date = addMonth(arr[i - 1].date, 1));
-              }
-            });
+          this.sortPayments();
         }
       }
       this.closeEditModal();
+    },
+    sortPayments() {
+      this.payments.sort((a, b) => {
+        if (a.type !== b.type) {
+          if (a.type === "initial") return -1;
+          return 1;
+        }
+
+        if (a.date < b.date) return -1;
+        return 1;
+      });
     },
     showDeleteButton(payment) {
       if (payment.type === "initial") {
@@ -346,7 +354,7 @@ export default {
       </template>
 
       <template #cell(month)="data">
-        {{ formatDate(data.item.date) }} {{ data.index }}
+        {{ formatDate(data.item.date) }}
       </template>
 
       <template #cell(edit)="data">

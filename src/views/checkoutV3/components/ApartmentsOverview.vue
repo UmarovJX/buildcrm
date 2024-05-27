@@ -67,6 +67,11 @@ export default {
       this.apartments[this.overviewApmTabIndex]?.validate?.valid;
   },
   methods: {
+    getPayments() {
+      return this.$refs[
+        `payments-${this.orderData.apartment.uuid}`
+      ].getPaymentSchedule();
+    },
     getPrepay() {
       return this.$refs[`ch-calculator-${this.orderData.apartment.uuid}`]
         .prepayAmount;
@@ -115,8 +120,12 @@ export default {
 <template>
   <div class="position-relative">
     <div class="ch-apartment-overview ch-single-apartment-overview">
-      <ch-apartment-characters :apartment="orderData.apartment" />
+      <ch-apartment-characters
+        :apartment="orderData.apartment"
+        v-if="orderData.apartment.uuid"
+      />
       <ch-contract-details
+        v-if="orderData.apartment.uuid"
         :order="orderData"
         @contract-number="(e) => $emit('contract-number', e)"
         @contract-date="(e) => $emit('contract-date', e)"
@@ -128,17 +137,20 @@ export default {
           class="pd-title"
         />
         <ch-calculator
+          v-if="orderData.apartment.uuid"
           :ref="`ch-calculator-${orderData.apartment.uuid}`"
           :order="orderData"
           class="pd-calculator"
           @update-calc="(e) => $emit('update-calc', e)"
         />
-        <ch-payment-result :order="orderData" />
+        <ch-payment-result :order="orderData" v-if="orderData.apartment.uuid" />
       </div>
       <ch-payment-schedule
+        v-if="orderData.apartment.uuid"
         :order="orderData"
         @update-calc="(e) => $emit('update-calc', e)"
         @payments="(e) => $emit('payments', e)"
+        :ref="`payments-${orderData.apartment.uuid}`"
       />
     </div>
 
