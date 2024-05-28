@@ -1,4 +1,7 @@
 export default {
+  flexible: 'Гибкий',
+  tariff: 'Тариф',
+  plan_type: 'Тип рассрочки',
   create_sub_contract: 'Создать доп.соглашение',
   statistics: {
     object_payments: {

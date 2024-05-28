@@ -113,12 +113,12 @@ export default {
     calcTypes() {
       return [
         {
+          text: this.$t("flexible"),
           value: "custom",
-          text: "Custom",
         },
         {
+          text: this.$t("tariff"),
           value: "installment",
-          text: "Installment",
         },
       ];
     },
@@ -335,7 +335,7 @@ export default {
         <x-form-select
           v-model="calc.type"
           :options="calcTypes"
-          :placeholder="$t('Тип расчета')"
+          :placeholder="$t('plan_type')"
           value-field="value"
         />
       </div>

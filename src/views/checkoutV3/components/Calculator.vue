@@ -123,11 +123,11 @@ export default {
     typeOptions() {
       return [
         {
-          text: "Custom",
+          text: this.$t("flexible"),
           value: "custom",
         },
         {
-          text: "Installment",
+          text: this.$t("tariff"),
           value: "installment",
         },
       ];
@@ -176,7 +176,7 @@ export default {
         :value="order.calculation.type"
         :error="!!errors[0]"
         :options="typeOptions"
-        :placeholder="$t('type')"
+        :placeholder="$t('plan_type')"
         value-field="value"
         @change="(e) => emitCalc('type', e)"
       />

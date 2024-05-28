@@ -1,4 +1,7 @@
 export default {
+  flexible: 'Moslashuvchan',
+  tariff: 'Tarif buyicha',
+  plan_type: 'Tulov plani turi',
   create_sub_contract: 'Создать доп.соглашение',
   statistics: {
     object_payments: {
