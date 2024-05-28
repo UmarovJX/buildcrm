@@ -1,6 +1,6 @@
 
 export const basePrice = function () {
-    return this.order.calculation.price || this.order.apartment.prices.price
+    return this.order.calculation.price || this.order.apartment.prices?.price || this.order.apartment.price
 }
 export const currentInstallmentObj = function () {
     const current = this.order.calculation.currentInstallment

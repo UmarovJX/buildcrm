@@ -21,7 +21,7 @@ export default {
   },
   computed: {
     buildDate() {
-      if (hasChild(this.order.apartment)) {
+      if (this.order.apartment.discounts) {
         const { build_date } = this.order.apartment.object;
         const { month, year } = dateProperties(build_date, "string");
         const value = Math.ceil((month + 1) / 3);
@@ -49,15 +49,15 @@ export default {
   <div class="apartment-details-content">
     <div class="apd-overview-titles">
       <span class="apd-section-name gray-600">
-        {{ order.apartment.object.name }}
+        {{ order.apartment.object?.name }}
       </span>
       <span class="apd-section-slash gray-400">/</span>
       <span class="apd-section-name gray-600">
-        {{ order.apartment.building.name }}
+        {{ order.apartment.building?.name }}
       </span>
       <span class="apd-section-slash gray-400">/</span>
       <span class="apd-section-name gray-600">
-        {{ order.apartment.block.name }}
+        {{ order.apartment.block?.name }}
       </span>
     </div>
     <div class="apd-information">

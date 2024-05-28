@@ -72,6 +72,11 @@ export default {
         `payments-${this.orderData.apartment.uuid}`
       ].getPaymentSchedule();
     },
+    initializePayments(data) {
+      this.$refs[
+        `payments-${this.orderData.apartment.uuid}`
+      ].initializePayments(data);
+    },
     getPrepay() {
       return this.$refs[`ch-calculator-${this.orderData.apartment.uuid}`]
         .prepayAmount;

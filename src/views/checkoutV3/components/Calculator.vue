@@ -82,7 +82,7 @@ export default {
       );
     },
     paymentOptions() {
-      if (hasChild(this.order.apartment)) {
+      if (this.order.apartment.discounts) {
         const discounts = this.order.apartment.discounts.map(
           (discount, index) => {
             let text = this.$t("apartments.view.variant");

@@ -830,13 +830,13 @@ export default {
         );
         // this.initEditItems(data)
         const d = {
-          orders: data,
+          orders: [data],
         };
         data.calculation = {
           type: "custom",
           discount: data.discount_id,
           months: data.payments_details.month,
-          prepay: data.payments_details.discount.prepay_to,
+          prepay: 0,
           discount_amount: data.discount_amount,
           first_payment_date: data.first_payment_date,
           monthly_payment_date: data.payment_date,
@@ -846,6 +846,24 @@ export default {
           currentInstallment: null,
           initial_payments: data.schedule.initial_payment?.length || 1,
         };
+        data.apartment = data.apartments[0];
+        data.apartment.uuid = data.apartments[0].id;
+        this.order = d;
+
+        setTimeout(() => {
+          data.calculation.prepay =
+            (data.payments_details.initial_payment /
+              data.payments_details.total) *
+            100;
+        }, 10);
+        setTimeout(() => {
+          this.$refs[
+            `apartment-overview-${data.apartments[0].id}`
+          ].initializePayments({
+            initial: data.schedule.initial_payment,
+            monthly: data.schedule.monthly,
+          });
+        }, 100);
 
         this.$refs["client-details-observer"].fillFormInUpdateMode({
           client: data.client,

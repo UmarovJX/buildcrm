@@ -113,7 +113,7 @@ export default {
       );
     },
     paymentOptions() {
-      if (hasChild(this.order.apartment)) {
+      if (this.order.apartment.discounts) {
         const discounts = this.order.apartment.discounts.map(
           (discount, index) => {
             let text = this.$t("apartments.view.variant");
@@ -174,6 +174,24 @@ export default {
     },
   },
   methods: {
+    initializePayments({ initial, monthly }) {
+      this.payments = [
+        ...initial.map((el) => ({
+          amount: el.amount,
+          date: new Date(el.date),
+          editedDate: true,
+          editedAmount: true,
+          type: "initial",
+        })),
+        ...monthly.map((el) => ({
+          amount: el.amount,
+          date: new Date(el.date),
+          editedDate: true,
+          editedAmount: true,
+          type: "monthly",
+        })),
+      ];
+    },
     getPaymentSchedule() {
       return this.payments;
     },

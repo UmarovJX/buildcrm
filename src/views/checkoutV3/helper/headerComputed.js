@@ -34,7 +34,7 @@ export function headerItems() {
     return acc + str;
   }, "");
 
-  const { object } = this.order.orders[0];
+  const { object } = this.order.orders[0].apartment;
 
   if (object) {
     h.breadcrumbs.push({
@@ -59,7 +59,7 @@ export function headerItems() {
         name: "apartment-view",
         params: {
           object: object.id,
-          id: this.order.orders[0].aparment.id,
+          id: this.order.orders[0].apartment.id,
         },
       },
     });
