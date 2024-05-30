@@ -591,22 +591,22 @@ export default {
               edited: +(el.editedDate || el.editedAmount) + "",
             }));
 
-          if (
-            ord.calculation.initial_payments > 1 ||
-            ord.calculation.discount === "other" ||
-            ord.apartment.discounts.find(
-              (el) => el.id === ord.calculation.discount
-            ).prepay !== ord.calculation.prepay
-          ) {
-            req.prepay_edited = true;
-            req.initial_payments = p
-              .filter((el) => el.type === "initial")
-              .map((el) => ({
-                amount: el.amount,
-                date: formatDateToYMD(el.date),
-                edited: +(el.editedDate || el.editedAmount) + "",
-              }));
-          }
+          // if (
+          //   ord.calculation.initial_payments > 1 ||
+          //   ord.calculation.discount === "other" ||
+          //   ord.apartment.discounts.find(
+          //     (el) => el.id === ord.calculation.discount
+          //   ).prepay !== ord.calculation.prepay
+          // ) {
+          req.prepay_edited = true;
+          req.initial_payments = p
+            .filter((el) => el.type === "initial")
+            .map((el) => ({
+              amount: el.amount,
+              date: formatDateToYMD(el.date),
+              edited: +(el.editedDate || el.editedAmount) + "",
+            }));
+          // }
 
           if (ord.calculation.type === "installment") {
             req.installment_month_id = ord.calculation.currentInstallment;
@@ -849,6 +849,8 @@ export default {
         data.apartment = data.apartments[0];
         data.apartment.uuid = data.apartments[0].id;
         this.order = d;
+
+        
 
         setTimeout(() => {
           data.calculation.prepay =

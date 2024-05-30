@@ -96,17 +96,13 @@ export default {
 
       <span class="teal-500">{{ $t("total_discount") }}</span>
       <span class="ch-price-cell teal-500"
-        >{{ prettier(order.calculation.discount_amount, 2) }}
-        {{ $t("ye") }}</span
+        >{{ prettier(basePrice - fullPayment, 2) }} {{ $t("ye") }}</span
       >
       <template v-if="!result">
         <span class="teal-500">{{ $t("discount_per_m") }}<sup>2</sup></span>
         <span class="ch-price-cell teal-500"
           >{{
-            prettier(
-              order.calculation.discount_amount / order.apartment.plan.area,
-              2
-            )
+            prettier((basePrice - fullPayment) / order.apartment.plan.area, 2)
           }}
           {{ $t("ye") }}
         </span>

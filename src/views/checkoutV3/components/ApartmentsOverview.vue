@@ -158,17 +158,6 @@ export default {
         :ref="`payments-${orderData.apartment.uuid}`"
       />
     </div>
-
-    <div v-if="!isTheLastStep" class="next-button">
-      <x-button
-        class="b-shadow-3"
-        right-icon="arrow_forward"
-        :variant="showNavigateToNextBtn ? 'primary' : 'secondary'"
-        :text="$t('next_apartment')"
-        :color-icon="showNavigateToNextBtn ? 'white' : 'var(--gray-400)'"
-        @click="navigateToNext"
-      />
-    </div>
   </div>
 </template>
 

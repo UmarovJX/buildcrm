@@ -161,7 +161,9 @@ export default {
       const total_discount = this.minusDiscount;
       let total = 0;
       if (this.calc.type === "installment") {
-        total = this.discount.amount * this.apartment.plan.area;
+        total =
+          this.discount.amount * this.apartment.plan.area -
+          this.calc.full_discount;
       } else {
         switch (this.discount.type) {
           case "percent":
@@ -240,7 +242,9 @@ export default {
             break;
         }
       else {
-        total = this.currentInstallmentObj.amount * this.apartment.plan.area;
+        total =
+          this.currentInstallmentObj.amount * this.apartment.plan.area -
+          this.calc.full_discount;
       }
       return total;
     },
@@ -385,7 +389,7 @@ export default {
       <div
         class="d-flex justify-content-between align-items-center"
         style="column-gap: 0.5rem"
-        v-if="showPrice && calc.type === 'custom'"
+        v-if="showPrice"
       >
         <base-price-input
           ref="discount-per-square"
