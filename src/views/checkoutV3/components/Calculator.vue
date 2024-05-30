@@ -41,7 +41,8 @@ export default {
             "prepay",
             +(
               (v * 100) /
-              (this.order.apartment.plan.area * this.discount.amount)
+              (this.order.apartment.plan.area * this.discount.amount -
+                this.order.calculation.discount_amount)
             ).toFixed(2)
           );
         }

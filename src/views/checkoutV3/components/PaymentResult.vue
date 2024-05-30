@@ -104,6 +104,7 @@ export default {
           >{{
             prettier((basePrice - fullPayment) / order.apartment.plan.area, 2)
           }}
+
           {{ $t("ye") }}
         </span>
       </template>
