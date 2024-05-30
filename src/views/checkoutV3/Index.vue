@@ -296,7 +296,7 @@ export default {
     updateInstallments(ord, disc) {
       v3ServiceApi.installments
         .calculate({
-          amount: disc.amount,
+          amount: ord.apartment.price_m2,
           discount_id: disc.id,
         })
         .then((res) => {
@@ -622,86 +622,7 @@ export default {
 
           return req;
         });
-      } catch (error) {}
-      try {
-        return this.apartments.map((a) => {
-          const orderCtx = {
-            uuid: a.order_uuid,
-            discount_id: a.calc.discount.id,
-            months: parseInt(a.calc.monthly_payment_period),
-            first_payment_date: a.calc.first_payment_date,
-            payment_date: a.calc.payment_date,
-            contract_date: a.calc.contract_date,
-            discount_amount: a.calc.total_discount,
-            comment: this.userComment.vBind,
-          };
-
-          if (a.edit.contract_number) {
-            orderCtx.contract_number = a.contract_number;
-          }
-
-          const hasEditOnMonthly = a.calc.credit_months.some((crd) => crd.edit);
-          if (a.edit.monthly && hasEditOnMonthly) {
-            orderCtx.monthly = [];
-            for (let i = 0; i < a.calc.credit_months.length; i++) {
-              const p = a.calc.credit_months[i];
-              const { ymd } = dateProperties(p.month, "string");
-              orderCtx.monthly.push({
-                date: ymd,
-                amount: p.amount,
-                edited: (+p.edit).toString(),
-              });
-            }
-          }
-
-          const hasEditOnInitial = a.calc.initial_payments.some(
-            (initial) => initial.edit
-          );
-
-          if (
-            a.edit.first_payment ||
-            hasEditOnInitial ||
-            a.calc.initial_payments.length > 1 ||
-            a.edit.initial_price ||
-            a.edit.prepay ||
-            a.edit.discount
-          ) {
-            orderCtx.initial_payments = [];
-            for (let i = 0; i < a.calc.initial_payments.length; i++) {
-              const p = a.calc.initial_payments[i];
-              const { ymd } = dateProperties(p.month, "string");
-              // const isEdited =
-              //   p.edit || a.edit.first_payment || a.edit.initial_price;
-              orderCtx.initial_payments.push({
-                date: ymd,
-                amount: p.amount,
-                edited: "1",
-              });
-            }
-          }
-
-          if (a.edit.prepay || a.edit.initial_price) {
-            orderCtx.prepay_edited = true;
-          }
-
-          // orderCtx.prepay = a.calc.prepay;
-
-          if (a.calc.discount.id === "other") {
-            orderCtx.apartments = [
-              {
-                id: a.id,
-                price: a.calc.base_price,
-              },
-            ];
-          }
-
-          if (a.edit.contract_number) {
-            orderCtx.contract_number = a.contract_number;
-          }
-
-          return orderCtx;
-        });
-      } catch (e) {
+      } catch (error) {
         console.error(e);
       }
     },
@@ -711,7 +632,7 @@ export default {
         this.startSubmitting();
         if (this.isUpdateMode) {
           await api.contractV2
-            .contractOrderUpdate(this.apartments[0].order_uuid, {
+            .contractOrderUpdate(this.order.orders[0].id, {
               ...this.generateOrdersBody()[0],
               client_id: this.clientData.id,
             })
@@ -745,6 +666,7 @@ export default {
           });
         }
       } catch (e) {
+        console.log(e);
         this.closeCommentModal();
         await this.openNotify({
           type: NOTIFY.type.error,
@@ -833,7 +755,10 @@ export default {
           orders: [data],
         };
         data.calculation = {
-          type: "custom",
+          type: data.payments_details.installment?.id
+            ? "installment"
+            : "custom",
+          currentInstallment: null,
           discount: data.discount_id,
           months: data.payments_details.month,
           prepay: 0,
@@ -849,23 +774,51 @@ export default {
         data.apartment = data.apartments[0];
         data.apartment.uuid = data.apartments[0].id;
         this.order = d;
-
-        
-
-        setTimeout(() => {
-          data.calculation.prepay =
-            (data.payments_details.initial_payment /
-              data.payments_details.total) *
-            100;
-        }, 10);
-        setTimeout(() => {
-          this.$refs[
-            `apartment-overview-${data.apartments[0].id}`
-          ].initializePayments({
-            initial: data.schedule.initial_payment,
-            monthly: data.schedule.monthly,
-          });
-        }, 100);
+        if (data.payments_details.installment?.id) {
+          await this.updateInstallments(
+            data,
+            data.apartments[0].discounts.find(
+              (el) => el.id === data.discount_id
+            )
+          );
+          setTimeout(() => {
+            data.calculation.prepay = data.apartments[0].discounts.find(
+              (el) => el.id === data.discount_id
+            ).prepay;
+            data.calculation.discount_amount = data.discount_amount;
+          }, 10);
+          setTimeout(() => {
+            data.calculation.prepay = data.apartments[0].discounts.find(
+              (el) => el.id === data.discount_id
+            ).prepay;
+            data.calculation.currentInstallment =
+              data.payments_details.installment.id;
+          }, 100);
+          setTimeout(() => {
+            this.$refs[
+              `apartment-overview-${data.apartments[0].id}`
+            ].initializePayments({
+              initial: data.schedule.initial_payment,
+              monthly: data.schedule.monthly,
+            });
+          }, 200);
+        } else {
+          setTimeout(() => {
+            data.calculation.prepay =
+              (data.payments_details.initial_payment /
+                data.payments_details.total) *
+              100;
+            data.calculation.discount_amount = data.discount_amount;
+          }, 50);
+          setTimeout(() => {
+            this.$refs[
+              `apartment-overview-${data.apartments[0].id}`
+            ].initializePayments({
+              initial: data.schedule.initial_payment,
+              monthly: data.schedule.monthly,
+            });
+          }, 200);
+        }
 
         this.$refs["client-details-observer"].fillFormInUpdateMode({
           client: data.client,

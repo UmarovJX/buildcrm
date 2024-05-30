@@ -41,8 +41,7 @@ export default {
             "prepay",
             +(
               (v * 100) /
-              (this.order.apartment.plan.area * this.discount.amount -
-                this.order.calculation.discount_amount)
+              (this.order.apartment.plan.area * this.order.apartment.price_m2)
             ).toFixed(2)
           );
         }
@@ -69,7 +68,7 @@ export default {
       set(v) {
         this.emitCalc(
           "discount_amount",
-          +(v * this.order.apartment.plan.area).toFixed(2)
+          Math.ceil(v * this.order.apartment.plan.area)
         );
       },
     },

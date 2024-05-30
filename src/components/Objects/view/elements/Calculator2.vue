@@ -28,7 +28,6 @@ export default {
   emits: ["for-print"],
   data() {
     return {
-      installmentData: [],
       calculatedInstallments: [],
       currentInstallment: null,
       calc: {
@@ -74,14 +73,6 @@ export default {
     this.calc.month = this.apartment?.discounts[0].installment_month || 12;
 
     this.upHillForPrint();
-    v3ServiceApi.installments
-      .getAll({ page: 1, limit: 20 })
-      .then(
-        (res) =>
-          (this.installmentData = res.data.result.filter(
-            (el) => el.object_id.id === 2
-          ))
-      );
   },
   computed: {
     installmentOptions() {
@@ -99,7 +90,7 @@ export default {
     },
     m2Price() {
       if (this.calc.type === "installment") {
-        return this.currentInstallmentObj.amount;
+        return this.currentInstallmentObj?.amount;
       } else if (this.discount.type === "percent") {
         if (this.discount.prepay === 100) {
           return this.apartment.price_m2;
@@ -107,7 +98,7 @@ export default {
           return this.totalForPercente / this.apartment.plan.area;
         }
       } else {
-        return this.discount.amount;
+        return this.apartment.price_m2;
       }
     },
     calcTypes() {
@@ -161,9 +152,7 @@ export default {
       const total_discount = this.minusDiscount;
       let total = 0;
       if (this.calc.type === "installment") {
-        total =
-          this.discount.amount * this.apartment.plan.area -
-          this.calc.full_discount;
+        total = this.apartment.price_m2 * this.apartment.plan.area;
       } else {
         switch (this.discount.type) {
           case "percent":
@@ -292,18 +281,14 @@ export default {
       this.calculatedInstallments = [];
       const resp = await v3ServiceApi.installments.calculate({
         discount_id: this.discount.id,
-        amount: this.discount.amount,
+        amount: this.apartment.price_m2,
       });
       this.calculatedInstallments = resp.data.result;
-      // this.calculatedInstallments = this.installmentData.map((el) => ({
-      //   id: el.id,
-      //   amount: (1 + el.percentage / 100) * this.discount.amount,
-      //   months: el.months,
-      // }));
+
       setTimeout(() => {
         // this.currentInstallment = resp.data.result[0].id;
         this.currentInstallment = this.calculatedInstallments[0].id;
-      }, 0);
+      }, 100);
     },
     pricePrettier: (price, decimalCount) => formatToPrice(price, decimalCount),
 

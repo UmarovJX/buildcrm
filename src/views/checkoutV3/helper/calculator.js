@@ -28,16 +28,16 @@ export const fullPayment = function () {
 export const prepayAmount = function () {
     const type = this.order.calculation.type
     if (type === 'installment') {
-        return (this.order.calculation.prepay * (this.order.apartment.plan.area * this.discount.amount - this.order.calculation.discount_amount) / 100);
+        return (this.order.calculation.prepay * (this.order.apartment.plan.area * this.order.apartment.price_m2) / 100);
     }
     return this.fullPayment * this.order.calculation.prepay / 100
 }
 
 export const m2Price = function () {
-    const type = this.order.calculation.type
-    if (type === 'installment') {
-        return this.currentInstallmentObj.amount
-    }
+    // const type = this.order.calculation.type
+    // if (type === 'installment') {
+    //     return this.currentInstallmentObj.amount
+    // }
     return this.fullPayment / this.order.apartment.plan.area
 }
 // export const monthlyPayment = function () {

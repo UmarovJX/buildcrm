@@ -92,6 +92,10 @@ export default {
     },
   },
   methods: {
+    toggleDropdown(i){
+      const elem = this.$refs['floor-'+i][0];
+      elem.classList.toggle('show')
+    },
     saveBlock() {
       this.$emit('save-edit-block', this.block)
       this.clearPreviewBlock()
@@ -626,10 +630,7 @@ export default {
                 <button
                   class="btn btn-link btn-block text-left apartment__list"
                   type="button"
-                  data-toggle="collapse"
-                  :data-target="'#collapseOne' + index"
-                  aria-expanded="true"
-                  :aria-controls="'collapseOne' + index"
+                  @click="toggleDropdown(index)"
                 >
                   {{ floor }}-{{ $t("objects.create.floor") }} -
                   {{ $t("objects.create.apartments") }} (
@@ -644,6 +645,7 @@ export default {
               :class="index === 0 ? 'collapse' : 'collapse'"
               :aria-labelledby="'headingOne' + index"
               data-parent="#floors"
+              :ref="'floor-'+ index"
             >
               <div class="card-body">
                 <div class="row">
