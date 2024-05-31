@@ -200,6 +200,7 @@ export default {
           ) {
             ord.calculation.discount = d.id;
           }
+          ord.calculation.prepay = d.prepay;
           await this.updateInstallments(ord, d);
         }
         ord.calculation.type = e.value;

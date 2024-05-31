@@ -46,7 +46,7 @@ export default {
           );
         }
         const val = v > this.fullPayment ? this.fullPayment : v;
-        this.emitCalc("prepay", +((val / this.fullPayment) * 100).toFixed(2));
+        this.emitCalc("prepay", +((val / this.fullPayment) * 100));
       },
     },
     otherM2Price: {
