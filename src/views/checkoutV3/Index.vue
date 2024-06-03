@@ -191,17 +191,24 @@ export default {
 
       if (e.field === "type") {
         if (e.value === "installment") {
-          const d = ord.apartment.discounts.find((el) => el.type !== "percent");
           if (
             ord.calculation.discount === "other" ||
             ord.apartment.discounts.find(
               (el) => el.id === ord.calculation.discount
             ).type === "percent"
           ) {
+            const d = ord.apartment.discounts.find(
+              (el) => el.type !== "percent"
+            );
             ord.calculation.discount = d.id;
+            ord.calculation.prepay = d.prepay;
           }
-          ord.calculation.prepay = d.prepay;
-          await this.updateInstallments(ord, d);
+          await this.updateInstallments(
+            ord,
+            ord.apartment.discounts.find(
+              (el) => el.id === ord.calculation.discount
+            )
+          );
         }
         ord.calculation.type = e.value;
         return;
@@ -294,8 +301,8 @@ export default {
         this.finishFetching();
       }
     },
-    updateInstallments(ord, disc) {
-      v3ServiceApi.installments
+    async updateInstallments(ord, disc) {
+      return v3ServiceApi.installments
         .calculate({
           amount: ord.apartment.price_m2,
           discount_id: disc.id,
@@ -781,20 +788,17 @@ export default {
             data.apartments[0].discounts.find(
               (el) => el.id === data.discount_id
             )
-          );
-          setTimeout(() => {
-            data.calculation.prepay = data.apartments[0].discounts.find(
-              (el) => el.id === data.discount_id
-            ).prepay;
-            data.calculation.discount_amount = data.discount_amount;
-          }, 10);
-          setTimeout(() => {
-            data.calculation.prepay = data.apartments[0].discounts.find(
-              (el) => el.id === data.discount_id
-            ).prepay;
+          ).then(() => {
             data.calculation.currentInstallment =
               data.payments_details.installment.id;
-          }, 100);
+          });
+          setTimeout(() => {
+            data.calculation.prepay = data.apartments[0].discounts.find(
+              (el) => el.id === data.discount_id
+            ).prepay;
+
+            data.calculation.discount_amount = data.discount_amount;
+          }, 150);
           setTimeout(() => {
             this.$refs[
               `apartment-overview-${data.apartments[0].id}`

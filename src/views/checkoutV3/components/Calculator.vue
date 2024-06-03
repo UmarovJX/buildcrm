@@ -37,13 +37,7 @@ export default {
       get: prepayAmount,
       set(v) {
         if (this.order.calculation.type === "installment") {
-          return this.emitCalc(
-            "prepay",
-            +(
-              (v * 100) /
-              (this.order.apartment.plan.area * this.order.apartment.price_m2)
-            ).toFixed(2)
-          );
+          return this.emitCalc("prepay", +((v * 100) / this.fullPayment));
         }
         const val = v > this.fullPayment ? this.fullPayment : v;
         this.emitCalc("prepay", +((val / this.fullPayment) * 100));

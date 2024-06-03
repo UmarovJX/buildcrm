@@ -152,7 +152,8 @@ export default {
       const total_discount = this.minusDiscount;
       let total = 0;
       if (this.calc.type === "installment") {
-        total = this.apartment.price_m2 * this.apartment.plan.area;
+        // total = this.apartment.price_m2 * this.apartment.plan.area;
+        total = this.totalPayment;
       } else {
         switch (this.discount.type) {
           case "percent":

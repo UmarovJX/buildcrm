@@ -9,6 +9,7 @@ export const currentInstallmentObj = function () {
 export const fullPrice = function () {
     const type = this.order.calculation.type
     if (type === 'installment') {
+        if (!this.currentInstallmentObj?.amount) return 1;
         return this.currentInstallmentObj.amount * this.order.apartment.plan.area;
     }
     if (this.order.calculation.price) return this.order.calculation.price;
@@ -28,7 +29,7 @@ export const fullPayment = function () {
 export const prepayAmount = function () {
     const type = this.order.calculation.type
     if (type === 'installment') {
-        return (this.order.calculation.prepay * (this.order.apartment.plan.area * this.order.apartment.price_m2) / 100);
+        return (this.order.calculation.prepay * (this.fullPayment) / 100);
     }
     return this.fullPayment * this.order.calculation.prepay / 100
 }
