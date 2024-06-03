@@ -32,7 +32,9 @@ export default {
       currentInstallment: null,
       calc: {
         discount: this.apartment.discounts[0].id,
-        type: "custom",
+        type: this.apartment.object.is_installment_month
+          ? "installment"
+          : "custom",
         month: 0,
         full_discount: 0,
       },
@@ -71,7 +73,7 @@ export default {
   },
   mounted() {
     this.calc.month = this.apartment?.discounts[0].installment_month || 12;
-
+    if (this.apartment.object.is_installment_month) this.getInstallmentCalcs();
     this.upHillForPrint();
   },
   computed: {

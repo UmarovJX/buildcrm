@@ -43,6 +43,7 @@ export default {
       company_id: 0,
       is_hide_m2_price: false,
       is_parking: false,
+      is_installment_month: false,
       credit_month: 18,
       draft: false,
     },
@@ -618,6 +619,11 @@ export default {
               <div class="mb-3">
                 <b-form-checkbox v-model="object.is_map" switch>
                   {{ $t("objects.isMap") }}
+                </b-form-checkbox>
+              </div>
+              <div class="mb-3">
+                <b-form-checkbox v-model="object.is_installment_month" switch>
+                  {{ $t("tariff") }}
                 </b-form-checkbox>
               </div>
             </div>
