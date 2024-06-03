@@ -63,7 +63,6 @@ export default {
         .fetchCompareDetails(id)
         .then((response) => {
           this.compareDetails = response.data[0];
-          console.log(response.data[0]);
         })
         .catch((error) => {
           this.toastedWithErrorCode(error);
