@@ -161,6 +161,7 @@ export default {
   <validation-observer :ref="calcRef" tag="div" class="ch-calculator-wrapper">
     <!--? PAYMENT Type SELECT  -->
     <validation-provider
+      v-if="order.apartment.object.is_installment_month"
       v-slot="{ errors }"
       rules="required"
       :name="`${$t('enter_discount')}`"

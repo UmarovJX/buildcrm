@@ -323,7 +323,7 @@ export default {
     <!--    INPUTS      -->
     <div class="w-100 inputs">
       <!--    PAYMENT OPTIONS       -->
-      <div class="mb-3">
+      <div class="mb-3" v-if="apartment.object.is_installment_month">
         <x-form-select
           v-model="calc.type"
           :options="calcTypes"
