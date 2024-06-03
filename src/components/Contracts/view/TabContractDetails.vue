@@ -63,6 +63,7 @@ export default {
         .fetchCompareDetails(id)
         .then((response) => {
           this.compareDetails = response.data[0];
+          console.log(response.data[0]);
         })
         .catch((error) => {
           this.toastedWithErrorCode(error);
@@ -160,6 +161,21 @@ export default {
               <b-form-input
                 disabled
                 :value="prepayPrettier(compareDetails['discount'])"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="col-6" v-if="compareDetails['installment_month']">
+          <div class="compare__details-item">
+            <div class="compare__details-item_card">
+              <label>{{ $t("installment") }}</label>
+              <b-form-input
+                disabled
+                :value="
+                  compareDetails['installment_month'].months +
+                  ' ' +
+                  $t('month_lowercase')
+                "
               />
             </div>
           </div>
