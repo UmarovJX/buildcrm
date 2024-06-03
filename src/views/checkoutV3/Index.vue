@@ -788,15 +788,13 @@ export default {
             data.apartments[0].discounts.find(
               (el) => el.id === data.discount_id
             )
-          ).then(() => {
-            data.calculation.currentInstallment =
-              data.payments_details.installment.id;
-          });
+          );
           setTimeout(() => {
             data.calculation.prepay = data.apartments[0].discounts.find(
               (el) => el.id === data.discount_id
             ).prepay;
-
+            data.calculation.currentInstallment =
+              data.payments_details.installment.id;
             data.calculation.discount_amount = data.discount_amount;
           }, 150);
           setTimeout(() => {
