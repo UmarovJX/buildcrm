@@ -32,9 +32,7 @@ export default {
       currentInstallment: null,
       calc: {
         discount: this.apartment.discounts[0].id,
-        type: this.apartment.object.is_installment_month
-          ? "installment"
-          : "custom",
+        type: "custom",
         month: 0,
         full_discount: 0,
       },
@@ -73,7 +71,6 @@ export default {
   },
   mounted() {
     this.calc.month = this.apartment?.discounts[0].installment_month || 12;
-    if (this.apartment.object.is_installment_month) this.getInstallmentCalcs();
     this.upHillForPrint();
   },
   computed: {
@@ -91,17 +88,7 @@ export default {
       );
     },
     m2Price() {
-      if (this.calc.type === "installment") {
-        return this.currentInstallmentObj?.amount;
-      } else if (this.discount.type === "percent") {
-        if (this.discount.prepay === 100) {
-          return this.apartment.price_m2;
-        } else {
-          return this.totalForPercente / this.apartment.plan.area;
-        }
-      } else {
-        return this.apartment.price_m2;
-      }
+      return this.totalPayment / this.apartment.plan.area;
     },
     calcTypes() {
       return [
@@ -421,9 +408,7 @@ export default {
           {{ $t("selling_price") }} m<sup>2</sup>
         </span>
         <span class="price d-block color-gray-600">
-          {{
-            pricePrettier(m2Price - calc.full_discount / apartment.plan.area, 2)
-          }}
+          {{ pricePrettier(m2Price, 2) }}
           {{ $t("ye") }}</span
         >
       </div>
