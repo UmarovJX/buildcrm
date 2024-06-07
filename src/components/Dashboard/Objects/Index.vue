@@ -8,7 +8,7 @@ import PromosPermission from "@/permission/promos";
 import PlansPermission from "@/permission/plans";
 import BaseDotsIcon from "@/components/icons/BaseDotsIcon";
 import AppHeader from "@/components/Header/AppHeader";
-import Permission from "@/permission";
+import Permission from "@/permission/index";
 import BaseButton from "@/components/Reusable/BaseButton.vue";
 import { XIcon } from "@/components/ui-components/material-icons";
 import { XCircularBackground } from "@/components/ui-components/circular-background";

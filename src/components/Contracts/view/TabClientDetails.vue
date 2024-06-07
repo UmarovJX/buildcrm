@@ -1,20 +1,20 @@
 <script>
-import { formatDateWithDot, phonePrettier } from '@/util/reusable'
-import api from '@/services/api'
-import { mapGetters } from 'vuex'
-import ContractsPermission from '@/permission/contract'
+import { formatDateWithDot, phonePrettier } from "@/util/reusable";
+import api from "@/services/api";
+import { mapGetters } from "vuex";
+import ContractsPermission from "@/permission/contract";
 import {
   XFormSelect,
   XFormSelectOption,
-} from '@/components/ui-components/form-select'
+} from "@/components/ui-components/form-select";
 import {
   isNotUndefinedNullEmptyZero,
   isNUNEZ,
   isUndefinedOrNullOrEmpty,
-} from '@/util/inspect'
+} from "@/util/inspect";
 
 export default {
-  name: 'TabClientDetails',
+  name: "TabClientDetails",
   components: {
     XFormSelect,
     // eslint-disable-next-line vue/no-unused-components
@@ -26,7 +26,7 @@ export default {
       required: true,
     },
   },
-  emits: ['start-loading', 'finish-loading'],
+  emits: ["start-loading", "finish-loading"],
   data() {
     return {
       selected: null,
@@ -34,154 +34,151 @@ export default {
       clientTypeOptions: [],
       contractId: this.$route.params.id,
       clientTypeId: null,
-    }
+    };
   },
   computed: {
     ...mapGetters({
-      permission: 'getPermission',
+      permission: "getPermission",
     }),
     haveClient() {
-      return Object.keys(this.client).length
+      return Object.keys(this.client).length;
     },
     permissionClientType() {
-      return ContractsPermission.getContractsClientTypePermission()
+      return ContractsPermission.getContractsClientTypePermission();
     },
     isLegalClient() {
-      return this.client.subject === 'legal'
+      return this.client.subject === "legal";
     },
     cAttrs() {
-      return this.client?.attributes
+      return this.client?.attributes;
     },
     legalClientDetails() {
       if (this.isLegalClient) {
-        const companyType = this.cAttrs.company.name[this.$i18n.locale]
-        const companyName = this.cAttrs.name
+        const companyType = this.cAttrs.company.name[this.$i18n.locale];
+        const companyName = this.cAttrs.name;
         return {
           companyName: `${companyType} ${companyName}`,
-        }
+        };
       }
 
-      return null
+      return null;
     },
   },
   created() {
-    Promise.allSettled([this.getClientInformation(), this.fetchClientTypes()])
+    Promise.allSettled([this.getClientInformation(), this.fetchClientTypes()]);
   },
   methods: {
     isNUNEZ,
-    datePrettier: time => formatDateWithDot(time),
+    datePrettier: (time) => formatDateWithDot(time),
     getClientMajorPhone(phones) {
       if (!phones.length) {
-        return ''
+        return "";
       }
 
-      phones = phones.filter(p => (
-        isNotUndefinedNullEmptyZero(p.phone) && p.phone.toString().length > 3
-      ))
+      phones = phones.filter(
+        (p) =>
+          isNotUndefinedNullEmptyZero(p.phone) && p.phone.toString().length > 3
+      );
 
       if (phones.length > 0) {
-        return this.formattingPhone(phones[0].phone)
+        return this.formattingPhone(phones[0].phone);
       }
     },
     getExtraPhone(phones) {
       if (!phones.length) {
-        return ''
+        return "";
       }
 
-      phones = phones.filter(p => (
-        isNotUndefinedNullEmptyZero(p.phone) && p.phone.toString().length > 3
-      ))
+      phones = phones.filter(
+        (p) =>
+          isNotUndefinedNullEmptyZero(p.phone) && p.phone.toString().length > 3
+      );
 
       if (phones.length > 1) {
-        return this.formattingPhone(phones[1].phone)
+        return this.formattingPhone(phones[1].phone);
       }
-      return ''
+      return "";
     },
     async getClientInformation() {
-      this.startLoading()
+      this.startLoading();
       await api.contractV2
         .fetchClientInfo(this.contractId)
-        .then(response => {
-          this.client = response.data
-          this.clientTypeId = this.client.client_type.id
+        .then((response) => {
+          this.client = response.data;
+          this.clientTypeId = this.client.client_type.id;
         })
-        .catch(error => {
-          this.toastedWithErrorCode(error)
+        .catch((error) => {
+          this.toastedWithErrorCode(error);
         })
         .finally(() => {
-          this.finishLoading()
-        })
+          this.finishLoading();
+        });
     },
     async fetchClientTypes() {
       try {
-        const { data: options } = await api.settingsV2.getClientTypes()
-        this.clientTypeOptions = options.map(option => ({
+        const { data: options } = await api.settingsV2.getClientTypes();
+        this.clientTypeOptions = options.map((option) => ({
           text: option.name,
           value: option.id,
-        }))
+        }));
       } catch (e) {
-        this.toastedWithErrorCode(e)
+        this.toastedWithErrorCode(e);
       }
     },
     startLoading() {
-      this.$emit('start-loading')
+      this.$emit("start-loading");
     },
     finishLoading() {
-      this.$emit('finish-loading')
+      this.$emit("finish-loading");
     },
-    formattingPhone: phone => phonePrettier(phone),
-    dateReverser: time => formatDateWithDot(time),
+    formattingPhone: (phone) => phonePrettier(phone),
+    dateReverser: (time) => formatDateWithDot(time),
     getClientName(client) {
       if (isUndefinedOrNullOrEmpty(client.attributes)) {
-        return ''
+        return "";
       }
 
-      let language = 'kirill'
-      if (this.$i18n.locale === 'uz') {
-        language = 'lotin'
+      let language = "kirill";
+      if (this.$i18n.locale === "uz") {
+        language = "lotin";
       }
-      const { first_name, last_name, middle_name } = client.attributes
-      return (
-        `${this.clientName(last_name, language)
-        } ${
-          this.clientName(first_name, language)
-        } ${
-          this.clientName(middle_name, language)}`
-      )
+      const { first_name, last_name, middle_name } = client.attributes;
+      return `${this.clientName(last_name, language)} ${this.clientName(
+        first_name,
+        language
+      )} ${this.clientName(middle_name, language)}`;
     },
 
     clientName(multiName, language) {
       if (multiName) {
-        const lastNameByLang = multiName[language]
+        const lastNameByLang = multiName[language];
         if (lastNameByLang) {
-          return lastNameByLang
+          return lastNameByLang;
         }
-        const lastNameOtherLang = language === 'kirill' ? multiName.lotin : multiName.kirill
-        if (lastNameOtherLang) return lastNameOtherLang
+        const lastNameOtherLang =
+          language === "kirill" ? multiName.lotin : multiName.kirill;
+        if (lastNameOtherLang) return lastNameOtherLang;
       }
-      return ''
+      return "";
     },
     async changeClientType() {
       if (this.client.client_type.id !== this.clientTypeId) {
-        this.startLoading()
+        this.startLoading();
         await api.contractV2
           .toggleClientType(this.contractId, this.clientTypeId)
           .finally(() => {
-            this.finishLoading()
-          })
+            this.finishLoading();
+          });
       }
     },
   },
-}
+};
 </script>
 
 <template>
   <div v-if="haveClient">
     <!--  ? LEGAL CLIENT    -->
-    <div
-      v-if="isLegalClient"
-      class="client__details col-12 px-0"
-    >
+    <div v-if="isLegalClient" class="client__details col-12 px-0">
       <div class="d-flex">
         <h3 class="client__details__title mr-5">
           {{ $t("main") }}
@@ -199,11 +196,7 @@ export default {
         </div>
         <div class="client__details_info_card">
           <label for="birthdate">{{ $t("companies.bank_name") }}</label>
-          <b-form-input
-            id="birthdate"
-            disabled
-            :value="cAttrs.bank_name"
-          />
+          <b-form-input id="birthdate" disabled :value="cAttrs.bank_name" />
         </div>
       </div>
       <!--  -->
@@ -217,10 +210,7 @@ export default {
           />
         </div>
 
-        <div
-          class="client__details_info_card"
-          style="padding-right: 0"
-        >
+        <div class="client__details_info_card" style="padding-right: 0">
           <label for="client_type">{{ $t("client_type") }}</label>
           <x-form-select
             v-if="permissionClientType && clientTypeOptions.length"
@@ -245,30 +235,18 @@ export default {
         </div>
         <div class="client__details_info_card">
           <label for="birthdate">{{ $t("mfo") }}</label>
-          <b-form-input
-            id="birthdate"
-            disabled
-            :value="cAttrs.mfo"
-          />
+          <b-form-input id="birthdate" disabled :value="cAttrs.mfo" />
         </div>
       </div>
 
       <div class="d-flex">
         <div class="client__details_info_card mr-5">
           <label for="ndc">{{ $t("ndc") }}</label>
-          <b-form-input
-            id="ndc"
-            disabled
-            :value="cAttrs.nds"
-          />
+          <b-form-input id="ndc" disabled :value="cAttrs.nds" />
         </div>
         <div class="client__details_info_card">
           <label for="inn">{{ $t("inn") }}</label>
-          <b-form-input
-            id="inn"
-            disabled
-            :value="cAttrs.inn"
-          />
+          <b-form-input id="inn" disabled :value="cAttrs.inn" />
         </div>
       </div>
 
@@ -283,22 +261,14 @@ export default {
         </div>
         <div class="client__details_info_card">
           <label for="fax">{{ $t("fax") }}</label>
-          <b-form-input
-            id="fax"
-            disabled
-            :value="cAttrs.fax"
-          />
+          <b-form-input id="fax" disabled :value="cAttrs.fax" />
         </div>
       </div>
 
       <div class="d-flex">
         <div class="client__details_info_card mr-5">
           <label for="email">{{ $t("email") }}</label>
-          <b-form-input
-            id="email"
-            disabled
-            :value="client.email"
-          />
+          <b-form-input id="email" disabled :value="client.email" />
         </div>
         <div class="client__details_info_card">
           <label for="additional_email">{{ $t("additional_email") }}</label>
@@ -313,16 +283,9 @@ export default {
       <div class="phones-section">
         <div class="client__details_info_card mr-5">
           <label for="fax">{{ $t("oked") }}</label>
-          <b-form-input
-            id="fax"
-            disabled
-            :value="cAttrs.oked"
-          />
+          <b-form-input id="fax" disabled :value="cAttrs.oked" />
         </div>
-        <div
-          v-if="client.phones.length"
-          class="client__details_info_card mr-5"
-        >
+        <div v-if="client.phones.length" class="client__details_info_card mr-5">
           <label for="phone">{{ $t("phone") }}</label>
           <b-form-input
             id="phone"
@@ -352,10 +315,7 @@ export default {
     </div>
 
     <!--  ? PHYSICAL CLIENT    -->
-    <div
-      v-else
-      class="client__details col-12 px-0"
-    >
+    <div v-else class="client__details col-12 px-0">
       <b-form class="client__details_info">
         <div class="d-flex">
           <h3 class="client__details__title mr-5">
@@ -418,10 +378,29 @@ export default {
         </div>
 
         <div class="d-flex">
-          <div
-            class="client__details_info_card mr-5"
-            style="padding-right: 0"
-          >
+          <div class="client__details_info_card mr-5">
+            <label for="place_of_issue">{{
+              $t("apartments.agree.passport_series")
+            }}</label>
+            <b-form-input
+              id="place_of_issue"
+              disabled
+              :value="client.attributes.passport_series"
+            />
+          </div>
+          <div class="client__details_info_card" style="margin-left: -2px">
+            <label for="passport_issued_by">{{
+              $t("apartments.agree.issued_by_whom")
+            }}</label>
+            <b-form-input
+              id="passport_issued_by"
+              disabled
+              :value="client.attributes.passport_issued_by"
+            />
+          </div>
+        </div>
+        <div class="d-flex">
+          <div class="client__details_info_card mr-5" style="padding-right: 0">
             <label for="client_type">{{ $t("client_type") }}</label>
             <x-form-select
               v-if="permissionClientType && clientTypeOptions.length"
@@ -441,6 +420,27 @@ export default {
               :value="datePrettier(client.attributes.passport_issued_date)"
             />
           </div>
+        </div>
+
+        <div class="d-flex">
+          <div class="client__details_info_card mr-5">
+            <label for="language">{{ $t("language") }}</label>
+            <b-form-input id="language" disabled :value="client.language" />
+          </div>
+          <div
+            class="client__details_info_card"
+            v-if="client.attributes.passport_expiry_date"
+          >
+            <label for="passport_expiry_date">{{
+              $t("passport_expiry_date")
+            }}</label>
+            <b-form-input
+              id="passport_expiry_date"
+              disabled
+              :value="datePrettier(client.attributes.passport_expiry_date)"
+            />
+          </div>
+          <div v-else class="client__details_info_card opacity-0"></div>
         </div>
         <div class="d-flex">
           <div class="client__details_info_card mr-5">
@@ -464,11 +464,7 @@ export default {
         <div class="d-flex">
           <div class="client__details_info_card mr-5">
             <label for="email">{{ $t("email") }}</label>
-            <b-form-input
-              id="email"
-              disabled
-              :value="client.email"
-            />
+            <b-form-input id="email" disabled :value="client.email" />
           </div>
           <div class="client__details_info_card">
             <label for="additional_email">{{ $t("additional_email") }}</label>
@@ -478,39 +474,6 @@ export default {
               :value="client.additional_email"
             />
           </div>
-        </div>
-        <div class="d-flex">
-          <div class="client__details_info_card mr-5">
-            <label for="place_of_issue">{{
-              $t("apartments.agree.passport_series")
-            }}</label>
-            <b-form-input
-              id="place_of_issue"
-              disabled
-              :value="client.attributes.passport_series"
-            />
-          </div>
-          <div class="client__details_info_card">
-            <label for="passport_issued_by">{{
-              $t("apartments.agree.issued_by_whom")
-            }}</label>
-            <b-form-input
-              id="passport_issued_by"
-              disabled
-              :value="client.attributes.passport_issued_by"
-            />
-          </div>
-        </div>
-        <div class="d-flex">
-          <div class="client__details_info_card mr-5">
-            <label for="language">{{ $t("language") }}</label>
-            <b-form-input
-              id="language"
-              disabled
-              :value="client.language"
-            />
-          </div>
-          <div class="client__details_info_card opacity-0" />
         </div>
       </b-form>
     </div>

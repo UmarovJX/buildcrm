@@ -1,19 +1,19 @@
 <script>
-import 'vue2-datepicker/index.css'
+import "vue2-datepicker/index.css";
 
 // eslint-disable-next-line import/extensions
-import BaseCalendarIcon from '@/components/icons/BaseCalendarIcon'
-import DatePicker from 'vue2-datepicker'
-import 'vue2-datepicker/locale/en'
-import { isNUNEZ } from '@/util/inspect'
+import BaseCalendarIcon from "@/components/icons/BaseCalendarIcon";
+import DatePicker from "vue2-datepicker";
+import "vue2-datepicker/locale/en";
+import { isNUNEZ } from "@/util/inspect";
 
 export default {
-  name: 'BaseDatePicker',
+  name: "BaseDatePicker",
   components: {
     DatePicker,
     BaseCalendarIcon,
   },
-  emits: ['input', 'select'],
+  emits: ["input", "select"],
   props: {
     defaultValue: {
       type: [Array, String],
@@ -29,15 +29,15 @@ export default {
     },
     format: {
       type: String,
-      default: 'YYYY-MM-DD',
+      default: "YYYY-MM-DD",
     },
     valueType: {
       type: String,
-      default: 'YYYY-MM-DD',
+      default: "YYYY-MM-DD",
     },
     placeholder: {
       type: String,
-      default: 'Select date range',
+      default: "Select date range",
     },
     iconSquareSize: {
       type: Number,
@@ -45,7 +45,7 @@ export default {
     },
     iconFill: {
       type: String,
-      default: '#9CA3AF',
+      default: "#9CA3AF",
     },
     error: {
       type: Boolean,
@@ -57,38 +57,41 @@ export default {
     },
     type: {
       type: String,
-      default: 'date',
+      default: "date",
     },
     showBorder: {
       type: Boolean,
       default: true,
     },
+    disabledDate: {
+      type: Function,
+    },
   },
   data() {
     return {
       dateValue: null,
-    }
+    };
   },
   computed: {
     hasLabel() {
-      return isNUNEZ(this.dateValue) && this.label
+      return isNUNEZ(this.dateValue) && this.label;
     },
   },
   watch: {
     dateValue(lastValue) {
-      this.$emit('input', lastValue)
-      this.$emit('select', lastValue)
+      this.$emit("input", lastValue);
+      this.$emit("select", lastValue);
     },
     defaultValue: {
       immediate: true,
       handler(nextValue) {
-        this.dateValue = nextValue
+        this.dateValue = nextValue;
       },
     },
     value: {
       immediate: true,
       handler(nextValue) {
-        this.dateValue = nextValue
+        this.dateValue = nextValue;
       },
     },
   },
@@ -113,18 +116,15 @@ export default {
     //   }
     // },
     clearField() {
-      this.dateValue = undefined
+      this.dateValue = undefined;
     },
   },
-}
+};
 </script>
 
 <template>
   <div class="base-calendar">
-    <div
-      v-if="hasLabel"
-      class="input-label"
-    >
+    <div v-if="hasLabel" class="input-label">
       <span>
         {{ placeholder }}
       </span>
@@ -138,15 +138,12 @@ export default {
       lang="en"
       :placeholder="placeholder"
       class="date-picker"
-      :class="{ error: error, label: hasLabel,'remove__border':!showBorder }"
+      :class="{ error: error, label: hasLabel, remove__border: !showBorder }"
       :range="range"
-      :popup-style="{zIndex:9999}"
+      :popup-style="{ zIndex: 9999 }"
+      :disabled-date="disabledDate"
     >
-      <template
-        #icon-calendar
-        class="calendar-icon"
-        @click="togglePicker"
-      >
+      <template #icon-calendar class="calendar-icon" @click="togglePicker">
         <base-calendar-icon
           :fill="iconFill"
           :width="iconSquareSize"
@@ -236,8 +233,8 @@ export default {
       }
     }
 
-    &.remove__border{
-      ::v-deep .mx-input-wrapper{
+    &.remove__border {
+      ::v-deep .mx-input-wrapper {
         border: none;
         border-radius: 0;
       }

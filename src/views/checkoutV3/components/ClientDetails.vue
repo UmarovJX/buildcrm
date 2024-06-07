@@ -38,6 +38,7 @@ export default {
       birth_day: null,
       phone: null,
       other_phone: null,
+      passport_expiry_date: null,
       email: null,
       other_email: null,
       language: "uz",
@@ -217,6 +218,10 @@ export default {
       this.personalData.date_of_issue = formatDateToYMD(
         data.attributes.passport_issued_date
       );
+      if (data.attributes.passport_expiry_date)
+        this.personalData.passport_expiry_date = formatDateToYMD(
+          data.attributes.passport_expiry_date
+        );
       this.personalData.birth_day = formatDateToYMD(
         data.attributes.date_of_birth
       );
@@ -390,6 +395,7 @@ export default {
         additional_email: p.other_email,
       };
       if (p.subject === 1) {
+        console.log(p);
         return {
           subject: "physical",
           ...common,
@@ -401,6 +407,7 @@ export default {
             passport_issued_date: p.date_of_issue,
             passport_issued_by: p.place_of_issue,
             passport_series: p.passport_series,
+            passport_expiry_date: p.passport_expiry_date,
             country_id: p.country_id,
             address_line: p.address_line,
           },
@@ -465,7 +472,7 @@ export default {
 
 <template>
   <validation-observer ref="clients-data-observer" tag="div">
-    <!--! CLIENTS_PERSONAL_DATA  -->
+        <!--! CLIENTS_PERSONAL_DATA  -->
     <section-title
       title="clients_personal_data"
       :bilingual="true"
@@ -777,6 +784,23 @@ export default {
             :icon-fill="datePickerIconFill"
           />
         </validation-provider>
+        <!--? EXPIRY_DATE  -->
+        <validation-provider
+          v-slot="{ errors }"
+          :name="`${$t('passport_expiry_date')}`"
+          rules="required"
+        >
+          <base-date-picker
+            v-model="personalData.passport_expiry_date"
+            :range="false"
+            :error="!!errors[0]"
+            class="data-picker"
+            format="DD.MM.YYYY"
+            :placeholder="`${$t('passport_expiry_date')}`"
+            :disabled-date="(date) => new Date(date) <= new Date()"
+            :icon-fill="datePickerIconFill"
+          />
+        </validation-provider>
 
         <!--? CLIENT_BIRTHDAY  -->
         <validation-provider
@@ -792,6 +816,20 @@ export default {
             format="DD.MM.YYYY"
             :placeholder="`${$t('birth_day')}`"
             :icon-fill="datePickerIconFill"
+          />
+        </validation-provider>
+
+        <!--? CLIENT_COMMUNICATION_LANGUAGE  -->
+        <validation-provider
+          v-slot="{ errors }"
+          :name="`${$t('language')}`"
+          rules="required"
+        >
+          <x-form-select
+            v-model="personalData.language"
+            :error="!!errors[0]"
+            :options="languageOptions"
+            :placeholder="`${$t('communication_language')}`"
           />
         </validation-provider>
 
@@ -923,20 +961,6 @@ export default {
           :label="true"
           :error="!!errors[0]"
           :placeholder="`${$t('checkout.address_line')}`"
-        />
-      </validation-provider>
-
-      <!--? CLIENT_COMMUNICATION_LANGUAGE  -->
-      <validation-provider
-        v-slot="{ errors }"
-        :name="`${$t('language')}`"
-        rules="required"
-      >
-        <x-form-select
-          v-model="personalData.language"
-          :error="!!errors[0]"
-          :options="languageOptions"
-          :placeholder="`${$t('communication_language')}`"
         />
       </validation-provider>
     </div>

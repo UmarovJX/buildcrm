@@ -299,6 +299,7 @@ export default {
   cyrillic_shortcut: 'kir',
   latin_shortcut: 'lot',
   passport_issue_date: 'Passport berilgan sana',
+  passport_expiry_date: 'Amal qilish muddati',
   for_example: 'masalan',
   remainder: 'Qoldiq',
   apartment_detail: 'Kvartira tafsiloti',
