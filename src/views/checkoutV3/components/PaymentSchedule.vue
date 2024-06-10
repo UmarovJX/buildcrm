@@ -84,10 +84,9 @@ export default {
             amount: monthly(this.order.calculation.months, restAmount),
             editedAmount: false,
             editedDate: false,
-            date: d,
+            date: addMonth(d, i),
             key: keyGen(),
           });
-          d = addMonth(d, 1);
         }
         res.push({
           type: "monthly",
@@ -97,7 +96,7 @@ export default {
               (this.order.calculation.months - 1),
           editedAmount: false,
           editedDate: false,
-          date: d,
+          date: addMonth(d, this.order.calculation.months - 1),
           key: keyGen(),
         });
         this.payments = res;
