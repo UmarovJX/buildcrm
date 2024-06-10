@@ -228,7 +228,7 @@ export default {
           ord.calculation.initial_payments
         );
         if (new Date(ord.calculation.monthly_payment_date) < newD)
-          ord.calculation.monthly_payment_date = dateForPicker(newD);
+          ord.calculation.monthly_payment_date = formatDateToYMD(newD);
         return;
       }
 
@@ -239,7 +239,7 @@ export default {
           ord.calculation.initial_payments
         );
         if (new Date(ord.calculation.monthly_payment_date) < newD)
-          ord.calculation.monthly_payment_date = dateForPicker(newD);
+          ord.calculation.monthly_payment_date = formatDateToYMD(newD);
         return;
       }
       if (e.field === "monthly_payment_date") {
@@ -270,7 +270,7 @@ export default {
         if (data) {
           this.expiry_at = data.expiry_at;
           data.orders.forEach((e) => {
-            e.contract_date || (e.contract_date = dateForPicker(new Date()));
+            e.contract_date || (e.contract_date = formatDateToYMD(new Date()));
             e.calculation = {
               type: "custom",
               discount: e.apartment.discounts[0].id,

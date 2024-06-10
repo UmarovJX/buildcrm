@@ -9,7 +9,7 @@ import BaseCloseIcon from "@/components/icons/BaseCloseIcon";
 import BaseDatePicker from "@/components/Reusable/BaseDatePicker";
 import BasePriceInput from "@/components/Reusable/BasePriceInput";
 import { mapActions } from "vuex";
-import { dateProperties } from "@/util/calendar";
+import { dateProperties, formatDateToYMD } from "@/util/calendar";
 import { makeProp as p } from "@/util/props";
 import { PROP_TYPE_OBJECT } from "@/constants/props";
 import { hasChild } from "@/util/object";
@@ -189,7 +189,7 @@ export default {
       //   ...payment,
       //   month: ymd,
       // };
-      this.current = { ...payment, date: dateForPicker(payment.date) };
+      this.current = { ...payment, date: formatDateToYMD(payment.date) };
       this.openEditModal();
     },
     openEditModal() {
@@ -256,7 +256,7 @@ export default {
         }
       }
       // Date update
-      if (dateForPicker(oldObj.date) !== this.current.date) {
+      if (formatDateToYMD(oldObj.date) !== this.current.date) {
         if (
           this.current.type === "monthly" &&
           new Date(this.current.date) >
