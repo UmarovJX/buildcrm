@@ -189,6 +189,14 @@ class V3Service extends Core {
     remove: (b) => this.post('installment-month/remove', b),
     calculate: (b) => this.post('installment-month/calculate-amount', b),
   }
+
+  // SCANNEDS
+  scannedContracts = {
+    getAll: b => this.post('scanned-contract/index', b),
+    create: b => this.post('scanned-contract/create', b),
+    show: b => this.post('scanned-contract/show', b),
+    remove: b => this.post('scanned-contract/remove', b),
+  }
 }
 
 

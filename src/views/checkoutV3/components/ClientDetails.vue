@@ -12,6 +12,8 @@ import {
 import api from "@/services/api";
 import { formatDateToYMD } from "@/util/calendar";
 import { isNotUndefinedNullEmptyZero } from "@/util/inspect";
+import { v3ServiceApi } from "@/services/v3/v3.service";
+import PassportCopies from "@/views/checkoutV3/components/PassportCopies";
 
 export default {
   name: "CheckoutClientDetails",
@@ -22,6 +24,7 @@ export default {
     SectionTitle,
     BaseDatePicker,
     BaseButton,
+    PassportCopies,
   },
   props: {
     isUpdateMode: {
@@ -31,6 +34,7 @@ export default {
   },
   data() {
     const emptyClientProperties = {
+      id: null,
       subject: 1,
       passport_series: null,
       place_of_issue: null,
@@ -67,6 +71,8 @@ export default {
     };
 
     return {
+      scans: [],
+      scansLoading: false,
       phonesForDelete: [],
       companyTypes: [],
       autoFill: false,
@@ -112,8 +118,28 @@ export default {
       this.fetchCompanyType(),
     ]);
   },
+  watch: {
+    "personalData.id"() {
+      this.openExistingScans();
+    },
+  },
 
   methods: {
+    getFiles() {
+      return this.scans.filter((el) => el instanceof File);
+    },
+    async openExistingScans() {
+      this.scansLoading = true;
+      const scans = await v3ServiceApi.scannedContracts.getAll({
+        page: 1,
+        limit: 99,
+        type: "passport_front",
+        model_id: this.personalData.id,
+      });
+      this.scans = scans.data.result;
+      this.scansLoading = false;
+    },
+
     clientDebounce() {
       if (this.personalData.passport_series) {
         if (this.timeoutId !== null) {
@@ -174,7 +200,6 @@ export default {
       }
     },
     autoFillFieldsByInn(data) {
-      console.log("data", data);
       this.personalData.legal_entity.fax = data.attributes.fax;
       this.personalData.legal_entity.mfo = data.attributes.mfo;
       this.personalData.legal_entity.ndc = data.attributes.nds;
@@ -212,6 +237,7 @@ export default {
       }
     },
     autoFillFieldsByPassportSeries(data) {
+      this.personalData.id = data.id;
       this.personalData.country_id = data.attributes.country.id;
       this.personalData.place_of_issue = data.attributes.passport_issued_by;
       this.personalData.address_line = data.attributes.address_line;
@@ -472,7 +498,7 @@ export default {
 
 <template>
   <validation-observer ref="clients-data-observer" tag="div">
-        <!--! CLIENTS_PERSONAL_DATA  -->
+    <!--! CLIENTS_PERSONAL_DATA  -->
     <section-title
       title="clients_personal_data"
       :bilingual="true"
@@ -1040,53 +1066,68 @@ export default {
         v-model="personalData.other_email"
         :placeholder="`${$t('additional_email')}`"
       /> -->
-
-      <!--? CLIENT_ADDITIONAL_PHONE  -->
-      <x-form-input
-        v-model="personalData.other_phone"
-        class="w-100"
-        :label="true"
-        mask="+### ## ### ## ##"
-        :placeholder="`${$t('additional_phone_number')}`"
-      />
-
-      <!--? CLIENT_EXTRA_PHONES_FIELD  -->
-      <div
-        v-for="(extraPhone, idx) in personalData.extra_phones"
-        :key="extraPhone + idx"
-        class="extra-phones-wrapper"
-      >
+      <div class="phone-wrapper">
+        <!--? CLIENT_ADDITIONAL_PHONE  -->
         <x-form-input
-          v-model="personalData.extra_phones[idx].value"
-          :label="true"
+          v-model="personalData.other_phone"
           class="w-100"
+          :label="true"
           mask="+### ## ### ## ##"
           :placeholder="`${$t('additional_phone_number')}`"
         />
-        <base-button
-          class="remove-extra-phone-btn"
-          @click="removePhoneField(extraPhone)"
+        <div
+          v-for="(extraPhone, idx) in personalData.extra_phones"
+          :key="extraPhone + idx"
+          class="extra-phones-wrapper"
         >
-          <x-icon name="remove" class="gray-400" />
+          <x-form-input
+            v-model="personalData.extra_phones[idx].value"
+            :label="true"
+            class="w-100"
+            mask="+### ## ### ## ##"
+            :placeholder="`${$t('additional_phone_number')}`"
+          />
+          <base-button
+            class="remove-extra-phone-btn"
+            @click="removePhoneField(extraPhone)"
+          >
+            <x-icon name="remove" class="gray-400" />
+          </base-button>
+        </div>
+
+        <!--? ADD_EXTRA_PHONE_BUTTON  -->
+        <base-button
+          text="add_another_number"
+          class="add-extra-phone-btn gray-600"
+          :bilingual="true"
+          @click="createExtraPhoneField"
+        >
+          <template #left-icon>
+            <x-icon name="add" class="violet-600" />
+          </template>
         </base-button>
       </div>
-
-      <!--? ADD_EXTRA_PHONE_BUTTON  -->
-      <base-button
-        text="add_another_number"
-        class="add-extra-phone-btn gray-600"
-        :bilingual="true"
-        @click="createExtraPhoneField"
-      >
-        <template #left-icon>
-          <x-icon name="add" class="violet-600" />
-        </template>
-      </base-button>
+      <passport-copies
+        v-if="personalData.subject === 1"
+        :list="scans"
+        :loading="scansLoading"
+        :id="personalData.id"
+        @start-loading="scansLoading = true"
+        @stop-loading="scansLoading = false"
+        @add-item="(d) => scans.push(...d)"
+        @delete-item="(i) => scans.splice(i, 1)"
+        @update-list="openExistingScans"
+      ></passport-copies>
     </div>
   </validation-observer>
 </template>
 
 <style lang="scss" scoped>
+.phone-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
 .clients-data-wrapper,
 .clients-contact-details {
   display: grid;

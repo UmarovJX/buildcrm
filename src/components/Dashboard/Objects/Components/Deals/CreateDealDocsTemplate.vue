@@ -8,7 +8,7 @@ export default {
   emits: ["update-content"],
   props: {
     warningData: {
-      type: Array,
+      type: Object,
     },
   },
   data() {

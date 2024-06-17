@@ -406,6 +406,29 @@ export default {
               clientId: data.id,
               id: data.id,
             };
+
+            const files = clientDetailsRef.getFiles();
+            const uploads = await Promise.all(
+              [...files].map((el) => {
+                const body = new FormData();
+                body.append("type", "passport_front");
+                body.append("attachment", el);
+                return api.uploadsV3
+                  .createUpload(body)
+                  .then((res) => res.data.result.id);
+              })
+            );
+            await Promise.all(
+              uploads.map(
+                async (id) =>
+                  await v3ServiceApi.scannedContracts.create({
+                    type: "passport_front",
+                    model_id: data.id,
+                    upload_id: id,
+                  })
+              )
+            );
+            clientDetailsRef.openExistingScans();
             return true;
           }
           return false;

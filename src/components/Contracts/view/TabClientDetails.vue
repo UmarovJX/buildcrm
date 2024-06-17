@@ -12,6 +12,8 @@ import {
   isNUNEZ,
   isUndefinedOrNullOrEmpty,
 } from "@/util/inspect";
+import PassportCopies from "@/views/checkoutV3/components/PassportCopies";
+import { v3ServiceApi } from "@/services/v3/v3.service";
 
 export default {
   name: "TabClientDetails",
@@ -19,6 +21,7 @@ export default {
     XFormSelect,
     // eslint-disable-next-line vue/no-unused-components
     XFormSelectOption,
+    PassportCopies,
   },
   props: {
     order: {
@@ -34,6 +37,9 @@ export default {
       clientTypeOptions: [],
       contractId: this.$route.params.id,
       clientTypeId: null,
+
+      scans: [],
+      scansLoading: false,
     };
   },
   computed: {
@@ -68,6 +74,17 @@ export default {
     Promise.allSettled([this.getClientInformation(), this.fetchClientTypes()]);
   },
   methods: {
+    async openExistingScans() {
+      this.scansLoading = true;
+      const scans = await v3ServiceApi.scannedContracts.getAll({
+        page: 1,
+        limit: 99,
+        type: "passport_front",
+        model_id: this.client.id,
+      });
+      this.scans = scans.data.result;
+      this.scansLoading = false;
+    },
     isNUNEZ,
     datePrettier: (time) => formatDateWithDot(time),
     getClientMajorPhone(phones) {
@@ -106,6 +123,7 @@ export default {
         .then((response) => {
           this.client = response.data;
           this.clientTypeId = this.client.client_type.id;
+          this.openExistingScans();
         })
         .catch((error) => {
           this.toastedWithErrorCode(error);
@@ -474,6 +492,21 @@ export default {
               :value="client.additional_email"
             />
           </div>
+        </div>
+        <div class="d-flex mt-3" v-if="client.subject === 'physical'">
+          <div class="mr-5" style="width: 100%">
+            <passport-copies
+              :list="scans"
+              :loading="scansLoading"
+              :id="client.id"
+              @start-loading="scansLoading = true"
+              @stop-loading="scansLoading = false"
+              @add-item="(d) => scans.push(...d)"
+              @delete-item="(i) => scans.splice(i, 1)"
+              @update-list="openExistingScans"
+            ></passport-copies>
+          </div>
+          <div style="width: 100%"></div>
         </div>
       </b-form>
     </div>

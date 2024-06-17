@@ -221,7 +221,7 @@ export default {
           {{ translations[item.type]?.[$i18n.locale] }}
         </span>
         <span v-else>
-          {{ getCategoryName(data.item.type) }}
+          {{ getCategoryName(item.type) }}
         </span>
       </template>
 

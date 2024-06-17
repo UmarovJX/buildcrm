@@ -18,7 +18,7 @@ export default {
   },
   data() {
     return {
-      warningData: [],
+      warningData: {},
       instructionPermission: TemplatesPermission.getInstructionViewPermission(),
       createPermission: TemplatesPermission.getTemplatesCreatePermission(),
       loading: false,
