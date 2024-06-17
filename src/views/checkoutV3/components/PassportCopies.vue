@@ -53,9 +53,9 @@ export default {
 
     async addScan(d) {
       if (this.loading) return;
-      this.$emit("start-loading");
       try {
         if (this.id) {
+          this.$emit("start-loading");
           const uploads = await Promise.all(
             [...d].map((el) => {
               const body = new FormData();
