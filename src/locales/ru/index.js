@@ -302,7 +302,7 @@ export default {
   cyrillic_shortcut: 'кир',
   latin_shortcut: 'лат',
   passport_issue_date: 'Дата выдачи паспорта',
-  passport_expiry_date: 'Дата истечения срока',
+  passport_expiry_date: 'Cрок действия паспорта',
   for_example: 'например',
   remainder: 'Остаток',
   apartment_detail: 'Детали квартир',

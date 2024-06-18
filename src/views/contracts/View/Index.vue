@@ -173,8 +173,8 @@ export default {
     editReissuePm() {
       return (
         this.reissueEditPermission &&
-        this.order.reissue.view &&
-        !this.order.reissue.re_order
+        this.order.reissue?.view &&
+        !this.order.reissue?.re_order
       );
     },
     editPermission() {

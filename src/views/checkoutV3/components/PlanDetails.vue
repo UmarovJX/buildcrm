@@ -81,7 +81,7 @@ export default {
       />
       <field-information
         :bilingual="true"
-        :content="order.apartment.block.floors"
+        :content="order.apartment.block?.floors"
         title="number_of_blocks"
         icon-name="domain"
       />
@@ -91,7 +91,7 @@ export default {
         icon-name="activity_zone"
       >
         <template #content>
-          {{ order.apartment.plan.area }} M<sup>2</sup>
+          {{ order.apartment.plan?.area }} M<sup>2</sup>
         </template>
       </field-information>
       <field-information
@@ -101,7 +101,7 @@ export default {
         icon-name="balcony"
       >
         <template #content>
-          {{ order.apartment.plan.balcony_area }} M<sup>2</sup>
+          {{ order.apartment.plan?.balcony_area }} M<sup>2</sup>
         </template>
       </field-information>
       <field-information

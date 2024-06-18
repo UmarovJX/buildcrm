@@ -62,7 +62,7 @@ export default {
       set(v) {
         this.emitCalc(
           "discount_amount",
-          Math.ceil(v * this.order.apartment.plan.area)
+          Math.ceil(v * this.order.apartment.plan.area * 100) / 100
         );
       },
     },

@@ -81,24 +81,34 @@ export default {
         }
         this.$emit("add-item", d);
       } catch (error) {
+        this.toastedWithErrorCode(error);
         this.$emit("stop-loading");
       }
     },
     async deleteScan(item, i) {
       if (this.loading) return;
+      const result = await this.$swal({
+        text: this.$t("sweetAlert.text"),
+        icon: "warning",
+        showCancelButton: true,
+        cancelButtonText: this.$t("cancel"),
+        confirmButtonText: this.$t("sweetAlert.yes"),
+      });
 
-      if (item instanceof File) {
-        return this.$emit("delete-item", i);
-      }
-      this.$emit("start-loading");
+      if (result.value) {
+        if (item instanceof File) {
+          return this.$emit("delete-item", i);
+        }
+        this.$emit("start-loading");
 
-      try {
-        await v3ServiceApi.scannedContracts.remove({
-          id: item.id,
-        });
-        this.$emit("update-list");
-      } catch (error) {
-        this.$emit("stop-loading");
+        try {
+          await v3ServiceApi.scannedContracts.remove({
+            id: item.id,
+          });
+          this.$emit("update-list");
+        } catch (error) {
+          this.$emit("stop-loading");
+        }
       }
     },
   },
