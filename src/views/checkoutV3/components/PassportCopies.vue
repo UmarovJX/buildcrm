@@ -41,13 +41,25 @@ export default {
     },
     downloadFile(item) {
       if (item.id) {
-        const link = document.createElement("a");
-        const href = item.upload.path;
-        link.setAttribute("download", item.upload.name);
-        link.href = href;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        // const link = document.createElement("a");
+        // const href = item.upload.path;
+        // link.setAttribute("download", item.upload.name);
+        // link.href = href;
+        // document.body.appendChild(link);
+        // link.click();
+        // document.body.removeChild(link);
+        console.log(item.upload.path);
+        fetch(item.upload.path)
+          .then((res) => res.blob())
+          .then((blob) => {
+            var url = window.URL.createObjectURL(blob);
+            var a = document.createElement("a");
+            a.href = url;
+            a.download = item.upload.name;
+            document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
+            a.click();
+            a.remove();
+          });
       }
     },
 
@@ -125,16 +137,19 @@ export default {
         </div>
         <img :src="newImageURL(item)" alt="" v-else />
         <div class="controls">
-          <a
+          <!-- <a
             :href="item.upload.path"
             download
             target="_blank"
             v-if="item.upload"
+          > -->
+          <x-circular-background
+            class="bg-violet-600 cursor-pointer"
+            @click="downloadFile(item)"
           >
-            <x-circular-background class="bg-violet-600 cursor-pointer">
-              <x-icon name="download" class="color-white" />
-            </x-circular-background>
-          </a>
+            <x-icon name="download" class="color-white" />
+          </x-circular-background>
+          <!-- </a> -->
 
           <x-circular-background
             class="bg-red-600 cursor-pointer"
