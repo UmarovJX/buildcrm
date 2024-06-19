@@ -41,25 +41,15 @@ export default {
     },
     downloadFile(item) {
       if (item.id) {
-        // const link = document.createElement("a");
-        // const href = item.upload.path;
-        // link.setAttribute("download", item.upload.name);
-        // link.href = href;
-        // document.body.appendChild(link);
-        // link.click();
-        // document.body.removeChild(link);
-        console.log(item.upload.path);
-        fetch(item.upload.path)
-          .then((res) => res.blob())
-          .then((blob) => {
-            var url = window.URL.createObjectURL(blob);
-            var a = document.createElement("a");
-            a.href = url;
-            a.download = item.upload.name;
-            document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
-            a.click();
-            a.remove();
-          });
+        const url = new URL(item.upload.path);
+        url.protocol = "https";
+        const link = document.createElement("a");
+        link.setAttribute("download", item.upload.name);
+        link.setAttribute("target", "_blank");
+        link.href = url.href;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
       }
     },
 
@@ -139,7 +129,7 @@ export default {
         <div class="controls">
           <!-- <a
             :href="item.upload.path"
-            download
+            :download="item.upload.name"
             target="_blank"
             v-if="item.upload"
           > -->
