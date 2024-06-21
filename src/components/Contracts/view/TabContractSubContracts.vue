@@ -21,7 +21,7 @@ import { XCircularBackground } from "@/components/ui-components/circular-backgro
 import BaseLoading from "@/components/Reusable/BaseLoading";
 import { XFormInput } from "@/components/ui-components/form-input";
 import BasePriceInput from "@/views/contracts/subContract/BasePriceInput";
-import ImageUploader from "@/components/Reusable/ImageUploader";
+import PassportCopies from "@/views/checkoutV3/components/PassportCopies";
 
 export default {
   name: "SubContracts",
@@ -42,7 +42,7 @@ export default {
     BaseLoading,
     XFormInput,
     BasePriceInput,
-    ImageUploader,
+    PassportCopies,
   },
 
   data() {
@@ -79,40 +79,15 @@ export default {
         label: "",
       },
     ];
-    const documentFields = [
-      {
-        key: "index",
-        label: "Номер",
-      },
-      {
-        key: "path",
-        label: "Номер",
-      },
-      {
-        key: "contract_date",
-        label: "Дата",
-        formatter: (datePayment) => {
-          const { year, month, day } = getDateProperty(
-            datePayment.split("T")[0]
-          );
-          /* const lastYear = year.toString().slice(-2) */
-          return `${day}.${month}.${year}`;
-        },
-      },
-      {
-        key: "actions",
-        label: "",
-      },
-    ];
 
     return {
       path: process.env.VUE_APP_URL,
       fields,
-      documentFields,
       subContracts: null,
+      scans: [],
       isLoading: true,
       loading: false,
-      scannedLoading: false,
+      scansLoading: false,
       scannedFiles: null,
       scannedPagination: {
         current: 1,
@@ -255,40 +230,15 @@ export default {
     },
 
     async getScanned() {
-      this.scannedLoading = true;
+      this.scansLoading = true;
       const res = await v3ServiceApi.scannedContracts.getAll({
         page: 1,
-        limit: 10,
+        limit: 12,
         type: "additinal_contract",
         order_id: this.$route.params.id,
       });
-      this.scannedFiles = res.data.result;
-      this.scannedLoading = false;
-    },
-
-    async addNewDoc(d) {
-      this.loading = true;
-      const uploads = await Promise.all(
-        [...d].map((el) => {
-          const body = new FormData();
-          body.append("type", "additinal_contract");
-          body.append("attachment", el);
-          return api.uploadsV3
-            .createUpload(body)
-            .then((res) => res.data.result.id);
-        })
-      );
-      await Promise.all(
-        uploads.map(
-          async (id) =>
-            await v3ServiceApi.scannedContracts.create({
-              type: "additinal_contract",
-              order_id: this.$route.params.id,
-              upload_id: id,
-            })
-        )
-      );
-      this.loading = false;
+      this.scans = res.data.result;
+      this.scansLoading = false;
     },
   },
 };
@@ -347,61 +297,20 @@ export default {
         <base-loading />
       </template>
     </b-table>
-
-    <div class="d-flex justify-content-between align-items-center">
-      <h3 class="title mt-4">Загруженные файлы</h3>
-      <div class="addition__button p-1">
-        <image-uploader :multiple="true" @upload-image="addNewDoc" />
-      </div>
+    <div class="contract-row">
+      <passport-copies
+        :list="scans"
+        :loading="scansLoading"
+        :id="$route.params.id"
+        type="additinal_contract"
+        title="Прикрепленные файлы"
+        @start-loading="scansLoading = true"
+        @stop-loading="scansLoading = false"
+        @add-item="(d) => scans.push(...d)"
+        @delete-item="(i) => scans.splice(i, 1)"
+        @update-list="getScanned"
+      ></passport-copies>
     </div>
-    <b-table
-      :items="subContracts"
-      :fields="documentFields"
-      class="table__list mt-4 border-bottom"
-      :empty-text="$t('no_data')"
-      thead-tr-class="row__head__bottom-border"
-      tbody-tr-class="row__body__bottom-border"
-      show-empty
-      sticky-header
-      responsive
-      :busy="isLoading"
-    >
-      <!--    CELL OF COMMENT      -->
-      <template #cell(edit_type)="{ item }">
-        <span>{{ item.edit_type?.name?.[$i18n.locale] }}</span>
-      </template>
-
-      <template #cell(actions)="{ item }">
-        <div class="d-flex x-gap-1">
-          <x-circular-background
-            class="bg-violet-600 cursor-pointer"
-            @click="viewDetails(item)"
-          >
-            <x-icon name="visibility" class="color-white" />
-          </x-circular-background>
-          <x-circular-background
-            class="bg-green cursor-pointer ml-2"
-            @click="downloadContract(item.id)"
-          >
-            <x-icon name="download" class="color-white" />
-          </x-circular-background>
-        </div>
-      </template>
-
-      <!--   CONTENT WHEN EMPTY SCOPE       -->
-      <template #empty class="text-center">
-        <div
-          class="d-flex justify-content-center align-items-center empty__scope"
-        >
-          {{ $t("no_data") }}
-        </div>
-      </template>
-      <!--  Busy Animation    -->
-      <template #table-busy>
-        <base-loading />
-      </template>
-    </b-table>
-
     <base-modal ref="detail-modal" design="payment-modal">
       <template #header>
         <!--   GO BACK     -->
@@ -683,6 +592,11 @@ export default {
 
 <style lang="scss" scoped>
 @import "../../../assets/scss/utils/pagination";
+.contract-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+}
 .no-pointer {
   pointer-events: none;
 }

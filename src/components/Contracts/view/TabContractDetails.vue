@@ -4,11 +4,14 @@ import api from "@/services/api";
 import { mapGetters } from "vuex";
 import ContractsPermission from "@/permission/contract";
 import ContractComments from "@/components/Contracts/view/ContractComments";
+import { v3ServiceApi } from "@/services/v3/v3.service";
+import PassportCopies from "@/views/checkoutV3/components/PassportCopies";
 
 export default {
   name: "TabContractDetails",
   components: {
     ContractComments,
+    PassportCopies,
   },
   props: {
     order: {
@@ -19,6 +22,8 @@ export default {
   emits: ["start-loading", "finish-loading"],
   data() {
     return {
+      scans: [],
+      scansLoading: false,
       companyDetails: {
         company_name: null,
         full_name: null,
@@ -53,8 +58,20 @@ export default {
     if (this.uniformityPermission) {
       await this.fetchCompareDetails();
     }
+    this.getScanned();
   },
   methods: {
+    async getScanned() {
+      this.scansLoading = true;
+      const res = await v3ServiceApi.scannedContracts.getAll({
+        page: 1,
+        limit: 12,
+        type: "main_contract",
+        model_id: this.$route.params.id,
+      });
+      this.scans = res.data.result;
+      this.scansLoading = false;
+    },
     datePrettier: (time) => formatDateWithDot(time),
     async fetchCompareDetails() {
       this.startLoading();
@@ -387,11 +404,31 @@ export default {
       </b-form>
     </div>
 
+    <div class="contract-row">
+      <passport-copies
+        :list="scans"
+        :loading="scansLoading"
+        :id="order.id"
+        type="main_contract"
+        title="Прикрепленные файлы"
+        @start-loading="scansLoading = true"
+        @stop-loading="scansLoading = false"
+        @add-item="(d) => scans.push(...d)"
+        @delete-item="(i) => scans.splice(i, 1)"
+        @update-list="getScanned"
+      ></passport-copies>
+    </div>
+
     <!-- <ContractComments v-if="viewCommentPermission" /> -->
   </div>
 </template>
 
 <style lang="scss" scoped>
+.contract-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+}
 * {
   font-family: CraftworkSans, serif;
   font-style: normal;

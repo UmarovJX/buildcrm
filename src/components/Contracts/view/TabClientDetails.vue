@@ -499,6 +499,7 @@ export default {
               :list="scans"
               :loading="scansLoading"
               :id="client.id"
+              type="passport_front"
               @start-loading="scansLoading = true"
               @stop-loading="scansLoading = false"
               @add-item="(d) => scans.push(...d)"

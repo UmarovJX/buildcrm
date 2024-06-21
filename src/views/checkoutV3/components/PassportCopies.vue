@@ -22,7 +22,18 @@ export default {
       type: Boolean,
       default: false,
     },
-    id: {},
+    id: {
+      type: String,
+      required: true,
+    },
+    type: {
+      type: String,
+      required: true,
+    },
+    title: {
+      type: String,
+      default: "Копии паспорта",
+    },
   },
 
   computed: {},
@@ -61,7 +72,7 @@ export default {
           const uploads = await Promise.all(
             [...d].map((el) => {
               const body = new FormData();
-              body.append("type", "passport_front");
+              body.append("type", this.type);
               body.append("attachment", el);
               return api.uploadsV3
                 .createUpload(body)
@@ -72,7 +83,7 @@ export default {
             uploads.map(
               async (id) =>
                 await v3ServiceApi.scannedContracts.create({
-                  type: "passport_front",
+                  type: this.type,
                   model_id: this.id,
                   upload_id: id,
                 })
@@ -119,7 +130,7 @@ export default {
 
 <template>
   <div class="test">
-    <div class="passport-title">Копии паспорта</div>
+    <div class="passport-title">{{ title }}</div>
     <div v-if="list?.length" class="images">
       <div class="image" v-for="(item, i) in list" :key="item.id || i">
         <div class="pdf-placeholder" v-if="item.upload?.extension === 'pdf'">
@@ -191,6 +202,10 @@ export default {
   margin-top: auto;
   margin-bottom: auto;
   width: 100%;
+  aspect-ratio: 16/9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .loader {
   position: absolute;
