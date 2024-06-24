@@ -1,4 +1,5 @@
 export default {
+  uploadFiles: 'Fayllar yuklash',
   flexible: 'Moslashuvchan',
   tariff: 'Tarif buyicha',
   plan_type: 'Tulov plani turi',

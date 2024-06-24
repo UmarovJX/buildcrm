@@ -19,6 +19,9 @@ export default {
       type: String,
       default: "",
     },
+    label: {
+      type: String,
+    },
   },
   beforeRouteLeave(to, from, next) {
     this.excelFile = null;
@@ -30,6 +33,10 @@ export default {
     };
   },
   computed: {
+    buttonLabel() {
+      if (this.label) return this.label;
+      return this.$t("objects.create.plan.add_image");
+    },
     size() {
       if (this.excelFile) {
         const kilobyte = this.excelFile.size / 1024;
@@ -57,7 +64,7 @@ export default {
     <!--   FILE NOT UPLOAD YET     -->
     <div class="d-flex flex-column justify-content-center align-items-center">
       <BaseCameraIcon :width="30" :height="27" fill="#A78BFA" />
-      <p>{{ $t("objects.create.plan.add_image") }}</p>
+      <p>{{ buttonLabel }}</p>
       {{ excelFile }}
     </div>
     <input

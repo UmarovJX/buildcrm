@@ -302,6 +302,7 @@ export default {
         :list="scans"
         :loading="scansLoading"
         :id="$route.params.id"
+        :button-label="$t('uploadFiles')"
         type="additinal_contract"
         title="Прикрепленные файлы"
         @start-loading="scansLoading = true"

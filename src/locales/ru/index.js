@@ -1,4 +1,5 @@
 export default {
+  uploadFiles: 'Загрузить файлы',
   flexible: 'Гибкий',
   tariff: 'Тариф',
   plan_type: 'Тип рассрочки',

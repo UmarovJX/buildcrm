@@ -409,6 +409,7 @@ export default {
         :list="scans"
         :loading="scansLoading"
         :id="order.id"
+        :button-label="$t('uploadFiles')"
         type="main_contract"
         title="Прикрепленные файлы"
         @start-loading="scansLoading = true"

@@ -34,6 +34,9 @@ export default {
       type: String,
       default: "Копии паспорта",
     },
+    buttonLabel: {
+      type: String,
+    },
   },
 
   computed: {},
@@ -166,6 +169,7 @@ export default {
         :multiple="true"
         @upload-image="addScan"
         accept="image/*,application/pdf"
+        :label="buttonLabel"
       />
     </div>
     <animation-frame v-show="loading" class="loader" />
