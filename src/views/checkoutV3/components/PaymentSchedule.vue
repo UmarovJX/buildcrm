@@ -70,11 +70,7 @@ export default {
           });
           d = addMonth(d, 1);
         }
-        if (
-          this.discount.type === "percent" &&
-          this.order.calculation.prepay === 100
-        )
-          return (this.payments = res);
+        if (this.order.calculation.prepay === 100) return (this.payments = res);
 
         d = new Date(this.order.calculation.monthly_payment_date);
 

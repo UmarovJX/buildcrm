@@ -15,12 +15,16 @@ import {
   fullPayment,
   prepayAmount,
 } from "@/views/checkoutV3/helper/calculator.js";
+
+import BasePriceInput from "@/components/Reusable/BasePriceInput2";
+
 export default {
   name: "ChCalculator",
   components: {
     XFormSelect,
     XFormInput,
     BaseDatePicker,
+    BasePriceInput,
   },
   props: {
     order: p(PROP_TYPE_OBJECT, {}),
@@ -30,6 +34,10 @@ export default {
     return {
       datePickerIconFill: "var(--violet-600)",
       calcRef: `ch-calculator-${this.order.apartment.uuid}`,
+      full_discount: 0,
+      m2discount: 0,
+      fullInit: false,
+      m2Init: false,
     };
   },
   computed: {
@@ -127,8 +135,40 @@ export default {
       ];
     },
   },
-  watch: {},
+  watch: {
+    full_discount(v) {
+      this.emitCalc("discount_amount", v);
+    },
+  },
   methods: {
+    changeM2Discount(v) {
+      const fullD = v * this.order.apartment.plan.area;
+      if (this.fullInit) {
+        this.fullInit = false;
+        return;
+      }
+      this.m2discount = v;
+      this.m2Init = true;
+      if (v) {
+        this.full_discount = +fullD.toFixed(2);
+      } else {
+        this.full_discount = 0;
+      }
+    },
+    changeFullDiscount(v) {
+      const m2D = v / this.order.apartment.plan.area;
+      if (this.m2Init) {
+        this.m2Init = false;
+        return;
+      }
+      this.full_discount = v;
+      this.fullInit = true;
+      if (v) {
+        this.m2discount = +m2D.toFixed(2);
+      } else {
+        this.m2discount = 0;
+      }
+    },
     // NEW
     emitCalc(field, v) {
       this.$emit("update-calc", {
@@ -338,7 +378,6 @@ export default {
       class="cw-total-discount"
     >
       <x-form-input
-        :value="order.calculation.discount_amount"
         type="number"
         :currency-symbol="true"
         :label="true"
@@ -346,8 +385,20 @@ export default {
         :error="!!errors[0]"
         class="w-100"
         :placeholder="`${$t('total_discount')}`"
-        @input="(e) => emitCalc('discount_amount', e)"
+        :value="full_discount"
+        @input="changeFullDiscount"
       />
+      <!-- <base-price-input
+        top-placeholder
+        ref="all-discount-price"
+        class="discount-per-m2"
+        :label="true"
+        :currency="`${$t('ye')}`"
+        :placeholder="$t('apartments.view.discount_all')"
+        :value="full_discount"
+        :permission-change="fullInit"
+        @input="changeFullDiscount"
+      /> -->
     </validation-provider>
 
     <!--? DISCOUNT_PER_M2  -->
@@ -357,7 +408,6 @@ export default {
       class="cw-discount-per-m2"
     >
       <x-form-input
-        v-model="m2Discount"
         type="number"
         :currency-symbol="true"
         :label="true"
@@ -365,7 +415,19 @@ export default {
         :error="!!errors[0]"
         class="w-100"
         :placeholder="`${$t('discount_per_m2')}`"
+        :value="m2discount"
+        @input="changeM2Discount"
       />
+      <!-- <base-price-input
+        top-placeholder
+        class="discount-per-m2"
+        :label="true"
+        :currency="`${$t('ye')}`"
+        :placeholder="$t('apartments.view.discount_per_m2')"
+        :value="m2discount"
+        :permission-change="m2Init"
+        @input="changeM2Discount"
+      /> -->
     </validation-provider>
 
     <!--? FIRST_PAYMENT_DATE  -->
@@ -417,5 +479,21 @@ export default {
 }
 .full {
   grid-column: span 2;
+}
+.discount-per-m2 {
+  border-radius: 2rem;
+  background-color: var(--gray-100);
+  width: 100%;
+  border: 0.25rem solid var(--gray-100);
+  padding: 0.75rem 1.25rem;
+  & ::v-deep input {
+    font-weight: 700;
+    color: var(--gray-600);
+  }
+}
+.discount-per-m2:focus-within {
+  border: 0.25rem solid var(--gray-200);
+  background-color: var(--gray-100);
+  box-sizing: border-box;
 }
 </style>

@@ -30,11 +30,14 @@ export default {
     return {
       calculatedInstallments: [],
       currentInstallment: null,
+      fullInit: false,
+      m2Init: false,
       calc: {
         discount: this.apartment.discounts[0].id,
         type: "custom",
         month: 0,
         full_discount: 0,
+        m2discount: 0,
       },
     };
   },
@@ -42,12 +45,6 @@ export default {
     async discount() {
       if (this.calc.type === "installment") await this.getInstallmentCalcs();
       else this.upHillForPrint();
-    },
-    calc: {
-      handler() {
-        this.upHillForPrint();
-      },
-      deep: true,
     },
     calc: {
       handler() {
@@ -267,6 +264,26 @@ export default {
     },
   },
   methods: {
+    changeM2Discount(v) {
+      const fullD = (v || 0) * this.apartment.plan.area;
+      this.calc.m2discount = v || 0;
+      this.fullInit = true;
+      if (v) {
+        this.calc.full_discount = +fullD.toFixed(2);
+      } else {
+        this.calc.full_discount = null;
+      }
+    },
+    changeFullDiscount(v) {
+      const m2D = (v || 0) / this.apartment.plan.area;
+      this.calc.full_discount = v || 0;
+      this.m2Init = true;
+      if (v) {
+        this.calc.m2discount = +m2D.toFixed(2);
+      } else {
+        this.calc.m2discount = null;
+      }
+    },
     async getInstallmentCalcs() {
       this.calculatedInstallments = [];
       const resp = await v3ServiceApi.installments.calculate({
@@ -372,8 +389,9 @@ export default {
           :label="true"
           :currency="`${$t('ye')}`"
           :placeholder="$t('apartments.view.discount_per_m2')"
-          v-model="m2Discount"
-          :permission-change="true"
+          :value="calc.m2discount"
+          :permission-change="m2Init"
+          @input="changeM2Discount"
         />
         <base-price-input
           ref="all-discount-price"
@@ -381,8 +399,9 @@ export default {
           :label="true"
           :currency="`${$t('ye')}`"
           :placeholder="$t('apartments.view.discount_all')"
-          :permission-change="true"
-          v-model="calc.full_discount"
+          :value="calc.full_discount"
+          :permission-change="fullInit"
+          @input="changeFullDiscount"
         />
       </div>
     </div>
